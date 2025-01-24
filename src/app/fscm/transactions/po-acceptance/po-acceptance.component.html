@@ -1,0 +1,330 @@
+<div class="container" *ngIf="!loading">
+    <app-modal [(isShow)]="isShowInputRemark"
+        headerText="{{ 'Enter ' + (isAccepted ? 'Accept' : 'Reject') + ' Remark' | apsTranslate }}"
+        (onClose)="onCloseModal()">
+        <div class="" body>
+            <aps-form-input name="remark" id="remark" label="{{ 'Reason' | apsTranslate }}" [(ngModel)]="remarkInput"
+                [required]="true"></aps-form-input>
+        </div>
+        <div class="left-right-container" footer>
+            <div class="left-container">
+                <button class="btn btn-md btn-tertiary" (click)="onCloseModal()">
+                    {{ 'CANCEL' | apsTranslate }}
+                </button>
+            </div>
+            <div class="right-container">
+                <button class="btn btn-md btn-primary" (click)="isAccepted ? onAccept() : onReject()"
+                    [disabled]="!remarkInput">
+                    {{ 'SUBMIT' | apsTranslate }}
+                </button>
+            </div>
+        </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <div class="aps-card">
+                <div class="p-px-3 aps-py-12">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="inline-items">
+                                <div class="item">
+                                    <div class="text-size-14 text-bold">
+                                        {{ 'Search By' | apsTranslate }}
+                                    </div>
+                                </div>
+                                <ng-container *ngIf="!isShowSearch">
+                                    <div class="item p-ml-3" *ngFor="let filter of searchFilters; let i = index">
+                                        <div class="p-py-1 p-px-2 background-color-primary-light-shade-2 border-radius-4 text-size-12"
+                                            *ngIf="i < 3">
+                                            <span class="inline-block p-mr-2 text-semi-bold">{{
+                                                filter.displayName
+                                                }}</span>
+                                            <span class="inline-block">{{ filter.value }}</span>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon [icon]="isShowSearch ? 'fa-chevron-up' : 'fa-chevron-down'" class="pointer"
+                                (click)="isShowSearch = !isShowSearch"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="" *ngIf="isShowSearch">
+                    <app-dynamic-search #dynamicSearch [entityName]="entityName" (onSearch)="getRecords($event)"
+                        [isShowSearchByHeader]="false" [isShowPrefillCriteria]="false" mandatoryParametersColSize="4"
+                        optionalParametersColSize="4" [isDisplayPrefillCriteriaModal]="false" cardHeight="270"
+                        (onFiltersReady)="onDynamicFiltersReady()"
+                        (onSaveCriteria)="getCriteriaList()"></app-dynamic-search>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-12">
+            <div class="left-right-container">
+                <div class="left-container">
+                    <div class="inline-items">
+                        <div class="item" *ngFor="let tab of tabs; let i = index">
+                            <div class="p-p-2 pointer border border-radius-4 text-size-12" [ngClass]="{
+                    'background-color-primary text-color-inverted':
+                      activeTab && tab.label == activeTab.label,
+                    'p-mr-3': i < tabs.length - 1
+                  }" (click)="getData(tab)">
+                                {{ tab.label | apsTranslate }} ({{ tab.count }})
+                            </div>
+                        </div>
+                        <div class="item p-ml-3" *ngIf="searchFilters.length > 0">
+                            <div class="p-p-2 pointer border border-radius-4 text-size-12" [ngClass]="{
+                    'background-color-primary text-color-inverted':
+                      'Search Results' == activeTab.label
+                  }" (click)="getSearchResults()">
+                                <div class="inline-items">
+                                    <div class="item p-mr-2">{{ 'Search Results' | apsTranslate }} (10)</div>
+                                    <div class="item">
+                                        <app-icon icon="fa-times" class="pointer" (click)="clearSearch()"></app-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-container">
+                    <app-grid-listing-tools (changeFloatingFilter)="listing ? listing.changeFloatFilter($event) : null"
+                        (filterRecords)="listing ? listing.onFilter($event) : null"
+                        (applyColDefs)="listing ? listing.onApplyConfig($event) : null"
+                        [colDefs]="listing ? listing.columnDefs : []" [columnConfig]="true"
+                        [moreOptions]="true"></app-grid-listing-tools>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-col-12">
+            <div class="aps-card aps-h-450">
+                <ng-container *ngIf="!loadingGrid">
+                    <app-ag-grid-listing #listing [colDefUrl]="activeTab ? activeTab.colDefsUrl : []"
+                        [rowData]="rowData" [gridOptions]="gridOptions" [frameworkComponents]="frameworkComponents"
+                        [context]="context" (rowSelected)="onRowSelected($event)"></app-ag-grid-listing>
+                </ng-container>
+            </div>
+        </div>
+
+        <div class="p-col-12">
+            <div class="aps-card p-px-3 aps-py-12">
+                <div class="left-right-container">
+                    <div class="left-container">
+                        <button class="btn btn-md btn-tertiary">
+                            {{ 'CANCEL' | apsTranslate }}
+                        </button>
+                    </div>
+                    <div class="right-container">
+                        <button class="btn btn-md btn-secondary p-mr-3"
+                            (click)="isAccepted = false; isShowInputRemark = true"
+                            [disabled]="dataForAction.length == 0">
+                            {{ 'REJECT' | apsTranslate }}
+                        </button>
+                        <button class="btn btn-md btn-primary" (click)="isAccepted = true; isShowInputRemark = true"
+                            [disabled]="dataForAction.length == 0">
+                            {{ 'ACCEPT' | apsTranslate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-modal [(isShow)]="isViewInvoice" headerText="{{ 'Invoice Details' | apsTranslate }}" size="lg"
+        (onClose)="resetViewInvoice()">
+        <div class="p-grid g-margin-x" body>
+            <div class="p-col-12">
+                <div class="aps-card">
+                    <div class="aps-card-header p-px-3 aps-py-12 text-size-14 text-semi-bold">
+                        {{ 'Entity Selection' | apsTranslate }}
+                    </div>
+                    <div class="aps-card-body p-p-2">
+                        <div class="p-grid">
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Sponsor Code"
+                                    [value]="viewInvoiceData.sponsorCode"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Sponsor Name"
+                                    [value]="viewInvoiceData.sponsorName"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Buyer/Seller Code"
+                                    [value]="viewInvoiceData.sellerBuyerCode"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Buyer/Seller Name"
+                                    [value]="viewInvoiceData.sellerBuyerName"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Product Category"
+                                    [value]="viewInvoiceData.productCategory"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Product Reference Number - Name"
+                                    [value]="viewInvoiceData.programReferenceNumberName"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Entity Sub Code"
+                                    [value]="viewInvoiceData.entitySubCode"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Entity Sub Name"
+                                    [value]="viewInvoiceData.entitySubCodeDescription"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Invoice Type"
+                                    [value]="viewInvoiceData.invoiceType"></app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="aps-card p-mt-3">
+                    <div class="aps-card-header p-px-3 aps-py-12 text-size-14 text-semi-bold">
+                        {{ 'Invoice Details' | apsTranslate }}
+                    </div>
+                    <div class="aps-card-body p-p-2">
+                        <div class="p-grid">
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="invoice Number"
+                                    [value]="viewInvoiceData.invoiceDetails[0].invoiceNumber"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="invoice Entry Date"
+                                    [value]="viewInvoiceData.invoiceDetails[0].invoiceEntryDate"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="invoice Date"
+                                    [value]="viewInvoiceData.invoiceDetails[0].invoiceDate"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Sub Doc Type"
+                                    [value]="viewInvoiceData.invoiceDetails[0].subDocType"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Invoice Due Days"
+                                    [value]="viewInvoiceData.invoiceDetails[0].invoiceDueDays"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="invoice Due Date"
+                                    [value]="viewInvoiceData.invoiceDetails[0].invoiceDueDate"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Allocation Number"
+                                    [value]="viewInvoiceData.invoiceDetails[0].allocationNumber"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Payment Terms"
+                                    [value]="viewInvoiceData.invoiceDetails[0].paymentTerms"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="invoice Amount" type="baseCurrency"
+                                    [value]="viewInvoiceData.invoiceDetails[0].invoiceAmount"
+                                    [baseCurrency]="viewInvoiceData.invoiceDetails[0].invoiceCurrencyCode"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="VAT %"
+                                    [value]="viewInvoiceData.invoiceDetails[0].vatPercentage"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="VAT Amount" type="baseCurrency"
+                                    [value]="viewInvoiceData.invoiceDetails[0].vatAmount"
+                                    [baseCurrency]="viewInvoiceData.invoiceDetails[0].invoiceCurrencyCode"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Invoice Outstanding Amount" type="baseCurrency"
+                                    [value]="viewInvoiceData.invoiceDetails[0].invoiceOutstandingAmount"
+                                    [baseCurrency]="viewInvoiceData.invoiceDetails[0].invoiceCurrencyCode"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="WHT %"
+                                    [value]="viewInvoiceData.invoiceDetails[0].whtPercentage"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="WHT Calculated On"
+                                    [value]="viewInvoiceData.invoiceDetails[0].whtCalculatedOn"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="WHT Amount" type="baseCurrency"
+                                    [value]="viewInvoiceData.invoiceDetails[0].whtAmount"
+                                    [baseCurrency]="viewInvoiceData.invoiceDetails[0].invoiceCurrencyCode"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Total Payable Amount" type="baseCurrency"
+                                    [value]="viewInvoiceData.invoiceDetails[0].totalPayableAmount"
+                                    [baseCurrency]="viewInvoiceData.invoiceDetails[0].invoiceCurrencyCode"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Billing Address"
+                                    [value]="viewInvoiceData.invoiceDetails[0].billingAddress"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Remarks"
+                                    [value]="viewInvoiceData.invoiceDetails[0].remarks"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Supporting Documents" type="file" [value]="
+                      viewInvoiceData.invoiceDetails[0].supportingDocument[0]
+                        ? viewInvoiceData.invoiceDetails[0].supportingDocument[0]
+                        : ''
+                    "></app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <app-dynamic-enrichment mode="VIEW" classes="p-mt-3" [showHeaderBorderBottom]="true"
+                    [enrichmentModel]="viewInvoiceData.invoiceEnrich">
+                </app-dynamic-enrichment>
+
+                <div class="aps-card p-mt-3">
+                    <div class="aps-card-header p-px-3 aps-py-12 text-size-14 text-semi-bold">
+                        {{ 'Purchase Order Details' | apsTranslate }}
+                    </div>
+                    <div class="aps-card-body p-p-2">
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <div class="aps-h-200">
+                                    <app-ag-grid-listing [columnDefs]="purchaseOrderDetailColDefs"
+                                        [rowData]="viewInvoiceData.poDetails"
+                                        [gridOptions]="{ rowModelType: 'clientSide' }"></app-ag-grid-listing>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aps-card p-mt-3">
+                    <div class="aps-card-header p-px-3 aps-py-12 text-size-14 text-semi-bold">
+                        {{ 'Item Details' | apsTranslate }}
+                    </div>
+                    <div class="aps-card-body p-p-2">
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <div class="aps-h-200">
+                                    <app-ag-grid-listing [columnDefs]="itemDetailReviewColDefs"
+                                        [rowData]="viewInvoiceData.itemDetails"
+                                        [gridOptions]="{ rowModelType: 'clientSide' }"></app-ag-grid-listing>
+                                </div>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Total Product Items"
+                                    [value]="viewInvoiceData.totalProductItems"></app-review-form-field>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <app-review-form-field label="Total Amount" type="baseCurrency"
+                                    [value]="viewInvoiceData.totalAmount"></app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </app-modal>
+</div>

@@ -1,0 +1,178 @@
+<app-modal [(isShow)]="copyFromProduct" *ngIf="!loading">
+  <div header class="">
+    <app-header-with-search heading="Products" (search)="(null)"></app-header-with-search>
+  </div>
+
+  <div body class="">
+    <app-accordion-tree [treeNode]="copyProducts"></app-accordion-tree>
+  </div>
+
+  <div footer class="left-right-container">
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="p-mx-3 btn btn-md btn-tertiary" (click)="copyFromProduct = false">
+        {{ 'CANCEL' | apsTranslate }}
+      </button>
+      <button class="btn btn-md btn-primary" (click)="copyFromProduct = false">
+        {{ 'COPY' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<app-search-modal
+  [(isShow)]="copyFromUsers"
+  [header]="'Select User' | apsTranslate"
+  colDefUrl="setup/generalMasters/accountWiseAccess/private/userHeaderSelectionColDef"
+  rowDefUrl="setup/generalMaster/accountWiseAccess/private/getUsers"
+  (onSelection)="copyFromUsers = false"
+  (close)="copyFromUsers = false"
+></app-search-modal>
+
+<app-search-modal
+  [(isShow)]="copyFromAccounts"
+  [header]="'Select User' | apsTranslate"
+  colDefUrl="setup/generalMasters/accountWiseAccess/private/accessMappingAccountHeaderSelectionColDef "
+  rowDefUrl="setup/generalMaster/accountWiseAccess/private/getAccounts"
+  (onSelection)="copyFromAccounts = false"
+  (close)="copyFromAccounts = false"
+></app-search-modal>
+
+<div class="p-grid g-margin-x">
+  <div class="p-col-12">
+    <div class="left-right-container">
+      <div class="left-container">
+        <div class="text-color-dark-shade-1" *ngIf="selectedUsersAccounts.length > 0">
+          <app-modal
+            [(isShow)]="showMoreUsersAccounts"
+            [customStyles]="customModalStyle"
+            [hideBackdrop]="true"
+            headerText="{{ usersAccountsHeader | apsTranslate }}"
+          >
+            <div class="" body>
+              <div
+                class="text-size-13 aps-pt-12"
+                *ngFor="let usersAccount of selectedUsersAccounts"
+              >
+                {{ usersAccount.uaid }}
+              </div>
+            </div>
+          </app-modal>
+
+          <div class="label-with-icon-container">
+            <div class="icon">
+              <app-icon icon="fa-users"></app-icon>
+            </div>
+            <div class="label">
+              <ng-container *ngFor="let usersAccount of selectedUsersAccounts; let i = index">
+                <span class="inline-block" *ngIf="i < 3"> {{ usersAccount.uaid }},&nbsp; </span>
+              </ng-container>
+              <span
+                class="inline-block tect-color-primary text-semi-bold"
+                *ngIf="selectedUsersAccounts.length > 3"
+                (click)="showMoreOptions($event)"
+              >
+                +{{ selectedUsersAccounts.length - 3 }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right-container">
+        <div
+          class="label-with-icon-container text-color-primary"
+          (click)="copyFromUsers = true"
+          *ngIf="parentRef.selectedAccessType !== parentRef.accessTypeList[1].id"
+        >
+          <div class="icon">
+            <app-icon icon="fa-user"></app-icon>
+          </div>
+          <div class="label">{{ 'COPY FROM USER' | apsTranslate }}</div>
+        </div>
+
+        <div
+          class="label-with-icon-container text-color-primary"
+          (click)="copyFromAccounts = true"
+          *ngIf="parentRef.selectedAccessType === parentRef.accessTypeList[1].id"
+        >
+          <div class="icon">
+            <app-icon icon="fa-user"></app-icon>
+          </div>
+          <div class="label">{{ 'COPY FROM ACCOUNT' | apsTranslate }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-400">
+      <div class="aps-card-header">
+        <app-header-with-search heading="Products" (search)="(null)"></app-header-with-search>
+      </div>
+      <div class="aps-card-body overflow-scroll">
+        <app-accordion-tree
+          *ngIf="!loading"
+          [treeNode]="products"
+          (leafNodeChecked)="leafNodeChecked($event)"
+          (checkboxChecked)="nodeChecked($event)"
+          (labelClicked)="labelClicked($event)"
+        ></app-accordion-tree>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-8 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-400">
+      <div class="aps-card-header">
+        <app-header-with-search
+          [heading]="gridHeader | apsTranslate"
+          (search)="usersAccounts.onFilter($event)"
+        >
+        </app-header-with-search>
+      </div>
+      <div class="aps-card-body">
+        <div class="left-right-container border-bottom p-px-2">
+          <div class="left-container">
+            <div class="inline-items p-mt-2">
+              <div
+                class="item ponter text-size-12 p-p-2"
+                *ngFor="let tab of tabs; let i = index"
+                [ngClass]="{
+                  'text-color-primary border-bottom border-color-primary': tab === currentTab
+                }"
+                (click)="changeTab(tab)"
+              >
+                {{ tab }} ({{ getTabUsersAccountsLength(tab) }})
+              </div>
+            </div>
+          </div>
+
+          <div class="right-container">
+            <div
+              class="label-with-icon-container pointer text-color-primary text-size-14 aps-py-12"
+              (click)="copyFromProduct = true"
+            >
+              <div class="icon">
+                <app-icon icon="fa-briefcase" class="text-size-14"></app-icon>
+              </div>
+              <div class="label">{{ 'COPY FROM SUB PRODUCT' | apsTranslate }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-body">
+          <app-ag-grid-listing
+            #usersAccounts
+            id="usersAccounts"
+            [colDefUrl]="gridColumnDefsUrl"
+            [gridOptions]="gridOptions"
+            (rowSelected)="rowSelected($event)"
+            (gridReady)="onGridReady()"
+          >
+          </app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

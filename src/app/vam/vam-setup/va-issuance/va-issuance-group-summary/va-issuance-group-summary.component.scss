@@ -1,0 +1,39 @@
+.border-top,
+.border-right {
+  border-color: var(--primary-color) !important;
+}
+
+.corporates:last-child {
+  .border-top:last-child {
+    border: none;
+  }
+}
+
+.border-1 {
+  border: 1px solid var(--background-color);
+  transition: all 0.125s;
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+}
+
+.border-2 {
+  border: 2px solid var(--background-color);
+  transition: all 0.125s;
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+}
+
+////:host ::ng-deep .aps-overlay-panel .p-overlayPanel .p-overlaypanel-content {
+//.aps-overlay-panel.p-overlaypanel-content {
+//  padding: 0.3rem !important;
+//  border-color: var(--primary-color) !important;
+//}
+
+//#moreOptions .p-overlaypanel:after, .p-overlaypanel:before{
+//  padding: 0.3rem !important;
+//    border-color: var(--primary-color) !important;
+//}

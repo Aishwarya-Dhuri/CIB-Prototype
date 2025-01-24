@@ -1,0 +1,417 @@
+<app-backdrop
+  [background]="'rgba(0, 0, 0, 0)'"
+  [zIndex]="5"
+  (close)="
+    helpOptions ? (helpOptions = false) : moreOptions ? (moreOptions = false) : (userInfo = false)
+  "
+  *ngIf="helpOptions || moreOptions || userInfo"
+></app-backdrop>
+
+<app-modal
+  [(isShow)]="showFeedbackHistory"
+  size="md"
+  *ngIf="showFeedbackHistory"
+  headerText="View History"
+>
+  <div class="p-grid g-margin-x" body>
+    <div class="p-col-12">
+      <div class="aps-h-300">
+        <app-ag-grid-listing
+          colDefUrl="commons/feedbackService/private/colDefs"
+          rowDefUrl="commons/feedbackService/private/getAllList"
+          [gridOptions]="{
+            rowModelType: 'serverSide'
+          }"
+        ></app-ag-grid-listing>
+      </div>
+    </div>
+  </div>
+  <div class="p-grid g-margin-x" footer>
+    <div class="p-col-12">
+      <div class="left-right-container">
+        <div class="left-container">
+          <button
+            class="btn btn-md btn-tertiary"
+            (click)="showFeedbackHistory = false; showFeedbackModal = true"
+          >
+            {{ 'Send Feedback' | apsTranslate }}
+          </button>
+        </div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="showFeedbackHistory = false">
+            {{ 'Close' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal
+  [(isShow)]="showFeedbackModal"
+  size="md"
+  headerText="Feedback"
+  (onClose)="showFeedbackModal = false"
+>
+  <div class="p-grid g-margin-x" body>
+    <div class="p-col-12">
+      <div class="text-size-14 text-semi-bold p-mt-2 text-color-normal">
+        {{ 'Feedback Type' }}<span class="text-color-danger"></span>
+      </div>
+      <p-radioButton
+        class="p-mr-4"
+        id="suggestions"
+        name="suggestions"
+        value="Suggestions"
+        label="{{ 'Suggestions' | apsTranslate }}"
+        [(ngModel)]="feedbackType"
+        [required]="true"
+      >
+      </p-radioButton>
+      <p-radioButton
+        class="p-mr-4"
+        id="appreciation"
+        name="appreciation"
+        value="Appreciation"
+        label="{{ 'Appreciation' | apsTranslate }}"
+        [(ngModel)]="feedbackType"
+        [required]="true"
+      >
+      </p-radioButton>
+      <p-radioButton
+        class="p-mr-4"
+        id="complaints"
+        name="complaints"
+        value="Complaints"
+        label="{{ 'Complaints' | apsTranslate }}"
+        [(ngModel)]="feedbackType"
+        [required]="true"
+      >
+      </p-radioButton>
+    </div>
+    <div class="p-col-12">
+      <aps-form-input
+        id="remark"
+        name="remark"
+        label="Remark"
+        [(ngModel)]="remark"
+      ></aps-form-input>
+    </div>
+  </div>
+  <div class="p-grid g-margin-x" footer>
+    <div class="p-col-12">
+      <div class="left-right-container">
+        <div class="left-container">
+          <button
+            class="btn btn-md btn-tertiary"
+            (click)="showFeedbackModal = false; showFeedbackHistory = true"
+          >
+            {{ 'View History' | apsTranslate }}
+          </button>
+        </div>
+        <div class="right-container">
+          <button
+            class="btn btn-md btn-primary"
+            (click)="submitFeedback()"
+            [disabled]="!feedbackType && !remark"
+          >
+            {{ 'Submit' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<div
+  class="header-panel"
+  [ngClass]="{
+    'header-panel-expand': isExpand
+  }"
+  *ngIf="userDetails"
+>
+  <div class="large p-shadow-0" (click)="toggleHeader()">
+    <app-icon
+      styleClasses="text-color-primary"
+      [icon]="!isExpand ? 'fa-chevron-down' : 'fa-chevron-up'"
+    ></app-icon>
+  </div>
+
+  <div class="logo-container border-primary">
+    <div
+      class="menu-toggle"
+      *ngIf="menuType === 'overlay' || menuType === 'mobile'"
+      (click)="togglePinnedMenu()"
+    >
+      <app-icon icon="fa-bars"></app-icon>
+    </div>
+
+    <img
+      class="bank-logo tour-dashboard-step5"
+      [ngClass]="{ 'bank-logo-with-toggle-icon': menuType === 'overlay' || menuType === 'mobile' }"
+      [src]="bankLogoUrl"
+      alt=""
+      (click)="goToDefaultDashboard()"
+    />
+
+    <div class="divider-v hide-on-mobile"></div>
+
+    <img
+      class="product-logo hide-on-mobile tour-dashboard-step6"
+      style="mix-blend-mode: multiply;"
+      [ngClass]="{
+        'product-logo-with-toggle-icon': menuType === 'overlay' || menuType === 'mobile'
+      }"
+      [src]="productLogoUrl"
+      alt=""
+      routerLink="/dashboard/consolidated"
+    />
+
+    <div class="more-info fade-in-animation">
+      <div class="user">
+        <div class="user-image">
+          <img [src]="userDetails.profilePicUrl" alt="" style="mix-blend-mode: multiply;" />
+        </div>
+        <div class="user-name">
+          {{ userDetails.fullName }}
+
+          <div class="sub-text">{{ userDetails.profileName }}</div>
+        </div>
+      </div>
+
+      <hr />
+
+      <div class="login-details" *ngIf="userDetails.lastCorporateLoginDateTime">
+        <div class="p-p-1">
+          {{ 'Corporate Login' | apsTranslate }} :
+          <span class="bold-text">{{ userDetails.lastCorporateLoginDateTime }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="details-container">
+    <div class="main-info-container">
+      <div class="group-switch-container hide-on-mobile">
+        <div class="inline-block p-my-1">
+          <div class="select-dropdown tour-dashboard-step7">
+            <div class="dropdown">
+              <input
+                type="checkbox"
+                id="my-dropdown"
+                value=""
+                name="my-checkbox"
+                [(ngModel)]="dropdown"
+              />
+              <label for="my-dropdown" data-toggle="dropdown" (click)="dropdown = !dropdown">
+                {{ selectedGroup?.displayName }}
+              </label>
+              <ul class="">
+                <li *ngFor="let g of groupList" (click)="groupChange(g.id)">
+                  <span
+                    [ngClass]="{
+                      'background-color-primary text-color-inverted': g.id == selectedGroup?.id
+                    }"
+                    >{{ g.displayName }}</span
+                  >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <!-- <select
+            class="group-select select-primary"
+            name="group"
+            id="group"
+            [value]="selectedGroup.id"
+            (change)="groupChange($event.target.value)"
+            [(ngModel)]="selectedGroup.id"
+          >
+            <option *ngFor="let g of groupList" [value]="g.id">
+              {{ g.displayName }}
+            </option>
+          </select> -->
+        </div>
+      </div>
+
+      <div class="info-header-container">
+        <div class="date-container">
+          <span class="date-wrapper">{{
+            userDetails.currentServerTimeA + ' | ' + userDetails.applicationDate
+          }}</span>
+        </div>
+
+        <div class="divider-v"></div>
+
+        <div class="info-container">
+          <span class="info-wrapper">
+            <div class="search-input" [ngClass]="{ 'show-search-input': showSearch }">
+              <div class="search">
+                <input
+                  type="text"
+                  placeholder="Enter Keyword to Search"
+                  [(ngModel)]="searchInput"
+                  [autofocus]="true"
+                  (input)="onSearchInput()"
+                />
+
+                <ng-container *ngIf="showSearch">
+                  <input
+                    type="checkbox"
+                    id="my-dropdown-search"
+                    value=""
+                    name="my-checkbox-search"
+                    [(ngModel)]="search"
+                  />
+                  <ul class="">
+                    <li *ngFor="let link of filterMenuLinkList">
+                      <span (click)="navigateToQuickSearch(link)">{{ link.displayName }}</span>
+                    </li>
+                  </ul>
+                </ng-container>
+              </div>
+            </div>
+
+            <span class="icon">
+              <app-icon
+                icon="fa-search"
+                styleClasses="icon-color"
+                [title]="'Search' | apsTranslate"
+                (click)="showSearch = !showSearch"
+              ></app-icon>
+            </span>
+
+            <span class="icon">
+              <app-icon
+                icon="fa-th"
+                (click)="moreOptions = !moreOptions"
+                styleClasses="icon-color"
+              ></app-icon>
+
+              <div class="more-options-container" *ngIf="moreOptions">
+                <app-more-options class="fade-in-animation"></app-more-options>
+              </div>
+            </span>
+            <span class="icon" (click)="openExternalSidebarLinks()" *ngIf="userDetails.corporateType !== 'S'">
+              <app-icon icon="fa-external-link" styleClasses="icon-color"></app-icon>
+            </span>
+          </span>
+
+          <span class="info-wrapper">
+            <span class="icon" (click)="openLanguageSidebar()">
+              <app-icon icon="fa-language" styleClasses="icon-color"></app-icon>
+            </span>
+            <span
+              class="icon"
+              (click)="openCountrySidebar()"
+              *ngIf="userDetails.corporateType !== 'S'"
+            >
+              <app-icon icon="fa-globe" styleClasses="icon-color"></app-icon>
+            </span>
+            <span class="icon" (click)="helpOptions = !helpOptions">
+              <app-icon icon="fa-question-circle" styleClasses="icon-color"></app-icon>
+
+              <div class="help-options-container" *ngIf="helpOptions">
+                <app-help-options
+                  class="fade-in-animation"
+                  (onShowFeedback)="showFeedbackModal = true"
+                ></app-help-options>
+              </div>
+            </span>
+          </span>
+
+          <span class="info-wrapper">
+            <span class="icon" (click)="openNotificationSidebar()">
+              <app-icon icon="fa-bell" styleClasses="icon-color"></app-icon>
+
+              <span class="notify"></span>
+            </span>
+
+            <span class="icon" (click)="openMailsSidebar()">
+              <app-icon icon="fa-envelope" styleClasses="icon-color"></app-icon>
+              <span class="notify"></span>
+            </span>
+
+            <span class="icon hide-on-mobile" (click)="changeThemeDarkMode()">
+              <app-icon
+                [icon]="isDarkTheme ? 'fa-sun' : 'fa-moon-stars'"
+                styleClasses="icon-color"
+              ></app-icon>
+            </span>
+            <!-- <span
+            class="icon hide-on-mobile"
+            (click)="onChangeBankType(!isIslamicBank ? 'Islamic' : 'Conventional')"
+            *ngIf=""
+          >
+            <app-icon
+              [icon]="!isIslamicBank ? 'fa-moon' : 'fa-users'"
+              styleClasses="icon-color"
+            ></app-icon>
+          </span> -->
+
+            <!-- <span class="icon" (click)="openConfigSidebar()">
+            <app-icon icon="fa-cog" styleClasses="icon-color"></app-icon>
+          </span> -->
+          </span>
+        </div>
+
+        <div class="user-container">
+          <span class="user-wrapper" (click)="userInfo = !userInfo">
+            <img
+              *ngIf="userDetails.corporateImage"
+              class="corporate"
+              [src]="userDetails.corporateImage"
+              alt=""
+            />
+            <img class="user" [src]="userDetails.profilePicUrl" alt="" style="mix-blend-mode: multiply;" />
+
+            <div class="user-info-container" *ngIf="userInfo">
+              <app-user-info [userDetails]="userDetails" class="fade-in-animation"></app-user-info>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="more-info-wrapper fade-in-animation">
+      <div class="more-info">
+        <div class="info-panel">
+          <div class="info">
+            <div class="sub-info">{{ 'Account Number' | apsTranslate }}</div>
+            <div class="main-info">{{ userDetails.accountDetails.accountNumber }}</div>
+          </div>
+          <div class="info">
+            <div class="sub-info">{{ 'Account Type' | apsTranslate }}</div>
+            <div class="main-info">{{ userDetails.accountDetails.accountType }}</div>
+          </div>
+          <div class="info">
+            <div class="sub-info">{{ 'Account Balance' | apsTranslate }}</div>
+            <div class="main-info">
+              <app-currency-select-dropdown
+                [showFlag]="false"
+                (currencyChanged)="onCurrencyChanged($event)"
+                [selectedCurrency]="currency"
+                selectStyleClass="select-primary"
+              >
+              </app-currency-select-dropdown>
+
+              <app-base-currency
+                [amount]="userDetails.accountDetails.accountBalance"
+                [currency]="currency"
+                display="symbol"
+                digitsInfo="1.0-0"
+              >
+              </app-base-currency>
+            </div>
+          </div>
+        </div>
+
+        <div class="announcement-container">
+          <app-broadcast-messages></app-broadcast-messages>
+        </div>
+      </div>
+      <div class="more-info-actions">
+        <app-quick-actions [quickActions]="userDetails.quickActions"></app-quick-actions>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,123 @@
+<app-modal [(isShow)]="isLayoutData" size="md" headerText="Data Layout Mapper">
+  <ng-container body>
+    <app-ub-data-layout></app-ub-data-layout>
+  </ng-container>
+</app-modal>
+<app-modal
+  [(isShow)]="isInfo"
+  size="md"
+  headerText="List of characters to be entered for fields in the Upload File"
+>
+  <ng-container body>
+    <app-ub-info></app-ub-info>
+  </ng-container>
+</app-modal>
+
+<div class="container">
+  <div class="aps-card">
+    <div class="aps-card-header aps-py-12 p-px-3">
+      <div class="text-size-16 text-bold text-color-dark-shade-1">Upload Details</div>
+    </div>
+    <div class="aps-card-body p-p-2">
+      <div class="p-grid g-margin-x">
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <aps-custom-select
+            name="dataLayout"
+            id="dataLayout"
+            label="Data Layout"
+            [data]="dataLayouts"
+            [value]="formData.dataLayout"
+            [(ngModel)]="formData.dataLayout"
+            required="true"
+          ></aps-custom-select>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <div class="p-grid">
+            <div class="p-col-10 p-p-0">
+              <div class="text-size-12 text-color-normal">Upload File</div>
+              <upload-form-control
+                [files]="formData.uploadFile"
+                [hideDragDropContainerOnFIleUpload]="true"
+                (onUploaded)="onFileUploaded($event)"
+              ></upload-form-control>
+            </div>
+            <div class="p-col-2 p-pt-5">
+              <app-icon icon="fa-info-circle" (click)="isInfo = true"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-pt-5" *ngIf="formData.dataLayout">
+          <button class="btn btn-md btn-tertiary" (click)="isLayoutData = true">
+            VIEW SAMPLE DATA LAYOUT
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="aps-card-body p-p-2" *ngIf="isReview">
+      <div class="p-grid">
+        <div class="p-col-12 p-md-4 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">Uploaded File Name</div>
+          <div class="text-size-14">{{ formData.fileName }}</div>
+        </div>
+
+        <div class="p-col-12 p-md-4 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">Upload Status</div>
+          <div class="text-size-14">{{ formData.status }}</div>
+        </div>
+      </div>
+
+      <div class="p-grid">
+        <div class="p-col-12 p-md-4 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">Data Layout</div>
+          <div class="text-size-14">{{ formData.dataLayout }}</div>
+        </div>
+
+        <div class="p-col-12 p-md-4 p-sm-12 p-pt-5" *ngIf="formData.dataLayout">
+          <button class="btn btn-md btn-tertiary" (click)="isLayoutData = true">
+            VIEW SAMPLE DATA LAYOUT
+          </button>
+        </div>
+      </div>
+
+      <div class="p-grid">
+        <div class="p-pl-3 p-col-12 p-md-4 p-sm-12" *ngFor="let file of formData.uploadFile">
+          <div class="text-size-14 text-semi-bold text-color-dark-shade-2">Upload File</div>
+          <div class="aps-card">
+            <div class="p-grid">
+              <div class="p-col-2">
+                <app-icon icon="fa-file" class="p-mt-2"></app-icon>
+              </div>
+              <div class="p-col-10">
+                <div class="text-size-12 review-file-name">{{ file.originalFileName }}</div>
+                <div class="text-size-10 text-color-light-shade-1">
+                  {{ (file.size / 1024 / 1024).toFixed(2) }}Mb
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+  </div>
+
+  <div class="p-py-2 fixed-bottom-footer-container">
+    <div class="aps-card">
+      <div class="left-right-container">
+        <div class="left-container p-py-3 p-pl-3">
+          <button class="btn btn-md btn-tertiary p-mr-3" (click)="goToListing()">CANCEL</button>
+        </div>
+        <div class="right-container p-py-3 p-pr-3">
+          <!-- <button *ngIf="!isReview" class="btn btn-md btn-primary" (click)="isReview = true">
+            REVIEW
+          </button>
+          <button *ngIf="isReview" class="btn btn-md btn-tertiary" (click)="isReview = false">
+            MODIFY
+          </button> -->
+          &nbsp;
+          <button class="btn btn-md btn-primary" (click)="onSubmit()">SUBMIT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

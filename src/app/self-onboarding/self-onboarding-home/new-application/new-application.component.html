@@ -1,0 +1,21 @@
+<div class="new-application-container text-center p-p-3 p-shadow-3">
+  <div class="text-size-20 text-color-inverted text-bold p-mt-6">
+    {{ 'lbl_apply_for_corporate_banking_services' | translate }}
+  </div>
+
+  <div class="text-size-14 text-color-inverted p-mt-2">
+    {{ 'lbl_start_your_journey_with_us' | translate }}
+  </div>
+
+  <div class="p-mt-4">
+    <button type="button" class="btn btn-md btn-secondary" (click)="newCustomer()">
+      {{ 'lbl_new_customer' | translate }}
+    </button>
+  </div>
+
+  <div class="p-mt-4">
+    <button type="button" class="btn btn-md btn-secondary" (click)="existingCustomer()">
+      {{ 'lbl_existing_customer' | translate }}
+    </button>
+  </div>
+</div>

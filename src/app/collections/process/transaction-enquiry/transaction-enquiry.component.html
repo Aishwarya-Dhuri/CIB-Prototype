@@ -1,0 +1,244 @@
+<div class="container">
+  <div class="p-grid g-margin-x">
+    <div class="p-col-7" *ngIf="currentScreen == 'FILTERS'">
+      <app-save-criterial-modal
+        #saveCriteria
+        [(isShow)]="isShowSaveSearchCriteriaModal"
+        [(isUpdate)]="isUpdateCriteria"
+        [entityName]="entityName"
+        [(criteria)]="criteriaData"
+        (onSave)="onSavedCriteria()"
+      >
+      </app-save-criterial-modal>
+
+      <div class="aps-card p-px-2 p-pt-2 p-mb-3">
+        <form name="form" #form="ngForm">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Search Byssssssss' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+              <aps-custom-select
+                name="product"
+                id="product"
+                label="{{ 'Product' | apsTranslate }}"
+                dataUrl="collections/process/transactionQuery/private/dropdown/products"
+                [value]="formData.product"
+                [(ngModel)]="formData.product"
+                required=""
+              ></aps-custom-select>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="p-grid">
+        <div class="p-col-12 p-px-3 p-py-2 background-color-dark-4 border-radius-5">
+          <div class="text-size-14 text-semi-bold">{{ 'Suggestedsssss' | apsTranslate }}</div>
+          <div
+            class="aps-tile-container p-mr-1 p-my-1"
+            *ngFor="let suggestion of suggestions"
+            (click)="onClickSuggestion(suggestion)"
+          >
+            <span class="text-semi-bold inline-block">{{ suggestion.displayName }}: </span>
+            <span class="inline-block">{{ suggestion.displayValue }}</span>
+          </div>
+        </div>
+        <div class="p-col-12 aps-card p-mb-3 aps-h-200">
+          <div class="p-grid">
+            <div class="p-col-3">
+              <aps-form-input
+                name="amount"
+                id="amount"
+                label="{{ 'Amount' | apsTranslate }}"
+                inputType="currencyFormatNotZero"
+                [required]="true"
+                [(ngModel)]="formData.amount"
+              >
+              </aps-form-input>
+            </div>
+
+            <div class="p-col-3" *ngIf="isShowSuggested">
+              <div class="inline-items">
+                <div class="item p-pr-2" style="width: calc(100% - 18px)">
+                  <app-aps-calender
+                    label="Transaction Date"
+                    [showIcon]="true"
+                    [rightIcon]="'fa-trash-alt'"
+                    selectionMode="range"
+                    #accountCalender
+                    numberOfMonths="2"
+                    (onRightIcon)="isShowSuggested = false"
+                    [(ngModel)]="formData.transactionDate"
+                    name="transactionDate"
+                  >
+                  </app-aps-calender>
+                </div>
+                <div class="item p-pt-3">
+                  <app-icon icon=" fa-trash-alt" (click)="isShowSuggested = false"></app-icon>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-3" *ngIf="isShowSuggestedPaymentMethod">
+              <div class="inline-items">
+                <div class="item p-pr-2" style="width: calc(100% - 18px)">
+                  <aps-custom-select
+                    name="paymentMethod"
+                    id="paymentMethod"
+                    (onRightIcon)="isShowSuggestedPaymentMethod = false"
+                    [rightIcon]="'fa-trash-alt'"
+                    label="{{ 'Payment Method' | apsTranslate }}"
+                    dataUrl="collections/process/transactionQuery/private/dropdown/paymentMethod"
+                    [value]="formData.paymentMethod"
+                    [(ngModel)]="formData.paymentMethod"
+                    required=""
+                  ></aps-custom-select>
+                </div>
+                <div class="item p-pt-3">
+                  <app-icon
+                    icon="fa-trash-alt"
+                    (click)="isShowSuggestedPaymentMethod = false"
+                  ></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-py-2 p-px-2 mt-3">
+        <div class="left-right-container">
+          <div class="left-container">
+            <button
+              class="btn btn-md btn-tertiary p-m-1"
+              (click)="showSaveSearchCriteriaModal()"
+              [disabled]="form.invalid"
+            >
+              <span *ngIf="!isUpdateCriteria">{{ 'SAVE SEARCH CRITERIA' | apsTranslate }}</span>
+              <span *ngIf="isUpdateCriteria">{{ 'UPDATE SEARCH CRITERIA' | apsTranslate }}</span>
+            </button>
+          </div>
+          <div class="right-container">
+            <button type="button" class="btn btn-md btn-tertiary p-mr-3" (click)="onReset()">
+              {{ 'RESET' | apsTranslate }}
+            </button>
+            <button class="btn btn-md btn-primary" (click)="getSearchResults($event)">
+              {{ 'GENERATE' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-5" *ngIf="currentScreen == 'FILTERS'">
+      <div class="aps-card p-px-2 p-pt-2 aps-h-100p">
+        <app-nothing-here
+          *ngIf="criteriaList.length == 0"
+          colSize="5"
+          message="Select Search by to view Saved Criteria"
+        ></app-nothing-here>
+
+        <p-tabView *ngIf="criteriaList.length > 0">
+          <p-tabPanel header="{{ 'Saved Criterion' | apsTranslate }}">
+            <div
+              class="p-px-0 p-pt-3 p-pb-1 border-bottom"
+              *ngFor="let criteria of criteriaList; let i = index"
+            >
+              <div class="left-right-container">
+                <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                  <div class="text-size-12">{{ criteria.name }}</div>
+                  <!-- <div class="text-size-10">{{ getCriteriaFilterCount(criteria) }} Parameters</div> -->
+                </div>
+                <div class="right-container">
+                  <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                    {{ 'Apply' | apsTranslate }}
+                  </button>
+                  <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                    <app-icon
+                      icon="fa-trash-alt"
+                      class="text-size-14 pointer"
+                      (click)="deleteCriteria(criteria)"
+                    >
+                    </app-icon>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="{{ 'Recent' | apsTranslate }}">
+            <ng-container *ngFor="let criteria of criteriaList; let i = index">
+              <div class="p-px-0 p-pt-3 p-pb-1 border-bottom" *ngIf="i < 3">
+                <div class="left-right-container">
+                  <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                    <div class="text-size-12">{{ criteria.modifiedSysOn }}</div>
+                    <div class="text-size-10">
+                      <!-- {{ getCriteriaFilterCount(criteria) }} Parameters {{ criteria.name }} -->
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                      {{ 'REUSE' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+
+    <ng-container *ngIf="currentScreen == 'SEARCH_RESULTS'">
+      <div class="p-col-12">
+        <app-searched-by-view
+          [filters]="selectedFilters"
+          (onClear)="onClear()"
+          (onModify)="currentScreen = 'FILTERS'"
+        ></app-searched-by-view>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header aps-py-12 p-px-3 overflow-visible">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold">{{ 'Statement File' | apsTranslate }}</div>
+              </div>
+              <div class="right-container">
+                <app-grid-listing-tools
+                  (changeFloatingFilter)="transactionQueryGrid.changeFloatFilter($event)"
+                  (filterRecords)="transactionQueryGrid.onFilter($event)"
+                  (applyColDefs)="transactionQueryGrid.onApplyConfig($event)"
+                  [colDefs]="transactionQueryGrid.columnDefs"
+                  [columnConfig]="true"
+                  [moreOptions]="true"
+                  [showMail]="true"
+                  [showDownload]="true"
+                  [showPrint]="true"
+                  [showRefresh]="true"
+                  [showPrint]="false"
+                >
+                </app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing
+              id="transactionQueryGrid"
+              #transactionQueryGrid
+              [colDefUrl]="colDefUrl"
+              [rowDefUrl]="dataUrl"
+              [gridOptions]="gridOptions"
+              [context]="{ componentParent: this }"
+              [frameworkComponents]="frameworkComponents"
+              [supressAutoFit]="true"
+            >
+            </app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

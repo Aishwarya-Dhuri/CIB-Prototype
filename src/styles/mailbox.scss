@@ -1,0 +1,291 @@
+.mailbox {
+  /* Common Button */
+
+  .c-btn-primary.p-button {
+    background: var(--primary-color);
+    color: var(--inverted-text-color);
+    &:hover,
+    &:active,
+    &:focus {
+      background: var(--primary-color-light);
+    }
+  }
+
+  .c-btn-secondary.p-button {
+    background: var(--primary-color-light-shade-1);
+    color: var(--primary-color);
+    &:hover,
+    &:active,
+    &:focus {
+      background: var(--primary-color-light-shade-2);
+      color: var(--primary-color);
+    }
+  }
+
+  .brower-file-css.p-button-text {
+    color: var(--primary-color);
+    &:hover {
+      color: var(--primary-color) !important;
+    }
+  }
+
+  // .p-button-rounded {
+  //     span {
+  //         color: var(--text-color);
+  //     }
+  // }
+
+  // /* Common Input */
+
+  // .p-inputtext:enabled:focus,
+  // .p-dropdown:not(.p-disabled).p-focus {
+  //     box-shadow: inset 0 0 0 1px var(--primary-color), inset 0 0 0 1px var(--primary-color), inset 0 0 0 1px var(--primary-color), inset 0 0 0 1px var(--primary-color);
+  // }
+
+  // .p-float-label .p-inputwrapper-focus~label {
+  //     color: var(--primary-color);
+  // }
+
+  // .p-float-label input:focus~label,
+  // .p-float-label .p-inputwrapper-focus~label {
+  //     color: var(--primary-color);
+  // }
+
+  // .p-dropdown,
+  // .p-dropdown:not(.p-disabled):hover,
+  // .p-inputtext,
+  // .p-inputtext:not(.p-disabled):hover,
+  // .p-multiselect,
+  // .p-multiselect:not(.p-disabled):hover,
+  // .compose-Mail-Form-section .mail-editor-section {
+  //     border-color: var(----primary-color);
+  // }
+
+  .ck-editor__editable_inline {
+    border-color: var(--primary-color) !important;
+  }
+
+  /* Common Checkbox */
+
+  // .p-multiselect-item.p-highlight {
+  //     span {
+  //         color: var(--primary-color-light);
+  //     }
+  // }
+
+  // .p-checkbox .p-checkbox-box.p-highlight {
+  //     border-color: var(--primary-color);
+  //     background: var(--primary-color);
+  //     &:hover {
+  //         border-color: var(--primary-color-light) !important;
+  //         background: var(--primary-color-light) !important;
+  //     }
+  // }
+
+  // .p-multiselect.p-multiselect-chip .p-multiselect-token {
+  //     background-color: var(--primary-color-light-shade-2);
+  //     color: var(--primary-color);
+  // }
+
+  // /* Common Radio */
+
+  // .p-radiobutton .p-radiobutton-box.p-highlight,
+  // .p-radiobutton .p-radiobutton-box.p-highlight:not(.p-disabled).p-focus {
+  //     border-color: var(--primary-color);
+  // }
+
+  // .p-radiobutton .p-radiobutton-box .p-radiobutton-icon {
+  //     background-color: var(--primary-color);
+  // }
+
+  // .p-radiobutton .p-radiobutton-box.p-highlight:not(.p-disabled):hover {
+  //     border-color: var(--primary-color);
+  //     color: var(--primary-color);
+  // }
+
+  .mail-box-right-container {
+    background-color: var(--background-color);
+  }
+
+  .error-msg {
+    color: var(--color-error);
+  }
+
+  /* Header Component */
+
+  .main-box-header {
+    background-color: var(--primary-color);
+    .header-menu {
+      color: var(--inverted-text-color);
+      &:hover {
+        background-color: var(--primary-color-light-shade-1);
+      }
+    }
+    .header-brand-name {
+      color: var(--inverted-text-color);
+    }
+  }
+
+  /* Compose Mail */
+
+  .compose-Mail-Form-section {
+    .footer-section {
+      .warring-attach {
+        color: var(--text-color);
+      }
+    }
+    .mult-select-input .p-multiselect {
+      &:after {
+        color: var(--inverted-text-color);
+        background-color: var(--primary-color);
+      }
+    }
+  }
+
+  /* Confirmation Dialog */
+
+  .confirmation-model .p-dialog-content {
+    .p-confirm-dialog-icon {
+      color: var(--primary-color-light-shade-1);
+    }
+    .p-confirm-dialog-message {
+      color: var(--text-color);
+    }
+  }
+
+  /* Side Nav */
+
+  .side-nav-item {
+    background-color: var(--inverted-text-color);
+    li {
+      color: var(--primary-color);
+      .badge {
+        span {
+          background: var(--primary-color);
+          color: var(--inverted-text-color);
+        }
+      }
+      &:hover {
+        background-color: var(--primary-color-light-shade-1);
+        // color: var(--inverted-text-color);
+        .badge {
+          span {
+            background: var(--primary-color-light-shade-1);
+          }
+        }
+      }
+      &.active {
+        background-color: var(--primary-color);
+        color: var(--inverted-text-color);
+        .badge {
+          span {
+            background: var(--primary-color);
+          }
+        }
+      }
+    }
+    .add-mail {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: var(--inverted-text-color);
+      &:hover {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+      }
+    }
+  }
+
+  /* Listing */
+
+  .common-table-section {
+    border-color: var(--background-color-dark-6);
+    .p-datatable .p-datatable-thead > tr > th,
+    .p-datatable-scrollable-header {
+      background-color: var(--primary-color);
+      color: var(--inverted-text-color);
+    }
+    .p-datatable .p-datatable-thead > tr > th {
+      .p-checkbox .p-checkbox-box.p-highlight {
+        border-color: var(--primary-color);
+        background: var(--primary-color);
+        &:hover {
+          border-color: var(--primary-color) !important;
+          background: var(--primary-color) !important;
+        }
+      }
+    }
+    .mb-listing-filter-btn {
+      span {
+        color: var(--inverted-text-color);
+      }
+    }
+  }
+
+  .generic-listing-search {
+    box-shadow: 0px 1px 3px 1px var(--primary-color-light-shade-1);
+  }
+
+  /* Pagination */
+
+  .pagination-section {
+    .p-button.p-button-text,
+    .brower-file-css span {
+      color: var(--text-color);
+    }
+  }
+
+  /* Attachment Css */
+
+  .attachment-section {
+    .multi-doc-section {
+      .multi-doc-item {
+        background-color: var(--primary-color-light-shade-2);
+        color: var(--primary-color);
+        span {
+          color: var(--text-color);
+        }
+      }
+    }
+  }
+
+  /* View Mail */
+
+  .mail-box-view {
+    fieldset {
+      border-color: var(--background-color-dark-6);
+      legend {
+        color: var(--text-color);
+      }
+      ul {
+        li {
+          background-color: var(--primary-color-light-shade-1);
+          color: var(--primary-color);
+        }
+      }
+    }
+    .header-date-color {
+      color: var(--text-color);
+    }
+  }
+
+  /* Trimmed Mail */
+
+  .trimmed-mail-section {
+    .trimmed-icon {
+      i {
+        background-color: var(--background-color-dark-6);
+        color: var(--text-color);
+      }
+    }
+  }
+
+  /* Reply & Forward */
+
+  .isModeMessage {
+    .p-divider.p-divider-horizontal {
+      &::before {
+        border-color: var(--text-color-dark-shade-3);
+      }
+    }
+  }
+}

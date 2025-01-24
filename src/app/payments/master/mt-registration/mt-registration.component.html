@@ -1,0 +1,717 @@
+<div class="container text-color-dark-shade-1">
+  <form name="mtRegistrationForm" #mtRegistrationForm="ngForm">
+    <div class="p-grid g-margin-x">
+      <ng-container *ngIf="stepperDetails.currentStep == 1">
+        <app-search-modal [(isShow)]="showBicCodeModal"
+          colDefUrl="payments/transactions/singlePaymentRequest/private/bicCodeColDef"
+          rowDefUrl="payments/transactions/singlePaymentRequest/private/bicCodeData" headerText="SWIFT BIC Code"
+          (onSelection)="onSelectReceivingBicCode($event)">
+        </app-search-modal>
+
+        <div class="p-md-5 p-sm-12 p-col-12 p-py-0">
+          <div class="aps-card aps-h-100p">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Statement Registration: Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-col-12 p-py-0">
+                  <aps-custom-select name="messageType" required="true" id="messageType" label="Message Type"
+                    dataUrl="payments/masters/mtRegistration/private/dropdown/messageType"
+                    (change)="onChangeMessageType($event)" [value]="formData.messageType"
+                    [(ngModel)]="formData.messageType"></aps-custom-select>
+                </div>
+                <div class="p-col-12 p-py-0">
+                  <aps-custom-select name="statementType" id="statementType" label="Statement Type" [dataUrl]="
+                      formData.messageType == 'Outgoing'
+                        ? 'payments/masters/mtRegistration/private/dropdown/outgoingStatementTypes'
+                        : 'payments/masters/mtRegistration/private/dropdown/incomingStatementTypes'
+                    " (change)="onStatementType($event)" [value]="formData.statementType"
+                    [(ngModel)]="formData.statementType"></aps-custom-select>
+                </div>
+                <div class="p-col-12 p-py-0"
+                  *ngIf="formData.messageType === 'Outgoing' && formData.statementType != 'Account Statement'">
+                  <aps-custom-select name="channel" required="true" id="channel" label="Channel" [dataUrl]="
+                      formData.statementType == 'Account Statement'
+                        ? 'payments/masters/mtRegistration/private/dropdown/accountStatementChannels'
+                        : 'payments/masters/mtRegistration/private/dropdown/channels'
+                    " [value]="formData.channel" [(ngModel)]="formData.channel">
+                  </aps-custom-select>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12"
+                  *ngIf="formData.statementType === 'MT940' || formData.statementType === 'MT942'">
+                  <div class="text-size-12 text-semi-bold p-pb-2">{{'Conversion Required' | apsTranslate}}</div>
+                  <p-inputSwitch id="isConversionRequired" name="isConversionRequired"
+                    [(ngModel)]="formData.isConversionRequired">
+                  </p-inputSwitch>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12"
+                  *ngIf="formData.statementType === 'MT940' || formData.statementType === 'MT942'">
+                  <aps-form-input name="conversionFormat" id="conversionFormat" label="Conversion Format"
+                    [(ngModel)]="formData.conversionFormat" [disabled]="!formData.isConversionRequired">
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12" *ngIf="formData.statementType === 'MT942'">
+                  <span class="text-size-14 item p-pr-2">
+                    {{ 'Statement For' | apsTranslate }}
+                  </span>
+                  <p-checkbox name="isAccounts" id="isAccounts" [binary]="true" [(ngModel)]="formData.isAccounts"
+                    [disabled]="true">
+                  </p-checkbox>
+                  <span class="text-size-12 item p-p-2"> {{ 'Accounts' | apsTranslate }}</span>
+                  <p-checkbox name="isVirtualAccounts" id="isVirtualAccounts" [binary]="true"
+                    [(ngModel)]="formData.isVirtualAccounts">
+                  </p-checkbox>
+                  <span class="text-size-12 item p-p-2"> {{ 'Virtual Accounts' | apsTranslate }}</span>
+                </div>
+                <div class="p-col-12" *ngIf="formData.statementType === 'MT950'">
+                  <span class="text-size-14 text-semi-bold p-pr-3">{{'Tag 28 Logic' | apsTranslate}}</span>
+                  <p-radioButton class="p-pr-2" name="tag28Logic" value="New Logic" label="New Logic"
+                    [(ngModel)]="formData.tag28Logic">
+                  </p-radioButton>
+                  <p-radioButton name="tag28Logic" value="Existing Logic" label="Existing Logic"
+                    [(ngModel)]="formData.tag28Logic">
+                  </p-radioButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-7 p-sm-12 p-col-12 p-py-0">
+          <ng-container *ngIf="formData.statementType !== 'Account Statement'">
+            <div class="aps-card">
+              <div class="aps-card-header aps-py-12 p-px-3">
+                <div class="text-size-16 text-bold">Originating Bank's Details</div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input name="obBicCode" id="obBicCode" label="SWIFT BIC Code"
+                      [(ngModel)]="formData.outgoingBank[0].bicCode" rightIcon="fa-search" (onRightIcon)="
+                        formData.messageType == 'Incoming' ? (showBicCodeModal = true) : null
+                      " [disabled]="true"></aps-form-input>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input name="obBankName" id="obBankName" label="Bank Name"
+                      [(ngModel)]="formData.outgoingBank[0].bankName" [disabled]="true"></aps-form-input>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0" *ngIf="formData.channel === 'Email'">
+                    <!-- <span>Please use , to separate email ID's</span> -->
+                    <aps-form-input name="recipents" id="recipents" label="Recipents"
+                      [(ngModel)]="formData.accountStatement[0].recipents"></aps-form-input>
+                  </div>
+
+                  <ng-container *ngIf="formData.messageType == 'Incoming'">
+                    <div class="p-md-6 p-sm-12 p-col-12 p-py-0" *ngIf="formData.statementType !== 'MT940'">
+                      <aps-custom-select name="account" id="account" label="Account"
+                        dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                        [value]="formData.outgoingBank[0].account" [(ngModel)]="formData.outgoingBank[0].account">
+                      </aps-custom-select>
+                    </div>
+                    <div class="p-md-6 p-sm-12 p-col-12 p-py-0" *ngIf="formData.statementType === 'MT940'">
+                      <aps-multi-select name="account" id="account" label="Account"
+                        dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                        [value]="formData.outgoingBank[0].account" [(ngModel)]="formData.outgoingBank[0].account">
+                      </aps-multi-select>
+                    </div>
+
+                    <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                      <aps-form-input name="accountIdentification" id="accountIdentification"
+                        label="Account Identification (Field 25)"
+                        [(ngModel)]="formData.outgoingBank[0].accountIdentification"></aps-form-input>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <div class="aps-card p-my-3">
+              <div class="aps-card-header aps-py-12 p-px-3">
+                <div class="text-size-16 text-bold">Receiving Bank's Details</div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input name="rbBicCode" id="rbBicCode" rightIcon="fa-search" (onRightIcon)="
+                        formData.messageType == 'Outgoing' ? (showBicCodeModal = true) : null
+                      " label="SWIFT Code" inputType="alphaNumeric" [(ngModel)]="formData.receivingBank[0].code"
+                      [disabled]="true"></aps-form-input>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input name="rbBankName" id="rbBankName" label="Bank Name"
+                      [(ngModel)]="formData.receivingBank[0].bankName" [disabled]="true"></aps-form-input>
+                  </div>
+
+                  <ng-container *ngIf="formData.messageType == 'Outgoing'">
+                    <div class="p-md-6 p-sm-12 p-col-12 p-py-0" *ngIf="formData.statementType !== 'MT940'">
+                      <aps-custom-select name="account" id="account" label="Account"
+                        dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                        [value]="formData.receivingBank[0].account" [(ngModel)]="formData.receivingBank[0].account">
+                      </aps-custom-select>
+                    </div>
+                    <div class="p-md-6 p-sm-12 p-col-12 p-py-0" *ngIf="formData.statementType === 'MT940'">
+                      <aps-multi-select name="account" id="account" label="Account"
+                        dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                        [value]="formData.receivingBank[0].account" [(ngModel)]="formData.receivingBank[0].account">
+                      </aps-multi-select>
+                    </div>
+
+                    <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                      <aps-form-input name="accountIdentification" id="accountIdentification"
+                        label="Account Identification (Field 25)"
+                        [(ngModel)]="formData.receivingBank[0].accountIdentification"></aps-form-input>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="aps-card p-mb-3" *ngIf="formData.statementType === 'Account Statement'">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Account Statement Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                  <aps-custom-select name="accountNumber" id="accountNumber" label="Account Number"
+                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList" [data]="accounts"
+                    [value]="formData.accountStatement[0].accountNumber"
+                    [(ngModel)]="formData.accountStatement[0].accountNumber"></aps-custom-select>
+                </div>
+
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                  <!-- <span>Please use , to separate email ID's</span> -->
+                  <aps-form-input name="recipents" id="recipents" label="Recipents"
+                    [(ngModel)]="formData.accountStatement[0].recipents"></aps-form-input>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-semi-bold">Statement Type</div>
+                  <p-radioButton class="p-mr-3" name="statementType" id="xls" value="XLS" label="XLS"
+                    [(ngModel)]="formData.accountStatement[0].statementType"></p-radioButton>
+                  <p-radioButton class="p-mr-3" name="statementType" id="pdf" value="PDF" label="PDF"
+                    [(ngModel)]="formData.accountStatement[0].statementType"></p-radioButton>
+                  <p-radioButton name="statementType" id="txt" value="TXT" label="TXT"
+                    [(ngModel)]="formData.accountStatement[0].statementType"></p-radioButton>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aps-card">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Physical Account Frequency Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                  <aps-custom-select name="frequency" id="frequency" label="Frequency"
+                    dataUrl="payments/masters/mtRegistration/private/dropdown/frequencies"
+                    [value]="formData.frequency[0].frequencyType" [(ngModel)]="formData.frequency[0].frequencyType">
+                  </aps-custom-select>
+                </div>
+
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-0"></div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="startTime" required="true" id="startTime" label="Start Time" [timeOnly]="true"
+                    [(ngModel)]="formData.frequency[0].startTime" [disabled]="formData.statementType === 'MT940'">
+                  </app-aps-calender>
+                </div>
+
+                <ng-container *ngIf="formData.frequency[0].frequencyType === 'Daily'">
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <app-aps-calender name="endTime" required="true" id="endTime" label="End Time" [timeOnly]="true"
+                      [(ngModel)]="formData.frequency[0].endTime" [disabled]="formData.statementType === 'MT940'">
+                    </app-aps-calender>
+                  </div>
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <app-aps-calender name="frequencyEvery" required="true" id="frequencyEvery" label="Frequency Every"
+                      [timeOnly]="true" [(ngModel)]="formData.frequency[0].frequency"
+                      [disabled]="formData.statementType === 'MT940'"></app-aps-calender>
+                  </div>
+                </ng-container>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0" *ngIf="formData.frequency[0].frequencyType === 'Weekly'">
+                  <aps-custom-select name="day" required="true" id="day" label="Day"
+                    dataUrl="payments/masters/mtRegistration/private/dropdown/days" [value]="formData.frequency[0].day"
+                    [(ngModel)]="formData.frequency[0].day"></aps-custom-select>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0" *ngIf="formData.frequency[0].frequencyType === 'Monthly'">
+                  <aps-custom-select name="date" required="true" id="date" label="Date"
+                    dataUrl="payments/masters/mtRegistration/private/dropdown/dates"
+                    [value]="formData.frequency[0].date" [(ngModel)]="formData.frequency[0].date"></aps-custom-select>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="startDate" id="startDate" label="Start Date"
+                    [(ngModel)]="formData.frequency[0].startDate"></app-aps-calender>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="frequency" id="endDate" label="End Date"
+                    [(ngModel)]="formData.frequency[0].endDate"></app-aps-calender>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aps-card p-mt-3"
+            *ngIf="formData.messageType === 'Outgoing' && formData.statementType === 'MT942'">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Virtual Account Frequency Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                  <aps-custom-select name="frequency" id="frequency" label="Frequency"
+                    dataUrl="payments/masters/mtRegistration/private/dropdown/frequencies"
+                    [value]="formData.virtualAccountFrequency[0].frequencyType"
+                    [(ngModel)]="formData.virtualAccountFrequency[0].frequencyType">
+                  </aps-custom-select>
+                </div>
+
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-0"></div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="startTimeVirtual" required="true" id="startTimeVirtual" label="Start Time"
+                    [timeOnly]="true" [(ngModel)]="formData.virtualAccountFrequency[0].startTime"></app-aps-calender>
+                </div>
+
+                <ng-container *ngIf="formData.virtualAccountFrequency[0].frequencyType === 'Daily'">
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <app-aps-calender name="endTimeVirtual" required="true" id="endTimeVirtual" label="End Time"
+                      [timeOnly]="true" [(ngModel)]="formData.virtualAccountFrequency[0].endTime"></app-aps-calender>
+                  </div>
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <app-aps-calender name="frequencyEveryVirtual" required="true" id="frequencyEveryVirtual"
+                      label="Frequency Every" [timeOnly]="true"
+                      [(ngModel)]="formData.virtualAccountFrequency[0].frequency"></app-aps-calender>
+                  </div>
+                </ng-container>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="formData.virtualAccountFrequency[0].frequencyType === 'Weekly'">
+                  <aps-custom-select name="dayVirtual" required="true" id="dayVirtual" label="Day"
+                    dataUrl="payments/masters/mtRegistration/private/dropdown/days"
+                    [value]="formData.virtualAccountFrequency[0].day"
+                    [(ngModel)]="formData.virtualAccountFrequency[0].day"></aps-custom-select>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="formData.frequency[0].virtualAccountFrequency === 'Monthly'">
+                  <aps-custom-select name="dateVirtual" required="true" id="dateVirtual" label="Date"
+                    dataUrl="payments/masters/mtRegistration/private/dropdown/dates"
+                    [value]="formData.virtualAccountFrequency[0].date"
+                    [(ngModel)]="formData.virtualAccountFrequency[0].date"></aps-custom-select>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="startDateVirtual" id="startDateVirtual" label="Start Date"
+                    [(ngModel)]="formData.virtualAccountFrequency[0].startDate"></app-aps-calender>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="frequencyVirtual" id="endDateVirtual" label="End Date"
+                    [(ngModel)]="formData.virtualAccountFrequency[0].endDate"></app-aps-calender>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aps-card p-mt-3"
+            *ngIf="formData.messageType === 'Outgoing' && formData.statementType != 'Account Statement'">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Tag 61 and 86 Mapping Details</div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid p-p-2">
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                  <div class="text-size-14 text-semi-bold text-center">{{'Tag 61' | apsTranslate}}</div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="refForAccountOwner" id="refForAccountOwner" label="Ref For Account Owner"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].refForAccountOwner"
+                      [(ngModel)]="formData.tagMapping[0].refForAccountOwner" (click)="onChangeTagMapping()">
+                    </aps-custom-select>
+                  </div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="refForAccountServicingInstitution" id="refForAccountServicingInstitution"
+                      label="Ref For Account Servicing Institution"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].refForAccountServicingInstitution"
+                      [(ngModel)]="formData.tagMapping[0].refForAccountServicingInstitution">
+                    </aps-custom-select>
+                  </div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="supplementaryDetails" id="supplementaryDetails"
+                      label="Supplementary Details"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].supplementaryDetails"
+                      [(ngModel)]="formData.tagMapping[0].supplementaryDetails">
+                    </aps-custom-select>
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                  <div class="text-size-14 text-semi-bold text-center">{{'Tag 86' | apsTranslate}}</div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="line1" id="line1" label="Line 1"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].line1" [(ngModel)]="formData.tagMapping[0].line1">
+                    </aps-custom-select>
+                  </div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="line2" id="line2" label="Line 2"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].line2" [(ngModel)]="formData.tagMapping[0].line2">
+                    </aps-custom-select>
+                  </div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="line3" id="line3" label="Line 3"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].line3" [(ngModel)]="formData.tagMapping[0].line3">
+                    </aps-custom-select>
+                  </div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="line4" id="line4" label="Line 4"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].line4" [(ngModel)]="formData.tagMapping[0].line4">
+                    </aps-custom-select>
+                  </div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="line5" id="line5" label="Line 5"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].line5" [(ngModel)]="formData.tagMapping[0].line5">
+                    </aps-custom-select>
+                  </div>
+                  <div class="p-col-12">
+                    <aps-custom-select name="line6" id="line6" label="Line 6"
+                      dataUrl="payments/masters/mtRegistration/private/dropdown/tagMappingDetails"
+                      [value]="formData.tagMapping[0].line6" [(ngModel)]="formData.tagMapping[0].line6">
+                    </aps-custom-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+
+      <ng-container class="" *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+        <div class="p-col-12">
+          <div class="aps-card aps-h-100p">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Corporate: Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Corporate ID" [value]="userService.userDetails.corporateId">
+                  </app-review-form-field>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Corporate Name" [value]="userService.userDetails.corporateName">
+                  </app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card aps-h-100p">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Statement Registration: Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Message Type" [value]="formData.messageType"></app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Statement Type" [value]="formData.statementType">
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Channel" [value]="formData.channel"></app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <ng-container *ngIf="formData.statementType !== 'Account Statement'">
+            <div class="aps-card">
+              <div class="aps-card-header aps-py-12 p-px-3">
+                <div class="text-size-16 text-bold">Originating Bank's Details</div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="SWIFT BIC Code" [value]="formData.outgoingBank[0].bicCode">
+                    </app-review-form-field>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="Bank Name" [value]="formData.outgoingBank[0].bankName">
+                    </app-review-form-field>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="Recipents" [value]="formData.accountStatement[0].recipents">
+                    </app-review-form-field>
+                  </div>
+
+                  <ng-container *ngIf="formData.messageType == 'Incoming'">
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-review-form-field label="Account" [value]="formData.outgoingBank[0].account">
+                      </app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.statementType !== 'MT940'">
+                      <app-review-form-field label="Account Identification (Field 25)"
+                        [value]="formData.outgoingBank[0].accountIdentification"></app-review-form-field>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+
+            <div class="aps-card p-my-3">
+              <div class="aps-card-header aps-py-12 p-px-3">
+                <div class="text-size-16 text-bold">Receiving Bank's Details</div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="SWIFT Code" [value]="formData.receivingBank[0].code">
+                    </app-review-form-field>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="Bank Name" [value]="formData.receivingBank[0].bankName">
+                    </app-review-form-field>
+                  </div>
+                  <ng-container *ngIf="formData.messageType == 'Outgoing'">
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-review-form-field label="Account" [value]="formData.receivingBank[0].account">
+                      </app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.statementType !== 'MT940'">
+                      <app-review-form-field label="Account Identification (Field 25)"
+                        [value]="formData.receivingBank[0].accountIdentification"></app-review-form-field>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card" *ngIf="formData.statementType === 'Account Statement'">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Account Statement Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Account Number" [value]="formData.accountStatement[0].accountNumber">
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Recipents" [value]="formData.accountStatement[0].recipents">
+                  </app-review-form-field>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Statement Type" [value]="formData.accountStatement[0].statementType">
+                  </app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Physical Account Frequency Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Frequency" [value]="formData.frequency[0].frequencyType">
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Start Time" [value]="formData.frequency[0].startTime">
+                  </app-review-form-field>
+                </div>
+
+                <ng-container *ngIf="formData.frequency[0].frequencyType === 'Daily'">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="End Time" [value]="formData.frequency[0].endTime">
+                    </app-review-form-field>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="Frequency Every" [value]="formData.frequency[0].frequency">
+                    </app-review-form-field>
+                  </div>
+                </ng-container>
+
+                <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.frequency[0].frequencyType === 'Weekly'">
+                  <app-review-form-field label="Day" [value]="formData.frequency[0].day"></app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.frequency[0].frequencyType === 'Monthly'">
+                  <app-review-form-field label="Date" [value]="formData.frequency[0].date"></app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Start Date" [value]="formData.frequency[0].startDate">
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="End Date" [value]="formData.frequency[0].endDate">
+                  </app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12" *ngIf="formData.messageType === 'Outgoing' && formData.statementType === 'MT942'">
+          <div class="aps-card">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Virtual Account Frequency Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid g-margin-x">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Frequency" [value]="formData.virtualAccountFrequency[0].frequencyType">
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Start Time" [value]="formData.virtualAccountFrequency[0].startTime">
+                  </app-review-form-field>
+                </div>
+
+                <ng-container *ngIf="formData.virtualAccountFrequency[0].frequencyType === 'Daily'">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="End Time" [value]="formData.virtualAccountFrequency[0].endTime">
+                    </app-review-form-field>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-review-form-field label="Frequency Every"
+                      [value]="formData.virtualAccountFrequency[0].frequency">
+                    </app-review-form-field>
+                  </div>
+                </ng-container>
+
+                <div class="p-md-4 p-sm-12 p-col-12"
+                  *ngIf="formData.virtualAccountFrequency[0].frequencyType === 'Weekly'">
+                  <app-review-form-field label="Day" [value]="formData.virtualAccountFrequency[0].day">
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12"
+                  *ngIf="formData.virtualAccountFrequency[0].frequencyType === 'Monthly'">
+                  <app-review-form-field label="Date" [value]="formData.virtualAccountFrequency[0].date">
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Start Date" [value]="formData.virtualAccountFrequency[0].startDate">
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="End Date" [value]="formData.virtualAccountFrequency[0].endDate">
+                  </app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12"
+          *ngIf="formData.messageType === 'Outgoing' && formData.statementType != 'Account Statement'">
+          <div class="aps-card">
+            <div class="aps-card-header aps-py-12 p-px-3">
+              <div class="text-size-16 text-bold">Tag 61 and 86 Mapping Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid">
+                <div class="p-col-6">
+                  <div class="p-grid">
+                    <div class="p-col-12">
+                      <app-review-form-field label="Ref For Account Owner"
+                        [value]="formData.tagMapping[0].refForAccountOwner">
+                      </app-review-form-field>
+                    </div>
+                    <div class="p-col-12">
+                      <app-review-form-field label="Ref For Account Servicing Institution"
+                        [value]="formData.tagMapping[0].refForAccountServicingInstitution">
+                      </app-review-form-field>
+                    </div>
+                    <div class="p-col-12">
+                      <app-review-form-field label="Supplementary Details"
+                        [value]="formData.tagMapping[0].supplementaryDetails">
+                      </app-review-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-6">
+                  <div class="p-grid">
+                    <div class="p-col-12">
+                      <app-review-form-field label="Line 1" [value]="formData.tagMapping[0].line1">
+                      </app-review-form-field>
+                    </div>
+                    <div class="p-col-12">
+                      <app-review-form-field label="Line 2" [value]="formData.tagMapping[0].line2">
+                      </app-review-form-field>
+                    </div>
+                    <div class="p-col-12">
+                      <app-review-form-field label="Line 3" [value]="formData.tagMapping[0].line3">
+                      </app-review-form-field>
+                    </div>
+                    <div class="p-col-12">
+                      <app-review-form-field label="Line 4" [value]="formData.tagMapping[0].line4">
+                      </app-review-form-field>
+                    </div>
+                    <div class="p-col-12">
+                      <app-review-form-field label="Line 5" [value]="formData.tagMapping[0].line5">
+                      </app-review-form-field>
+                    </div>
+                    <div class="p-col-12">
+                      <app-review-form-field label="Line 6" [value]="formData.tagMapping[0].line6">
+                      </app-review-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="p-col-12 p-py-3">
+        <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,477 @@
+<div class="container">
+  <div class="text-size-16 text-bold text-color-dark-shade-1 p-mt-2">
+    {{ 'Corporate Cards' | apsTranslate }} ({{ totalRecords }})
+  </div>
+
+  <div class="p-grid" *ngIf="creditCardData">
+    <div *ngFor="let creditCard of creditCardData" class="p-col-12 p-p-0 p-my-2">
+      <div (click)="cardClick(creditCard)" class="aps-card primary-border-on-hover">
+        <div class="p-grid p-p-2">
+          <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-color-dark-shade-1 display-flex">
+            <div class="p-pr-2" (click)="preventDefault($event)">
+              <p-checkbox
+                (onChange)="selectCard($event, creditCard)"
+                [(ngModel)]="creditCard.isSelected"
+                name="cc"
+                [binary]="true"
+              ></p-checkbox>
+            </div>
+            <div class="label-with-icon-container">
+              <div class="icon">
+                <div class="credit-card">
+                  <img [src]="creditCard.cardImg" alt="corporate-logo" />
+                </div>
+              </div>
+              <div class="label">
+                <div class="text-size-16 text-semi-bold">
+                  {{ creditCard.cardType }}
+                  <div
+                    class="text-size-12"
+                    [ngClass]="
+                      creditCard.cardStatus === 'Inactive'
+                        ? 'text-color-danger'
+                        : 'text-color-success'
+                    "
+                  >
+                    {{ creditCard.cardStatus }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-lg-8 p-md-8 p-sm-12 p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+                <div class="text-size-14 text-semi-bold">
+                  {{ creditCard.cardNo }} - {{ creditCard.currency }}
+                </div>
+                <div class="text-size-12">{{ creditCard.embossedName }}</div>
+              </div>
+
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+                <div class="text-size-12 text-semi-bold aps-mt-2">
+                  {{ 'Credit Limit' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-semi-bold">
+                  <app-base-currency
+                    [amount]="creditCard.cardLimit"
+                    [currency]="creditCard.currency"
+                  >
+                  </app-base-currency>
+                </div>
+              </div>
+
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+                <div class="text-size-12 text-semi-bold aps-mt-2">Unbilled Amount</div>
+                <div class="text-size-14 text-semi-bold">
+                  <app-base-currency
+                    [amount]="creditCard.unbilledAmount"
+                    [currency]="creditCard.currency"
+                  >
+                  </app-base-currency>
+                </div>
+              </div>
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+                <div class="text-size-12 text-semi-bold aps-mt-2">Due Amount</div>
+                <div class="text-size-14 text-semi-bold">
+                  <app-base-currency
+                    [amount]="creditCard.unbilledAmount"
+                    [currency]="creditCard.currency"
+                  >
+                  </app-base-currency>
+                </div>
+              </div>
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+                <div class="text-size-12 text-semi-bold aps-mt-2">Min. Amount Due</div>
+                <div class="text-size-14 text-semi-bold">
+                  <app-base-currency
+                    [amount]="creditCard.unbilledAmount"
+                    [currency]="creditCard.currency"
+                  >
+                  </app-base-currency>
+                </div>
+              </div>
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+                <div class="text-size-12 text-semi-bold aps-mt-2">Due Date</div>
+                <div class="text-size-14 text-semi-bold">
+                  <app-base-currency
+                    [amount]="creditCard.unbilledAmount"
+                    [currency]="creditCard.currency"
+                  >
+                  </app-base-currency>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-p-0">
+            <div class="left-right-container">
+              <div class="left-container aps-py-12 p-px-2">
+                <button
+                  (click)="redirectToPage($event, 'creditCardBillPayment', transaction)"
+                  class="btn btn-md btn-tertiary"
+                >
+                  {{ 'PAY NOW' | apsTranslate }}
+                </button>
+                <!-- <app-icon class="pointer" icon="fa-bars" styleClasses="text-size-12"></app-icon> -->
+              </div>
+              <div class="right-container p-p-3">
+                <!--
+                <span class="p-px-2">
+                  <app-icon class="pointer" icon="fa-bars" styleClasses="text-size-12"></app-icon>
+                </span>-->
+                <span
+                  (click)="
+                    showMoreActions($event.pageY, $event.pageX, creditCard); preventDefault($event)
+                  "
+                  class="p-px-2 text-right"
+                >
+                  <app-icon icon="fa-bars" styleClasses="text-size-16 pointer p-mt-2"></app-icon>
+                </span>
+                <!--  -->
+                <span class="p-px-2">
+                  <app-icon
+                    class="pointer"
+                    [icon]="creditCard.isOpen ? 'fa-chevron-up' : 'fa-chevron-down'"
+                    styleClasses="text-size-12"
+                  ></app-icon>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid border-top" *ngIf="creditCard.isOpen">
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-center">
+              <div class="text-size-12 p-p-1">
+                {{ 'ACCOUNT STATUS ON' | apsTranslate }}
+                <span>{{ todayDate | uppercase }}</span>
+              </div>
+              <div class="text-size-10 p-p-1">{{ 'TOTAL OUTSTANDING' | apsTranslate }} :</div>
+              <div class="text-size-12 text-bold">
+                {{ creditCard.currency || 'INR' }} {{ creditCard.outStandingAmount }}
+              </div>
+              <div class="text-size-10 p-p-1">{{ 'UNBILLED OUTSTANDING' | apsTranslate }} :</div>
+              <div class="text-size-12 text-bold">
+                {{ creditCard.currency || 'INR' }} {{ creditCard.unbilledAmount }}
+              </div>
+            </div>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-p-3">
+            <div class="p-p-1 credit-limit">
+              <div class="text-size-10 text-bold">
+                {{ 'CREDIT & CASH LIMIT' | apsTranslate }}
+              </div>
+
+              <div class="p-grid text-size-10 text-center text-semi-bold">
+                <div class="p-col-4 p-p-0"></div>
+                <div class="p-col-4 p-p-0">
+                  <div class="">{{ 'TOTAL' | apsTranslate }}</div>
+                </div>
+                <div class="p-col-4 p-p-0">
+                  <div class="">{{ 'AVAILABLE' | apsTranslate }}</div>
+                </div>
+                <div class="p-col-3 p-p-0"></div>
+              </div>
+
+              <div class="p-grid">
+                <div
+                  class="p-col-4 p-p-0 text-size-10 p-mt-1 border-left aps-border-w-2px p-pl-2 credit"
+                >
+                  {{ 'CREDIT' | apsTranslate }}
+                </div>
+                <div class="p-col-4 p-p-0 text-center">
+                  <div class="p-mt-1 text-size-12">
+                    <app-base-currency [amount]="creditCard.cardLimit"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-4 p-p-0 text-center">
+                  <div class="p-mt-1 text-size-12">
+                    <app-base-currency [amount]="creditCard.availableLimit"></app-base-currency>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-col-4 p-p-0 text-size-10 p-mt-1 border-left aps-border-w-2px cash">
+                  {{ 'CASH' | apsTranslate }}
+                </div>
+                <div class="p-col-4 p-p-0 text-center">
+                  <div class="p-mt-1 text-size-12">
+                    <app-base-currency [amount]="creditCard.cashLimit"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-4 p-p-0 text-center">
+                  <div class="p-mt-1 text-size-12">
+                    <app-base-currency [amount]="creditCard.availableCashLimit"></app-base-currency>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-lg-5 p-md-5 p-sm-12 p-col-12 p-p-3">
+            <div class="aps-card">
+              <div class="p-grid">
+                <div class="p-col-12 p-px-3 p-py-2">
+                  <div class="text-color-dark-shade-1 text-size-14 text-semi-bold">
+                    {{ 'Category wise Spend Analysis' | apsTranslate }}
+                  </div>
+
+                  <app-pie-chart
+                    [options]="creditCard.options"
+                    webHeight="200"
+                    mobileHeight="200"
+                  ></app-pie-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="creditCardData">
+      <div class="p-col-12 p-p-0">
+        <app-pagination
+          [numberOfRecords]="totalRecords"
+          (doPagination)="onPageChange($event)"
+        ></app-pagination>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Apply new and Register new card -->
+  <div class="p-grid g-margin-x">
+    <!-- Tile divs -->
+    <div class="p-lg-3 p-col-12 p-md-3 p-sm-12 p-col-12">
+      <div
+        (click)="registerNewCard($event)"
+        class="aps-card aps-filled-card-primary-sm p-py-4 p-px-3 p-mb-2"
+      >
+        <div class="_p-mb-3 text-color-inverted text-size-16">
+          {{ 'Register New Card' | apsTranslate }}
+        </div>
+        <!-- <hr />
+        <div class="text-color-inverted text-size-12">
+          {{ 'Click here to register new card in CIB' | apsTranslate }}
+        </div> -->
+      </div>
+      <div
+        (click)="applyNewCard()"
+        class="aps-card p-mt-3 p-px-3 p-py-4 pointer border-primary-2px"
+      >
+        <div class="_p-mb-3 text-color-primary text-size-16">
+          {{ 'Apply New Card' | apsTranslate }}
+        </div>
+        <!--  <hr class="border-color-primary" />
+        <div class="text-color-dark-shade-3 text-size-12">
+          {{ 'Click here to apply new card or supplementary card' | apsTranslate }}
+        </div> -->
+      </div>
+    </div>
+
+    <div class="p-lg-6 p-md-5 p-sm-12 p-col-12">
+      <img src="assets/images/credit-cards/cc-ad.jpg" class="aps-w-100p" alt="cc-ad" />
+    </div>
+
+    <div class="p-lg-3 p-md-5 p-sm-12 p-col-12">
+      <app-insights [insights]="insights"> </app-insights>
+    </div>
+  </div>
+
+  <app-modal
+    #moreOptionsModal
+    [(isShow)]="isShowMoreOptions"
+    hideBackdrop="true"
+    [customStyles]="moreActionsStyle"
+  >
+    <div class="text-size-12 white-space-nowrap">
+      <ng-container>
+        <div
+          class="p-mb-1 pointer"
+          (click)="redirectToPage($event, 'creditCardDetails', currentRowData)"
+        >
+          {{ 'View Card Details' | apsTranslate }}
+        </div>
+        <div
+          class="p-mb-1 pointer"
+          (click)="redirectToPage($event, 'creditCardStatementDownload', currentRowData)"
+        >
+          {{ 'Statement Download' | apsTranslate }}
+        </div>
+        <div class="p-mb-1 pointer" (click)="viewSupplementaryCard($event, currentRowData.id)">
+          {{ 'View Supplementary Card' | apsTranslate }}
+        </div>
+        <div class="pointer" (click)="redirectToPage($event, 'blockCreditCard', currentRowData)">
+          {{ 'Block Card' | apsTranslate }}
+        </div>
+        <div
+          class="p-mb-1 pointer"
+          (click)="redirectToPage($event, 'unblockCreditCard', currentRowData)"
+        >
+          {{ 'Unblock Card' | apsTranslate }}
+        </div>
+        <div
+          class="pointer"
+          (click)="redirectToPage($event, 'creditCardChangePin', currentRowData)"
+        >
+          {{ 'Change Pin' | apsTranslate }}
+        </div>
+        <div
+          class="p-mb-1 pointer"
+          (click)="redirectToPage($event, 'creditCardDeregistration', currentRowData)"
+        >
+          {{ 'Deregister Card' | apsTranslate }}
+        </div>
+        <div class="pointer" (click)="viewRecentCreditsModal($event, currentRowData.id)">
+          {{ 'View Recent Credit' | apsTranslate }}
+        </div>
+        <div class="pointer" (click)="manageAutoPay($event, 'manageAutoPay', currentRowData)">
+          {{ 'Manage Auto Pay' | apsTranslate }}
+        </div>
+        <div
+          class="p-mb-1 pointer"
+          (click)="redirectToPage($event, 'creditCardUpgradeLimit', currentRowData)"
+        >
+          {{ 'Upgrade Limit' | apsTranslate }}
+        </div>
+        <div
+          class="pointer"
+          (click)="redirectToPage($event, 'creditCardChangePin', currentRowData)"
+        >
+          {{ 'Change Pin' | apsTranslate }}
+        </div>
+        <!-- <div class="pointer" (click)="convertToEMI(currentRowData)">
+          {{ 'Convert To EMI' | apsTranslate }}
+        </div> -->
+        <div class="p-mb-1 pointer" (click)="viewTxnDetails(currentRowData)">
+          {{ 'Transaction Details(Unbilled Transaction)' | apsTranslate }}
+        </div>
+        <div class="pointer" (click)="paymentHistory($event, currentRowData.id)">
+          {{ 'Payment History' | apsTranslate }}
+        </div>
+      </ng-container>
+    </div>
+  </app-modal>
+
+  <!--Supplementary Cards Modal Start-->
+  <app-modal *ngIf="supplementaryCardsData" [(isShow)]="isShowSupplementaryCard" size="md">
+    <div header class="left-right-container">
+      <div class="left-container">
+        <div class="text-size-20 text-bold text-color-dark-shade-1">
+          {{ 'Supplementary Cards' | apsTranslate }}
+        </div>
+      </div>
+      <div class="right-container"></div>
+    </div>
+    <div body class="p-my-3 aps-h-300">
+      <app-ag-grid-listing
+        [columnDefs]="supplementaryCardsData.columnData"
+        [rowData]="supplementaryCardsData.rowData"
+        [gridOptions]="{
+          rowModelType: 'clientSide',
+          pagination: false
+        }"
+      ></app-ag-grid-listing>
+    </div>
+    <div footer class="left-right-container">
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="isShowSupplementaryCard = false">
+          {{ 'CLOSE' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+  <!--Supplementary Cards Modal End-->
+
+  <!--Recent credits Modal Start-->
+  <app-modal *ngIf="isShowRecentCreditsModal" [(isShow)]="isShowRecentCreditsModal" size="md">
+    <div header class="left-right-container">
+      <div class="left-container">
+        <div class="text-size-20 text-bold text-color-dark-shade-1">
+          {{ 'View Recent Credits' | apsTranslate }}
+        </div>
+      </div>
+      <div class="right-container"></div>
+    </div>
+    <div body class="p-my-3 aps-h-300">
+      <div class="p-grid">
+        <div class="p-col-3 p-p-2">
+          <div class="text-size-14">{{ 'Credit Card' | apsTranslate }}</div>
+        </div>
+        <div class="p-col-9 p-p-2">
+          <div class="text-size-14 text-semi-bold">{{ recentCreditsData.cardNo }}</div>
+        </div>
+      </div>
+      <app-ag-grid-listing
+        [colDefUrl]="recentCreditsData.colDataURL"
+        [rowData]="recentCreditsData.rowData"
+        [gridOptions]="{
+          rowModelType: 'clientSide',
+          pagination: false
+        }"
+      ></app-ag-grid-listing>
+    </div>
+    <div footer class="left-right-container">
+      <div class="left-container p-py-2">
+        <app-icon class="p-px-2" icon="fa-print"></app-icon>
+        <app-icon class="p-px-2" icon="fa-download"></app-icon>
+        <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="isShowRecentCreditsModal = false">
+          {{ 'CLOSE' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+  <!--Recent Credits Modal End-->
+  <!--Payment history Modal Start-->
+  <app-modal *ngIf="isShowPaymentHistoryModal" [(isShow)]="isShowPaymentHistoryModal" size="md">
+    <div header class="left-right-container">
+      <div class="left-container">
+        <div class="text-size-20 text-bold text-color-dark-shade-1">
+          {{ 'Payment History' | apsTranslate }}
+        </div>
+      </div>
+      <div class="right-container"></div>
+    </div>
+    <div body class="p-my-3 aps-h-300">
+      <div class="p-grid">
+        <div class="p-col-3 p-p-2">
+          <div class="text-size-14">{{ 'Credit Card' | apsTranslate }}</div>
+        </div>
+        <div class="p-col-9 p-p-2">
+          <div class="text-size-14 text-semi-bold">{{ paymentHistoryData.cardNo }}</div>
+        </div>
+        <div class="p-col-12 text-size-12 text-right">
+          <app-icon class="" icon="fa-info-circle"></app-icon> Payment history avaible for last 6
+          monthes
+        </div>
+      </div>
+      <app-ag-grid-listing
+        [colDefUrl]="paymentHistoryData.colDataURL"
+        [rowData]="paymentHistoryData.rowData"
+        [gridOptions]="{
+          rowModelType: 'clientSide',
+          pagination: false
+        }"
+      ></app-ag-grid-listing>
+    </div>
+    <div footer class="left-right-container">
+      <div class="left-container p-py-2">
+        <app-icon class="p-px-2" icon="fa-print"></app-icon>
+        <app-icon class="p-px-2" icon="fa-download"></app-icon>
+        <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="isShowPaymentHistoryModal = false">
+          {{ 'CLOSE' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+  <!--Payment history Modal End-->
+</div>

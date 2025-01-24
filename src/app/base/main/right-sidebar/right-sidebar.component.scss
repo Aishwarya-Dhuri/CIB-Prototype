@@ -1,0 +1,20 @@
+.sidebar-container {
+  position: relative;
+  width: 17.5rem;
+  height: 100vh;
+  background-color: var(--background-color);
+  border-radius: 15px 0 0 15px;
+  z-index: 20;
+}
+
+.app-sidebar-container {
+  position: fixed;
+  z-index: 10;
+  display: none;
+  top: 0;
+  right: 0;
+}
+
+.app-sidebar-container-toggle {
+  display: block;
+}

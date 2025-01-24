@@ -1,0 +1,1384 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-search-modal
+      [(isShow)]="isBuyerCode"
+      header="Buyer Code Search"
+      colDefUrl="trade/exportTransactions/billPresentment/private/buyerCodeColDefs"
+      rowDefUrl="trade/exportTransactions/billPresentment/private/buyerCodeData"
+      (onSelection)="onBuyerCodeSelection($event)"
+    >
+    </app-search-modal>
+
+    <app-search-modal
+      [(isShow)]="isLcNumber"
+      header="LC Number Search"
+      colDefUrl="trade/exportTransactions/billPresentment/private/lcNumberColDefs"
+      rowDefUrl="trade/importTransactions/letterOfCredit/private/getAllList"
+      (onSelection)="onLCNumberSelection($event)"
+    >
+    </app-search-modal>
+
+    <app-modal [(isShow)]="isTermsAndCondition" *ngIf="isTermsAndCondition" size="md">
+      <div header>
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="text-size-16 text-semi-bold">
+              {{ 'Terms And Conditions' | apsTranslate }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div body>
+        <div
+          [innerHtml]="
+            (termsAndCondition && termsAndCondition[0] ? termsAndCondition[0].description : '')
+              | safeHtml
+          "
+        ></div>
+      </div>
+      <div footer>
+        <div class="left-right-container p-mt-3">
+          <div class="left-container"></div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary p-px-3" (click)="isTermsAndCondition = false">
+              {{ 'CANCEL' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12 p-py-1" style="margin-top: -8px !important">
+        <div class="left-right-container">
+          <div class="left-container"></div>
+          <div class="right-container">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div
+                  class="p-px-2 p-py-1 border-radius-4"
+                  [ngClass]="
+                    parentRef.stepperDetails.steps[1].stepStatus == 'repair' ||
+                    parentRef.stepperDetails.steps[2].stepStatus == 'repair'
+                      ? 'background-color-warning-light'
+                      : 'background-color-success '
+                  "
+                  *ngIf="repair"
+                >
+                  <div class="inline-items">
+                    <div class="item p-mr-2">
+                      <app-icon
+                        [icon]="
+                          parentRef.stepperDetails.steps[1].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[3].stepStatus == 'repair'
+                            ? 'fa-exclamation-triangle'
+                            : 'fa-check-circle'
+                        "
+                        [ngClass]="
+                          parentRef.stepperDetails.steps[1].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[2].stepStatus == 'repair'
+                            ? 'text-color-warning'
+                            : 'text-color-inverted'
+                        "
+                        styleClasses="text-size-12"
+                      ></app-icon>
+                    </div>
+                    <div class="item p-mr-4" style="padding-top: 2px">
+                      <div
+                        class="text-size-14 text-semi-bold"
+                        [ngClass]="
+                          parentRef.stepperDetails.steps[1].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[3].stepStatus == 'repair'
+                            ? 'text-color-normal'
+                            : 'text-color-inverted'
+                        "
+                      >
+                        {{ activeStepIndex == 1 ? '1' : activeStepIndex == 3 ? '2' : '0' }}
+                        {{ 'of' | apsTranslate }} 2 {{ 'Corrections made' | apsTranslate }}
+                      </div>
+                    </div>
+                    <div class="item p-mr-3">
+                      <app-icon
+                        icon="fa-chevron-left"
+                        rtlIcon="fa-chevron-right"
+                        styleClasses="text-size-14 text-color-dark-shade-1"
+                        (click)="changeRepairStep('previous')"
+                      ></app-icon>
+                    </div>
+                    <div class="item p-mr-2">
+                      <app-icon
+                        icon="fa-chevron-right"
+                        rtlIcon="fa-chevron-left"
+                        styleClasses="text-size-14 text-color-dark-shade-1"
+                        (click)="changeRepairStep('next')"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="right-container p-py-1" *ngIf="viewport === 'web'">
+                <div class="inline-items">
+                  <div class="item p-px-2">
+                    <app-icon icon="fa-refresh"></app-icon>
+                  </div>
+                  <div class="item p-px-2 border-right">
+                    <app-icon icon="fa-print"></app-icon>
+                  </div>
+                  <div class="item p-px-2">
+                    <app-icon icon="fa-user"></app-icon>
+                  </div>
+                  <div class="item p-px-2">
+                    <app-icon icon="fa-link"></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-1">
+        <div class="aps-card text-color-dark-shade-1 aps-h-600 overflow-scroll p-mb-2">
+          <div
+            class="left-right-container border-bottom border-radius-4 p-p-3"
+            [ngClass]="{ 'active background-color-warning-light': showBillPresentmentRemarks }"
+            *ngIf="repair"
+            (click)="showBillPresentmentRemarks = true"
+          >
+            <div class="left-container">
+              <div class="text-size-14 text-color-normal text-semi-bold">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <app-icon
+                      iconStyle="fas"
+                      icon="fa-circle"
+                      styleClasses="text-color-warning text-size-12"
+                    ></app-icon>
+                  </div>
+                  <div class="label">Bank Remarks (1)</div>
+                </div>
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon icon="fa-chevron-right" styleClasses="text-size-14"></app-icon>
+            </div>
+          </div>
+
+          <app-stepper-header
+            [parentRef]="parentRef"
+            stepperType="vertical"
+            (stepsReady)="onStepsReady()"
+          ></app-stepper-header>
+        </div>
+      </div>
+
+      <div class="p-lg-9 p-md-9 p-sm-12 p-col-12 p-py-1">
+        <div class="aps-card aps-h-600" *ngIf="parentRef.formData">
+          <div class="aps-card-header">
+            <div class="left-right-container p-px-3">
+              <div class="left-container">
+                <div class="text-size-16 text-bold text-color-dark-shade-1 aps-py-12">
+                  {{ showBillPresentmentRemarks ? 'Bank Remarks' : activeStep?.displayLabel }}
+                </div>
+              </div>
+              <div class="right-container p-py-2"></div>
+            </div>
+          </div>
+          <div
+            class="aps-card-body p-p-3"
+            *ngIf="showBillPresentmentRemarks && repair"
+            (click)="showBillPresentmentRemarks = false"
+          >
+            <div
+              class="left-right-container p-py-2 p-px-3 border-radius-4 background-color-warning-light"
+            >
+              <div class="left-container">
+                <div class="text-size-12 text-color-normal">
+                  The mode of shipment shall be by Sea unless otherwise specified by AT & T on the
+                  purchase order. In the absence of specific instructions, seller will select the
+                  surface carrier for shipment.
+                </div>
+              </div>
+              <div class="right-container">
+                <app-icon icon="fa-info-circle" styleClasses="text-color-warning"></app-icon>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body p-p-2 overflow-scroll" *ngIf="!showBillPresentmentRemarks">
+            <form
+              name="form1"
+              #form1="ngForm"
+              class="beneficiary-details"
+              [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[0]
+              "
+            >
+              <div class="p-grid">
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                  <aps-custom-select
+                    name="beneficiaryName"
+                    id="beneficiaryName"
+                    [label]="'Name' | apsTranslate"
+                    dataUrl="trade/exportTransactions/billPresentment/private/dropdown/beneficiaryNameDataList"
+                    [(ngModel)]="parentRef.formData.beneficiaryOrExporterDetails[0].name"
+                    [required]="true"
+                    (change)="onBeneficiarySelection($event)"
+                  ></aps-custom-select>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Name' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.beneficiaryOrExporterDetails[0].name }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Address1' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.beneficiaryOrExporterDetails[0].address1 }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Address2' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.beneficiaryOrExporterDetails[0].address1 }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Address3' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.beneficiaryOrExporterDetails[0].address3 }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Mobile No.' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.beneficiaryOrExporterDetails[0].mobileNumber }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Email' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.beneficiaryOrExporterDetails[0].email }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Import/Export (IE) Code' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.beneficiaryOrExporterDetails[0].ieCode }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'CIF ID' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.beneficiaryOrExporterDetails[0].cifId }}
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <form
+              name="form2"
+              #form2="ngForm"
+              class="trade-bill-details"
+              [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[1]
+              "
+            >
+              <div class="p-grid">
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                  <aps-custom-select
+                    name="typeOfBillPresentment"
+                    id="typeOfBillPresentment"
+                    [label]="'Type Of Bill Presentment' | apsTranslate"
+                    dataUrl="trade/exportTransactions/billPresentment/private/dropdown/typeOfBillPresentmentDataList"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].typeOfBillPresentment"
+                    [required]="true"
+                    (change)="changeTypeOfBillPresentment($event)"
+                  ></aps-custom-select>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                  <p-radioButton
+                    class="p-mr-6 p-pt-4"
+                    id="collection"
+                    name="collection"
+                    value="Collection"
+                    label="Collection"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].type"
+                    [required]="true"
+                  ></p-radioButton>
+
+                  <p-radioButton
+                    class="p-mr-4"
+                    id="purchase"
+                    name="purchase"
+                    value="Purchase"
+                    label="Purchase"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].type"
+                    [required]="true"
+                  ></p-radioButton>
+                </div>
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment !=
+                    'Letter of Credit'
+                  "
+                >
+                  <aps-form-input
+                    name="buyerCode"
+                    id="buyerCode"
+                    label="Buyer Code"
+                    [required]="true"
+                    [rightIcon]="'fa-search'"
+                    (onRightIcon)="isBuyerCode = true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].buyerCode"
+                  >
+                  </aps-form-input>
+                </div>
+                <div
+                  class="p-col-12 p-md-1 p-lg-1 p-sm-12 p-py-4 text-center"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment !=
+                    'Letter of Credit'
+                  "
+                >
+                  OR
+                </div>
+                <div
+                  class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment !=
+                    'Letter of Credit'
+                  "
+                >
+                  <button
+                    class="btn text-center btn btn-tertiary p-py-3"
+                    (click)="isAddNewBuyer = true"
+                  >
+                    <app-icon icon="fa-plus"> </app-icon>&nbsp;{{ 'ADD NEW BUYER' | apsTranslate }}
+                  </button>
+                </div>
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment ===
+                    'Letter of Credit'
+                  "
+                >
+                  <aps-form-input
+                    name="lcNumber"
+                    id="lcNumber"
+                    label="LC Number"
+                    [required]="true"
+                    [rightIcon]="'fa-search'"
+                    [readonly]="true"
+                    (onRightIcon)="isLcNumber = true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].lcNumber"
+                  >
+                  </aps-form-input>
+                </div>
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment ===
+                    'Letter of Credit'
+                  "
+                >
+                  <aps-form-input
+                    name="lcOriginalNumber"
+                    id="lcOriginalNumber"
+                    [label]="'LC Original Number' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].lcOriginalNumber"
+                    [disabled]="true"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+              <div class="p-grid" *ngIf="parentRef.formData.tradeBillDetails[0].buyerCode">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Buyer Name' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].buyerName }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Buyer Address' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].buyerAddress }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Country' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].country }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Pin/Zip Code' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].pinCode }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Mobile Number' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].mobileNumber }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Email' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].email }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Bank Swift Code' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].bankSwiftCode }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Bank Name' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].bankName }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Bank Address' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].bankAddress }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Buyer Account Number' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.tradeBillDetails[0].buyerAccountNumber }}
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="buyerName"
+                    id="buyerName"
+                    [label]="'Buyer Name' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].buyerName"
+                    [disabled]="
+                      parentRef.formData.tradeBillDetails[0].typeOfBillPresentment ===
+                      'Letter of Credit'
+                    "
+                  >
+                  </aps-form-input>
+                </div>
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment ===
+                    'Letter of Credit'
+                  "
+                >
+                  <aps-form-input
+                    name="lcIssueDate"
+                    id="lcIssueDate"
+                    [label]="'LC Issue Date' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].lcIssueDate"
+                    [disabled]="true"
+                  >
+                  </aps-form-input>
+                </div>
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment !=
+                    'Letter of Credit'
+                  "
+                >
+                  <aps-custom-select
+                    name="currency"
+                    id="currency"
+                    [label]="'Bill Currency' | apsTranslate"
+                    dataUrl="setup/generalMasters/currency/private/currencyList"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].billCurrency"
+                    [disabled]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <div
+                    class="left-right-container border-radius-4 background-color-warning-light p-px-3 p-pt-1"
+                    *ngIf="repair"
+                  >
+                    <div class="left-container">
+                      <div class="text-size-12 text-color-normal">
+                        {{ 'The amount entered does not valid' | apsTranslate }}
+
+                        <span *ngIf="repairFields.amountForTransactionMessage">
+                          {{ 'Please enter a valid Amount' | apsTranslate }}.</span
+                        >
+                      </div>
+                    </div>
+                    <div class="right-container p-ml-2">
+                      <app-icon
+                        icon="fa-ellipsis-h"
+                        styleClasses="text-color-warning text-size-14"
+                        (click)="
+                          repairFields.amountForTransactionMessage =
+                            !repairFields.amountForTransactionMessage
+                        "
+                      ></app-icon>
+                    </div>
+                  </div>
+                  <aps-form-input
+                    name="amount"
+                    id="amount"
+                    [label]="'Bill Amount' | apsTranslate"
+                    inputType="currencyFormatNotZero"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].billAmount"
+                    [helpText]="repair ? repairFields.amountForTransactionCharges : ''"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment ===
+                    'Letter of Credit'
+                  "
+                >
+                  <aps-form-input
+                    name="lcCurrency"
+                    id="lcCurrency"
+                    [label]="'LC Currency' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].lcCurrency"
+                    [disabled]="true"
+                  >
+                  </aps-form-input>
+                </div>
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment ===
+                    'Letter of Credit'
+                  "
+                >
+                  <aps-form-input
+                    name="lcAmount"
+                    id="lcAmount"
+                    [label]="'LC Amount' | apsTranslate"
+                    inputType="currencyFormatNotZero"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].lcAmount"
+                    [disabled]="true"
+                  >
+                  </aps-form-input>
+                </div>
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="
+                    parentRef.formData.tradeBillDetails[0].typeOfBillPresentment ===
+                    'Letter of Credit'
+                  "
+                >
+                  <aps-form-input
+                    name="lcAvailableAmount"
+                    id="lcAvailableAmount"
+                    [label]="'LC Available Amount' | apsTranslate"
+                    inputType="currencyFormatNotZero"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].lcAvailableAmount"
+                    [disabled]="true"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="invoiceNumber"
+                    id="invoiceNumber"
+                    [label]="'Invoice Number' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].invoiceNumber"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-aps-calender
+                    name="billDate"
+                    id="billDate"
+                    [label]="'Bill Date' | apsTranslate"
+                    [required]="true"
+                    [defaultDate]="getCurrentDate()"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].billDate"
+                  >
+                  </app-aps-calender>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="billingAddress"
+                    id="billingAddress"
+                    [label]="'Billing Address' | apsTranslate"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].billingAddress"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="deliveryAddress"
+                    id="deliveryAddress"
+                    [label]="'Delivery Address' | apsTranslate"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].deliveryAddress"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="remarks"
+                    id="remarks"
+                    [label]="'Remarks' | apsTranslate"
+                    [(ngModel)]="parentRef.formData.tradeBillDetails[0].remarks"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+            </form>
+
+            <form
+              name="form3"
+              #form3="ngForm"
+              class="payment-details"
+              [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[2]
+              "
+            >
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-custom-select
+                    name="accountToBeCredited"
+                    id="accountToBeCredited"
+                    [label]="'Account To Be Credited' | apsTranslate"
+                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.paymentDetails[0].accountToBeCredited"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-custom-select
+                    name="accountToBeDebitForCharges"
+                    id="accountToBeDebitForCharges"
+                    [label]="'Account To Be Debit For Charges' | apsTranslate"
+                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.paymentDetails[0].accountToBeDebitForCharges"
+                    (change)="onChangeAccountToBeDebitForCharges($event)"
+                    [helpText]="parentRef.formData.paymentDetails[0].debitAccountBalance"
+                  >
+                  </aps-custom-select>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="tenorInDays"
+                    id="tenorInDays"
+                    [label]="'Tenor In  Days' | apsTranslate"
+                    inputType="numeric"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.paymentDetails[0].tenorInDays"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-custom-select
+                    name="dueDateIndicator"
+                    id="dueDateIndicator"
+                    [label]="'Due Date Indicator' | apsTranslate"
+                    dataUrl="trade/exportTransactions/billPresentment/private/dropdown/dueDateIndicatorDataList"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.paymentDetails[0].dueDateIndicator"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div
+                  class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                  *ngIf="parentRef.formData.paymentDetails[0].dueDateIndicator == 'Other'"
+                >
+                  <aps-form-input
+                    name="documentName"
+                    id="documentName"
+                    [label]="'Document Name' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.paymentDetails[0].documentName"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+            </form>
+
+            <form
+              name="form4"
+              #form4="ngForm"
+              class="shipping-details"
+              [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[3]
+              "
+            >
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <div
+                    class="left-right-container border-radius-4 background-color-warning-light p-px-3"
+                    *ngIf="repair"
+                  >
+                    <div class="left-container">
+                      <div class="text-size-12 text-color-normal">
+                        {{ 'Please select Shipping date before 14 OCT 2021' | apsTranslate }}.
+                        <span *ngIf="repairFields.shippingDateMessage">
+                          {{
+                            'Please select Shipping date before 14 OCT 2021' | apsTranslate
+                          }}.</span
+                        >
+                      </div>
+                    </div>
+                    <div class="right-container p-ml-2">
+                      <app-icon
+                        icon="fa-ellipsis-h"
+                        styleClasses="text-color-warning text-size-14"
+                        (click)="
+                          repairFields.shippingDateMessage = !repairFields.shippingDateMessage
+                        "
+                      ></app-icon>
+                    </div>
+                  </div>
+                  <app-aps-calender
+                    name="shippingDate"
+                    id="shippingDate"
+                    [label]="'Shipping Date' | apsTranslate"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].shippingDate"
+                    [showIcon]="true"
+                    [required]="true"
+                    [helpText]="repair ? repairFields.shippingDate : ''"
+                  >
+                  </app-aps-calender>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="shipmentFrom"
+                    id="shipmentFrom"
+                    [label]="'Shipment From' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].shipmentFrom"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="shipmentTo"
+                    id="shipmentTo"
+                    [label]="'Shipment To' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [required]="true"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].shipmentTo"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="portOfLoadingOrAirportDeparture"
+                    id="portOfLoadingOrAirportDeparture"
+                    [label]="'Port Of Loading / Airport of Departure' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.shippingDetails[0].portOfLoadingOrAirportDeparture
+                    "
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="portOfDischargeOrAirportOfDestination"
+                    id="portOfDischargeOrAirportOfDestination"
+                    [label]="'Port Of Discharge / Airport Of Destination' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.shippingDetails[0].portOfDischargeOrAirportOfDestination
+                    "
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="placeOfTakingInChargeOrDispatchFromOrPlaceOfReceipt"
+                    id="placeOfTakingInChargeOrDispatchFromOrPlaceOfReceipt"
+                    [label]="
+                      'Place Of Taking In Charge / Dispatch From / Place Of Receipt' | apsTranslate
+                    "
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.shippingDetails[0]
+                        .placeOfTakingInChargeOrDispatchFromOrPlaceOfReceipt
+                    "
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="placeOfFinalDestinationOrForFinalDestinationOrForTransportationToOrPlaceOfDelivery"
+                    id="placeOfFinalDestinationOrForFinalDestinationOrForTransportationToOrPlaceOfDelivery"
+                    [label]="
+                      'Place Of Final Destination / For Final Destination / For Transportation To / Place Of Delivery'
+                        | apsTranslate
+                    "
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.shippingDetails[0]
+                        .placeOfFinalDestinationOrForFinalDestinationOrForTransportationToOrPlaceOfDelivery
+                    "
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="vesselName"
+                    id="vesselName"
+                    [label]="'Vessel Name' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].vesselName"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="descriptionOfGoods"
+                    id="descriptionOfGoods"
+                    [label]="'Description Of Goods' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].descriptionOfGoods"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="reasonsForLateSubmissionOfDocuments"
+                    id="reasonsForLateSubmissionOfDocuments"
+                    [label]="
+                      'Reasons For Late Submission Of Documents (if applicable)' | apsTranslate
+                    "
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.shippingDetails[0].reasonsForLateSubmissionOfDocuments
+                    "
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <aps-form-input
+                    name="remark"
+                    id="remark"
+                    [label]="'Remark' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].remark"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+            </form>
+
+            <form
+              name="form5"
+              #form5="ngForm"
+              class="supporting-details"
+              [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[4]
+              "
+            >
+              <div class="p-grid">
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ 'Document Type' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ 'Count' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ 'Reference Number' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ 'Upload Documents' | apsTranslate }}
+                    <span class="text-size-8 text-color-normal"
+                      >&nbsp;{{ 'Max 10MB each' | apsTranslate }}</span
+                    >
+                  </div>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <p-checkbox
+                    name="isSignedBillsOfLading"
+                    id="isSignedBillsOfLading"
+                    class="p-py-4"
+                    [label]="'Signed Bills Of Lading' | apsTranslate"
+                    [binary]="true"
+                    (onChange)="onSignedBillsOfLadingCheckboxChange($event)"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                  >
+                  </p-checkbox>
+                </div>
+                <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="signedBillOriginalCount"
+                    id="signedBillOriginalCount"
+                    [label]="'Original' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].signedBillOriginalCount"
+                    [required]="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="signedBillCopyCount"
+                    id="signedBillCopyCount"
+                    [label]="'Copy' | apsTranslate"
+                    inputType="numeric"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].signedBillCopyCount"
+                    [required]="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="signedBillRefNo"
+                    id="signedBillRefNo"
+                    [label]="'Enter Ref. Number' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].signedBillRefNo"
+                    [required]="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <upload-form-control
+                    [hideDragDropContainerOnFIleUpload]="true"
+                    [files]="parentRef.formData.supportingDocuments[0].signedBillDocument"
+                    (onUploaded)="
+                      parentRef.formData.supportingDocuments[0].signedBillDocument = $event
+                    "
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                  >
+                  </upload-form-control>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <p-checkbox
+                    name="isCertificateOfOrigin"
+                    id="isCertificateOfOrigin"
+                    class="p-py-4"
+                    [label]="'Certificate Of Origin' | apsTranslate"
+                    [binary]="true"
+                    (onChange)="onCertificateOfOriginCheckboxChange($event)"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                  >
+                  </p-checkbox>
+                </div>
+                <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="certificateOfOriginOriginalCount"
+                    id="certificateOfOriginOriginalCount"
+                    [label]="'Original' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.supportingDocuments[0].certificateOfOriginOriginalCount
+                    "
+                    [required]="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="certificateOfOriginCopyCount"
+                    id="certificateOfOriginCopyCount"
+                    [label]="'Copy' | apsTranslate"
+                    inputType="numeric"
+                    [(ngModel)]="
+                      parentRef.formData.supportingDocuments[0].certificateOfOriginCopyCount
+                    "
+                    [required]="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="certificateOfOriginRefNo"
+                    id="certificateOfOriginRefNo"
+                    [label]="'Enter Ref. Number' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].certificateOfOriginRefNo"
+                    [required]="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <upload-form-control
+                    [hideDragDropContainerOnFIleUpload]="true"
+                    [files]="parentRef.formData.supportingDocuments[0].certificateOfOriginDocument"
+                    (onUploaded)="
+                      parentRef.formData.supportingDocuments[0].certificateOfOriginDocument = $event
+                    "
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                  >
+                  </upload-form-control>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <p-checkbox
+                    name="isAirwayBill"
+                    id="isAirwayBill"
+                    class="p-py-4"
+                    [label]="'Airway Bill' | apsTranslate"
+                    [binary]="true"
+                    (onChange)="onAirwayBillCheckboxChange($event)"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].isAirwayBill"
+                  >
+                  </p-checkbox>
+                </div>
+                <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="airwayBillOriginalCount"
+                    id="airwayBillOriginalCount"
+                    [label]="'Original' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].airwayBillOriginalCount"
+                    [required]="parentRef.formData.supportingDocuments[0].isAirwayBill"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isAirwayBill"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="airwayBillCopyCount"
+                    id="airwayBillCopyCount"
+                    [label]="'Copy' | apsTranslate"
+                    inputType="numeric"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].airwayBillCopyCount"
+                    [required]="parentRef.formData.supportingDocuments[0].isAirwayBill"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isAirwayBill"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="airwayBillRefNo"
+                    id="airwayBillRefNo"
+                    [label]="'Enter Ref. Number' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].airwayBillRefNo"
+                    [required]="parentRef.formData.supportingDocuments[0].isAirwayBill"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isAirwayBill"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <upload-form-control
+                    [hideDragDropContainerOnFIleUpload]="true"
+                    [files]="parentRef.formData.supportingDocuments[0].airwayBillDocument"
+                    (onUploaded)="
+                      parentRef.formData.supportingDocuments[0].airwayBillDocument = $event
+                    "
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isAirwayBill"
+                  >
+                  </upload-form-control>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <p-checkbox
+                    name="isBeneficiaryCertificate"
+                    id="isBeneficiaryCertificate"
+                    class="p-py-4"
+                    [label]="'Beneficiary Certificate' | apsTranslate"
+                    [binary]="true"
+                    (onChange)="onBeneficiaryCertificateCheckboxChange($event)"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                  >
+                  </p-checkbox>
+                </div>
+                <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="beneficiaryCertificateOriginalCount"
+                    id="beneficiaryCertificateOriginalCount"
+                    [label]="'Original' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.supportingDocuments[0].beneficiaryCertificateOriginalCount
+                    "
+                    [required]="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="beneficiaryCertificateCopyCount"
+                    id="beneficiaryCertificateCopyCount"
+                    [label]="'Copy' | apsTranslate"
+                    inputType="numeric"
+                    [(ngModel)]="
+                      parentRef.formData.supportingDocuments[0].beneficiaryCertificateCopyCount
+                    "
+                    [required]="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="beneficiaryCertificateRefNo"
+                    id="beneficiaryCertificateRefNo"
+                    [label]="'Enter Ref. Number' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.supportingDocuments[0].beneficiaryCertificateRefNo
+                    "
+                    [required]="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <upload-form-control
+                    [hideDragDropContainerOnFIleUpload]="true"
+                    [files]="
+                      parentRef.formData.supportingDocuments[0].beneficiaryCertificateDocument
+                    "
+                    (onUploaded)="
+                      parentRef.formData.supportingDocuments[0].beneficiaryCertificateDocument =
+                        $event
+                    "
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                  >
+                  </upload-form-control>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <p-checkbox
+                    name="isBillPresentDAPay26"
+                    id="isBillPresentDAPay26"
+                    class="p-py-4"
+                    [label]="'Bill Present DA Pay 26' | apsTranslate"
+                    [binary]="true"
+                    (onChange)="onBillPresentDAPay26CheckboxChange($event)"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                  >
+                  </p-checkbox>
+                </div>
+                <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="billPresentDAPay26OriginalCount"
+                    id="billPresentDAPay26OriginalCount"
+                    [label]="'Original' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="
+                      parentRef.formData.supportingDocuments[0].billPresentDAPay26OriginalCount
+                    "
+                    [required]="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="billPresentDAPay26CopyCount"
+                    id="billPresentDAPay26CopyCount"
+                    [label]="'Copy' | apsTranslate"
+                    inputType="numeric"
+                    [(ngModel)]="
+                      parentRef.formData.supportingDocuments[0].billPresentDAPay26CopyCount
+                    "
+                    [required]="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="billPresentDAPay26RefNo"
+                    id="billPresentDAPay26RefNo"
+                    [label]="'Enter Ref. Number' | apsTranslate"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].billPresentDAPay26RefNo"
+                    [required]="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                  <upload-form-control
+                    [hideDragDropContainerOnFIleUpload]="true"
+                    [files]="parentRef.formData.supportingDocuments[0].billPresentDAPay26Document"
+                    (onUploaded)="
+                      parentRef.formData.supportingDocuments[0].billPresentDAPay26Document = $event
+                    "
+                    [disabled]="!parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                  >
+                  </upload-form-control>
+                </div>
+              </div>
+            </form>
+
+            <form
+              name="form6"
+              #form6="ngForm"
+              class="collection-instructions"
+              [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[5]
+              "
+            >
+              <div
+                class="p-grid"
+                *ngFor="let item of collectionInstructionsDataList; let i = index"
+              >
+                <div class="p-col-12">
+                  <p-checkbox
+                    name="{{ item.displayName + i }}"
+                    id="{{ item.displayName + i }}"
+                    [(ngModel)]="
+                      parentRef.formData.collectionInstruction[0].collectionInstructions[i]
+                    "
+                    [label]="item.displayName"
+                    [binary]="true"
+                  >
+                  </p-checkbox>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="specialInstruction"
+                    id="specialInstruction"
+                    [label]="'Special Instruction' | apsTranslate"
+                    [(ngModel)]="parentRef.formData.collectionInstruction[0].specialInstruction"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="contactName"
+                    id="contactName"
+                    [label]="'Contact Name' | apsTranslate"
+                    [(ngModel)]="parentRef.formData.collectionInstruction[0].contactName"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input
+                    name="contactNumber"
+                    id="contactNumber"
+                    [label]="'Contact Number' | apsTranslate"
+                    [(ngModel)]="parentRef.formData.collectionInstruction[0].contactNumber"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+            </form>
+
+            <form
+              name="form7"
+              #form7="ngForm"
+              class="clauses"
+              [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[6]
+              "
+            >
+              <app-clauses productType="BILLPRESENTMENT" [parentRef]="this"></app-clauses>
+            </form>
+
+            <form
+              name="form8"
+              #form8="ngForm"
+              class="terms-and-condition"
+              [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[7]
+              "
+            >
+              <div class="p-grid">
+                <div class="p-col-12">
+                  <p-checkbox
+                    name="agreeToTermsAndCondition"
+                    id="agreeToTermsAndCondition"
+                    [label]="'I agree to terms and conditions' | apsTranslate"
+                    [binary]="true"
+                    [(ngModel)]="parentRef.formData.termsAndCondition[0].agreeToTermsAndCondition"
+                    [required]="true"
+                  ></p-checkbox>
+                  <a
+                    class="text-size-14 text-bold pointer p-p-1"
+                    (click)="isTermsAndCondition = true"
+                    >Click Here</a
+                  >
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

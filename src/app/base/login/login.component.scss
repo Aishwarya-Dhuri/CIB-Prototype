@@ -1,0 +1,112 @@
+html {
+  scroll-behavior: smooth !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  font-style: normal;
+}
+
+@keyframes animated-background-image {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 100% 0;
+  }
+}
+
+.floating-btn {
+  position: fixed;
+  z-index: 3;
+  bottom: 16px;
+  right: 16px;
+}
+
+.login-wrapper-container {
+  position: relative;
+  display: block;
+  white-space: nowrap;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+
+  .info-panel {
+    position: relative;
+    display: inline-block;
+    white-space: normal;
+    vertical-align: top;
+    width: calc(100vw - 29.775rem);
+    height: calc(100vh - 3rem);
+    min-height: 600px;
+
+    @media screen and (max-width: 1080px) {
+      min-height: 720px;
+    }
+  }
+
+  .login-panel {
+    position: relative;
+    display: inline-block;
+    white-space: normal;
+    vertical-align: top;
+    padding: 48px 40px 48px 40px;
+    width: 29.775rem;
+    background-color: var(--background-color);
+    border-radius: 12px 0 0 12px;
+    height: calc(100vh - 3rem);
+    min-height: 600px;
+
+    @media screen and (max-width: 1080px) {
+      min-height: 720px;
+    }
+  }
+}
+
+.login-wrapper-container::before {
+  content: '';
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-image: linear-gradient(to bottom right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    var(--login-background-image);
+  filter: var(--dark-filter);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: cover;
+  animation: fadeIn 1s;
+}
+
+@media screen and (max-width: 991px) {
+  .login-wrapper-container {
+    .info-panel {
+      position: relative;
+      display: block;
+      width: 100vw;
+      min-height: 600px;
+    }
+
+    .login-panel {
+      position: absolute;
+      margin-top: 5rem;
+      width: 100vw;
+      border-radius: 0;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+  }
+
+  .login-wrapper-container-mobile {
+    height: 100vh !important;
+
+    .info-panel {
+      position: absolute !important;
+    }
+  }
+}
+
+// @media screen and (max-height: 675px) {
+//   html {
+//     overflow-y: scroll !important;
+//   }
+// }

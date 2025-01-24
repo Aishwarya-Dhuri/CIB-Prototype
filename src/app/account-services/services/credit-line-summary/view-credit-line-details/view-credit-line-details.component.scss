@@ -1,0 +1,41 @@
+.select {
+  outline: none;
+  background-color: var(--primary-color-light);
+  padding: 7px;
+  color: var(--primary-color-light-shade-2);
+  font-size: 0.875rem;
+  border-radius: 6px;
+  border: none;
+  width: 100%;
+}
+
+.ellipse {
+  margin-top: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgb(203, 212, 212);
+}
+
+.ellipse-utilized {
+  background-color: var(--chart-0);
+}
+
+.ellipse-available {
+  background-color: var(--chart-2);
+}
+
+.credit-line {
+  color: var(--text-color-dark-shade-1);
+  border: 2px solid var(--background-color);
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+}
+
+.credit-line-active {
+  border-color: var(--primary-color);
+  background-color: var(--primary-color);
+  color: var(--inverted-text-color);
+}

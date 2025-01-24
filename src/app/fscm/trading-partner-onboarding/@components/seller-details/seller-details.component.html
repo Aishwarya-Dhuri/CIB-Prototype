@@ -1,0 +1,300 @@
+<div class="p-grid p-pt-2">
+  <div class="p-col-12 p-p-0">
+    <form #detailsForm="ngForm">
+      <div class="p-grid">
+        <div class="p-md-8 p-lg-8 p-sm-12 p-col-12 p-pl-0">
+          <div class="aps-card p-px-3 p-pb-3">
+            <div class="aps-card-header p-py-3">
+              <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">
+                Customer Details
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid">
+                <div class="p-col-12 p-px-0">
+                  <div class="text-size-14 text-color-light-shade-1 p-mb-2">Customer Type *</div>
+                  <p-radioButton
+                    class="p-mr-6"
+                    name="customerType"
+                    value="Bank Customer"
+                    label="Bank Customer"
+                    [(ngModel)]="details.customerType"
+                  ></p-radioButton>
+                  <p-radioButton
+                    name="customerType"
+                    value="Non Bank Customer"
+                    label="Non Bank Customer"
+                    [(ngModel)]="details.customerType"
+                  ></p-radioButton>
+                </div>
+
+                <div class="p-md-6 p-lg-6 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="code"
+                    label="{{ details.type }} Code"
+                    required="true"
+                    [(ngModel)]="details.code"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-6 p-lg-6 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="name"
+                    label="{{ details.type }} Name"
+                    required="true"
+                    [(ngModel)]="details.name"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-6 p-lg-6 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="{{ details.type }}NameLocal"
+                    label="{{ details.type }} Name (Local)"
+                    required="true"
+                    [(ngModel)]="details.nameLocal"
+                  ></aps-form-input>
+                </div>
+                <!-- <div class="p-col-6 p-py-0 p-pr-0">
+            <aps-form-input
+              name="CBSSegmentCode"
+              label="CBS Segment Code"
+              required="true"
+              [(ngModel)]="details.cbsSegmentCode"
+            ></aps-form-input>
+          </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-pl-0">
+          <div class="aps-card aps-h-100p p-p-3">
+            <div class="text-size-16 text-semi-bold text-color-dark-shade-2">Upload Logo</div>
+            <div class="text-size-12 text-color-normal">Max 10MB</div>
+            <div class="p-my-3">
+              <upload-form-control [(files)]="details.logo"></upload-form-control>
+            </div>
+            <div class="text-size-12 text-color-normal text-center">
+              We Support PDF, PNG, JPEG files, Make sure that your files is no more than Max 10 MB
+              each
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-px-0">
+          <div class="aps-card p-px-3 p-pb-3">
+            <div class="aps-card-header p-py-3">
+              <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">Tax Details</div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid">
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="taxIdentificationNumber"
+                    label="Tax Identification Number"
+                    required="true"
+                    [(ngModel)]="details.taxIdentificationNumber"
+                  ></aps-form-input>
+                </div>
+
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="taxBranch"
+                    label="Tax Branch"
+                    required="true"
+                    [(ngModel)]="details.taxBranch"
+                  ></aps-form-input>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-px-0">
+          <div class="aps-card p-px-3 p-pb-3">
+            <div class="aps-card-header p-py-3">
+              <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">Office Details</div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid">
+                <div class="p-col-12 p-p-0">
+                  <aps-form-input
+                    name="address1"
+                    label="Address 1"
+                    required="true"
+                    [(ngModel)]="details.address1"
+                  ></aps-form-input>
+                </div>
+                <div class="p-col-12 p-p-0" *ngIf="addresses >= 2">
+                  <aps-form-input
+                    name="address2"
+                    label="Address 2"
+                    required="true"
+                    [(ngModel)]="details.address2"
+                    [rightIcon]="'fa-trash-alt'"
+                    (onRightIcon)="deleteAddress(2)"
+                  ></aps-form-input>
+                </div>
+                <div class="p-col-12 p-p-0" *ngIf="addresses >= 3">
+                  <aps-form-input
+                    name="address3"
+                    label="Address 3"
+                    required="true"
+                    [(ngModel)]="details.address3"
+                    [rightIcon]="'fa-trash-alt'"
+                    (onRightIcon)="deleteAddress(3)"
+                  ></aps-form-input>
+                </div>
+                <div class="p-col-12 p-p-0">
+                  <button
+                    class="btn btn-md btn-tertiary text-bold"
+                    (click)="addAddress()"
+                    [disabled]="addresses === 3"
+                  >
+                    <!-- <i class="pi pi-plus p-mr-2"></i> -->
+                    <app-icon icon="fa-plus" class="p-mr-2"></app-icon>
+                    ADDRESS LINE
+                  </button>
+                </div>
+
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="location"
+                    label="Location"
+                    required="true"
+                    [(ngModel)]="details.location"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="province"
+                    label="Province"
+                    required="true"
+                    [(ngModel)]="details.province"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="country"
+                    label="Country"
+                    required="true"
+                    [(ngModel)]="details.country"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="city"
+                    label="City"
+                    required="true"
+                    [(ngModel)]="details.city"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="postalCode"
+                    label="Postal Code"
+                    required="true"
+                    [(ngModel)]="details.postalCode"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0"></div>
+
+                <div class="p-col-12 p-py-0 p-px-0 p-py-1">
+                  <div class="text-size-12 text-color-light-shade-1">Contact detail</div>
+                </div>
+
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="emailID"
+                    label="Email ID"
+                    required="true"
+                    [(ngModel)]="details.emailId"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="telephoneNumber"
+                    label="Telephone Number"
+                    required="true"
+                    [(ngModel)]="details.telephoneNumber"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="mobileNumber"
+                    label="Mobile Number"
+                    required="true"
+                    [(ngModel)]="details.mobileNumber"
+                  ></aps-form-input>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="p-col-12 p-px-0">
+    <div class="aps-card p-p-3">
+      <div class="aps-card-header p-pb-8">
+        <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">Contact Details</div>
+        <div class="text-size-10 text-color-300p-mt-1">Max 3 Contact information can be added</div>
+      </div>
+      <div class="aps-card-body">
+        <form #form="ngForm" (ngSubmit)="onSubmitContactDetails(form)">
+          <div class="p-grid">
+            <div class="p-md-10 p-lg-10 p-sm-12 p-col-12 p-py-0 p-pl-0">
+              <div class="p-grid">
+                <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="contactPersonName"
+                    label="Contact Person Name"
+                    [(ngModel)]="contactDetails.contactPerson"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="emailId"
+                    label="Email ID"
+                    required="true"
+                    [(ngModel)]="contactDetails.emailId"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="designation"
+                    label="Designation"
+                    required="true"
+                    [(ngModel)]="contactDetails.designation"
+                  ></aps-form-input>
+                </div>
+                <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                  <aps-form-input
+                    name="telephoneNumber"
+                    label="Telephone Number"
+                    required="true"
+                    [(ngModel)]="contactDetails.telephoneNumber"
+                  ></aps-form-input>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-sm-12 p-md-2 p-lg-2 p-py-3 p-pr-0">
+              <button type="submit" class="btn btn-md btn-primary aps-w-100p text-semi-bold">
+                {{ editing ? 'SAVE' : 'ADD' }}
+              </button>
+            </div>
+            <div class="p-col-12" *ngIf="this.details.contactDetails.length > 0">
+              <div class="ag-grid-listing aps-h-150 border-radius-5">
+                <app-ag-grid-listing
+                  id="contactDetails"
+                  #contactDetailsGrid
+                  [gridOptions]="gridOptions"
+                  (actionClicked)="onActionClicked($event)"
+                ></app-ag-grid-listing>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

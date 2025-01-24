@@ -1,0 +1,296 @@
+<div class="container">
+
+    <app-search-modal header="{{ 'Swift Code' | apsTranslate }}"
+        colDefUrl="setup/generalMasters/corporateAccount/private/swiftCodeColDef"
+        rowDefUrl="setup/generalMasters/corporateAccount/private/swiftCodeData" [(isShow)]="isSwiftCode"
+        (onSelection)="swiftCodeSearchModelData($event)"></app-search-modal>
+
+    <div class="grid g-margin-x" *ngIf="stepperDetails.currentStep == 1">
+        <div class="p-col-12">
+            <div class="aps-card">
+                <div class="aps-card-header">
+                    <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+                        {{ 'Corporate Account Details' | apsTranslate }}
+                    </div>
+                </div>
+                <div class="aps-card-body">
+                    <form name="corporateAccountForm" #corporateAccountForm="ngForm">
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <div class="text-size-14 text-semi-bold">Account</div>
+                                <p-radioButton class="p-mr-2" name="external" id="external" label="External"
+                                    value="External" [(ngModel)]="formData.account"></p-radioButton>
+
+                                <p-radioButton name="internal" id="internal" label="Internal" value="Internal"
+                                    [(ngModel)]="formData.account" disabled=true>
+                                </p-radioButton>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-form-input label="Corporate Name" name="corporateName" id="corporateName"
+                                    [(ngModel)]="formData.corporateName" [disabled]="true">
+                                </aps-form-input>
+                            </div>
+                        </div>
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-form-input label="Account No" name="accountNo" id="accountNo"
+                                    [(ngModel)]="formData.accountNo" [required]=true>
+                                </aps-form-input>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-form-input label="Account Description" name="accountDesc" id="accountDesc"
+                                    [(ngModel)]="formData.accountDesc" [required]=true>
+                                </aps-form-input>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-form-input label="Account Alias" name="corporateAccountAlias"
+                                    id="corporateAccountAlias" [(ngModel)]="formData.corporateAccountAlias">
+                                </aps-form-input>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-custom-select label="Account Type" name="accountType" id="accountType"
+                                    [(ngModel)]="formData.accountType" [value]="formData.accountType"
+                                    dataUrl="setup/generalMasters/corporateAccount/private/dropdown/accountTypeList"
+                                    [required]="true">
+                                </aps-custom-select>
+                            </div>
+                        </div>
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-form-input inputType="noSpaceAlphaNumeric" label="Swift Code" name="swiftCode"
+                                    id="swiftCode" rightIcon="fa-search" disabled="true"
+                                    (onRightIcon)="isSwiftCode = true" [(ngModel)]="formData.swiftCode" required="true">
+                                </aps-form-input>
+                            </div>
+                        </div>
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-custom-select label="Country" name="country" id="country"
+                                    [(ngModel)]="formData.country" [value]="formData.country"
+                                    dataUrl="setup/generalMasters/corporateAccount/private/dropdown/countryList"
+                                    [required]="true">
+                                </aps-custom-select>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-custom-select label="Currency" name="currency" id="currency"
+                                    [(ngModel)]="formData.currencyId" [value]="formData.currencyId"
+                                    (change)="formData.currencyCode = $event.displayName"
+                                    dataUrl="setup/generalMasters/currency/private/currencyList" [required]="true">
+                                </aps-custom-select>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-4">
+                                <p-checkbox class="p-mb-1" name="isMT940VIAH2H" id="isMT940VIAH2H" [binary]="true"
+                                    [(ngModel)]="formData.isMT940VIAH2H">
+                                </p-checkbox>
+                                <span class="text-size-14 p-p-3">MT940 via H2H</span>
+                            </div>
+                        </div>
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-form-input label="Bank Name" name="bank" id="bank" [(ngModel)]="formData.bank"
+                                    [disabled]="true">
+                                </aps-form-input>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-form-input label="Branch" name="accountBranch" id="accountBranch"
+                                    [(ngModel)]="formData.accountBranch" [disabled]="true">
+                                </aps-form-input>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <aps-form-input label="Branch Address" name="branchAddress" id="branchAddress"
+                                    [(ngModel)]="formData.branchAddress" [disabled]="true">
+                                </aps-form-input>
+                            </div>
+                        </div>
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <app-aps-calender label="Effective From" name="effectiveFrom" id="effectiveFrom"
+                                    showIcon="true" #effectiveFrom="ngModel" [(ngModel)]="formData.effectiveFrom"
+                                    required="true">
+                                </app-aps-calender>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <app-aps-calender label="Effective Till" name="effectiveTill" id="effectiveTill"
+                                    showIcon="true" #effectiveTill="ngModel" [(ngModel)]="formData.effectiveTill"
+                                    required="true">
+                                </app-aps-calender>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="aps-card aps-h-100p">
+                <div class="aps-card-header">
+                    <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+                        {{ 'Module Mapping' | apsTranslate }}
+                    </div>
+                </div>
+                <div class="aps-card-body">
+                    <div class="p-grid">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <div class="text-size-14 text-semi-bold text-center">All Modules</div>
+                        </div>
+                        <div class="p-col-12 p-md-2 p-lg-2 p-sm-12"></div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <div class="text-size-14 text-semi-bold text-center">Selected Modules</div>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-3 p-pb-3 p-pt-0">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 border p-p-0 aps-h-250 ">
+                            <div class="text-size-14 text-semi-bold p-py-2 p-px-3 border-bottom hover-background-color-primary-light-shade-2 pointer"
+                                *ngFor="let item of moduleList;let i = index" (click)="onAssignClick(i)">
+                                <span>{{i + 1}}) </span><span>{{item.displayName}}</span>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-2 p-lg-2 p-sm-12 text-center vertical-center">
+                            <app-icon styleClasses="text-size-42" icon="fa-arrows-alt-h"></app-icon>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 border p-p-0 aps-h-250">
+                            <ng-container *ngIf="formData.moduleMapping.length > 0">
+                                <div class="text-size-14 text-semi-bold p-py-2 p-px-3 border-bottom hover-background-color-primary-light-shade-2 pointer"
+                                    *ngFor="let item of formData.moduleMapping;let i = index"
+                                    (click)="onRemoveClick(i)">
+                                    <span>{{i + 1}}) </span><span>{{item.displayName}}</span>
+                                </div>
+                            </ng-container>
+                            <app-nothing-here colSize="11" *ngIf="formData.moduleMapping.length == 0">
+                            </app-nothing-here>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="grid g-margin-x" *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+        <div class="p-col-12">
+            <div class="aps-card">
+                <div class="aps-card-header">
+                    <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+                        {{ 'Corporate Account Details' | apsTranslate }}
+                    </div>
+                </div>
+                <div class="aps-card-body">
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Account" [value]="formData.account">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Corporate Name" [value]="formData.corporateName">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Account Number" [value]="formData.accountNo">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Account Description" [value]="formData.accountDesc">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Account Alias" [value]="formData.corporateAccountAlias">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Account Type" [value]="formData.accountType">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Swift Code" [value]="formData.swiftCode">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Country" [value]="formData.country">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Currency" [value]="formData.currencyCode">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="MT940 via H2H" [value]="formData.isMT940VIAH2H">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Bank Name" [value]="formData.bank">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Branch" [value]="formData.accountBranch">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Branch Address" [value]="formData.branchAddress">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Effective From" [value]="formData.effectiveFrom">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <app-review-form-field label="Effective Till" [value]="formData.effectiveTill">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="aps-card aps-h-100p">
+                <div class="aps-card-header">
+                    <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+                        {{ 'Module Mapping' | apsTranslate }}
+                    </div>
+                </div>
+                <div class="aps-card-body">
+                    <div class="p-grid">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <div class="text-size-14 text-semi-bold text-center">All Modules</div>
+                        </div>
+                        <div class="p-col-12 p-md-2 p-lg-2 p-sm-12"></div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                            <div class="text-size-14 text-semi-bold text-center">Selected Modules</div>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-3 p-pb-3 p-pt-0">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 border p-p-0 aps-h-250 ">
+                            <div class="text-size-14 text-semi-bold p-py-2 p-px-3 border-bottom hover-background-color-primary-light-shade-2"
+                                *ngFor="let item of moduleList;let i = index">
+                                <span>{{i + 1}}) </span><span>{{item.displayName}}</span>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-md-2 p-lg-2 p-sm-12 text-center vertical-center">
+                            <app-icon styleClasses="text-size-42" icon="fa-arrows-alt-h"></app-icon>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 border p-p-0 aps-h-250">
+                            <ng-container *ngIf="formData.moduleMapping.length > 0">
+                                <div class="text-size-14 text-semi-bold p-py-2 p-px-3 border-bottom hover-background-color-primary-light-shade-2"
+                                    *ngFor="let item of formData.moduleMapping;let i = index">
+                                    <span>{{i + 1}}) </span><span>{{item.displayName}}</span>
+                                </div>
+                            </ng-container>
+                            <app-nothing-here colSize="11" *ngIf="formData.moduleMapping.length == 0">
+                            </app-nothing-here>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+        </div>
+    </div>
+</div>

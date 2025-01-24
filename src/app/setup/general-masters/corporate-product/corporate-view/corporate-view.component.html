@@ -1,0 +1,331 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal [(isShow)]="corporate.userDetails.showUsers" size="md">
+      <div header class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-20 text-bold text-color-dark-shade-1">User Details</div>
+        </div>
+        <div class="right-container"></div>
+      </div>
+      <div body class="p-my-3 aps-h-300">
+        <app-ag-grid-listing
+          [columnDefs]="corporate.userDetails.columnData"
+          [rowData]="corporate.userDetails.rowData"
+          [gridOptions]="{
+            rowModelType: 'clientSide'
+          }"
+        ></app-ag-grid-listing>
+      </div>
+      <div footer class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="corporate.userDetails.showUsers = false">
+            CLOSE
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <div class="p-grid text-color-dark-shade-1 g-margin-x">
+      <div class="p-md-3 p-col-12">
+        <div class="aps-card aps-h-500">
+          <div class="p-p-3">
+            <div class="label-with-icon-container p-pb-2">
+              <div class="icon">
+                <img
+                  [src]="
+                    userService.userDetails.isGroupUser === 'Y'
+                      ? selectedCorporate
+                        ? selectedCorporate.corporateIcon
+                        : corporate.corporateIcon
+                      : userService.userDetails.corporateImage
+                  "
+                  alt=""
+                  class="img-35-x-27"
+                />
+              </div>
+              <div class="label p-pt-1">
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{
+                    userService.userDetails.isGroupUser === 'Y'
+                      ? selectedCorporate
+                        ? selectedCorporate.corporateName
+                        : corporate.corporateName
+                      : userService.userDetails.corporateName
+                  }}
+                </div>
+              </div>
+            </div>
+
+            <div class="text-size-14">
+              Category
+              <span
+                class="background-color-primary-light-shade-2 inline-block border-radius-4 p-p-1 p-ml-2"
+              >
+                {{ corporate.category }}
+              </span>
+            </div>
+          </div>
+
+          <div
+            class="text-size-14 text-semi-bold pointer border-radius-4 p-px-3 p-py-2"
+            *ngFor="let sec of sections; let i = index"
+            [ngClass]="{
+              'text-color-primary border border-primary': sec.displayName === section.displayName
+            }"
+            (click)="scroll(sec, i)"
+          >
+            {{ sec.displayName }}
+          </div>
+        </div>
+      </div>
+      <div class="p-md-9 p-col-12">
+        <div class="aps-card aps-h-500 text-size-14 overflow-scroll">
+          <div class="section" #section1 id="section-1">
+            <div
+              class="section-header background-color-dark-3 p-px-3 aps-py-12 text-size-14 text-bold"
+            >
+              {{ sections[0].displayName }}
+            </div>
+            <div class="section-body text-size-14">
+              <div class="p-grid p-p-2">
+                <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-col-12">
+                      <div class="text-color-normal">Corporate Name</div>
+                      <div class="text-semi-bold">
+                        {{
+                          userService.userDetails.isGroupUser === 'Y'
+                            ? selectedCorporate
+                              ? selectedCorporate.corporateName
+                              : corporate.corporateName
+                            : userService.userDetails.corporateName
+                        }}
+                      </div>
+                    </div>
+
+                    <div class="p-col-12">
+                      <div class="text-color-normal">Category</div>
+                      <div class="text-semi-bold">
+                        {{ selectedCorporate ? selectedCorporate.category : corporate.category }}
+                      </div>
+                    </div>
+
+                    <div class="p-col-12">
+                      <div class="text-color-normal">Subscription Plan Details</div>
+                      <div class="text-semi-bold">Basic Banking</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+                  <div class="p-grid text-size-14">
+                    <div class="p-col-12">
+                      <div class="background-color-dark-3 border-radius-4 p-p-3">
+                        <div class="text-bold">24</div>
+                        <div class="text-semi-bold text-color-normal">Accounts Mapped</div>
+                      </div>
+                    </div>
+                    <div class="p-col-12">
+                      <div class="background-color-dark-3 border-radius-4 p-p-3">
+                        <div class="text-bold">5</div>
+                        <div class="text-semi-bold text-color-normal">Active Users</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <div
+                    class="background-color-dark-4 aps-min-h-100 aps-h-100p border-radius-4 text-color-dark-shade-1 p-p-3"
+                  >
+                    <div class="text-size-14 text-semi-bold">Insights</div>
+                    <div class="aps-h-100 overflow-scroll">
+                      <div
+                        class="label-with-icon-container p-mt-1"
+                        *ngFor="let insight of insights"
+                      >
+                        <div class="icon">
+                          <app-icon styleClasses="text-size-14" [icon]="insight.icon"></app-icon>
+                        </div>
+                        <div class="label text-size-14 white-space-normal p-pt-1">
+                          {{ insight.label }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="section" #section2 id="section-2">
+            <div
+              class="section-header background-color-dark-3 p-px-3 aps-py-12 text-size-14 text-bold"
+            >
+              {{ sections[1].displayName }}
+            </div>
+            <div class="section-body">
+              <div class="p-grid p-p-2">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">Agreement Ref No</div>
+                  <div class="text-semi-bold">{{ corporate.agreementDetails.agreementRefNo }}</div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">Agreement Expiry Date</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.agreementDetails.agreementExpiryDate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="section" #section3 id="section-3">
+            <div
+              class="section-header background-color-dark-3 p-px-3 aps-py-12 text-size-14 text-bold"
+            >
+              {{ sections[2].displayName }}
+            </div>
+            <div class="section-body">
+              <div class="p-grid p-p-2">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">RM Name</div>
+                  <div class="text-semi-bold">{{ corporate.rmDetails.rmName }}</div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">RM Email ID</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.rmDetails.rmEmailId }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">RM Mobile No</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.rmDetails.rmMobileNo }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="section" #section4 id="section-4">
+            <div
+              class="section-header background-color-dark-3 p-px-3 aps-py-12 text-size-14 text-bold"
+            >
+              {{ sections[3].displayName }}
+            </div>
+            <div class="section-body aps-h-200 p-p-3">
+              <app-ag-grid-listing
+                [columnDefs]="corporate.contactPerson.columnData"
+                [rowData]="corporate.contactPerson.rowData"
+                [gridOptions]="{
+                  rowModelType: 'clientSide',
+                  pagination: false
+                }"
+              ></app-ag-grid-listing>
+            </div>
+          </div>
+          <div class="section" #section5 id="section-5">
+            <div
+              class="section-header background-color-dark-3 p-px-3 aps-py-12 text-size-14 text-bold"
+            >
+              {{ sections[4].displayName }}
+            </div>
+            <div class="section-body aps-h-600 p-p-3">
+              <app-ag-grid-listing
+                id="makerChekerGrid"
+                [columnDefs]="corporate.productAndAccountMapping.headers"
+                [rowData]="corporate.productAndAccountMapping.data"
+                [gridOptions]="treeGridOptions"
+              >
+              </app-ag-grid-listing>
+            </div>
+          </div>
+
+          <div class="section" #section7 id="section-7">
+            <div
+              class="section-header background-color-dark-3 p-px-3 aps-py-12 text-size-14 text-bold"
+            >
+              {{ sections[6].displayName }}
+            </div>
+            <div class="section-body p-p-3 aps-h-400">
+              <app-ag-grid-listing
+                [columnDefs]="corporate.authorizationRules.columnData"
+                [rowData]="corporate.authorizationRules.rowData"
+                [gridOptions]="treeGridOptions"
+              ></app-ag-grid-listing>
+            </div>
+          </div>
+          <div class="section" #section8 id="section-8">
+            <div
+              class="section-header background-color-dark-3 p-px-3 aps-py-12 text-size-14 text-bold"
+            >
+              {{ sections[7].displayName }}
+            </div>
+            <div class="section-body">
+              <div class="p-grid p-p-2">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">Currency wise Auth Matrix</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.parameterDetails.currencyWiseAuthMatrix }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">Primary Currency</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.parameterDetails.primaryCurrency }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">BATCH PRIMARY CURRENCY</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.parameterDetails.batchPrimaryCurrency }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">VERIFICATION REQUIRED</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.parameterDetails.verificationRequired }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">VERIFICATION LEVEL</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.parameterDetails.verificationLevel }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="section" #section9 id="section-9">
+            <div
+              class="section-header background-color-dark-3 p-px-3 aps-py-12 text-size-14 text-bold"
+            >
+              {{ sections[8].displayName }}
+            </div>
+            <div class="section-body">
+              <div class="p-grid p-p-2">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">No of Users</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.userDetails.numberOfUsers }}&nbsp;<span
+                      class="text-color-primary text-underline pointer"
+                      (click)="corporate.userDetails.showUsers = true"
+                      >(User Details)</span
+                    >
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-color-normal">Token Used</div>
+                  <div class="text-semi-bold">
+                    {{ corporate.userDetails.tokenUsed }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

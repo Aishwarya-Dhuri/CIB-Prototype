@@ -1,0 +1,1121 @@
+<div class="container">
+  <app-modal [(isShow)]="isTermsAndCondition" *ngIf="isTermsAndCondition" size="md">
+    <div header>
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-16 text-semi-bold">{{ 'Terms And Conditions' | apsTranslate }}</div>
+        </div>
+      </div>
+    </div>
+    <div body>
+      <div
+        [innerHtml]="
+          (termsAndCondition && termsAndCondition[0] ? termsAndCondition[0].description : '')
+            | safeHtml
+        "
+      ></div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary p-px-3" (click)="isTermsAndCondition = false">
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="submit">
+    <div body>
+      <div class="text-size-16 text-bold text-color-dark-shade-1">
+        {{ 'Successfully Submitted' | apsTranslate }}
+      </div>
+      <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+        {{ 'Bill Presentment Repair record has been successfully submitted.' | apsTranslate }}
+      </div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary p-px-3" (click)="cancel()">
+            {{ 'OKAY' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid" *ngIf="parentRef.formData">
+    <div class="p-col-12 p-p-0">
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Beneficiary / Exporter Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                *ngIf="!parentRef.isViewMode"
+                icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                (click)="onEdit(0)"
+              >
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryOrExporterDetails[0].name }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Address1' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryOrExporterDetails[0].address1 }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Address2' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryOrExporterDetails[0].address1 }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Address3' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryOrExporterDetails[0].address3 }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Mobile No.' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryOrExporterDetails[0].mobileNumber }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Email' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryOrExporterDetails[0].email }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Import/Export (IE) Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryOrExporterDetails[0].ieCode }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'CIF ID' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryOrExporterDetails[0].cifId }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Trade Bill Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                *ngIf="!parentRef.isViewMode"
+                icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                (click)="onEdit(1)"
+              >
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Type Of Bill Presentment' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].typeOfBillPresentment }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+              <p-radioButton
+                class="p-mr-6 p-pt-4"
+                id="collection"
+                name="collection"
+                value="Collection"
+                label="Collection"
+                [(ngModel)]="parentRef.formData.tradeBillDetails[0].type"
+                (click)="setStepCompleted()"
+                [required]="true"
+                disabled="true"
+              ></p-radioButton>
+
+              <p-radioButton
+                class="p-mr-4"
+                id="purchase"
+                name="purchase"
+                value="Purchase"
+                label="Purchase"
+                [(ngModel)]="parentRef.formData.tradeBillDetails[0].type"
+                [required]="true"
+                (click)="setStepCompleted()"
+                disabled="true"
+              ></p-radioButton>
+            </div>
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment != 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'buyerCode' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].buyerCode }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment === 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].lcNumber }}
+              </div>
+            </div>
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment === 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Original Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].lcOriginalNumber }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Buyer Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].buyerName }}
+              </div>
+            </div>
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment === 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Issue Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].lcIssueDate }}
+              </div>
+            </div>
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment != 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Bill Currency' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].billCurrency }}
+              </div>
+            </div>
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment != 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Bill Amount' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].billAmount }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment === 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Currency' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].lcCurrency }}
+              </div>
+            </div>
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment === 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Amount' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].lcAmount }}
+              </div>
+            </div>
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.tradeBillDetails[0].typeOfBillPresentment === 'Letter of Credit'
+              "
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Available Amount' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].lcAvailableAmount }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Invoice Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].invoiceNumber }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Bill Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].billDate }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Billing Address' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].billingAddress }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Delivery Address' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].deliveryAddress }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Remarks' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.tradeBillDetails[0].remarks }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Payment Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                *ngIf="!parentRef.isViewMode"
+                icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                (click)="onEdit(2)"
+              >
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Account To Be Credited' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.paymentDetails[0].accountToBeCredited }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Account To Be Debit For Charges' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.paymentDetails[0].accountToBeDebitForCharges }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Tenor In Days' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.paymentDetails[0].tenorInDays }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Due Date Indicator' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.paymentDetails[0].dueDateIndicator }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Shipping Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                *ngIf="!parentRef.isViewMode"
+                icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                (click)="onEdit(3)"
+              >
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Shipping Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].shippingDate }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Shipment From' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].shipmentFrom }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Shipment To' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].shipmentTo }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Port Of Loading / Airport Departure' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].portOfLoadingOrAirportDeparture }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Port Of Discharge / Airport Of Destination' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].portOfDischargeOrAirportOfDestination }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Place Of Taking In Charge / Dispatch From / Place Of Receipt' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{
+                  parentRef.formData.shippingDetails[0]
+                    .placeOfTakingInChargeOrDispatchFromOrPlaceOfReceipt
+                }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{
+                  'Place Of Final Destination / For Final Destination / For Transportation To / Place Of
+                                Delivery'
+                    | apsTranslate
+                }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{
+                  parentRef.formData.shippingDetails[0]
+                    .placeOfFinalDestinationOrForFinalDestinationOrForTransportationToOrPlaceOfDelivery
+                }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Vessel Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].vesselName }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Description Of Goods' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].descriptionOfGoods }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Reasons For Late Submission Of Documents' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].reasonsForLateSubmissionOfDocuments }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Remark' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDetails[0].remark }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Supporting Documents' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                *ngIf="!parentRef.isViewMode"
+                icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                (click)="onEdit(4)"
+              >
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Document Type' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Count' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Reference Number' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Upload Documents' | apsTranslate }}
+                <span class="text-size-8 text-color-normal"
+                  >&nbsp;{{ 'Max 10MB each' | apsTranslate }}</span
+                >
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+            >
+              <p-checkbox
+                name="isSignedBillsOfLading"
+                id="isSignedBillsOfLading"
+                class="p-py-4"
+                [label]="'Signed Bills Of Lading' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+                (click)="setStepCompleted()"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div
+              class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Original' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].signedBillOriginalCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Copy' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].signedBillCopyCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+            >
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].signedBillRefNo }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isSignedBillsOfLading"
+            >
+              <div class="aps-card p-p-2">
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div
+                    class="item text-color-normal p-px-2"
+                    *ngIf="parentRef.formData.supportingDocuments[0].signedBillDocument.length > 0"
+                  >
+                    <div class="text-size-12">
+                      {{ parentRef.formData.supportingDocuments[0].signedBillDocument[0].fileName }}
+                    </div>
+                    <div class="text-size-10">
+                      {{
+                        (
+                          +parentRef.formData.supportingDocuments[0].signedBillDocument[0]
+                            .fileSize /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      }}Mb
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+            >
+              <p-checkbox
+                name="isCertificateOfOrigin"
+                id="isCertificateOfOrigin"
+                class="p-py-4"
+                [label]="'Certificate Of Origin' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+                (click)="setStepCompleted()"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div
+              class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Original' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].certificateOfOriginOriginalCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Copy' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].certificateOfOriginCopyCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+            >
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].certificateOfOriginRefNo }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isCertificateOfOrigin"
+            >
+              <div class="aps-card p-p-2">
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div
+                    class="item text-color-normal p-px-2"
+                    *ngIf="
+                      parentRef.formData.supportingDocuments[0].certificateOfOriginDocument.length >
+                      0
+                    "
+                  >
+                    <div class="text-size-12">
+                      {{
+                        parentRef.formData.supportingDocuments[0].certificateOfOriginDocument[0]
+                          .fileName
+                      }}
+                    </div>
+                    <div class="text-size-10">
+                      {{
+                        (
+                          +parentRef.formData.supportingDocuments[0].certificateOfOriginDocument[0]
+                            .fileSize /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      }}Mb
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isAirwayBill"
+            >
+              <p-checkbox
+                name="isAirwayBill"
+                id="isAirwayBill"
+                class="p-py-4"
+                [label]="'Airway Bill' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.supportingDocuments[0].isAirwayBill"
+                (click)="setStepCompleted()"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div
+              class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isAirwayBill"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Original' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].airwayBillOriginalCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isAirwayBill"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Copy' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].airwayBillCopyCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isAirwayBill"
+            >
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].airwayBillRefNo }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isAirwayBill"
+            >
+              <div class="aps-card p-p-2">
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div
+                    class="item text-color-normal p-px-2"
+                    *ngIf="parentRef.formData.supportingDocuments[0].airwayBillDocument.length > 0"
+                  >
+                    <div class="text-size-12">
+                      {{ parentRef.formData.supportingDocuments[0].airwayBillDocument[0].fileName }}
+                    </div>
+                    <div class="text-size-10">
+                      {{
+                        (
+                          +parentRef.formData.supportingDocuments[0].airwayBillDocument[0]
+                            .fileSize /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      }}Mb
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+            >
+              <p-checkbox
+                name="isBeneficiaryCertificate"
+                id="isBeneficiaryCertificate"
+                class="p-py-4"
+                [label]="'Beneficiary Certificate' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+                (click)="setStepCompleted()"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div
+              class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Original' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].beneficiaryCertificateOriginalCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Copy' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].beneficiaryCertificateCopyCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+            >
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].beneficiaryCertificateRefNo }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBeneficiaryCertificate"
+            >
+              <div class="aps-card p-p-2">
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div
+                    class="item text-color-normal p-px-2"
+                    *ngIf="
+                      parentRef.formData.supportingDocuments[0].beneficiaryCertificateDocument
+                        .length > 0
+                    "
+                  >
+                    <div class="text-size-12">
+                      {{
+                        parentRef.formData.supportingDocuments[0].beneficiaryCertificateDocument[0]
+                          .fileName
+                      }}
+                    </div>
+                    <div class="text-size-10">
+                      {{
+                        (
+                          +parentRef.formData.supportingDocuments[0]
+                            .beneficiaryCertificateDocument[0].fileSize /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      }}Mb
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+            >
+              <p-checkbox
+                name="isBillPresentDAPay26"
+                id="isBillPresentDAPay26"
+                class="p-py-4"
+                [label]="'Bill Present DA Pay 26' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+                (click)="setStepCompleted()"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div
+              class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Original' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].billPresentDAPay26OriginalCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Copy' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].billPresentDAPay26CopyCount }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-4"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+            >
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.supportingDocuments[0].billPresentDAPay26RefNo }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.supportingDocuments[0].isBillPresentDAPay26"
+            >
+              <div class="aps-card p-p-2">
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div
+                    class="item text-color-normal p-px-2"
+                    *ngIf="
+                      parentRef.formData.supportingDocuments[0].billPresentDAPay26Document.length >
+                      0
+                    "
+                  >
+                    <div class="text-size-12">
+                      {{
+                        parentRef.formData.supportingDocuments[0].billPresentDAPay26Document[0]
+                          .fileName
+                      }}
+                    </div>
+                    <div class="text-size-10">
+                      {{
+                        (
+                          +parentRef.formData.supportingDocuments[0].billPresentDAPay26Document[0]
+                            .fileSize /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      }}Mb
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Collection Instruction' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                *ngIf="!parentRef.isViewMode"
+                icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                (click)="onEdit(5)"
+              >
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid" *ngFor="let item of collectionInstructionsDataList; let i = index">
+            <div class="p-col-12">
+              <p-checkbox
+                name="{{ item.displayName + i }}"
+                id="{{ item.displayName + i }}"
+                [label]="item.displayName"
+                [binary]="true"
+                (click)="setStepCompleted()"
+                [(ngModel)]="parentRef.formData.collectionInstruction[0].collectionInstructions[i]"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Special Instruction' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.collectionInstruction[0].specialInstruction }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Contact Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.collectionInstruction[0].contactName }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Contact Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.collectionInstruction[0].contactNumber }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Clauses' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                *ngIf="!parentRef.isViewMode"
+                icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                (click)="onEdit(6)"
+              >
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <app-clauses productType="BILLPRESENTMENT" [parentRef]="this"></app-clauses>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Terms and condition' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                *ngIf="!parentRef.isViewMode"
+                icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                (click)="onEdit(7)"
+              >
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <p-checkbox
+                name="agreeToTermsAndCondition"
+                id="agreeToTermsAndCondition"
+                label="I agree to terms and conditions"
+                [binary]="true"
+                [disabled]="true"
+                [(ngModel)]="parentRef.formData.termsAndCondition[0].agreeToTermsAndCondition"
+              >
+              </p-checkbox>
+              <a class="text-size-14 text-bold pointer p-p-1" (click)="isTermsAndCondition = true"
+                >Click Here</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

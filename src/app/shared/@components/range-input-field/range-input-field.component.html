@@ -1,0 +1,39 @@
+<aps-form-input [id]="id" [label]="label" [name]="name" [(ngModel)]="value" #rangeField [readonly]="true"
+  [disabled]="disabled" [required]="required" [minLength]="minLength" [maxLength]="maxLength" [icon]="icon"
+  [helpText]="helpText" [showClear]="showClear" [required]="required" [customErrorMessage]="customErrorMessage"
+  (focus)="onFocus($event)" (onFocusOut)="onFocusOut($event)" (onBlur)="onBlur($event)">
+</aps-form-input>
+
+<p-overlayPanel [dismissable]="false" appendTo="body" (onHide)="changed({ target: { value: value } })" #rangeFilter
+  *ngIf="!disabled">
+  <ng-template pTemplate>
+    <div class="p-grid g-margin-x">
+      <div class="p-md-6 p-sm-6 p-col-12 p-py-0">
+        <aps-form-input id="from" label="{{ 'From' | apsTranslate }}" name="from" [inputType]="inputType"
+          [(ngModel)]="fromValue" [required]="true">
+        </aps-form-input>
+      </div>
+      <div class="p-md-6 p-sm-6 p-col-12 p-py-0">
+        <aps-form-input id="toValue" label="{{ 'To' | apsTranslate }}" name="toValue" [inputType]="inputType"
+          [(ngModel)]="toValue" [required]="true">
+        </aps-form-input>
+      </div>
+    </div>
+
+    <div class="left-right-container">
+      <div class="left-container">
+        <button class="btn btn-md btn-secondary" (click)="onCancel($event)">
+          {{ 'CANCEL' | apsTranslate }}
+        </button>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-tertiary p-mx-2" (click)="onClear($event)">
+          {{ 'CLEAR' | apsTranslate }}
+        </button>
+        <button class="btn btn-md btn-primary" [disabled]="!fromValue || !toValue" (click)="onApply($event)">
+          {{ 'APPLY' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-overlayPanel>

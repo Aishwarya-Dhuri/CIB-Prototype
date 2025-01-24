@@ -1,0 +1,1044 @@
+<div class="container">
+
+    <app-modal [(isShow)]="isBlockCardModal" size="sm">
+        <div body>
+            <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+                Are you sure, You want {{this.formData.isBlockCard ? 'Unblock':'BLock'}} Card ?
+            </div>
+        </div>
+        <div footer>
+            <div class="left-right-container p-mt-3">
+                <div class="left-container"></div>
+                <div class="right-container">
+                    <button class="btn btn-md btn-primary" (click)="accept()">ACCEPT</button>
+                    &nbsp;
+                    <button class="btn btn-md btn-tertiary" (click)="cancel()">CANCEL</button>
+                </div>
+            </div>
+        </div>
+    </app-modal>
+
+
+    <div class="aps-card">
+        <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field label="Card No." [value]="formData.cardNumber"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field label="Card Type" [value]="formData.cardType"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field label="Embossed Name" [value]="formData.embossedName">
+                </app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field label="Expiry Date" [value]="formData.expiryDate">
+                </app-review-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12 p-md-3 p-lg-3 p-pb-0" *ngIf="stepperDetails.currentStep < stepperDetails.headings.length">
+            <app-stepper-header [parentRef]="this"></app-stepper-header>
+        </div>
+        <div class="p-col-12 p-pb-0 p-mb-3"
+            [ngClass]="{ 'p-md-9 p-lg-9': stepperDetails.currentStep < stepperDetails.headings.length }">
+            <!-- Card Details -->
+            <div [apsHide]="stepperDetails.headings[stepperDetails.currentStep -1] != 'Card Details'">
+                <div class="aps-card aps-h-600">
+                    <div class="aps-card-header">
+                        <div class="text-size-16 text-semi-bold p-p-2">
+                            {{ 'Card Details' | apsTranslate }}
+                        </div>
+                    </div>
+                    <div class="aps-card-body">
+                        <div class="p-grid">
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field label="Card No." [value]="formData.cardNumber">
+                                </app-review-form-field>
+                            </div>
+
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field label="Card Type" [value]="formData.cardType">
+                                </app-review-form-field>
+                            </div>
+
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field label="Primary Account"
+                                    [value]="formData.primaryAccountDisplayName">
+                                </app-review-form-field>
+                            </div>
+
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field label="Embossed Name" [value]="formData.embossedName">
+                                </app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field label="Card Status" [value]="formData.status">
+                                </app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field label="Card Issuance " [value]="formData.cardIssuanceDate">
+                                </app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field label="Expiry Date" [value]="formData.expiryDate">
+                                </app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Change Pin -->
+            <div [apsHide]="stepperDetails.headings[stepperDetails.currentStep -1] != 'Change Pin'">
+                <form name="step2Form" #step2Form="ngForm">
+                    <div class="aps-card aps-h-600">
+                        <div class="aps-card-header p-grid">
+                            <div class="p-col-6">
+                                <div class="text-size-16 text-semi-bold p-p-2">
+                                    {{ 'Change Pin' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="p-col-6">
+                                <app-debit-org-tree [treeData]="changePinTreeData"></app-debit-org-tree>
+                            </div>
+                        </div>
+                        <div class="aps-card-body" [ngClass]="formData.changePin[0].isChanged ? 'disable-cursor':''">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-px-3">
+                                    <aps-form-input [label]="'New Pin' | apsTranslate" name="newPin" id="newPin"
+                                        [(ngModel)]="formData.changePin[0].newPin" [required]="true">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-px-2">
+                                    <aps-form-input [label]="'Confirm Pin' | apsTranslate" name="confirmPin"
+                                        type="password" id="confirmPin" [(ngModel)]="formData.changePin[0].confirmPin"
+                                        [required]="true">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Switch Primary Account -->
+            <div [apsHide]="stepperDetails.headings[stepperDetails.currentStep -1] != 'Switch Primary Account'">
+                <form name="step3Form" #step3Form="ngForm">
+                    <div class="aps-card aps-h-600"
+                        [ngClass]="formData.switchPrimaryAccount[0].isChanged && listType === 'Card List' ? 'disable-pointer':''">
+                        <div class="aps-card-header p-grid">
+                            <div class="p-col-6">
+                                <div class="text-size-16 text-semi-bold p-p-2">
+                                    {{ 'Switch Primary Account' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="p-col-6">
+                                <app-debit-org-tree [treeData]="switchPrimaryAccountTreeData"></app-debit-org-tree>
+                            </div>
+                        </div>
+                        <div class="aps-card-body"
+                            [ngClass]="formData.switchPrimaryAccount[0].isChanged && listType === 'Card List' ? 'disable-cursor':''">
+                            <div class="text-size-14 text-semi-bold text-color-danger p-p-3"
+                                *ngIf="formData.switchPrimaryAccount[0].isChanged  && listType === 'Card List'">
+                                The request is exist in pending list, You may not able to modify it.
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-px-3">
+                                    <aps-custom-select label="Account Selection" name="accountSelection"
+                                        id="accountSelection"
+                                        [(ngModel)]="formData.switchPrimaryAccount[0].primaryAccountId"
+                                        [value]="formData.switchPrimaryAccount[0].primaryAccountId"
+                                        dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                        (change)="onAccountSelectionChange(formData.switchPrimaryAccount[0].primaryAccountId)"
+                                        [required]="true"
+                                        [helpText]="formData.switchPrimaryAccount[0].primaryAccountId && formData.switchPrimaryAccount[0].primaryAccountId != oldFormData.switchPrimaryAccount[0].primaryAccountId ? 'Previous Value -' +  oldFormData.switchPrimaryAccount[0].primaryAccountDisplayName : ''">
+                                    </aps-custom-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Block Card / Report Fraud / Dispute -->
+            <div
+                [apsHide]="stepperDetails.headings[stepperDetails.currentStep -1] != 'Block Card / Report Fraud / Dispute'">
+                <form name="step8Form" #step8Form="ngForm">
+                    <div class="aps-card aps-h-600"
+                        [ngClass]="formData.blockCard[0].isChanged && listType === 'Card List' ? 'disable-pointer':''">
+                        <div class="aps-card-header p-grid">
+                            <div class="p-col-6">
+                                <div class="text-size-16 text-semi-bold p-p-2">
+                                    {{ 'Block Card / Report Fraud / Dispute' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="p-col-6">
+                                <app-debit-org-tree [treeData]="blockCardTreeData"></app-debit-org-tree>
+                            </div>
+                        </div>
+                        <div class="aps-card-body"
+                            [ngClass]="formData.blockCard[0].isChanged && listType === 'Card List' ? 'disable-cursor':''">
+                            <div class="text-size-14 text-semi-bold text-color-danger p-p-3"
+                                *ngIf="formData.blockCard[0].isChanged && listType === 'Card List'">
+                                The request is exist in pending list, You may not able to modify it.
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Card Block' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isBlockCard" name="isBlockCard"
+                                        [(ngModel)]="formData.blockCard[0].isBlockCard">
+                                    </p-inputSwitch>
+                                    <span
+                                        class="text-size-14 text-semi-bold text-color-primary">{{formData.blockCard[0].isBlockCard
+                                        ? 'Blocked' :'Unblock'}}</span>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.blockCard[0].isBlockCard != oldFormData.blockCard[0].isBlockCard
+                                        ?
+                                        (oldFormData.blockCard[0].isBlockCard ? 'Previoud Value - Blocked' :
+                                        'Previoud
+                                        Value - Unblock') : ''}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-grid" *ngIf="formData.blockCard[0].isBlockCard">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <aps-custom-select label="Reason For Block" name="reasonForBlock"
+                                        id="reasonForBlock" [(ngModel)]="formData.blockCard[0].reasonForBlock"
+                                        dataUrl="accountServices/debitCard/debitCardControl/private/dropdown/reasonForBlockList"
+                                        [required]="true"
+                                        [helpText]="formData.blockCard[0].reasonForBlock != oldFormData.blockCard[0].reasonForBlock ? 'Previous Value - '+ oldFormData.blockCard[0].reasonForBlock : ''">
+                                    </aps-custom-select>
+                                </div>
+                            </div>
+                            <div class="p-grid" *ngIf="formData.blockCard[0].isBlockCard">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 inline-items">
+                                    <div class="item">
+                                        <p-checkbox name="isReplacementRequired" id="isReplacementRequired"
+                                            [binary]="true" [(ngModel)]="formData.blockCard[0].isReplacementRequired">
+                                        </p-checkbox>
+                                    </div>
+                                    <div class="text-size-12 item p-p-2">
+                                        {{ 'Replacement Required' | apsTranslate }}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 inline-items">
+                                    <div class="item">
+                                        <p-checkbox name="isReportFraud" id="isReportFraud" [binary]="true"
+                                            [(ngModel)]="formData.blockCard[0].isReportFraud">
+                                        </p-checkbox>
+                                    </div>
+                                    <div class="text-size-12 item p-p-2">
+                                        {{ 'Report Fraud' | apsTranslate }}
+                                    </div>
+                                    <app-icon class="item p-p-1" icon="fa-info-circle"
+                                        pTooltip="Information to be display: Any unauthorized transaction or login attempt to your account">
+                                    </app-icon>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 inline-items">
+                                    <div class="item">
+                                        <p-checkbox name="isRaiseDispute" id="isRaiseDispute" [binary]="true"
+                                            [(ngModel)]="formData.blockCard[0].isRaiseDispute">
+                                        </p-checkbox>
+                                    </div>
+                                    <div class="text-size-12 p-p-2 item">
+                                        {{ 'RaiseDispute' | apsTranslate }}
+                                    </div>
+                                    <app-icon class="item p-p-1" icon="fa-info-circle"
+                                        pTooltip="Information to be display: Any billing related issues and issues concerning cash withdrawal at ATM">
+                                    </app-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Debit Card Active / Inactive -->
+            <div [apsHide]="stepperDetails.headings[stepperDetails.currentStep -1] != 'Debit Card Active / Inactive'">
+                <form name="step5Form" #step5Form="ngForm">
+                    <div class="aps-card aps-h-600"
+                        [ngClass]="formData.cardActiveInactive[0].isChanged && listType === 'Card List' ? 'disable-pointer':''">
+                        <div class="aps-card-header p-grid">
+                            <div class="p-col-6">
+                                <div class="text-size-16 text-semi-bold p-p-2">
+                                    {{ 'Debit Card Active / Inactive' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="p-col-6">
+                                <!-- <app-debit-org-tree [treeData]="treeData"></app-debit-org-tree> -->
+                            </div>
+                        </div>
+                        <div class="aps-card-body"
+                            [ngClass]="formData.cardActiveInactive[0].isChanged && listType === 'Card List' ? 'disable-cursor':''">
+                            <div class="text-size-14 text-semi-bold text-color-danger p-p-3"
+                                *ngIf="formData.cardActiveInactive[0].isChanged && listType === 'Card List'">
+                                The request is exist in pending list, You may not able to modify it.
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Card Status' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isCardStatus" name="isCardStatus"
+                                        [(ngModel)]="formData.cardActiveInactive[0].isCardStatus">
+                                    </p-inputSwitch>
+                                    <span
+                                        class="text-size-14 text-semi-bold text-color-primary">{{formData.cardActiveInactive[0].isCardStatus?'Active':'Inactive'}}</span>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.cardActiveInactive[0].isCardStatus !=
+                                        oldFormData.cardActiveInactive[0].isCardStatus ?
+                                        (oldFormData.cardActiveInactive[0].isCardStatus ? 'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Card / Limit Control -->
+            <div [apsHide]="stepperDetails.headings[stepperDetails.currentStep -1] != 'Card / Limit Control'">
+                <form name="step6Form" #step6Form="ngForm">
+                    <div class="aps-card aps-h-600"
+                        [ngClass]="formData.limitControl[0].isChanged && listType === 'Card List' ? 'disable-pointer':''">
+                        <div class="aps-card-header p-grid">
+                            <div class="p-col-6">
+                                <div class="text-size-16 text-semi-bold p-p-2">
+                                    {{ 'Card / Limit Control' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="p-col-6">
+                                <app-debit-org-tree [treeData]="cardLimitControlTreeData"></app-debit-org-tree>
+                            </div>
+                        </div>
+                        <div class="aps-card-body"
+                            [ngClass]="formData.limitControl[0].isChanged && listType === 'Card List' ? 'disable-cursor':''">
+                            <div class="text-size-14 text-semi-bold text-color-danger p-p-3"
+                                *ngIf="formData.limitControl[0].isChanged && listType === 'Card List'">
+                                The request is exist in pending list, You may not able to modify it.
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Card Status' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="cardStatus" name="cardStatus"
+                                        [(ngModel)]="formData.limitControl[0].isCardStatus">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.limitControl[0].isCardStatus !=
+                                        oldFormData.limitControl[0].isCardStatus ?
+                                        (oldFormData.limitControl[0].isCardStatus ? 'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                                    <div class="text-size-14 text-semi-bold p-p-2">
+                                        {{ 'Domestic' | apsTranslate }}
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                            <div class="text-size-12 p-p-2">
+                                                {{ 'ATM Usage' | apsTranslate }}
+                                            </div>
+                                            <p-inputSwitch class="p-p-2" id="domesticAtmUsage" name="domesticAtmUsage"
+                                                [(ngModel)]="formData.limitControl[0].isDomesticAtmLimit">
+                                            </p-inputSwitch>
+                                            <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                                {{formData.limitControl[0].isDomesticAtmLimit !=
+                                                oldFormData.limitControl[0].isDomesticAtmLimit ?
+                                                (oldFormData.limitControl[0].isDomesticAtmLimit ? 'Previoud Value -
+                                                Active' :
+                                                'Previoud
+                                                Value - Inactive') : ''}}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                                            <aps-form-input [label]="'ATM Usage Limit (Daily)' | apsTranslate"
+                                                name="domesticAtmLimit" id="domesticAtmLimit"
+                                                [(ngModel)]="formData.limitControl[0].domesticAtmLimit"
+                                                [helpText]="oldFormData.limitControl[0].domesticAtmLimit && formData.limitControl[0].domesticAtmLimit != oldFormData.limitControl[0].domesticAtmLimit ? 'Previous Value - ' +  oldFormData.limitControl[0].domesticAtmLimit : ''">
+                                            </aps-form-input>
+                                        </div>
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                            <div class="text-size-12 p-p-2">
+                                                {{ 'POS Usage' | apsTranslate }}
+                                            </div>
+                                            <p-inputSwitch class="p-p-2" id="domesticPosUsage" name="domesticPosUsage"
+                                                [(ngModel)]="formData.limitControl[0].isDomesticPosLimit">
+                                            </p-inputSwitch>
+                                            <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                                {{formData.limitControl[0].isDomesticPosLimit !=
+                                                oldFormData.limitControl[0].isDomesticPosLimit ?
+                                                (oldFormData.limitControl[0].isDomesticPosLimit ? 'Previoud Value -
+                                                Active' :
+                                                'Previoud
+                                                Value - Inactive') : ''}}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                                            <aps-form-input [label]="'POS Usage Limit (Daily)' | apsTranslate"
+                                                name="domesticPosLimit" id="domesticPosLimit"
+                                                [(ngModel)]="formData.limitControl[0].domesticPosLimit"
+                                                [helpText]="formData.limitControl[0].domesticPosLimit != oldFormData.limitControl[0].domesticPosLimit ?'Previous Value - ' + oldFormData.limitControl[0].domesticPosLimit : ''">
+                                            </aps-form-input>
+                                        </div>
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                            <div class="text-size-12 p-p-2">
+                                                {{ 'Merchant Outlet Usage' | apsTranslate }}
+                                            </div>
+                                            <p-inputSwitch class="p-p-2" id="domesticMerchantOutletUsage"
+                                                name="domesticMerchantOutletUsage"
+                                                [(ngModel)]="formData.limitControl[0].isDomesticMerchantOutletLimit">
+                                            </p-inputSwitch>
+                                            <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                                {{formData.limitControl[0].isDomesticMerchantOutletLimit !=
+                                                oldFormData.limitControl[0].isDomesticMerchantOutletLimit ?
+                                                (oldFormData.limitControl[0].isDomesticMerchantOutletLimit ? 'Previoud
+                                                Value - Active' :
+                                                'Previoud
+                                                Value - Inactive') : ''}}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                                            <aps-form-input [label]="'Merchant Outlet Limit (Daily)' | apsTranslate"
+                                                name="domesticMerchantOutletLimit" id="domesticMerchantOutletLimit"
+                                                [(ngModel)]="formData.limitControl[0].domesticMerchantOutletLimit"
+                                                [helpText]="formData.limitControl[0].domesticMerchantOutletLimit != oldFormData.limitControl[0].domesticMerchantOutletLimit ?'Previous Value - ' + oldFormData.limitControl[0].domesticMerchantOutletLimit : ''">
+                                            </aps-form-input>
+                                        </div>
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                            <div class="text-size-12 p-p-2">
+                                                {{ 'Contactless Usage' | apsTranslate }}
+                                            </div>
+                                            <p-inputSwitch class="p-p-2" id="domesticContactlessUsage"
+                                                name="domesticContactlessUsage"
+                                                [(ngModel)]="formData.limitControl[0].isDomesticContactlessLimit">
+                                            </p-inputSwitch>
+                                            <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                                {{formData.limitControl[0].isDomesticContactlessLimit !=
+                                                oldFormData.limitControl[0].isDomesticContactlessLimit ?
+                                                (oldFormData.limitControl[0].isDomesticContactlessLimit ? 'Previoud
+                                                Value - Active' :
+                                                'Previoud
+                                                Value - Inactive') : ''}}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                                            <aps-form-input [label]="'Contactless Usage Limit (Daily)' | apsTranslate"
+                                                name="domesticontactlessUsageLimit" id="domesticContactlessLimit"
+                                                [(ngModel)]="formData.limitControl[0].domesticContactlessLimit"
+                                                [helpText]="formData.limitControl[0].domesticContactlessLimit != oldFormData.limitControl[0].domesticContactlessLimit ?'Previous Value - ' + oldFormData.limitControl[0].domesticContactlessLimit : ''">
+                                            </aps-form-input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                                    <div class="text-size-14 text-semi-bold p-p-2">
+                                        {{ 'International' | apsTranslate }}
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                            <div class="text-size-12 p-p-2">
+                                                {{ 'ATM Usage' | apsTranslate }}
+                                            </div>
+                                            <p-inputSwitch class="p-p-2" id="internationalAtmUsage"
+                                                name="internationalAtmUsage"
+                                                [(ngModel)]="formData.limitControl[0].isInternationalAtmLimit">
+                                            </p-inputSwitch>
+                                            <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                                {{formData.limitControl[0].isInternationalAtmLimit !=
+                                                oldFormData.limitControl[0].isInternationalAtmLimit ?
+                                                (oldFormData.limitControl[0].isInternationalAtmLimit ? 'Previoud Value -
+                                                Active' :
+                                                'Previoud
+                                                Value - Inactive') : ''}}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                                            <aps-form-input [label]="'ATM Usage Limit (Daily)' | apsTranslate"
+                                                name="internationalAtmLimit" id="internationalAtmLimit"
+                                                [(ngModel)]="formData.limitControl[0].internationalAtmLimit"
+                                                [helpText]="formData.limitControl[0].internationalAtmLimit != oldFormData.limitControl[0].internationalAtmLimit ?'Previous Value - ' + oldFormData.limitControl[0].internationalAtmLimit : ''">
+                                            </aps-form-input>
+                                        </div>
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                            <div class="text-size-12 p-p-2">
+                                                {{ 'POS Usage' | apsTranslate }}
+                                            </div>
+                                            <p-inputSwitch class="p-p-2" id="internationalPosUsage"
+                                                name="internationalPosUsage"
+                                                [(ngModel)]="formData.limitControl[0].isInternationPosLimit">
+                                            </p-inputSwitch>
+                                            <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                                {{formData.limitControl[0].isInternationPosLimit !=
+                                                oldFormData.limitControl[0].isInternationPosLimit ?
+                                                (oldFormData.limitControl[0].isInternationPosLimit ? 'Previoud Value -
+                                                Active' :
+                                                'Previoud
+                                                Value - Inactive') : ''}}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                                            <aps-form-input [label]="'POS Usage Limit (Daily)' | apsTranslate"
+                                                name="internationalPosLimit" id="internationalPosLimit"
+                                                [(ngModel)]="formData.limitControl[0].internationalPosLimit"
+                                                [helpText]="formData.limitControl[0].internationalPosLimit != oldFormData.limitControl[0].internationalPosLimit ?'Previous Value - ' + oldFormData.limitControl[0].internationalPosLimit : ''">
+                                            </aps-form-input>
+                                        </div>
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                            <div class="text-size-12 p-p-2">
+                                                {{ 'Merchant Outlet Usage' | apsTranslate }}
+                                            </div>
+                                            <p-inputSwitch class="p-p-2" id="internationalMerchantOutletUsage"
+                                                name="internationalMerchantOutletUsage"
+                                                [(ngModel)]="formData.limitControl[0].isInternationalMerchantOutletLimit">
+                                            </p-inputSwitch>
+                                            <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                                {{formData.limitControl[0].isInternationalMerchantOutletLimit !=
+                                                oldFormData.limitControl[0].isInternationalMerchantOutletLimit ?
+                                                (oldFormData.limitControl[0].isInternationalMerchantOutletLimit ?
+                                                'Previoud Value - Active' :
+                                                'Previoud
+                                                Value - Inactive') : ''}}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                                            <aps-form-input [label]="'Merchant Outlet Limit (Daily)' | apsTranslate"
+                                                name="internationalMerchantOutletLimit"
+                                                id="internationalMerchantOutletLimit"
+                                                [(ngModel)]="formData.limitControl[0].internationalMerchantOutletLimit"
+                                                [helpText]="formData.limitControl[0].internationalMerchantOutletLimit != oldFormData.limitControl[0].internationalMerchantOutletLimit ?'Previous Value - ' + oldFormData.limitControl[0].internationalMerchantOutletLimit : ''">
+                                            </aps-form-input>
+                                        </div>
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                            <div class="text-size-12 p-p-2">
+                                                {{ 'Contactless Usage' | apsTranslate }}
+                                            </div>
+                                            <p-inputSwitch class="p-p-2" id="internationalContactlessUsage"
+                                                name="internationalContactlessUsage"
+                                                [(ngModel)]="formData.limitControl[0].isInternationalContactlessLimit">
+                                            </p-inputSwitch>
+                                            <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                                {{formData.limitControl[0].isInternationalContactlessLimit !=
+                                                oldFormData.limitControl[0].isInternationalContactlessLimit ?
+                                                (oldFormData.limitControl[0].isInternationalContactlessLimit ? 'Previoud
+                                                Value - Active' :
+                                                'Previoud
+                                                Value - Inactive') : ''}}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                                            <aps-form-input [label]="'Contactless Usage Limit (Daily)' | apsTranslate"
+                                                name="internationalContactlessLimit" id="internationalContactlessLimit"
+                                                [(ngModel)]="formData.limitControl[0].internationalContactlessLimit"
+                                                [helpText]="formData.limitControl[0].internationalContactlessLimit != oldFormData.limitControl[0].internationalContactlessLimit ?'Previous Value - ' + oldFormData.limitControl[0].internationalContactlessLimit : ''">
+                                            </aps-form-input>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Merchant Card Control Group Setting -->
+            <div
+                [apsHide]="stepperDetails.headings[stepperDetails.currentStep - 1] != 'Merchant Card Control Group Setting'">
+                <form name="step9Form" #step9Form="ngForm">
+                    <div class="aps-card aps-h-600"
+                        [ngClass]="formData.merchantCardControlGroupSetting[0].isChanged && listType === 'Card List' ? 'disable-pointer':''">
+                        <div class="aps-card-header p-grid">
+                            <div class="p-col-6">
+                                <div class="text-size-16 text-semi-bold p-p-2">
+                                    {{ 'Merchant Card Control Group Setting' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="p-col-6">
+                                <app-debit-org-tree [treeData]="merchantCardControlTreeData"></app-debit-org-tree>
+                            </div>
+                        </div>
+                        <div class="aps-card-body"
+                            [ngClass]="formData.merchantCardControlGroupSetting[0].isChanged && listType === 'Card List' ? 'disable-cursor':''">
+                            <div class="text-size-14 text-semi-bold text-color-danger p-p-3"
+                                *ngIf="formData.merchantCardControlGroupSetting[0].isChanged && listType === 'Card List'">
+                                The request is exist in pending list, You may not able to modify it.
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Automobile and Transportation' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isAutomobileAndTransportation"
+                                        name="isAutomobileAndTransportation"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isAutomobileAndTransportation">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isAutomobileAndTransportation !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isAutomobileAndTransportation ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isAutomobileAndTransportation ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Commercial and business payments' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isCommercialAndBusinessPayments"
+                                        name="isCommercialAndBusinessPayments"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isCommercialAndBusinessPayments">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isCommercialAndBusinessPayments !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isCommercialAndBusinessPayments ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isCommercialAndBusinessPayments
+                                        ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Food and Department store' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isFoodAndDepartmentStore"
+                                        name="isFoodAndDepartmentStore"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isFoodAndDepartmentStore">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isFoodAndDepartmentStore !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isFoodAndDepartmentStore ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isFoodAndDepartmentStore ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Fuel' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isFuel" name="isFuel"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isFuel">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isFuel !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isFuel ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isFuel ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Government Services' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isGovernmentServices" name="isGovernmentServices"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isGovernmentServices">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isGovernmentServices !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isGovernmentServices ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isGovernmentServices ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Hotel, Amusement and Entertainment' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isHotelAmusementAndEntertainment"
+                                        name="isHotelAmusementAndEntertainment"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isHotelAmusementAndEntertainment">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isHotelAmusementAndEntertainment
+                                        !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isHotelAmusementAndEntertainment
+                                        ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isHotelAmusementAndEntertainment
+                                        ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Miscellaneous' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isMiscellaneous" name="isMiscellaneous"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isMiscellaneous">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isMiscellaneous !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isMiscellaneous ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isMiscellaneous ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Telecom and Utilities' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isTelecomAndUtilities" name="isTelecomAndUtilities"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isTelecomAndUtilities">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isTelecomAndUtilities !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isTelecomAndUtilities ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isTelecomAndUtilities ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                                    <div class="text-size-12 p-p-2">
+                                        {{ 'Toys Department' | apsTranslate }}
+                                    </div>
+                                    <p-inputSwitch class="p-p-2" id="isToysDepartment" name="isToysDepartment"
+                                        [(ngModel)]="formData.merchantCardControlGroupSetting[0].isToysDepartment">
+                                    </p-inputSwitch>
+                                    <div class="text-size-10 text-semi-bold text-color-normal p-px-2">
+                                        {{formData.merchantCardControlGroupSetting[0].isToysDepartment !=
+                                        oldFormData.merchantCardControlGroupSetting[0].isToysDepartment ?
+                                        (oldFormData.merchantCardControlGroupSetting[0].isToysDepartment ?
+                                        'Previoud Value - Active' :
+                                        'Previoud
+                                        Value - Inactive') : ''}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- Reward Points -->
+            <!-- <div [apsHide]="stepperDetails.currentStep != 8">
+                  <form name="step9Form" #step9Form="ngForm">
+                      <div class="aps-card aps-h-600">
+                          <div class="aps-card-header p-grid">
+                              <div class="p-col-6">
+                                  <div class="text-size-16 text-semi-bold p-p-2">
+                                      {{ 'Reward Points' | apsTranslate }}
+                                  </div>
+                              </div>
+                              <div class="p-col-6">
+                                  <app-debit-org-tree [treeData]="treeData"></app-debit-org-tree>
+                              </div>
+                          </div>
+                          <div class="aps-card-body">
+                          </div>
+                      </div>
+                  </form>
+              </div> -->
+            <div [apsHide]="stepperDetails.headings[stepperDetails.currentStep -1] != 'Review and Submit'">
+                <div class="p-py-3 text-size-16 text-bold">
+                    {{ 'Review Details & Confirm' | apsTranslate }}
+                </div>
+                <!-- Step 1 Card Details Review-->
+                <div class="aps-card p-px-3">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Card Details' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Card No." [value]="formData.cardNumber">
+                            </app-review-form-field>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Card Type" [value]="formData.cardType">
+                            </app-review-form-field>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Primary Account" [value]="formData.primaryAccountDisplayName">
+                            </app-review-form-field>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Embossed Name" [value]="formData.embossedName">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Card Status" [value]="formData.status">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Card Issuance " [value]="formData.cardIssuanceDate">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Expiry Date" [value]="formData.expiryDate">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 2 Change Pin Review-->
+                <div class="aps-card p-px-3 p-mt-3" *ngIf="formData.changePin[0].isChanged">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Change Pin' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="New Pin" [value]="formData.changePin[0].newPin">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Confirm Pin" [value]="formData.changePin[0].confirmPin">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 3 Switch Primary Account Review-->
+                <div class="aps-card p-px-3 p-mt-3" *ngIf="formData.switchPrimaryAccount[0].isChanged">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Switch Primary Account' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Account Selection"
+                                [value]="formData.switchPrimaryAccount[0].primaryAccountDisplayName">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 4 Block Card / Report Fraud / Dispute Review -->
+                <div class="aps-card p-px-3 p-mt-3" *ngIf="formData.blockCard[0].isChanged">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Block Card / Report Fraud / Dispute' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Reason For Block"
+                                [value]="formData.blockCard[0].reasonForBlock">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Replacement Required"
+                                [value]="formData.blockCard[0].isReplacementRequired">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Report Fraud" [value]="formData.blockCard[0].isReportFraud">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Raise Dispute" [value]="formData.blockCard[0].isRaiseDispute">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 5 Debit Card Active / Inactive Review-->
+                <div class="aps-card p-px-3 p-mt-3" *ngIf="formData.cardActiveInactive[0].isChanged">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Debit Card Active / Inactive' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-grid">
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field label="Card Status"
+                                    [value]="formData.cardActiveInactive[0].isCardStatus">
+                                </app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 6 Card Limit Control Review-->
+                <div class="aps-card p-px-3 p-mt-3" *ngIf="formData.limitControl[0].isChanged">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Card Limit Control' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-12 p-col-6 p-lg-6 p-sm-12">
+                            <div class="text-size-14 text-semi-bold p-p-2">
+                                {{ 'Domestic' | apsTranslate }}
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12">
+                                    <app-review-form-field label="ATM Usage Limit"
+                                        [value]="formData.limitControl[0].domesticAtmLimit">
+                                    </app-review-form-field>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12">
+                                    <app-review-form-field label="POS Usage Limit"
+                                        [value]="formData.limitControl[0].domesticPosLimit">
+                                    </app-review-form-field>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12">
+                                    <app-review-form-field label="Merchant Outlet Limit"
+                                        [value]="formData.limitControl[0].domesticMerchantOutletLimit">
+                                    </app-review-form-field>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12">
+                                    <app-review-form-field label="Contactless Usage Limit"
+                                        [value]="formData.limitControl[0].domesticContactlessLimit">
+                                    </app-review-form-field>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-col-6 p-lg-6 p-sm-12">
+                            <div class="text-size-14 text-semi-bold p-p-2">
+                                {{ 'International' | apsTranslate }}
+                            </div>
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12">
+                                    <app-review-form-field label="ATM Usage Limit"
+                                        [value]="formData.limitControl[0].internationalAtmLimit">
+                                    </app-review-form-field>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12">
+                                    <app-review-form-field label="POS Usage Limit"
+                                        [value]="formData.limitControl[0].internationalPosLimit">
+                                    </app-review-form-field>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12">
+                                    <app-review-form-field label="Merchant Outlet Limit"
+                                        [value]="formData.limitControl[0].internationalMerchantOutletLimit">
+                                    </app-review-form-field>
+                                </div>
+                                <app-review-form-field label="Contactless Usage Limit"
+                                    [value]="formData.limitControl[0].internationalContactlessLimit">
+                                </app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 7 Merchant Card Control Group Setting Review-->
+                <div class="aps-card p-px-3 p-mt-3" *ngIf="formData.merchantCardControlGroupSetting[0].isChanged">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Merchant Card Control Group Setting' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Automobile and Transportation' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isAutomobileAndTransportation"
+                                name="isAutomobileAndTransportation"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isAutomobileAndTransportation"
+                                disabled="true">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Commercial and business payments' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isCommercialAndBusinessPayments"
+                                name="isCommercialAndBusinessPayments"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isCommercialAndBusinessPayments"
+                                disabled="true">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Food and Department store' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isFoodAndDepartmentStore" name="isFoodAndDepartmentStore"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isFoodAndDepartmentStore"
+                                disabled="true">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Fuel' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isFuel" name="isFuel" disabled="true"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isFuel">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Government Services' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isGovernmentServices" disabled="true"
+                                name="isGovernmentServices"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isGovernmentServices">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Hotel, Amusement and Entertainment' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isHotelAmusementAndEntertainment"
+                                name="isHotelAmusementAndEntertainment" disabled="true"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isHotelAmusementAndEntertainment">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Miscellaneous' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isMiscellaneous" disabled="true" name="isMiscellaneous"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isMiscellaneous">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Telecom and Utilities' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isTelecomAndUtilities" disabled="true"
+                                name="isTelecomAndUtilities"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isTelecomAndUtilities">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <div class="text-size-12 p-p-2">
+                                {{ 'Toys Department' | apsTranslate }}
+                            </div>
+                            <p-inputSwitch class="p-p-2" id="isToysDepartment" disabled="true" name="isToysDepartment"
+                                [(ngModel)]="formData.merchantCardControlGroupSetting[0].isToysDepartment">
+                            </p-inputSwitch>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 8 Review-->
+                <!-- <div class="aps-card p-px-3 p-mt-3">
+                      <div class="p-py-3 text-size-14 text-semi-bold">
+                          {{ 'Reward Points' | apsTranslate }}
+                      </div>
+                      <div class="p-grid">
+  
+                      </div>
+                  </div> -->
+            </div>
+        </div>
+    </div>
+
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12 p-pt-0">
+            <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+        </div>
+    </div>
+</div>

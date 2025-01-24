@@ -1,0 +1,32 @@
+<ng-container *ngIf="!fullScreenWidget">
+  <div class="balance-card-container"
+    *ngIf="userService.userDetails.corporateType == 'L' && dashboardType == 'consolidated'">
+    <app-balance-card></app-balance-card>
+  </div>
+  <!-- <app-sme-default *ngIf="userService.userDetails.corporateType != 'L'"></app-sme-default> -->
+</ng-container>
+
+<div class="grid-container">
+  <app-grid></app-grid>
+</div>
+
+<ng-template #actions>
+  <div class="widget-actions hide-on-mobile">
+    <div class="action" [ngClass]="{ active: gridType === 0 }" (click)="changeGrid(0)">
+      <app-icon [styleClasses]="gridType === 0 ? 'fas-default-color' : ''" icon="fa-rectangle-wide"
+        class="app-icon"></app-icon>
+    </div>
+    <div class="action" [ngClass]="{ active: gridType === 1 }" (click)="changeGrid(1)">
+      <app-icon [styleClasses]="gridType === 1 ? 'fas-default-color' : ''" icon="fa-th-large"
+        class="app-icon"></app-icon>
+    </div>
+    <div class="action" [ngClass]="{ active: gridType === 2 }" (click)="changeGrid(2)">
+      <app-icon [styleClasses]="gridType === 2 ? 'fas-default-color' : ''" icon="fa-th" class="app-icon"></app-icon>
+    </div>
+  </div>
+  <div class="actions">
+    <div class="action hide-on-mobile" (click)="openAddWidgetSidebar()">
+      <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+    </div>
+  </div>
+</ng-template>

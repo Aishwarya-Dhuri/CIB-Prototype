@@ -1,0 +1,295 @@
+<div class="container" *ngIf="!loading">
+  <app-modal
+    [(isShow)]="showHistory"
+    headerText="{{ 'Letter Of Credit History' | apsTranslate }}"
+    size="lg"
+  >
+    <div class="aps-card aps-h-200 p-mt-3" body>
+      <app-ag-grid-listing
+        id="letterOfCreditHistoryGrid"
+        #letterOfCreditHistoryGrid
+        colDefUrl="trade/importTransactions/letterOfCredit/private/letterOfCreditHistoryColDefs"
+        rowDefUrl="trade/importTransactions/letterOfCredit/private/letterOfCreditHistoryData"
+        [gridOptions]="{ pagination: false }"
+        [context]="{ componentParent: this }"
+      ></app-ag-grid-listing>
+    </div>
+
+    <div class="left-right-container p-mt-2" footer>
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-md btn-tertiary" (click)="showHistory = false">
+          {{ 'CANCEL' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal
+    [(isShow)]="showDelete"
+    headerText="{{ 'Do you want to delete this draft?' | apsTranslate }}"
+  >
+    <div class="left-right-container p-mt-2" footer>
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-md btn-tertiary p-mr-3" (click)="showDelete = false">
+          {{ 'CANCEL' | apsTranslate }}
+        </button>
+        <button class="btn btn-md btn-primary" (click)="showDelete = false">
+          {{ 'CONFIRM' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid g-margin-x">
+    <div class="p-md-8 p-sm-12 p-col-12 p-p-0">
+      <div class="p-grid">
+        <div class="p-md-4 p-sm-12 p-col-12 p-py-0 p-mb-3">
+          <div
+            class="aps-card aps-filled-card text-color-inverted aps-h-180 p-p-3 pointer"
+            routerLink="initiate"
+          >
+            <div class="text-size-16 text-semi-bold p-mb-4">
+              {{ 'Initiate Letter Of Credit' | apsTranslate }}
+            </div>
+            <div class="text-size-12">
+              {{ 'Click here to initiate a new Letter of credit' | apsTranslate }}
+            </div>
+          </div>
+        </div>
+        <div class="p-md-8 p-sm-12 p-col-12 p-py-0 p-mb-3">
+          <div class="aps-card aps-h-100p">
+            <div class="aps-card-header p-px-3 aps-py-12">
+              <div class="text-size-16 text-bold text-color-dark-shade-1">
+                {{ 'Credit Available By' | apsTranslate }}
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="">
+                <app-pie-chart
+                  [options]="options"
+                  webHeight="120"
+                  mobileHeight="250"
+                ></app-pie-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-4 p-sm-12 p-col-12 p-py-0 p-mb-3">
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header p-px-3 aps-py-12 overflow-visible">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1">
+                {{ 'Letter Of Credit Overview' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container" style="width: 125px">
+              <aps-custom-select
+                label=""
+                [showLabel]="false"
+                value="Today"
+                [data]="[
+                  { id: 'Today', displayName: 'Today' },
+                  { id: 'This Month', displayName: 'This Month' },
+                  { id: 'All', displayName: 'All' }
+                ]"
+                (change)="onChangeLetterOfCreditOverview($event)"
+              ></aps-custom-select>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid text-color-dark-shade-1">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-h-100p border-radius-4 p-p-2">
+                <div class="text-size-14 text-bold p-mb-1">
+                  {{ letterOfCreditOverview.corporateAuthorized }}
+                </div>
+                <div class="text-size-12">{{ 'Corporate Authorized' | apsTranslate }}</div>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-h-100p border-radius-4 p-p-2">
+                <div class="text-size-14 text-bold p-mb-1">
+                  {{ letterOfCreditOverview.bankAuthorized }}
+                </div>
+                <div class="text-size-12">{{ 'Bank Authorized' | apsTranslate }}</div>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-h-100p border-radius-4 p-p-2">
+                <div class="text-size-14 text-bold p-mb-1">
+                  {{ letterOfCreditOverview.toRepair }}
+                </div>
+                <div class="text-size-12">{{ 'To Repair' | apsTranslate }}</div>
+              </div>
+            </div>
+            <div class="p-md-12 p-sm-12 p-col-12">
+              <div class="text-size-12">
+                {{ 'Note: Count displayed in To Repair is as on date.' | apsTranslate }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="left-right-container p-mb-3">
+    <div class="left-container">
+      <div class="inline-items" [ngClass]="{ 'on-mobile': viewport !== 'web' }">
+        <div class="item p-mr-3" *ngFor="let l of listingTypes">
+          <div
+            class="aps-card p-p-2 text-size-12 text-semi-bold pointer border"
+            [ngClass]="{ 'aps-card-primary': activeListing.displayName === l.displayName }"
+            (click)="changeActiveListing(l)"
+          >
+            {{ l.displayName }}<span *ngIf="l.count"> ({{ l.count }})</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-container">
+      <div class="toggle-select-container p-mt-2">
+        <div
+          class="action pointer text-color-dark-shade-1"
+          (click)="onListTypeChange('grid')"
+          [ngClass]="{ active: listType === 'grid' }"
+        >
+          <app-icon icon="fa-list"></app-icon>
+        </div>
+        <div
+          class="action pointer text-color-dark-shade-1"
+          (click)="onListTypeChange('card')"
+          [ngClass]="{ active: listType === 'card' }"
+        >
+          <app-icon icon="fa-th-large"></app-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-card aps-h-400 p-mb-3">
+    <div class="aps-card-header overflow-visible">
+      <div class="left-right-container p-px-3">
+        <div class="left-container">
+          <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+            {{ 'Letter Of Credits' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container hide-on-mobile aps-py-12">
+          <app-grid-listing-tools
+            (changeFloatingFilter)="letterOfCreditGrid.changeFloatFilter($event)"
+            (filterRecords)="letterOfCreditGrid.onFilter($event)"
+            (applyColDefs)="letterOfCreditGrid.onApplyConfig($event)"
+            [colDefs]="letterOfCreditGrid.columnDefs"
+            [columnConfig]="true"
+            [moreOptions]="true"
+          ></app-grid-listing-tools>
+        </div>
+      </div>
+    </div>
+    <div class="aps-card-body">
+      <app-ag-grid-listing
+        id="letterOfCreditGrid"
+        #letterOfCreditGrid
+        [colDefUrl]="activeListing.colDefsUrl"
+        [rowDefUrl]="activeListing.rowDefUrl"
+        [context]="{ componentParent: this }"
+        [frameworkComponents]="frameworkComponents"
+        [apsHide]="listType == 'card'"
+      ></app-ag-grid-listing>
+
+      <div class="card-list border-top" *ngIf="listType == 'card'">
+        <div class="p-grid p-p-2">
+          <div class="p-col-12" *ngFor="let data of letterOfCreditGrid.rowData; let i = index">
+            <div class="aps-card text-size-12">
+              <div class="card-header">
+                <div class="p-grid">
+                  <div class="p-col-11 p-p-0">
+                    <div class="p-grid">
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">
+                          {{ letterOfCreditGrid.columnDefs[0].headerName }}
+                        </div>
+                        <div class="">{{ data[letterOfCreditGrid.columnDefs[0].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">
+                          {{ letterOfCreditGrid.columnDefs[1].headerName }}
+                        </div>
+                        <div class="">{{ data[letterOfCreditGrid.columnDefs[1].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">
+                          {{ letterOfCreditGrid.columnDefs[2].headerName }}
+                        </div>
+                        <div class="">{{ data[letterOfCreditGrid.columnDefs[2].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">
+                          {{ letterOfCreditGrid.columnDefs[3].headerName }}
+                        </div>
+                        <div class="">{{ data[letterOfCreditGrid.columnDefs[3].field] }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-col-1 p-p-3 text-right">
+                    <app-icon
+                      [icon]="data.isShow ? 'fa-chevron-up' : 'fa-chevron-down'"
+                      styleClasses="text-size-14 pointer"
+                      (click)="data.isShow = !data.isShow"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body border-top" *ngIf="data.isShow">
+                <div class="p-grid">
+                  <ng-container *ngFor="let field of letterOfCreditGrid.columnDefs; let i = index">
+                    <div
+                      class="p-md-3 p-sm-12 p-col-12 p-p-0"
+                      *ngIf="letterOfCreditGrid.columnDefs[i].field != 'actions'"
+                    >
+                      <div class="p-p-2" *ngIf="i >= 4">
+                        <div class="text-bold">
+                          {{ letterOfCreditGrid.columnDefs[i].headerName }}
+                        </div>
+                        <div class="">{{ data[letterOfCreditGrid.columnDefs[i].field] }}</div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-right-container p-py-2 p-px-3" *ngIf="listType === 'card'">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-sm btn-tertiary p-mr-3">
+            <app-icon
+              icon="fa-chevron-left"
+              (click)="previous()"
+              [disabled]="this.currentPage <= 1"
+            ></app-icon>
+          </button>
+          <button class="btn btn-sm btn-tertiary">
+            <app-icon
+              icon="fa-chevron-right"
+              (click)="next()"
+              [disabled]="this.currentPage >= this.numberOfPages"
+            >
+            </app-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

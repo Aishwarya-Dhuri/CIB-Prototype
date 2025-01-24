@@ -1,0 +1,254 @@
+<div class="container" *ngIf="!loading; else loadingTemplate">
+  <ng-container *ngIf="mode !== 'VIEW'">
+    <app-modal [(isShow)]="isLayoutData" size="md" headerText="Data Layout Mapper">
+      <ng-container body>
+        <app-br-data-layout></app-br-data-layout>
+      </ng-container>
+    </app-modal>
+    <app-modal
+      [(isShow)]="isInfo"
+      size="md"
+      headerText="List of characters to be entered for fields in the Upload File"
+    >
+      <ng-container body>
+        <app-br-info></app-br-info>
+      </ng-container>
+    </app-modal>
+
+    <div class="aps-card">
+      <div class="aps-card-header aps-py-12 p-px-3">
+        <div class="text-size-16 text-bold text-color-dark-shade-1">Upload Details</div>
+      </div>
+      <div class="aps-card-body p-p-2" *ngIf="stepperDetails.currentStep == 1">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="p-grid">
+              <div class="p-col-10 p-p-0">
+                <div class="text-size-12 text-color-normal">
+                  Upload File <span class="text-color-danger">*</span>
+                </div>
+                <upload-form-control
+                  [files]="formData.uploadFile"
+                  [hideDragDropContainerOnFIleUpload]="true"
+                  (onUploaded)="onFileUploaded($event)"
+                ></upload-form-control>
+              </div>
+              <div class="p-col-2 p-pt-5">
+                <app-icon icon="fa-info-circle" (click)="isInfo = true"></app-icon>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-pt-5">
+            <button class="btn btn-md btn-tertiary" (click)="isLayoutData = true">
+              VIEW SAMPLE DATA LAYOUT
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="mode === 'VIEW'">
+    <app-modal
+      [(isShow)]="showBillerDetails"
+      size="md"
+      headerText="Biller Details"
+      *ngIf="billerDetails"
+    >
+      <div class="p-py-2" body>
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Biller Details</div>
+          </div>
+
+          <div class="aps-card-body p-p-3">
+            <div class="p-grid g-margin-x">
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Biller Name"
+                  [value]="billerDetails.billerName"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Product"
+                  [value]="billerDetails.product"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aps-card p-my-3">
+          <div class="aps-card-header">
+            <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Subscriber Details</div>
+          </div>
+
+          <div class="aps-card-body p-p-3">
+            <div class="p-grid g-margin-x">
+              <div class="p-md-4 p-sm-6 p-col-12">
+                <app-review-form-field
+                  label="Copy From Existing Subscriber"
+                  [value]="billerDetails.copyFromExistingSubscriber"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-col-12 p-p-0"></div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Subscriber Name"
+                  [value]="billerDetails.consumer"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Ref 1"
+                  [value]="billerDetails.ref1"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Ref 2"
+                  [value]="billerDetails.ref2"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Maximum Amount"
+                  [value]="billerDetails.maximumAmount"
+                  type="baseCurrency"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Tolerance"
+                  value="{{ formData.tolerance }}%"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Preferred Payment Method"
+                  [value]="billerDetails.preferredPaymentMethod"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Effective From"
+                  [value]="billerDetails.effectiveStartDate"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Effective Till"
+                  [value]="billerDetails.effectiveEndDate"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Schedule Payment"
+                  [value]="billerDetails.schedulePayment"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aps-card" *ngIf="billerDetails.schedulePayment === 'Y'">
+          <div class="aps-card-header">
+            <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Schedule Payment Details</div>
+          </div>
+
+          <div class="aps-card-body p-p-3">
+            <div class="p-grid g-margin-x">
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Pay"
+                  [value]="billerDetails.pay"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6" *ngIf="formData.pay === 'Other'">
+                <app-review-form-field
+                  label="Amount"
+                  [value]="billerDetails.amount"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="If Holiday"
+                  [value]="billerDetails.ifHoliday"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-col-12 p-p-0"></div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Payment Method"
+                  [value]="billerDetails.schedulePaymentMethod"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6" *ngIf="formData.schedulePaymentMethod">
+                <app-review-form-field
+                  label="{{ formData.schedulePaymentMethod }} - Debit Account Number"
+                  [value]="billerDetails.accountNumber"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-col-12 p-p-0"></div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Start Date"
+                  [value]="billerDetails.startDate"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="End Date"
+                  [value]="billerDetails.endDate"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-modal>
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 text-size-14 text-semi-bold">Biller Details</div>
+      </div>
+      <div class="aps-card-body">
+        <div class="aps-h-400">
+          <app-ag-grid-listing
+            #listingGrid
+            colDefUrl="payments/billPayments/billerRegistrationUpload/private/viewColDefs"
+            [rowData]="formData.billerDetails"
+            [gridOptions]="{ rowModelType: 'clientSide' }"
+            [context]="{ componentParent: this }"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="p-mt-3">
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

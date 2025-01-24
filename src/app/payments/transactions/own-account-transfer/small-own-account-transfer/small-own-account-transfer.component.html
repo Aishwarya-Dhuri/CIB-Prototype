@@ -1,0 +1,432 @@
+<div class="container" *ngIf="!isLoading">
+  <div class="aps-card p-p-2" *ngIf="!isInitiateScreen">
+    <div class="p-grid">
+      <!-- Tile divs -->
+      <div class="p-col-12 p-md-3 p-lg-3">
+        <div
+          class="aps-card primary-button-card aps-h-120 p-px-3 p-py-2 pointer"
+          (click)="oatOtherBank = false; isInitiateScreen = true"
+        >
+          <div class="p-mb-3 text-color-inverted text-size-16">
+            {{ 'Own Account Transfer within Bank' | translate }}
+          </div>
+          <hr />
+          <div class="text-color-inverted text-size-12">
+            {{ 'If you want to initiate own account Transfer within bank click here' | translate }}
+          </div>
+        </div>
+      </div>
+      <!-- Tile button -->
+      <div class="p-col-12 p-md-3 p-lg-3">
+        <div
+          class="aps-card secondary-button-card aps-h-120 p-px-3 p-py-2 pointer"
+          (click)="oatOtherBank = true; isInitiateScreen = true"
+        >
+          <div class="p-mb-2 text-color-primary text-size-16">
+            {{ 'Own Account Transfer to Other Bank' | translate }}
+          </div>
+          <hr class="border-primary" />
+          <div class="text-color-dark-shade-3 text-size-12">
+            {{
+              'If you want to initiate own account Transfer to other bank click here' | translate
+            }}
+          </div>
+        </div>
+      </div>
+      <!-- Insights -->
+      <div class="p-col-12 p-md-6 p-lg-6">
+        <app-insights
+          insightsUrl="dummyServer/json/commons/private/insights/smallOwnAccountTransfer"
+          height="80"
+        ></app-insights>
+      </div>
+      <!-- Recent Transactions -->
+      <div class="p-sm-12 p-col-12">
+        <div class="aps-card">
+          <div
+            class="text-size-16 text-color-dark-shade-1 text-bold border-bottom p-px-3 aps-py-12"
+          >
+            Recent Transfers
+          </div>
+          <div class="aps-h-400">
+            <app-ag-grid-listing
+              #recentTransferGrid
+              id="recentTransferGrid"
+              colDefUrl="payments/transactions/ownAccountTransfer/private/smallOatColDefs"
+              rowDefUrl="payments/transactions/ownAccountTransfer/private/getPendingList"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-grid g-margin-x" *ngIf="isInitiateScreen">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+      <div class="p-md-8 p-sm-12 p-col-12 p-p-0">
+        <div class="p-grid">
+          <div class="p-col-12" *ngIf="!oatOtherBank">
+            <div class="aps-card">
+              <div
+                class="text-size-16 text-color-dark-shade-1 text-bold border-bottom p-px-3 aps-py-12"
+              >
+                Own Account Transfer within Bank
+              </div>
+              <form>
+                <div class="p-grid p-p-2">
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <app-aps-calender
+                      label="Value Date"
+                      name="valueDate"
+                      id="valueDate"
+                      [(ngModel)]="formData.valueDate"
+                    ></app-aps-calender>
+                  </div>
+
+                  <div class="p-col-12 p-py-0"></div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <aps-custom-select
+                      label="Debit Account"
+                      name="debitAccount"
+                      id="debitAccount"
+                      (change)="onDebitAccountChange()"
+                      [data]="debitAccountList"
+                      [value]="formData.debitAccountId"
+                      [(ngModel)]="formData.debitAccountId"
+                    ></aps-custom-select>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-base-currency
+                      [amount]="formData.debitAccountBalance"
+                      *ngIf="formData.debitAccountBalance"
+                    ></app-base-currency>
+                  </div>
+
+                  <div class="p-col-12 p-p-0"></div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <aps-custom-select
+                      label="Credit Account"
+                      name="creditAccount"
+                      id="creditAccount"
+                      (change)="onCreditAccountChange()"
+                      [data]="creditAccountList"
+                      [value]="formData.creditAccountId"
+                      [(ngModel)]="formData.creditAccountId"
+                    ></aps-custom-select>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <app-base-currency
+                      [amount]="formData.creditAccountBalance"
+                      *ngIf="formData.creditAccountBalance"
+                    ></app-base-currency>
+                  </div>
+
+                  <div class="p-col-12 p-p-0"></div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input
+                      label="Amount"
+                      name="payableAmount"
+                      id="payableAmount"
+                      minLength="1"
+                      maxLength="16"
+                      placeholder="{{ 'lbl_enter_amount' | translate }}"
+                      inputType="currencyFormatNotZero"
+                      required="true"
+                      [(ngModel)]="formData.payableAmount"
+                      (change)="onPayableAmoutChange()"
+                    ></aps-form-input>
+                  </div>
+
+                  <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input
+                      label="Remark"
+                      name="remark"
+                      id="remark"
+                      [(ngModel)]="formData.remark"
+                    ></aps-form-input>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <ng-container *ngIf="oatOtherBank">
+            <div class="p-col-12">
+              <div class="aps-card aps-h-100p">
+                <div
+                  class="text-size-16 text-color-dark-shade-1 text-bold border-bottom p-px-3 aps-py-12"
+                >
+                  Own Account Transfer to other Bank
+                </div>
+                <div class="p-grid p-p-2">
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <app-aps-calender
+                      label="Value Date"
+                      name="valueDate"
+                      id="valueDate"
+                      [(ngModel)]="formData.valueDate"
+                    ></app-aps-calender>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12"></div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <aps-custom-select
+                      label="Debit Account"
+                      name="debitAccount"
+                      id="debitAccount"
+                      (change)="onDebitAccountChange()"
+                      [data]="debitAccountList"
+                      [value]="formData.debitAccountId"
+                      [(ngModel)]="formData.debitAccountId"
+                    ></aps-custom-select>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <app-base-currency
+                      [amount]="formData.debitAccountBalance"
+                      *ngIf="formData.debitAccountBalance"
+                    ></app-base-currency>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input
+                      label="Amount"
+                      name="payableAmount"
+                      id="payableAmount"
+                      minLength="1"
+                      maxLength="16"
+                      placeholder="{{ 'lbl_enter_amount' | translate }}"
+                      inputType="currencyFormatNotZero"
+                      required="true"
+                      [(ngModel)]="formData.payableAmount"
+                      (change)="onPayableAmoutChange()"
+                    ></aps-form-input>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12"></div>
+
+                  <div class="p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input
+                      label="Remark"
+                      name="remark"
+                      id="remark"
+                      [(ngModel)]="formData.remark"
+                    ></aps-form-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12">
+              <div class="aps-card aps-h-100p">
+                <div class="p-grid p-p-2">
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <aps-custom-select
+                      label="Credit Account"
+                      name="creditAccount"
+                      id="creditAccount"
+                      (change)="onCreditAccountChange()"
+                      [data]="creditAccountList"
+                      [value]="formData.creditAccountId"
+                      [(ngModel)]="formData.creditAccountId"
+                    ></aps-custom-select>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                    <aps-custom-select
+                      label="Bank Name"
+                      name="bank"
+                      id="bank"
+                      [data]="[
+                        { id: 'HDFC', displayName: 'HDFC' },
+                        { id: 'HSBC', displayName: 'HSBC' }
+                      ]"
+                      [value]="formData.bank"
+                      [(ngModel)]="formData.bank"
+                    ></aps-custom-select>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-0"></div>
+
+                  <div class="p-sm-12 p-col-12 p-pb-0">
+                    <p-radioButton
+                      label="IMPS (Immediate Transfer)"
+                      name="paymentMethod"
+                      id="imps"
+                      value="IMPS"
+                      [(ngModel)]="formData.paymentMethodName"
+                    ></p-radioButton>
+                  </div>
+                  <div class="p-sm-12 p-col-12 p-pb-0">
+                    <p-radioButton
+                      label="NEFT (Funds will be transferred  in 30 mins)"
+                      name="paymentMethod"
+                      id="neft"
+                      value="NEFT"
+                      [(ngModel)]="formData.paymentMethodName"
+                    ></p-radioButton>
+                  </div>
+                  <div class="p-sm-12 p-col-12 p-pb-0">
+                    <p-radioButton
+                      label="RTGS (Funds will be transferred in 60 mins)"
+                      name="paymentMethod"
+                      id="rtgs"
+                      value="RTGS"
+                      [(ngModel)]="formData.paymentMethodName"
+                    ></p-radioButton>
+                  </div>
+                  <div class="p-sm-12 p-col-12">
+                    <div class="link">More...</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <div class="p-sm-12 p-col-12">
+            <div class="aps-card p-px-3 aps-py-12">
+              <div class="left-right-container">
+                <div class="left-container"></div>
+                <div class="right-container">
+                  <button class="btn btn-md btn-tertiary p-mr-3" (click)="resetForm()">
+                    RESET
+                  </button>
+                  <button
+                    type="submit"
+                    class="btn btn-md btn-primary"
+                    (click)="addTransaction()"
+                    [disabled]="mode && editingRecordIndex == -1"
+                  >
+                    {{ this.editingRecordIndex >= 0 ? 'UPDATE' : 'ADD' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-4 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2 aps-h-100p">
+          <div class="text-size-16 text-semi-bold p-p-2">Added OAT ({{ formDataList.length }})</div>
+          <div class="border-bottom p-p-2">
+            <span class="text-size-12 text-light">Total Amount: </span>
+            <span class="text-semi-bold text-size-14 text-color-primary">
+              <app-base-currency [amount]="totalAmount"></app-base-currency>
+            </span>
+            <span class="text-size-12 text-light">&nbsp;({{ totalAmount | numberToWord }})</span>
+          </div>
+
+          <div class="p-p-2" *ngIf="formDataList.length > 0; else nothingHereYet">
+            <div class="p-grid border-bottom" *ngFor="let t of formDataList; let i = index">
+              <div class="p-col-6">
+                <div class="text-size-12 text-semi-bold p-pt-1">Debit Account</div>
+                <div class="text-size-12 text-semi-bold p-pt-1">Credit Account</div>
+                <div class="text-size-12 text-semi-bold p-pt-1">Amount</div>
+              </div>
+              <div class="p-col-6 text-right">
+                <div class="text-size-12 p-pt-1">{{ t.debitAccountNo }}</div>
+                <div class="text-size-12 p-pt-1">{{ t.creditAccountNo }}</div>
+                <div class="text-size-12 p-pt-1">
+                  <app-base-currency [amount]="t.payableAmount"></app-base-currency>
+                </div>
+                <div class="text-size-12 p-py-1">
+                  <button class="btn btn-md btn-tertiary p-mr-3" (click)="editRecord(i)">
+                    <app-icon icon="fa-edit"></app-icon>
+                  </button>
+                  <button class="btn btn-md btn-tertiary" (click)="deleteRecord(i)">
+                    <app-icon icon="fa-trash-alt"></app-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+      <div class="p-col-12">
+        <div class="text-size-16 text-semi-bold p-p-2">Added OAT ({{ formDataList.length }})</div>
+        <div class="border-bottom p-p-2">
+          <span class="text-size-12 text-light">Total Amount: </span>
+          <span class="text-semi-bold text-size-14 text-color-primary">
+            <app-base-currency [amount]="totalAmount"></app-base-currency>
+          </span>
+          <span class="text-size-12 text-light">&nbsp;({{ totalAmount | numberToWord }})</span>
+        </div>
+      </div>
+
+      <div class="p-col-12 text-size-12" *ngFor="let t of formDataList">
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-11">
+              <div class="p-grid">
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-semi-bold">Debit Account</div>
+                  <div class="">{{ t.debitAccountNo }}</div>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-semi-bold">Credit Account</div>
+                  <div class="">{{ t.creditAccountNo }}</div>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-semi-bold">Amount</div>
+                  <div class="">
+                    <app-base-currency [amount]="t.payableAmount"> </app-base-currency>
+                  </div>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-semi-bold">Value Date</div>
+                  <div class="">
+                    {{ t.valueDate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-1 p-p-3">
+              <app-icon
+                [icon]="t.isShow ? 'fa-chevron-up' : 'fa-chevron-down'"
+                (click)="t.isShow = !t.isShow"
+              ></app-icon>
+            </div>
+            <div class="p-col-12 border-top" *ngIf="t.isShow">
+              <div class="p-grid">
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-semi-bold">Payment Method</div>
+                  <div class="">
+                    {{ t.paymentMethodName ? t.paymentMethodName : '--' }}
+                  </div>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-semi-bold">Remark</div>
+                  <div class="">
+                    {{ t.remark ? t.remark : '--' }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>
+
+<ng-template #nothingHereYet>
+  <app-nothing-here
+    [colSize]="8"
+    message="{{ 'No transfers added' | translate }}"
+  ></app-nothing-here>
+</ng-template>

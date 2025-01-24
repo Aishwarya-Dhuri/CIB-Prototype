@@ -1,0 +1,22 @@
+.border-2 {
+  border: solid 2px var(--primary-color);
+}
+
+.mt--2 {
+  margin-top: -2px;
+}
+
+.aps-h-272 {
+  height: 272px;
+}
+
+@media screen and (max-width: 767px) {
+  .no-left-right-container {
+    display: block !important;
+
+    .right-container,
+    .left-container {
+      display: block !important;
+    }
+  }
+}

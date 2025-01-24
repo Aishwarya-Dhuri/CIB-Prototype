@@ -1,0 +1,16 @@
+.invoice-details-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 15;
+  width: 500px;
+}
+@media screen and(max-width: 480px) {
+  .invoice-details-container {
+    top: 35% !important;
+    left: 29% !important;
+    width: 325px !important;
+    box-shadow: none !important;
+  }
+}

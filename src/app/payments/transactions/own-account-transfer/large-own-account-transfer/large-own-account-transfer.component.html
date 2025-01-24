@@ -1,0 +1,599 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <!-- Tile buttons Overall and Quick Pay -->
+    <div class="p-grid g-margin-x">
+      <ng-container *ngIf="!isGroupUser">
+        <!-- Tile div -->
+        <div class="p-col-12 p-md-3 p-col-lg-3">
+          <div class="aps-card aps-filled-card-primary-sm pointer p-px-3 p-py-4 p-mb-3"
+            (click)="onPaymentMethodWiseClick()">
+            <div class="p-mb-3 text-color-inverted text-size-16">
+              {{ 'Payment Method Wise' | apsTranslate }}
+            </div>
+            <hr />
+            <div class="text-color-inverted text-size-12">
+              {{
+              'If you know the payment method then please click here to initiate' | apsTranslate
+              }}
+            </div>
+          </div>
+          <div class="aps-card border-primary-2px pointer p-px-3 p-py-4" (click)="onCreditAccountSelectionClick()">
+            <div class="text-color-primary text-size-16 p-mb-3">
+              {{ 'Credit Account Selection' | apsTranslate }}
+            </div>
+
+            <hr class="border-color-primary" />
+
+            <div class="text-color-dark-shade-3 text-size-12">
+              {{
+              'If you know the credit account then please click here to initiate' | apsTranslate
+              }}
+            </div>
+          </div>
+        </div>
+        <!-- Overall Card -->
+        <div class="p-col-12 p-md-3 p-col-lg-3">
+          <div class="aps-card p-p-3 aps-min-h-280 aps-h-100p">
+            <div>
+              <div class="text-bold text-color-dark-shade-1">
+                {{ 'Overall Transactions (This Week)' | apsTranslate }}
+              </div>
+              <div class="p-grid p-mt-3 p-pb-5 border-bottom">
+                <div class="p-col-6">
+                  <div class="text-bold text-size-14">
+                    <app-base-currency [amount]="widgetOptions.transactionStatus.totalTransactionValue"
+                      [currency]="currencyName" digitsInfo="1.0-0"></app-base-currency>
+                  </div>
+                  <div class="text-size-12">{{ 'Total Value' | apsTranslate }}</div>
+                </div>
+                <div class="p-col-6">
+                  <div class="text-bold text-size-14">
+                    {{ widgetOptions.transactionStatus.totalTransactions }}
+                  </div>
+                  <div class="text-size-12">{{ 'Total Number' | apsTranslate }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="p-mt-5">
+              <div class="text-bold text-color-dark-shade-1">
+                {{ 'Transaction Status (This Week)' | apsTranslate }}
+              </div>
+              <div class="p-grid p-mt-3">
+                <div class="p-col-4">
+                  <div class="text-bold text-size-14">
+                    {{ widgetOptions.transactionStatus.completed }}
+                  </div>
+                  <div class="text-size-12">{{ 'Completed' | apsTranslate }}</div>
+                </div>
+                <div class="p-col-4">
+                  <div class="text-bold text-size-14">
+                    {{ widgetOptions.transactionStatus.pending }}
+                  </div>
+                  <div class="text-size-12">{{ 'Pending' | apsTranslate }}</div>
+                </div>
+                <div class="p-col-4">
+                  <div class="text-bold text-size-14">
+                    {{ widgetOptions.transactionStatus.rejected }}
+                  </div>
+                  <div class="text-size-12">{{ 'Rejected' | apsTranslate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="isGroupUser">
+        <app-modal [(isShow)]="showCorporateAccounts" size="md" headerText="Corporate Accounts"
+          *ngIf="showCorporateAccounts">
+          <div class="aps-h-400">
+            <app-ag-grid-listing id="corporateAccountsGrid"
+              colDefUrl="payments/transactions/ownAccountTransfer/private/corporateAccountsColDefs"
+              [rowData]="corporateAccountsData" [gridOptions]="corporateAccountGridOptions">
+            </app-ag-grid-listing>
+          </div>
+        </app-modal>
+
+        <div class="p-md-6 p-col-12 p-p-0">
+          <div class="p-grid">
+            <div class="p-md-6 p-col-12">
+              <div class="aps-card aps-filled-card-primary-sm aps-h-150 p-p-3">
+                <div class="left-right-container p-mb-2">
+                  <div class="left-container">
+                    <div class="text-size-16">{{ groupData?.groupName }}</div>
+                    <div class="inline-items text-size-12">
+                      <div class="item text-underline pointer" (click)="showCorporateAccounts = true">
+                        {{ groupData?.corporates }} {{ 'Corporates' | apsTranslate }}
+                      </div>
+                      <div class="item p-mx-2">|</div>
+                      <div class="item">
+                        {{ groupData?.totalAccounts }} {{ 'Accounts' | apsTranslate }}
+                      </div>
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <app-currency-select-dropdown selectStyleClass="select-primary"></app-currency-select-dropdown>
+                  </div>
+                </div>
+                <div class="background-color-primary-light text-size-14 p-p-2">
+                  <div class="p-mb-2">
+                    <span class="text-bold">{{ 'Group Balance' | apsTranslate }}</span>
+                    &nbsp;
+                    <app-base-currency [amount]="groupData?.overallBalance"></app-base-currency>
+                  </div>
+                  <div class="">
+                    <span class="text-bold">{{ 'Available Limit' | apsTranslate }}</span>
+                    &nbsp;
+                    <app-base-currency [amount]="groupData?.overallLimit"></app-base-currency>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-6 p-col-12">
+              <div class="aps-card aps-filled-card-primary-sm aps-h-150 pointer p-px-3 p-py-5"
+                (click)="onPaymentMethodWiseClick()">
+                <div class="p-mb-3 text-color-inverted text-size-16">
+                  {{ 'Initiate Payment' | apsTranslate }}
+                </div>
+                <hr />
+                <div class="text-color-inverted text-size-12">
+                  {{ 'Please click here to Initiate Own Account Transfer' | apsTranslate }}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12">
+              <div class="aps-card">
+                <div class="p-p-3">
+                  <div class="left-right-container">
+                    <div class="left-container">
+                      <div class="text-size-14 text-semi-bold">
+                        {{
+                        'Transaction Status (' +
+                        widgetOptions.transactionStatus.timeDurationDisplayName +
+                        ')' | apsTranslate
+                        }}
+                      </div>
+                    </div>
+                    <div class="right-container">
+                      <aps-custom-select id="timeDuration" name="timeDuration"
+                        [value]="widgetOptions.transactionStatus.timeDuration"
+                        [(ngModel)]="widgetOptions.transactionStatus.timeDuration" [showLabel]="false"
+                        (change)="onTransactionStatusTimeDuration($event)" [data]="timeDurationOptions"
+                        [required]="true"></aps-custom-select>
+                    </div>
+                  </div>
+
+                  <div class="p-grid g-margin-x -my-2">
+                    <div class="p-col-4">
+                      <div class="background-color-dark-3 text-size-12 p-p-2">
+                        <div class="">{{ widgetOptions.transactionStatus.completed }}</div>
+                        <div class="text-bold">{{ 'Completed' | apsTranslate }}</div>
+                      </div>
+                    </div>
+                    <div class="p-col-4">
+                      <div class="background-color-dark-3 text-size-12 p-p-2">
+                        <div class="">{{ widgetOptions.transactionStatus.pending }}</div>
+                        <div class="text-bold">{{ 'Pending' | apsTranslate }}</div>
+                      </div>
+                    </div>
+                    <div class="p-col-4">
+                      <div class="background-color-dark-3 text-size-12 p-p-2">
+                        <div class="">{{ widgetOptions.transactionStatus.rejected }}</div>
+                        <div class="text-bold">{{ 'Rejected' | apsTranslate }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Quick Pay -->
+      <div class="p-col-12 p-md-6 p-lg-6">
+        <div class="aps-card p-py-3 p-px-2 aps-h-100p">
+          <form #quickPayForm="ngForm">
+            <div class="p-grid">
+              <div class="p-col-12 p-pt-0">
+                <div class="text-bold text-size-16">{{ 'Quick Pay (IFT)' | apsTranslate }}</div>
+              </div>
+
+              <div class="p-col-12 p-md-6 p-lg-6 p-py-0">
+                <aps-form-input label="Corporate Reference No" id="corporateRefNo" name="corporateRefNo"
+                  [(ngModel)]="quickPay.corporateRefNo" [required]="true">
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-6 p-lg-6 p-py-0">
+                <aps-custom-select label="Debit Account" id="debitAccount" name="debitAccount"
+                  [(ngModel)]="quickPay.debitAccount" [value]="quickPay.debitAccount"
+                  dataUrl="setup/corporateOnboarding/corporateMain/private/accountList" [required]="true"
+                  (change)="onDebitAccountChange($event)" *ngIf="!isGroupUser">
+                </aps-custom-select>
+
+                <aps-group-select label="Debit Account" id="debitAccount" name="debitAccount"
+                  [(ngModel)]="quickPay.debitAccount" [value]="quickPay.debitAccount"
+                  dataUrl="setup/corporateOnboarding/corporateMain/private/groupAccountList" [required]="true"
+                  (change)="onDebitAccountChange($event)" *ngIf="isGroupUser">
+                </aps-group-select>
+              </div>
+              <div class="p-col-4 p-md-2 p-col-lg-2 p-py-0">
+                <aps-custom-select id="currencyId" name="currencyId" label="CCY"
+                  dataUrl="setup/generalMasters/currency/private/currencyList" [(ngModel)]="quickPay.currencyId">
+                </aps-custom-select>
+              </div>
+              <div class="p-col-8 p-md-4 p-col-lg-4 p-py-0">
+                <aps-form-input label="Amount" id="amount" name="amount" inputType="currencyFormatNotZero"
+                  [(ngModel)]="quickPay.amount" [required]="true">
+                </aps-form-input>
+              </div>
+
+              <div class="p-col-12 p-md-6 p-lg-6 p-py-0">
+                <aps-custom-select label="Credit Account" id="creditAccount" name="creditAccount"
+                  [value]="quickPay.creditAccount" [(ngModel)]="quickPay.creditAccount"
+                  dataUrl="setup/corporateOnboarding/corporateMain/private/accountList" [required]="true"
+                  (change)="onCreditAccountChange($event)" *ngIf="!isGroupUser">
+                </aps-custom-select>
+
+                <aps-group-select label="Credit Account" id="creditAccount" name="creditAccount"
+                  [value]="quickPay.creditAccount" [(ngModel)]="quickPay.creditAccount"
+                  dataUrl="setup/corporateOnboarding/corporateMain/private/groupAccountList" [required]="true"
+                  (change)="onCreditAccountChange($event)" *ngIf="isGroupUser">
+                </aps-group-select>
+              </div>
+
+              <div class="p-col-12 p-py-0">
+                <div class="text-right">
+                  <button [disabled]="!quickPayForm.valid" class="btn btn-md btn-primary" (click)="onQuickPaySubmit()">
+                    {{ 'PAY' | apsTranslate }}
+                  </button>
+                  <!-- Quick pay Success Modal -->
+                  <app-modal [(isShow)]="isShowQuickPaySuccess" size="sm"
+                    [headerText]="'Payment has been Initiated' | apsTranslate">
+                    <ng-container body>
+                      <div class="p-grid text-left">
+                        <div class="p-col-12 p-p-1">
+                          <div class="text-size-12 text-color-light-shade-1">
+                            {{ 'Reference No' | apsTranslate }}
+                          </div>
+                          <div class="text-size-14">3456576856</div>
+                        </div>
+                        <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                          <div class="text-size-12 text-color-light-shade-1">
+                            {{ 'Date' | apsTranslate }}
+                          </div>
+                          <div class="text-size-14">16 Sep 2021</div>
+                        </div>
+                        <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                          <div class="text-size-12 text-color-light-shade-1">
+                            {{ 'Time' | apsTranslate }}
+                          </div>
+                          <div class="text-size-14">10:10 AM</div>
+                        </div>
+                        <div class="p-col-12 p-p-1 border-bottom">
+                          <div class="text-size-12 text-color-light-shade-1">
+                            {{ 'Debit Account' | apsTranslate }}
+                          </div>
+                          <div class="text-size-14 p-mb-2">{{ quickPay.debitAccountName }}</div>
+                        </div>
+                      </div>
+                      <div class="p-grid text-left">
+                        <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                          <div class="text-size-12 text-color-light-shade-1">
+                            {{ 'Credit Account' | apsTranslate }}
+                          </div>
+                          <div class="text-size-14">{{ quickPay.creditAccountName }}</div>
+                        </div>
+                        <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                          <div class="text-size-12 text-color-light-shade-1">
+                            {{ 'Payment Method' | apsTranslate }}
+                          </div>
+                          <div class="text-size-14">{{ quickPay.paymentMethodName }}</div>
+                        </div>
+                        <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                          <div class="text-size-12 text-color-light-shade-1">
+                            {{ 'Payable Amount' | apsTranslate }}
+                          </div>
+                          <div class="text-size-14">
+                            {{ quickPay.currencyName }} {{ quickPay.amount | currency }}
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                    <div class="left-right-container p-mt-2 p-pt-2 border-top" footer>
+                      <div class="left-container p-mt-1">
+                        <span class="p-p-2">
+                          <app-icon icon="fa-copy" class="pointer text-size-18"></app-icon>
+                        </span>
+                        <span class="p-p-2">
+                          <app-icon icon="fa-share-alt" class="pointer text-size-18"></app-icon>
+                        </span>
+                      </div>
+                      <div class="right-container">
+                        <button class="btn btn-md btn-primary"
+                          (click)="isShowQuickPaySuccess = false; resetQuickPayForm()">
+                          {{ 'DONE' | apsTranslate }}
+                        </button>
+                      </div>
+                    </div>
+                  </app-modal>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- listing buttons and list-card toggle -->
+    <div class="p-grid g-margin-x p-mt-3">
+      <div class="p-col-12 p-px-0">
+        <div [ngClass]="{ 'left-right-container': viewport === 'web' }">
+          <div class="left-container">
+            <div class="inline-items" [ngClass]="{ 'overflow-x-scroll': viewport !== 'web' }"
+              *ngIf="listType !== 'analytics'">
+              <div class="item p-mx-2" *ngFor="let list of transactionsListTypes">
+                <div class="aps-card p-px-2 p-py-1 text-size-14 text-color-normal text-semi-bold pointer border"
+                  [ngClass]="{ 'aps-card-primary': list.label  == selectedList?.label  }" (click)="selectListing(list)">
+                  <span class="p-py-1 inline-block">{{ list.label }}&nbsp;</span>
+                  <span class="p-py-1 inline-block">({{ list.count }})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-container" [ngClass]="{ 'float-right': viewport !== 'web' }">
+            <button *ngIf="selectedList?.label === 'Template'" class="btn btn-md btn-tertiary"
+              [ngClass]="{ 'p-m-2': viewport !== 'web', 'p-m-1': viewport == 'web' }">
+              <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+              <span class="inline-block">{{ 'Create a Template' | apsTranslate }}</span>
+            </button>
+
+            <div class="toggle-select-container inline-block p-m-2">
+              <div class="action pointer text-color-dark-shade-1" (click)="onListTypeChange('analytics')"
+                [ngClass]="{ active: listType === 'analytics' }" *ngIf="isGroupUser">
+                <app-icon icon="fa-analytics" class="app-icon"></app-icon>
+              </div>
+              <div class="action pointer text-color-dark-shade-1" (click)="onListTypeChange('grid')"
+                [ngClass]="{ active: listType === 'grid' }">
+                <app-icon icon="fa-list" class="app-icon"></app-icon>
+              </div>
+              <div class="action pointer text-color-dark-shade-1" (click)="onListTypeChange('card')"
+                [ngClass]="{ active: listType === 'card' }">
+                <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics -->
+    <div class="p-grid g-margin-x" *ngIf="isGroupUser"></div>
+
+    <!-- selected Listing -->
+    <div class="p-grid g-margin-x">
+      <ng-container *ngIf="listType === 'analytics'">
+        <div class="p-md-7 p-sm-12 p-col-12">
+          <div class="aps-card aps-h-100p">
+            <div class="p-px-3 p-pt-3">
+              <div class="left-right-container">
+                <div class="left-container text-size-14 text-semi-bold">
+                  {{ 'Top 5 corporates with highest OAT debit' | apsTranslate }}
+                </div>
+                <div class="right-container">
+                  <div class="inline-items">
+                    <div class="item">
+                      <button class="btn btn-sm btn-tertiary" (click)="(null)">
+                        {{ 'VIEW ALL' | apsTranslate }}
+                      </button>
+                    </div>
+                    <div class="item p-mx-3">
+                      <aps-custom-select id="timeDuration" name="timeDuration"
+                        [value]="widgetOptions.topFiveHighestOatDebitCorporates.timeDuration"
+                        [(ngModel)]="widgetOptions.topFiveHighestOatDebitCorporates.timeDuration" [showLabel]="false"
+                        (change)="onTopFiveHighestOatDebitCorporatesTimeDuration($event)" [data]="timeDurationOptions"
+                        [required]="true">
+                      </aps-custom-select>
+                    </div>
+                    <div class="item">
+                      <app-currency-select-dropdown selectStyleClass="select" (currencyChanged)="
+                          widgetOptions.topFiveHighestOatDebitCorporates.currency =
+                            $event.displayName
+                        " [selectedCurrency]="widgetOptions.topFiveHighestOatDebitCorporates.currency">
+                      </app-currency-select-dropdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-px-3 p-pb-3">
+              <div class="aps-h-300">
+                <aps-chart #topFiveHighestOatDebitCorporateChart
+                  [options]="widgetOptions.topFiveHighestOatDebitCorporates.options"></aps-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-md-5 p-sm-12 p-col-12">
+          <div class="aps-card aps-h-100p">
+            <div class="p-px-3 p-pt-3">
+              <div class="left-right-container">
+                <div class="left-container text-size-14 text-semi-bold">
+                  {{ 'Corporate to Corporate total OAT' | apsTranslate }}
+                </div>
+                <div class="right-container">
+                  <div class="inline-items">
+                    <div class="item p-mx-3">
+                      <aps-custom-select id="timeDuration" name="timeDuration"
+                        [value]="widgetOptions.corporateToCorporateTotalOat.timeDuration"
+                        [(ngModel)]="widgetOptions.corporateToCorporateTotalOat.timeDuration" [showLabel]="false"
+                        (change)="onCorporateToCorporateTotalOatTimeDuration($event)" [data]="timeDurationOptions"
+                        [required]="true">
+                      </aps-custom-select>
+                    </div>
+                    <div class="item">
+                      <app-currency-select-dropdown selectStyleClass="select" (currencyChanged)="
+                          widgetOptions.corporateToCorporateTotalOat.currency = $event.displayName
+                        " [selectedCurrency]="widgetOptions.corporateToCorporateTotalOat.currency">
+                      </app-currency-select-dropdown>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-px-3 p-pb-3">
+              <aps-custom-select id="fromCorporate" name="fromCorporate" label="From Corporate"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/getGroupCorporateList"
+                [(ngModel)]="widgetOptions.corporateToCorporateTotalOat.fromCorporate"
+                [value]="widgetOptions.corporateToCorporateTotalOat.fromCorporate"
+                (change)="getCorporateToCorporateTotalOat()"></aps-custom-select>
+
+              <div class="text-center p-py-3">
+                <app-icon class="border-primary border-radius-50p pointer p-px-3 aps-py-12" styleClasses="text-size-20"
+                  icon="fa-sort-alt" (click)="swipeCorporateToCorporateTotalOat()"></app-icon>
+              </div>
+
+              <aps-custom-select id="toCorporate" name="toCorporate" label="To Corporate"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/getGroupCorporateList"
+                [(ngModel)]="widgetOptions.corporateToCorporateTotalOat.toCorporate"
+                [value]="widgetOptions.corporateToCorporateTotalOat.toCorporate"
+                (change)="getCorporateToCorporateTotalOat()"></aps-custom-select>
+
+              <div class="text-size-16 p-pt-3">
+                <div class="inline-block text-semi-bold p-mr-3">
+                  {{ 'Total Amount' | apsTranslate }}
+                </div>
+                <div class="inline-block">
+                  <app-base-currency [amount]="widgetOptions.corporateToCorporateTotalOat.totalTransactionValue"
+                    [currency]="widgetOptions.corporateToCorporateTotalOat.currency"></app-base-currency>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="p-md-3 p-sm-12 p-col-12">
+          <div class="aps-card">
+            <div class="p-p-3">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Transaction Status (This Week)' | apsTranslate }}
+              </div>
+              <div class="left-right-container">
+                <div class="left-container"></div>
+                <div class="right-container">
+                  <aps-custom-select
+                    id="timeDuration"
+                    name="timeDuration"
+                    [value]="widgetOptions.transactionStatus.timeDuration"
+                    [(ngModel)]="widgetOptions.transactionStatus.timeDuration"
+                    [showLabel]="false"
+                    (change)="onTransactionStatusTimeDuration($event)"
+                    [data]="timeDurationOptions"
+                    [required]="true"
+                  ></aps-custom-select>
+                </div>
+              </div>
+
+              <div class="p-grid g-margin-x">
+                <div class="p-col-4">
+                  <div class="background-color-dark-3 text-size-12 p-p-2 p-mb-2">
+                    <div class="">{{ widgetOptions.transactionStatus.completed }}</div>
+                    <div class="text-bold">{{ 'Completed' | apsTranslate }}</div>
+                  </div>
+                </div>
+                <div class="p-col-4">
+                  <div class="background-color-dark-3 text-size-12 p-p-2 p-mb-2">
+                    <div class="">{{ widgetOptions.transactionStatus.pending }}</div>
+                    <div class="text-bold">{{ 'Pending' | apsTranslate }}</div>
+                  </div>
+                </div>
+                <div class="p-col-4">
+                  <div class="background-color-dark-3 text-size-12 p-p-2 p-mb-2">
+                    <div class="">{{ widgetOptions.transactionStatus.rejected }}</div>
+                    <div class="text-bold">{{ 'Rejected' | apsTranslate }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </ng-container>
+
+      <div class="p-col-12" *ngIf="listType !== 'analytics'">
+        <div class="aps-card p-p-2" *ngIf="listType === 'grid'">
+          <div class="aps-search-container-1">
+            <input type="text" class="aps-search-input" [(ngModel)]="searchText" (change)="listing.onFilter(searchText)"
+              placeholder="{{ 'Enter keyword to search' | apsTranslate }}" />
+            <div class="search-icon">
+              <app-icon icon="fa-search" class="app-icon"></app-icon>
+            </div>
+          </div>
+          <div class="p-mt-1 aps-h-300">
+            <app-ag-grid-listing #listing [id]="selectedList?.label" [colDefUrl]="selectedList?.colDefUrl"
+              [rowDefUrl]="selectedList?.rowDataUrl" [context]="listingContext"></app-ag-grid-listing>
+          </div>
+        </div>
+        <div class="aps-card p-p-1" *ngIf="listType === 'card'">
+          <div class="aps-search-container-1">
+            <input type="text" class="aps-search-input" [(ngModel)]="searchText" (change)="listing.onFilter(searchText)"
+              placeholder="{{ 'enter keyword to search' | apsTranslate }}" />
+            <div class="search-icon">
+              <app-icon icon="fa-search" class="app-icon"></app-icon>
+            </div>
+          </div>
+          <div class="p-grid p-mt-2 aps-min-h-310">
+            <div class="p-col-12 aps-min-h-270">
+              <div class="p-grid">
+                <div class="p-col-12 p-md-3 p-col-lg-3" *ngFor="let card of cardListData">
+                  <div class="aps-card p-p-3">
+                    <div class="left-right-container">
+                      <div class="left-container">
+                        <div class="text-bold text-size-14 p-p-1">{{ card.line1 }}</div>
+                        <div class="text-size-12 p-p-1">{{ card.line2 }}</div>
+                        <div class="text-size-12 p-p-1">{{ card.line3 }}</div>
+                      </div>
+                      <div class="right-container">
+                        <div *ngFor="let action of card.actions" class="inline-block float-right">
+                          <app-icon class="p-m-1 pointer" *ngIf="action.type === 'ICON'" [icon]="action.icon"
+                            (click)="performGridOperation(action.displayName, card.id)"></app-icon>
+                        </div>
+                        <div class="p-mt-5">
+                          <div *ngFor="let action of card.actions" class="p-p-1">
+                            <button pButton type="button" class="background-color-primary-light-shade-2"
+                              *ngIf="action.type === 'BUTTON'" [label]="action.displayName" [ngClass]="action.class"
+                              (click)="performGridOperation(action.displayName, card.id)"></button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-p-0" *ngIf="allCardListData.length > 8">
+              <div class="p-grid">
+                <div class="p-col-9 p-md-11 p-lg-11 p-p-0"></div>
+                <div class="p-col-3 p-md-1 p-lg-1 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-col-1 p-md-4 p-lg-4 p-p-0"></div>
+                    <div class="p-col-11 p-md-8 p-lg-8 p-p-0">
+                      <app-icon class="p-mr-2 border-primary text-color-primary p-p-1 border-radius-4 pointer"
+                        icon="fa-chevron-left" (click)="changeCardPage(currentCardPage - 1)"></app-icon>
+                      <app-icon class="p-mr-2 border-primary text-color-primary p-p-1 border-radius-4 pointer"
+                        icon="fa-chevron-right" (click)="changeCardPage(currentCardPage + 1)"></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

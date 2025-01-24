@@ -1,0 +1,566 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal [(isShow)]="!!currentHoldingData" size="md" *ngIf="currentHoldingData">
+      <div header class="left-right-container p-pb-2 border-bottom-primary">
+        <div class="left-container">
+          <div class="text-size-16 text-bold pointer">
+            {{ currentHoldingData.holdings.displayName }} ({{ currentHoldingData.holdings.count }})
+          </div>
+        </div>
+        <div class="right-container">
+          <div class="inline-items">
+            <div class="item p-px-2">
+              <app-icon
+                icon="fa-eye"
+                styleClasses="text-size-16"
+                (click)="currentHoldingData = null"
+              ></app-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div body class="p-grid g-margin-x p-pt-2">
+        <div class="p-md-7 p-sm-12 p-col-12 p-py-0 border-right">
+          <div class="p-grid text-size-14 g-margin-x">
+            <div class="p-md-6 p-sm-6 p-col-6">
+              <div class="text-color-normal">{{ 'Total Investment' | apsTranslate }}</div>
+              <div class="text-color-dark-shade-1">
+                {{ currentHoldingData.investmentValue | currency: FH:'code':'1.0-0' }}
+              </div>
+            </div>
+            <div class="p-md-6 p-sm-6 p-col-6">
+              <div class="text-color-normal">{{ 'Market Value' | apsTranslate }}</div>
+              <div class="text-color-dark-shade-1">
+                {{ currentHoldingData.marketValue | currency: currency:'code':'1.0-0' }}
+              </div>
+            </div>
+            <div class="p-md-6 p-sm-6 p-col-6">
+              <div class="text-color-normal">{{ 'Unrealized Gain/Loss' | apsTranslate }}</div>
+
+              <div
+                class="label-with-icon-container"
+                [ngClass]="
+                  currentHoldingData.unrealizedGainLoss.gainLoss === 'gain'
+                    ? 'text-color-success'
+                    : 'text-color-danger'
+                "
+              >
+                <div class="icon">
+                  <app-icon
+                    [icon]="
+                      currentHoldingData.unrealizedGainLoss.gainLoss === 'gain'
+                        ? 'fa-caret-up'
+                        : 'fa-caret-down'
+                    "
+                    styleClasses="text-size-16 {{
+                      currentHoldingData.unrealizedGainLoss.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    }}"
+                  ></app-icon>
+                </div>
+                <div class="label">
+                  {{
+                    currentHoldingData.unrealizedGainLoss.value | currency: currency:'code':'1.0-0'
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="p-md-6 p-sm-6 p-col-6">
+              <div class="text-color-normal">{{ 'Todays Gain/Loss' | apsTranslate }}</div>
+
+              <div
+                class="label-with-icon-container"
+                [ngClass]="
+                  currentHoldingData.todaysGainLoss.gainLoss === 'gain'
+                    ? 'text-color-success'
+                    : 'text-color-danger'
+                "
+              >
+                <div class="icon">
+                  <app-icon
+                    [icon]="
+                      currentHoldingData.todaysGainLoss.gainLoss === 'gain'
+                        ? 'fa-caret-up'
+                        : 'fa-caret-down'
+                    "
+                    styleClasses="text-size-16 {{
+                      currentHoldingData.todaysGainLoss.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    }}"
+                  ></app-icon>
+                </div>
+                <div class="label">
+                  {{ currentHoldingData.todaysGainLoss.value | currency: currency:'code':'1.0-0' }}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-6 p-sm-6 p-col-6">
+              <div class="text-color-normal">{{ 'Realized Profit/Loss' | apsTranslate }}</div>
+
+              <div
+                class="label-with-icon-container"
+                [ngClass]="
+                  currentHoldingData.realizedProfitLoss.gainLoss === 'gain'
+                    ? 'text-color-success'
+                    : 'text-color-danger'
+                "
+              >
+                <div class="icon">
+                  <app-icon
+                    [icon]="
+                      currentHoldingData.realizedProfitLoss.gainLoss === 'gain'
+                        ? 'fa-caret-up'
+                        : 'fa-caret-down'
+                    "
+                    styleClasses="text-size-16 {{
+                      currentHoldingData.realizedProfitLoss.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    }}"
+                  ></app-icon>
+                </div>
+                <div class="label">
+                  {{
+                    currentHoldingData.realizedProfitLoss.value | currency: currency:'code':'1.0-0'
+                  }}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-6 p-sm-6 p-col-6">
+              <div class="text-color-normal">{{ 'Total Investment' | apsTranslate }}</div>
+              <div class="text-color-dark-shade-1">
+                {{ currentHoldingData.investmentValue | currency: currency:'code':'1.0-0' }}
+              </div>
+            </div>
+            <div class="p-md-6 p-sm-6 p-col-6">
+              <div class="text-color-normal">{{ 'Total Gain/Loss' | apsTranslate }}</div>
+
+              <div
+                class="label-with-icon-container"
+                [ngClass]="
+                  currentHoldingData.totalsGainLoss.gainLoss === 'gain'
+                    ? 'text-color-success'
+                    : 'text-color-danger'
+                "
+              >
+                <div class="icon">
+                  <app-icon
+                    [icon]="
+                      currentHoldingData.totalsGainLoss.gainLoss === 'gain'
+                        ? 'fa-caret-up'
+                        : 'fa-caret-down'
+                    "
+                    styleClasses="text-size-16 {{
+                      currentHoldingData.totalsGainLoss.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    }}"
+                  ></app-icon>
+                </div>
+                <div class="label">
+                  {{ currentHoldingData.totalsGainLoss.value | currency: currency:'code':'1.0-0' }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-md-5 p-sm-12 p-col-12 p-py-0">
+          <div class="p-grid g-margin-x">
+            <div class="p-col-12 p-pt-1 p-pb-0">
+              <div class="p-grid text-size-10 border-radius-4 background-color-dark-3">
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Yearly Growth' | apsTranslate }}</div>
+
+                  <div
+                    class="label-with-icon-container"
+                    [ngClass]="
+                      currentHoldingData.yearlyGrowth.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    "
+                  >
+                    <div class="icon">
+                      <app-icon
+                        [icon]="
+                          currentHoldingData.yearlyGrowth.gainLoss === 'gain'
+                            ? 'fa-caret-up'
+                            : 'fa-caret-down'
+                        "
+                        styleClasses="text-size-14 {{
+                          currentHoldingData.yearlyGrowth.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        }}"
+                      ></app-icon>
+                    </div>
+                    <div class="label">
+                      {{
+                        currentHoldingData.yearlyGrowth.value | currency: currency:'code':'1.0-0'
+                      }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Monthly Growth' | apsTranslate }}</div>
+
+                  <div
+                    class="label-with-icon-container"
+                    [ngClass]="
+                      currentHoldingData.monthlyGrowth.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    "
+                  >
+                    <div class="icon">
+                      <app-icon
+                        [icon]="
+                          currentHoldingData.monthlyGrowth.gainLoss === 'gain'
+                            ? 'fa-caret-up'
+                            : 'fa-caret-down'
+                        "
+                        styleClasses="text-size-14 {{
+                          currentHoldingData.monthlyGrowth.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        }}"
+                      ></app-icon>
+                    </div>
+                    <div class="label">
+                      {{
+                        currentHoldingData.monthlyGrowth.value | currency: currency:'code':'1.0-0'
+                      }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <div class="text-color-normal">{{ 'Average Growth' | apsTranslate }}</div>
+
+                  <div
+                    class="label-with-icon-container"
+                    [ngClass]="
+                      currentHoldingData.averageGrowth.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    "
+                  >
+                    <div class="icon">
+                      <app-icon
+                        [icon]="
+                          currentHoldingData.averageGrowth.gainLoss === 'gain'
+                            ? 'fa-caret-up'
+                            : 'fa-caret-down'
+                        "
+                        styleClasses="text-size-14 {{
+                          currentHoldingData.averageGrowth.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        }}"
+                      ></app-icon>
+                    </div>
+                    <div class="label">{{ currentHoldingData.averageGrowth.value }}%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-0">
+              <div class="" style="height: 120px">
+                <ag-charts-angular
+                  [options]="currentHoldingData.areaChartOptions"
+                ></ag-charts-angular>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x" *ngIf="listType === 'card'">
+      <div class="p-md-6 p-sm-12 p-col-12" *ngFor="let h of holdingsData; let i = index">
+        <div class="aps-card p-p-3">
+          <div class="left-right-container p-pb-2 border-bottom-primary">
+            <div class="left-container">
+              <div class="text-size-16 text-bold pointer" (click)="onHoldingClick(h)">
+                {{ h.holdings.displayName }} ({{ h.holdings.count }})
+              </div>
+            </div>
+            <div class="right-container">
+              <div class="inline-items">
+                <div class="item p-px-2">
+                  <app-icon icon="fa-sync-alt" styleClasses="text-size-16"></app-icon>
+                </div>
+                <div class="item p-px-2">
+                  <app-icon
+                    icon="fa-eye"
+                    styleClasses="text-size-16"
+                    (click)="currentHoldingData = h"
+                  ></app-icon>
+                </div>
+
+                <div class="item p-px-2">
+                  <app-icon icon="fa-ellipsis-v" styleClasses="text-size-16"></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid g-margin-x p-pt-2">
+            <div class="p-md-7 p-sm-12 p-col-12 p-py-0 border-right">
+              <div class="p-grid text-size-14 g-margin-x">
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Total Investment' | apsTranslate }}</div>
+                  <div class="text-color-dark-shade-1">
+                    {{ h.investmentValue | currency: FH:'code':'1.0-0' }}
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Market Value' | apsTranslate }}</div>
+                  <div class="text-color-dark-shade-1">
+                    {{ h.marketValue | currency: currency:'code':'1.0-0' }}
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Unrealized Gain/Loss' | apsTranslate }}</div>
+
+                  <div
+                    class="label-with-icon-container"
+                    [ngClass]="
+                      h.unrealizedGainLoss.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    "
+                  >
+                    <div class="icon">
+                      <app-icon
+                        [icon]="
+                          h.unrealizedGainLoss.gainLoss === 'gain' ? 'fa-caret-up' : 'fa-caret-down'
+                        "
+                        styleClasses="text-size-16 {{
+                          h.unrealizedGainLoss.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        }}"
+                      ></app-icon>
+                    </div>
+                    <div class="label">
+                      {{ h.unrealizedGainLoss.value | currency: currency:'code':'1.0-0' }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Todays Gain/Loss' | apsTranslate }}</div>
+
+                  <div
+                    class="label-with-icon-container"
+                    [ngClass]="
+                      h.todaysGainLoss.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    "
+                  >
+                    <div class="icon">
+                      <app-icon
+                        [icon]="
+                          h.todaysGainLoss.gainLoss === 'gain' ? 'fa-caret-up' : 'fa-caret-down'
+                        "
+                        styleClasses="text-size-16 {{
+                          h.todaysGainLoss.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        }}"
+                      ></app-icon>
+                    </div>
+                    <div class="label">
+                      {{ h.todaysGainLoss.value | currency: currency:'code':'1.0-0' }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Realized Profit/Loss' | apsTranslate }}</div>
+
+                  <div
+                    class="label-with-icon-container"
+                    [ngClass]="
+                      h.realizedProfitLoss.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    "
+                  >
+                    <div class="icon">
+                      <app-icon
+                        [icon]="
+                          h.realizedProfitLoss.gainLoss === 'gain' ? 'fa-caret-up' : 'fa-caret-down'
+                        "
+                        styleClasses="text-size-16 {{
+                          h.realizedProfitLoss.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        }}"
+                      ></app-icon>
+                    </div>
+                    <div class="label">
+                      {{ h.realizedProfitLoss.value | currency: currency:'code':'1.0-0' }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Total Investment' | apsTranslate }}</div>
+                  <div class="text-color-dark-shade-1">
+                    {{ h.investmentValue | currency: currency:'code':'1.0-0' }}
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-6 p-col-6">
+                  <div class="text-color-normal">{{ 'Total Gain/Loss' | apsTranslate }}</div>
+
+                  <div
+                    class="label-with-icon-container"
+                    [ngClass]="
+                      h.totalsGainLoss.gainLoss === 'gain'
+                        ? 'text-color-success'
+                        : 'text-color-danger'
+                    "
+                  >
+                    <div class="icon">
+                      <app-icon
+                        [icon]="
+                          h.totalsGainLoss.gainLoss === 'gain' ? 'fa-caret-up' : 'fa-caret-down'
+                        "
+                        styleClasses="text-size-16 {{
+                          h.totalsGainLoss.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        }}"
+                      ></app-icon>
+                    </div>
+                    <div class="label">
+                      {{ h.totalsGainLoss.value | currency: currency:'code':'1.0-0' }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-5 p-sm-12 p-col-12 p-py-0">
+              <div class="p-grid g-margin-x">
+                <div class="p-col-12 p-pt-1 p-pb-0">
+                  <div class="p-grid text-size-10 border-radius-4 background-color-dark-3">
+                    <div class="p-md-6 p-sm-6 p-col-6">
+                      <div class="text-color-normal">{{ 'Yearly Growth' | apsTranslate }}</div>
+
+                      <div
+                        class="label-with-icon-container"
+                        [ngClass]="
+                          h.yearlyGrowth.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        "
+                      >
+                        <div class="icon">
+                          <app-icon
+                            [icon]="
+                              h.yearlyGrowth.gainLoss === 'gain' ? 'fa-caret-up' : 'fa-caret-down'
+                            "
+                            styleClasses="text-size-14 {{
+                              h.yearlyGrowth.gainLoss === 'gain'
+                                ? 'text-color-success'
+                                : 'text-color-danger'
+                            }}"
+                          ></app-icon>
+                        </div>
+                        <div class="label">
+                          {{ h.yearlyGrowth.value | currency: currency:'code':'1.0-0' }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-md-6 p-sm-6 p-col-6">
+                      <div class="text-color-normal">{{ 'Monthly Growth' | apsTranslate }}</div>
+
+                      <div
+                        class="label-with-icon-container"
+                        [ngClass]="
+                          h.monthlyGrowth.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        "
+                      >
+                        <div class="icon">
+                          <app-icon
+                            [icon]="
+                              h.monthlyGrowth.gainLoss === 'gain' ? 'fa-caret-up' : 'fa-caret-down'
+                            "
+                            styleClasses="text-size-14 {{
+                              h.monthlyGrowth.gainLoss === 'gain'
+                                ? 'text-color-success'
+                                : 'text-color-danger'
+                            }}"
+                          ></app-icon>
+                        </div>
+                        <div class="label">
+                          {{ h.monthlyGrowth.value | currency: currency:'code':'1.0-0' }}
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-md-6 p-sm-12 p-col-12">
+                      <div class="text-color-normal">{{ 'Average Growth' | apsTranslate }}</div>
+
+                      <div
+                        class="label-with-icon-container"
+                        [ngClass]="
+                          h.averageGrowth.gainLoss === 'gain'
+                            ? 'text-color-success'
+                            : 'text-color-danger'
+                        "
+                      >
+                        <div class="icon">
+                          <app-icon
+                            [icon]="
+                              h.averageGrowth.gainLoss === 'gain' ? 'fa-caret-up' : 'fa-caret-down'
+                            "
+                            styleClasses="text-size-14 {{
+                              h.averageGrowth.gainLoss === 'gain'
+                                ? 'text-color-success'
+                                : 'text-color-danger'
+                            }}"
+                          ></app-icon>
+                        </div>
+                        <div class="label">{{ h.averageGrowth.value }}%</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-12 p-py-0">
+                  <div class="" style="height: 120px">
+                    <ag-charts-angular [options]="h.areaChartOptions"></ag-charts-angular>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid g-margin-x" *ngIf="listType === 'grid'">
+      <div class="p-col-12">
+        <div class="aps-card aps-h-340">
+          <app-ag-grid-listing
+            colDefUrl="accountServices/services/wealthManagement/private/holdingsColDefs"
+            [rowData]="holdingsData"
+            [context]="context"
+            [frameworkComponents]="frameworkComponents"
+            [gridOptions]="{
+              rowModelType: 'clientSide'
+            }"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

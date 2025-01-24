@@ -1,0 +1,11 @@
+<ng-container *ngIf="showGroupSummary">
+  <app-va-issuance-group-summary
+    (onCorporateSelect)="onCorporateSelect($event)"
+  ></app-va-issuance-group-summary>
+</ng-container>
+<ng-container *ngIf="!showGroupSummary">
+  <app-va-issuance-corporate-summary
+    [groupData]="corporateGroup"
+    [selectedCorporate]="selectedCorporate"
+  ></app-va-issuance-corporate-summary>
+</ng-container>

@@ -1,0 +1,1350 @@
+<div class="container">
+  <!-- Filters Screen -->
+  <div class="p-grid g-margin-x" *ngIf="currentScreen == 'FILTERS'">
+    <!-- Dynamic Filters -->
+    <div class="p-col-12 p-md-7 p-lg-7">
+      <div class="aps-card p-mb-3 p-p-3">
+        <div class="text-size-14 text-semi-bold">Search Based On</div>
+        <div class="p-mt-3">
+          <p-radioButton
+            name="searchBy"
+            value="INVOICE_PAYMENT_BY_INVOICE"
+            label="Invoice"
+            [(ngModel)]="searchByEntityName"
+            (onClick)="generateFilters()"
+          ></p-radioButton>
+          <p-radioButton
+            name="searchBy"
+            value="INVOICE_PAYMENT_BY_TRACKID"
+            label="Tracking ID"
+            class="p-mx-3"
+            [(ngModel)]="searchByEntityName"
+            (onClick)="generateFilters()"
+          ></p-radioButton>
+        </div>
+      </div>
+      <app-dynamic-search
+        #dynamicSearch
+        [(entityName)]="searchByEntityName"
+        (onSearch)="getRecords($event)"
+        (onFiltersReady)="onDynamicFiltersReady()"
+      >
+      </app-dynamic-search>
+    </div>
+
+    <!-- Due Invoices -->
+    <div class="p-col-12 p-md-5 p-lg-5">
+      <div class="aps-card p-mb-3 p-p-3">
+        <div class="p-grid border-bottom">
+          <div class="p-col-9 p-p-0">
+            <div class="p-mt-1 text-size-16 text-bold">Due Invoices</div>
+          </div>
+          <div class="p-col-3 p-p-0">
+            <aps-custom-select
+              id="duration"
+              name="duration"
+              [(ngModel)]="dueInvoiceDuration"
+              (change)="onChangeDueInvoiceDuration()"
+              [showLabel]="false"
+              [data]="[
+                { id: 'weeks', displayName: 'This Week' },
+                { id: 'days', displayName: 'Today' },
+                { id: 'months', displayName: 'This Month' }
+              ]"
+            >
+            </aps-custom-select>
+          </div>
+        </div>
+        <div class="overdue-container">
+          <div
+            class="p-grid p-py-3 border-bottom"
+            #overDoeInvoice
+            *ngFor="let invoice of dueInvoiceList | orderBy : 'dueInDays' : true"
+            (mouseenter)="overDueActions.show($event, actions)"
+            (mouseleave)="overDueActions.hide($event, actions)"
+          >
+            <div class="p-col-6 p-p-0">
+              <div class="text-size-14 text-bold text-color-primary">{{ invoice.number }}</div>
+              <div>
+                <span class="text-size-12 text-light">Buyer:&nbsp;</span>
+                <span class="text-size-12">{{ invoice.sellerBuyerName }}</span>
+              </div>
+              <div>
+                <span class="text-size-12 text-light">Invoice Date:&nbsp;</span>
+                <span class="text-size-12">{{ invoice.date }}</span>
+              </div>
+            </div>
+            <div class="p-col-6 p-py-0 p-px-1 text-right">
+              <div #actions></div>
+              <div class="text-size-14 text-bold">
+                <app-base-currency
+                  [amount]="invoice.amount"
+                  showFlag="true"
+                  flagStyleClass="flag"
+                  [currency]="invoice.currencyName"
+                ></app-base-currency>
+              </div>
+              <div class="text-size-12">
+                <span class="text-light">Invoice Due Date:&nbsp;</span>
+                <span class="text-size-12">{{ invoice.dueDate }}</span>
+              </div>
+              <div class="text-size-12">
+                <span
+                  class="p-px-1"
+                  [ngClass]="{
+                    'background-color-warning-light text-color-warning': invoice.status == 'Normal',
+                    'background-color-danger-light text-color-danger': invoice.status == 'Overdue'
+                  }"
+                >
+                  <app-icon class="text-size-10" icon="fa-exclamation-triangle"></app-icon>
+                  Overdue by&nbsp;{{ invoice.dueInDays }}&nbsp;days
+                </span>
+              </div>
+
+              <p-overlayPanel [dismissable]="true" #overDueActions [appendTo]="overDoeInvoice">
+                <ng-template pTemplate>
+                  <div class="aps-w-230">
+                    <div class="p-grid">
+                      <div
+                        *ngFor="
+                          let action of invoice.actions | orderBy : 'index' : false;
+                          let i = index
+                        "
+                        class="p-col-12 12 text-size-14 pointer border-bottom text-left"
+                        (click)="invokeActionMethod(invoice, action)"
+                      >
+                        {{ action.displayName | uppercase }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <!--<span
+                    *ngFor="let action of invoice.actions | orderBy: 'index':false; let i = index"
+                  >
+                    <span class="pointer p-mt-2 inline-block" *ngIf="action.type === 'ICON'">
+                      <app-icon
+                        [icon]="action.icon"
+                        (click)="invokeActionMethod(invoice, action)"
+                      ></app-icon>
+                    </span>
+                    <button
+                      type="button"
+                      *ngIf="action.type === 'BUTTON'"
+                      class="btn btn-md p-mx-2 grid-row-text-size"
+                      [ngClass]="action.class"
+                      (click)="invokeActionMethod(invoice, action)"
+                    >
+                      <span *ngIf="action.icon">
+                        <app-icon class="mr-2" [icon]="action.icon"></app-icon>&nbsp;
+                      </span>
+                      {{ action.displayName }}
+                    </button>
+                  </span>-->
+                </ng-template>
+              </p-overlayPanel>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Listing Screen -->
+  <div class="p-grid" *ngIf="currentScreen == 'LISTING'">
+    <!-- Searched Filters View -->
+    <div class="p-col-12 p-p-0">
+      <app-searched-by-view
+        [filters]="selectedFilters"
+        (onClear)="selectedFilters = []; currentScreen = 'FILTERS'"
+        (onModify)="currentScreen = 'FILTERS'"
+      ></app-searched-by-view>
+    </div>
+
+    <!-- Search Listing -->
+    <div class="p-col-12 p-p-0 p-mt-3">
+      <div class="aps-card aps-h-400">
+        <div class="aps-card-header overflow-visible p-px-3 p-py-2">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-color-dark-shade-1 text-bold">Invoices List</div>
+            </div>
+            <div class="right-container">
+              <app-grid-listing-tools
+                [showSearch]="false"
+                [showRefresh]="false"
+                [showMail]="false"
+                [showDownload]="false"
+                [columnConfig]="true"
+                (changeFloatingFilter)="searchResults.changeFloatFilter($event)"
+                (applyColDefs)="searchResults.onApplyConfig($event)"
+                [colDefs]="searchResults.columnDefs"
+              >
+              </app-grid-listing-tools>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <app-ag-grid-listing
+            id="searchDetails"
+            #searchResults
+            entityName="INVOICEENTRY"
+            [gridOptions]="gridOptions"
+            [frameworkComponents]="frameworkComponents"
+            [colDefUrl]="searchColDefUrl"
+            [rowDefUrl]="searchRowDefUrl"
+            supressAutoFit="true"
+            (rowSelected)="onSearchResultRowSelected($event)"
+          >
+          </app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Actions -->
+    <div class="p-col-12 p-p-0 p-my-3">
+      <div class="aps-card p-p-3">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-2 p-lg-2 p-p-0 border-right text-size-14 text-semi-bold">
+            {{ selectedInvoices.length }} Invoices Selected
+          </div>
+          <div class="p-col-12 p-md-3 p-lg-3 p-p-0">
+            <span class="text-size-14 text-semi-bold p-px-2 inline-block"
+              >Total Payable&nbsp;&nbsp;</span
+            >
+            <app-base-currency
+              [amount]="getTotalPayable()"
+              showFlag="true"
+              flagStyleClass="flag"
+              [currency]="getTotalPayableCurrency()"
+            >
+            </app-base-currency>
+          </div>
+          <div class="p-col-12 p-md-7 p-lg-7 p-p-0">
+            <button
+              class="btn btn-md btn-primary float-right"
+              [disabled]="selectedInvoices.length == 0"
+              (click)="payNow(selectedInvoices)"
+            >
+              PAY NOW
+            </button>
+            <button
+              class="btn btn-md btn-tertiary p-mx-2 float-right"
+              [disabled]="selectedInvoices.length == 0"
+              (click)="applyFinance(selectedInvoices)"
+            >
+              FINANCE
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pay Now Screen -->
+  <form name="payNowForm" #payNowForm="ngForm">
+    <div class="p-grid g-margin-x" *ngIf="currentScreen == 'PAYMENT'">
+      <!-- Invoice section -->
+      <div class="p-col-12 p-md-9 p-lg-9">
+        <!-- header and filters details -->
+        <div class="p-grid border-bottom">
+          <div class="p-col-1 p-p-0">
+            <div class="text-size-14 text-semi-bold p-mt-1">
+              <div class="inline-items">
+                <span class="item p-mr-2">Invoices</span>
+                <span class="item">({{ payNowDetails.invoices.length }})</span>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-11 p-px-0 p-pt-0 p-pb-2">
+            <div class="inline-items">
+              <span
+                class="item p-mx-2 p-mt-1 p-px-2 p-pt-1 border-radius-4 inline-block background-color-primary-light-shade-2"
+                *ngFor="let filter of selectedFilters"
+              >
+                <app-review-form-field
+                  [label]="filter.displayName"
+                  [value]="filter.displayValue"
+                  [isDisplayInline]="true"
+                ></app-review-form-field>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Invoices -->
+        <div
+          class="aps-card p-my-3 p-p-2"
+          *ngFor="let invoice of payNowDetails.invoices; let i = index"
+          [ngClass]="{ 'border-primary': invoice.focused }"
+        >
+          <div
+            class="p-grid"
+            (mouseover)="invoice.focused = true"
+            (mouseout)="invoice.focused = false"
+          >
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-14 text-bold">{{ invoice.number }}</div>
+              <div>
+                <span
+                  class="text-size-12 p-mr-1 border-right"
+                  [ngClass]="{
+                    'background-color-success-light text-color-success': invoice.status == 'Normal',
+                    'background-color-danger-light text-color-danger': invoice.status == 'Overdue'
+                  }"
+                >
+                  {{ invoice.status }}
+                </span>
+                <span class="border-right p-mx-1"></span>
+                <span class="text-size-12">{{ invoice.dueDate }}</span>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2">
+              <div class="text-size-12 text-color-light-shade-1">Invoice Amount</div>
+              <div class="text-size-14">
+                <app-base-currency [amount]="invoice.amount" [currency]="invoice.currencyName">
+                </app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2">
+              <div class="text-size-12 text-color-light-shade-1">Payable Amount</div>
+              <div class="text-size-14">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <app-base-currency
+                      [amount]="invoice.totPayment"
+                      [currency]="invoice.currencyName"
+                    >
+                    </app-base-currency>
+                  </div>
+                  <div class="right-container">
+                    <app-icon class="p-ml-2" pTooltip="" icon="fa-info-circle"></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-pb-0" *ngIf="payNowDetails.isReview == false">
+              <div class="payable-amount-container">
+                <div class="input-container">
+                  <aps-form-input
+                    [id]="'NetPayable' + i"
+                    label="Net Payable"
+                    [name]="'NetPayable' + i"
+                    inputType="currencyFormatNotZero"
+                    [(ngModel)]="invoice.netPayable"
+                    required="true"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="icon-container p-pt-3 p-pl-2">
+                  <app-icon
+                    class=""
+                    pTooltip=""
+                    icon="fa-info-circle"
+                    (mouseenter)="netPayableExtraData.show($event)"
+                    (mouseleave)="netPayableExtraData.hide($event)"
+                  ></app-icon>
+
+                  <p-overlayPanel [dismissable]="true" #netPayableExtraData>
+                    <ng-template pTemplate> </ng-template>
+                    <div class="text-size-12">
+                      <span class="text-bold">Linked CN:&nbsp;</span>
+                      <app-base-currency amount="1000"></app-base-currency>
+                    </div>
+                    <div class="text-size-12">
+                      <span class="text-bold">Linked DN:&nbsp;</span>
+                      <app-base-currency amount="0"></app-base-currency>
+                    </div>
+                    <div class="text-size-12">
+                      <span class="text-bold">Amount Paid:&nbsp;</span>
+                      <app-base-currency amount="2500"></app-base-currency>
+                    </div>
+                  </p-overlayPanel>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-pb-0" *ngIf="payNowDetails.isReview == true">
+              <div class="text-size-12 text-color-light-shade-1">Net Payable</div>
+              <div class="text-size-14">
+                <app-base-currency [amount]="invoice.netPayable" [currency]="invoice.currencyName">
+                </app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-pb-0" *ngIf="payNowDetails.isReview == false">
+              <aps-form-input
+                [id]="'partialReason' + i"
+                label="Partial Reason"
+                [name]="'partialReason' + i"
+                rightIcon="fa-search"
+                (onRightIcon)="showPartialReasonModal(i)"
+                [(ngModel)]="invoice.partialReason"
+                readonly="true"
+                [required]="invoice.netPayable != invoice.totPayment"
+              >
+              </aps-form-input>
+              <!-- Partial Reason Search Modal -->
+              <app-search-modal
+                *ngIf="isShowPartialReasonModal"
+                [(isShow)]="isShowPartialReasonModal"
+                header="Reason For Partial Payment"
+                [colDefUrl]="partialReasonColDefUrl"
+                [rowDefUrl]="partialReasonRowDefUrl"
+                (onSelection)="onPartialReasonSelected($event)"
+              >
+              </app-search-modal>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2" *ngIf="payNowDetails.isReview == true">
+              <div class="text-size-12 text-color-light-shade-1">Partial Reason</div>
+              <div class="text-size-14">
+                {{ invoice.partialReason ? invoice.partialReason : '-' }}
+              </div>
+            </div>
+            <div class="p-col-6 p-md-1 p-lg-1">
+              <div class="inline-items">
+                <div class="item p-mx-2 p-mt-3">
+                  <app-icon
+                    *ngIf="!payNowDetails.isReview"
+                    class="pointer"
+                    icon="fa-trash-alt"
+                    (click)="deleteInvoice(i, true)"
+                  ></app-icon>
+                </div>
+                <div class="item p-mx-2 p-mt-3">
+                  <app-icon
+                    class="pointer"
+                    [icon]="invoice.showDetails ? 'fa-chevron-up' : 'fa-chevron-down'"
+                    (click)="showHideInvoiceDetails(i, true)"
+                  ></app-icon>
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="invoice.showDetails">
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-12 text-color-light-shade-1">Invoice Date</div>
+                <div class="text-size-14">{{ invoice.date }}</div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2">
+                <div class="text-size-12 text-color-light-shade-1">Sub Doc Type</div>
+                <div class="text-size-14">{{ invoice.subDocType }}</div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2">
+                <div class="text-size-12 text-color-light-shade-1">Link CN</div>
+                <div
+                  class="text-size-14"
+                  [ngClass]="{ 'text-color-primary pointer': !payNowDetails.isReview }"
+                  (click)="showCNDNModal(true, false, i)"
+                >
+                  <app-base-currency [amount]="invoice.linkCN" [currency]="invoice.currencyName">
+                  </app-base-currency>
+                </div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2">
+                <div class="text-size-12 text-color-light-shade-1">Link DN</div>
+                <div
+                  class="text-size-14 text-color-primary pointer"
+                  [ngClass]="{ 'text-color-primary pointer': !payNowDetails.isReview }"
+                  (click)="showCNDNModal(false, false, i)"
+                >
+                  <app-base-currency [amount]="invoice.linkDN" [currency]="invoice.currencyName">
+                  </app-base-currency>
+                </div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2">
+                <div class="text-size-12 text-color-light-shade-1">Amount Paid</div>
+                <div class="text-size-14">
+                  <app-base-currency
+                    [amount]="invoice.amountPaidTillDate"
+                    [currency]="invoice.currencyName"
+                  >
+                  </app-base-currency>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <!-- Summery Section -->
+      <div class="p-col-12 p-md-3 p-lg-3 p-py-0 p-mb-3">
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-12 p-p-3 border-bottom">
+              <div class="text-size-14 text-semi-bold">
+                <span class="inline-block">Invoice Summary&nbsp;</span>
+                <span class="inline-block">({{ payNowDetails.invoices.length }})</span>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-2 p-px-3 p-mt-1">
+              <app-aps-calender
+                label="Payment Date"
+                id="paymentDate"
+                name="paymentDate"
+                showIcon="true"
+                [(ngModel)]="payNowDetails.paymentDate"
+                required="true"
+                [disabled]="payNowDetails.isReview"
+              >
+              </app-aps-calender>
+            </div>
+            <div class="p-col-12 p-py-2 p-px-3">
+              <aps-custom-select
+                id="paymentDetails"
+                name="paymentDetails"
+                label="Payment Details"
+                [(ngModel)]="payNowDetails.paymentDetails"
+                required="true"
+                [disabled]="payNowDetails.isReview"
+                [data]="[
+                  { id: 'Fund Transfer', displayName: 'Fund Transfer' },
+                  { id: 'Credit Card', displayName: 'Credit Card' },
+                  { id: 'Debit Card', displayName: 'Debit Card' },
+                  { id: 'Cheque', displayName: 'Cheque' },
+                  { id: 'Demand Draft', displayName: 'Demand Draft' },
+                  { id: 'Settle out of System', displayName: 'Settle out of System' }
+                ]"
+              >
+              </aps-custom-select>
+            </div>
+            <div
+              class="p-col-12 p-py-2 p-px-3"
+              *ngIf="payNowDetails.paymentDetails == 'Fund Transfer'"
+            >
+              <aps-custom-select
+                id="debitAccount"
+                name="debitAccount"
+                label="Debit Account"
+                [(ngModel)]="payNowDetails.DebitAccountNo"
+                required="true"
+                (change)="payNowDetails.availableBalance = $event.enrichments.balance"
+                [disabled]="payNowDetails.isReview"
+                [data]="accountNoList"
+              >
+              </aps-custom-select>
+            </div>
+            <div
+              class="p-col-12 p-py-2 p-px-3"
+              *ngIf="
+                payNowDetails.paymentDetails == 'Fund Transfer' && payNowDetails.DebitAccountNo
+              "
+            >
+              <div class="text-size-14">
+                <span class="text-semi-bold">Available Balance: &nbsp;</span>
+                <app-base-currency [amount]="payNowDetails.availableBalance"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-2 p-px-3">
+              <div class="text-size-14 text-semi-bold">
+                Exchange Detail<sup class="text-color-danger">*</sup>
+              </div>
+              <div class="p-grid">
+                <div class="p-col-4 p-p-0">
+                  <p-radioButton
+                    name="exchangeRate"
+                    value="CARD"
+                    label="Card"
+                    [(ngModel)]="payNowDetails.exchangeDetails"
+                    [disabled]="payNowDetails.isReview"
+                  ></p-radioButton>
+                </div>
+                <div class="p-col-4 p-p-0">
+                  <p-radioButton
+                    name="exchangeRate"
+                    value="DEALNO"
+                    label="Deal No"
+                    [(ngModel)]="payNowDetails.exchangeDetails"
+                    [disabled]="payNowDetails.isReview"
+                  ></p-radioButton>
+                </div>
+                <div class="p-col-4 p-p-0" *ngIf="payNowDetails.exchangeDetails == 'CARD'">
+                  <span class="text-size-12 text-color-light-shade-1">FX Rates</span>&nbsp;&nbsp;
+                  <span class="text-size-14 text-color-light-shade-3">{{
+                    payNowDetails.fxRate
+                  }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-2 p-px-3" *ngIf="payNowDetails.exchangeDetails == 'DEALNO'">
+              <aps-form-input
+                id="dealNo"
+                label="Deal Number"
+                name="dealNo"
+                required="true"
+                [(ngModel)]="payNowDetails.dealNumber"
+                [disabled]="payNowDetails.isReview"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-col-12 p-py-2 p-px-3">
+              <div class="p-grid">
+                <div class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1">
+                  Sub Total
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-size-14">
+                  <span class="float-right">
+                    <app-base-currency
+                      [amount]="getPayNowSubTotal()"
+                      [currency]="payNowDetails.invoices[0].currencyName"
+                    >
+                    </app-base-currency>
+                  </span>
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1">
+                  <span class="inline-block">Credit Note&nbsp;</span>
+                  <span class="inline-block">({{ payNowDetails.genericCNIds.length }})</span>
+                </div>
+                <div
+                  class="p-col-6 p-px-0 p-py-2 text-color-primary"
+                  (click)="showCNDNModal(true, true)"
+                >
+                  <span
+                    class="float-right"
+                    [ngClass]="{ pointer: !payNowDetails.isReview }"
+                    *ngIf="payNowDetails.genericCNIds.length == 0 && !payNowDetails.isReview"
+                    >Apply
+                  </span>
+                  <span
+                    class="float-right"
+                    [ngClass]="{ pointer: !payNowDetails.isReview }"
+                    *ngIf="payNowDetails.genericCNIds.length != 0 || payNowDetails.isReview"
+                  >
+                    <app-base-currency
+                      [amount]="payNowDetails.genericCNAmount"
+                      [currency]="payNowDetails.invoices[0].currencyName"
+                    >
+                    </app-base-currency>
+                  </span>
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1">
+                  <span class="inline-block">Debit Note&nbsp;</span>
+                  <span class="inline-block">({{ payNowDetails.genericDNIds.length }})</span>
+                </div>
+                <div
+                  class="p-col-6 p-px-0 p-py-2 text-color-primary"
+                  (click)="showCNDNModal(false, true)"
+                >
+                  <span
+                    class="float-right"
+                    [ngClass]="{ pointer: !payNowDetails.isReview }"
+                    *ngIf="payNowDetails.genericDNIds.length == 0 && !payNowDetails.isReview"
+                    >Apply
+                  </span>
+                  <span
+                    class="float-right"
+                    [ngClass]="{ pointer: !payNowDetails.isReview }"
+                    *ngIf="payNowDetails.genericDNIds.length != 0 || payNowDetails.isReview"
+                  >
+                    <app-base-currency
+                      [amount]="payNowDetails.genericDNAmount"
+                      [currency]="payNowDetails.invoices[0].currencyName"
+                    >
+                    </app-base-currency>
+                  </span>
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1">
+                  Discount
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-color-success">
+                  <span class="float-right">
+                    -<app-base-currency
+                      [amount]="payNowDetails.discount"
+                      [currency]="payNowDetails.invoices[0].currencyName"
+                    >
+                    </app-base-currency>
+                  </span>
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1">
+                  Tax Charges
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-color-danger">
+                  <span class="float-right">
+                    +<app-base-currency
+                      [amount]="payNowDetails.taxCharges"
+                      [currency]="payNowDetails.invoices[0].currencyName"
+                    >
+                    </app-base-currency>
+                  </span>
+                </div>
+
+                <div class="p-col-6 p-px-0 p-py-2 text-size-14">
+                  <span class="text-semi-bold">Total Payable</span>
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2">
+                  <span class="text-size-14 text-bold float-right">
+                    <app-base-currency
+                      [amount]="getPayNowTotalPayable()"
+                      showFlag="true"
+                      flagStyleClass="flag"
+                      [currency]="payNowDetails.invoices[0].currencyName"
+                    >
+                    </app-base-currency>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PayNow Actions -->
+      <div class="p-col-12 p-py-0 p-mb-2">
+        <div class="aps-card p-px-3 p-py-2">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-2 p-lg-2 p-p-0">
+              <button class="btn btn-md btn-tertiary" (click)="onCancelClick()">CANCEL</button>
+            </div>
+            <div class="p-col-12 p-md-10 p-lg-10 p-p-0">
+              <button
+                class="btn btn-md btn-primary float-right"
+                *ngIf="payNowDetails.isReview == false && mode != 'VIEW'"
+                [disabled]="payNowForm.invalid || getPayNowTotalPayable() <= 0"
+                (click)="payNowDetails.isReview = true"
+              >
+                REVIEW
+              </button>
+              <button
+                class="btn btn-md btn-primary float-right"
+                *ngIf="payNowDetails.isReview == true && mode != 'VIEW'"
+                (click)="onPaymentSubmit()"
+              >
+                {{ mode ? 'UPDATE' : 'SUBMIT' }}
+              </button>
+              <button
+                class="btn btn-md btn-tertiary float-right p-mx-2"
+                *ngIf="payNowDetails.isReview == true && mode != 'VIEW'"
+                (click)="payNowDetails.isReview = false"
+              >
+                PREVIOUS
+              </button>
+              <button
+                class="btn btn-md btn-secondary float-right p-mx-2"
+                *ngIf="mode"
+                (click)="navigateToListing()"
+              >
+                BACK
+              </button>
+              <span class="float-right p-m-2">
+                <span class="text-size-14 text-semi-bold p-px-2 inline-block">Total Payable</span>
+                <span class="text-size-14 text-bold inline-block">
+                  <app-base-currency
+                    [amount]="getPayNowTotalPayable()"
+                    showFlag="true"
+                    flagStyleClass="flag"
+                    [currency]="payNowDetails.invoices[0].currencyName"
+                  >
+                  </app-base-currency>
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Apply Finance Screen -->
+  <form name="applyFinanceForm" #applyFinanceForm="ngForm">
+    <div class="p-grid g-margin-x" *ngIf="currentScreen == 'FINANCE'">
+      <!-- Seller Buyer Details -->
+      <div class="p-col-12 p-md-6 p-lg-6 p-py-1">
+        <!-- Seller Details -->
+        <div class="aps-card p-p-3">
+          <div class="p-grid" *ngIf="applyFinanceDetails.sellerDetail.length > 0">
+            <div class="p-col-6 p-p-0 text-size-14 text-bold">
+              <div>Seller: {{ applyFinanceDetails.sellerDetail[0].name }}</div>
+              <div class="p-mt-2 text-size-12">
+                {{ applyFinanceDetails.sellerDetail[0].nameInThai }}
+              </div>
+            </div>
+            <div class="p-col-6 p-p-0 text-size-12">
+              <span class="float-right text-color-danger">{{
+                applyFinanceDetails.sellerDetail[0].expiresOn
+              }}</span>
+              <span class="float-right">Expires On:&nbsp;</span>
+            </div>
+            <div class="p-col-12 border-bottom"></div>
+            <div class="p-col-12"></div>
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-12 text-color-light-shade-1">Available Limit</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="applyFinanceDetails.sellerDetail[0].availableLimit"
+                  [currency]="applyFinanceDetails.invoices[0].currencyName"
+                >
+                </app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-12 text-color-light-shade-1">Applied Finance Limit</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="applyFinanceDetails.sellerDetail[0].appliedFinanceLimit"
+                  [currency]="applyFinanceDetails.invoices[0].currencyName"
+                >
+                </app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-12 text-color-light-shade-1">Utilized Limit</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="applyFinanceDetails.sellerDetail[0].utilizedLimit"
+                  [currency]="applyFinanceDetails.invoices[0].currencyName"
+                >
+                </app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-12 text-color-light-shade-1">Available Adhoc Limit</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="applyFinanceDetails.sellerDetail[0].availableAdhocLimit"
+                  [currency]="applyFinanceDetails.invoices[0].currencyName"
+                >
+                </app-base-currency>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-py-1">
+        <!-- Buyer Details -->
+        <div class="aps-card p-p-3">
+          <div class="p-grid" *ngIf="applyFinanceDetails.buyerDetail.length > 0">
+            <div class="p-col-6 p-p-0 text-size-14 text-bold">
+              <div>Buyer: {{ applyFinanceDetails.buyerDetail[0].name }}</div>
+              <div class="p-mt-2 text-size-12">
+                {{ applyFinanceDetails.buyerDetail[0].nameInThai }}
+              </div>
+            </div>
+            <div class="p-col-6 p-p-0 text-size-12">
+              <span class="float-right text-color-danger">{{
+                applyFinanceDetails.buyerDetail[0].expiresOn
+              }}</span>
+              <span class="float-right">Expires On:&nbsp;</span>
+            </div>
+            <div class="p-col-12 border-bottom"></div>
+            <div class="p-col-12"></div>
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-12 text-color-light-shade-1">Available Limit</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="applyFinanceDetails.buyerDetail[0].availableLimit"
+                  [currency]="applyFinanceDetails.invoices[0].currencyName"
+                >
+                </app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-12 text-color-light-shade-1">Applied Finance Limit</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="applyFinanceDetails.buyerDetail[0].appliedFinanceLimit"
+                  [currency]="applyFinanceDetails.invoices[0].currencyName"
+                >
+                </app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-12 text-color-light-shade-1">Utilized Limit</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="applyFinanceDetails.buyerDetail[0].utilizedLimit"
+                  [currency]="applyFinanceDetails.invoices[0].currencyName"
+                >
+                </app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3">
+              <div class="text-size-12 text-color-light-shade-1">Available Adhoc Limit</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="applyFinanceDetails.buyerDetail[0].availableAdhocLimit"
+                  [currency]="applyFinanceDetails.invoices[0].currencyName"
+                >
+                </app-base-currency>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header, filters and Invoices -->
+      <div class="p-col-12 p-md-9 p-lg-9 p-py-0 p-mt-5">
+        <!-- header and filters details -->
+        <div class="p-grid border-bottom">
+          <div class="p-col-1 p-p-0">
+            <div class="text-size-14 text-semi-bold p-mt-1">
+              <span class="inline-block">Invoices&nbsp;</span>
+              <span class="inline-block">({{ applyFinanceDetails.invoices.length }})</span>
+            </div>
+          </div>
+          <div class="p-col-11 p-px-0 p-pt-0 p-pb-2">
+            <span
+              class="p-mx-2 p-mt-1 p-px-2 p-pt-1 border-radius-4 inline-block background-color-primary-light-shade-2"
+              *ngFor="let filter of selectedFilters"
+            >
+              <span class="text-size-12 inline-block aps-pt-1">{{ filter.displayName }}&nbsp;</span>
+              <span class="text-size-14 text-semi-bold inline-block">{{
+                filter.displayValue
+              }}</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Invoices -->
+        <div
+          class="aps-card p-my-3 p-p-3"
+          *ngFor="let invoice of applyFinanceDetails.invoices; let i = index"
+          [ngClass]="{ 'border-primary': invoice.focused }"
+        >
+          <div
+            class="p-grid"
+            (mouseover)="invoice.focused = true"
+            (mouseout)="invoice.focused = false"
+          >
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0">
+              <div class="text-size-14 text-bold">{{ invoice.number }}</div>
+              <div>
+                <span
+                  class="text-size-12 p-mr-1 border-right"
+                  [ngClass]="{
+                    'background-color-success-light text-color-success': invoice.status == 'Normal',
+                    'background-color-danger-light text-color-danger': invoice.status == 'Overdue'
+                  }"
+                >
+                  {{ invoice.status }}
+                </span>
+                <span class="border-right p-mx-1"></span>
+                <span class="text-size-12">{{ invoice.dueDate }}</span>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0">
+              <div class="text-size-12 text-color-light-shade-1">Invoice Amount</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="invoice.amount"
+                  [currency]="invoice.currencyName"
+                ></app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0">
+              <div class="text-size-12 text-color-light-shade-1">
+                Already Finance/Paid Amount &nbsp;
+                <app-icon
+                  icon="fa-info-circle"
+                  (mouseenter)="alreadyFinancePaidAmountData.show($event)"
+                  (mouseleave)="alreadyFinancePaidAmountData.hide($event)"
+                ></app-icon>
+
+                <p-overlayPanel [dismissable]="true" #alreadyFinancePaidAmountData>
+                  <ng-template pTemplate> </ng-template>
+                  <div class="text-size-14">
+                    <span class="text-bold">Already Financed Details</span>
+                  </div>
+                  <div class="text-size-12">
+                    <span class="text-bold">Invoice Amount:&nbsp;</span>
+                    <app-base-currency amount="0"></app-base-currency>
+                  </div>
+                  <div class="text-size-12">
+                    <span class="text-bold">Finance Amount:&nbsp;</span>
+                    <app-base-currency amount="0"></app-base-currency>
+                  </div>
+                </p-overlayPanel>
+              </div>
+              <div
+                class="text-size-14"
+                [ngClass]="{ 'text-color-primary pointer': !applyFinanceDetails.isReview }"
+                (click)="showHideInvoiceDetails(i, false)"
+              >
+                <app-base-currency
+                  [amount]="invoice.amountPaidTillDate"
+                  [currency]="invoice.currencyName"
+                ></app-base-currency>
+              </div>
+            </div>
+            <div
+              class="p-col-6 p-md-2 p-lg-2 p-px-1 p-py-0"
+              *ngIf="applyFinanceDetails.isReview == false"
+            >
+              <app-aps-calender
+                label="Finance Date"
+                showIcon="true"
+                [id]="'financeDate' + i"
+                [name]="'financeDate' + i"
+                [(ngModel)]="invoice.financeDate"
+                required="true"
+              >
+              </app-aps-calender>
+            </div>
+            <div
+              class="p-col-6 p-md-2 p-lg-2 p-px-1 p-py-0"
+              *ngIf="applyFinanceDetails.isReview == true"
+            >
+              <div class="text-size-12 text-color-light-shade-1">Finance Date</div>
+              <div class="text-size-14">{{ invoice.financeDate }}</div>
+            </div>
+            <div
+              class="p-col-6 p-md-2 p-lg-2 p-px-1 p-py-0"
+              *ngIf="applyFinanceDetails.isReview == false"
+            >
+              <aps-form-input
+                [id]="'financeRequired' + i"
+                label="Finance Required"
+                [name]="'financeRequired' + i"
+                [(ngModel)]="invoice.financeRequired"
+                inputType="currencyFormatNotZero"
+                required="true"
+              >
+              </aps-form-input>
+            </div>
+            <div
+              class="p-col-6 p-md-2 p-lg-2 p-px-1 p-py-0"
+              *ngIf="applyFinanceDetails.isReview == true"
+            >
+              <div class="text-size-12 text-color-light-shade-1">Finance Required</div>
+              <div class="text-size-14">
+                <app-base-currency
+                  [amount]="invoice.financeRequired"
+                  [currency]="invoice.currencyName"
+                ></app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0">
+              <app-icon
+                class="pointer float-right p-mx-2 p-my-3"
+                [icon]="invoice.showDetails ? 'fa-chevron-up' : 'fa-chevron-down'"
+                (click)="showHideInvoiceDetails(i, false)"
+              ></app-icon>
+              <app-icon
+                *ngIf="!applyFinanceDetails.isReview"
+                class="pointer float-right p-mx-2 p-my-3"
+                icon="fa-trash-alt"
+                (click)="deleteInvoice(i, false)"
+              ></app-icon>
+              <app-icon
+                class="pointer text-color-primary float-right p-mx-2 p-my-3"
+                icon="fa-eye"
+                (click)="viewInvoice(i)"
+              ></app-icon>
+              <app-icon
+                *ngIf="!applyFinanceDetails.isReview"
+                class="pointer text-color-primary float-right p-mx-2 p-my-3"
+                icon="fa-paperclip"
+                (click)="showAttachmentModal(i)"
+              ></app-icon>
+              <app-attachment-modal
+                *ngIf="isShowAttachmentModal"
+                [(isShow)]="isShowAttachmentModal"
+                [files]="selectedAttachments"
+                (submit)="onAttachmentSelected($event)"
+              >
+              </app-attachment-modal>
+            </div>
+            <ng-container *ngIf="invoice.showDetails">
+              <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+                <div class="text-size-12 text-color-light-shade-1">Invoice Date</div>
+                <div class="text-size-14">{{ invoice.date }}</div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+                <div class="text-size-12 text-color-light-shade-1">Batch Number</div>
+                <div class="text-size-14">{{ invoice.id }}</div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+                <div class="text-size-12 text-color-light-shade-1">Link CN</div>
+                <div
+                  class="text-size-14"
+                  [ngClass]="{ 'text-color-primary pointer': !applyFinanceDetails.isReview }"
+                  (click)="showCNDNModal(true, false, i)"
+                >
+                  <app-base-currency
+                    [amount]="invoice.linkCN"
+                    [currency]="invoice.currencyName"
+                  ></app-base-currency>
+                </div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+                <div class="text-size-12 text-color-light-shade-1">Finance %</div>
+                <div class="text-size-14">{{ invoice.financePercent }}%</div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+                <div class="text-size-12 text-color-light-shade-1">Interest Rate (IR)</div>
+                <div class="text-size-14">{{ invoice.interestRate }}%</div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3" *ngIf="!applyFinanceDetails.isReview">
+                <aps-form-input
+                  [id]="'reqInterestRate' + i"
+                  label="Request IR"
+                  [name]="'reqInterestRate' + i"
+                  [(ngModel)]="invoice.reqInterestRate"
+                  inputType="numeric"
+                >
+                </aps-form-input>
+              </div>
+              <div
+                class="p-col-6 p-md-2 p-lg-2 p-px-1 p-py-0 p-mt-3"
+                *ngIf="applyFinanceDetails.isReview"
+              >
+                <div class="text-size-12 text-color-light-shade-1">Request IR</div>
+                <div class="text-size-14" *ngIf="invoice.reqInterestRate">
+                  {{ invoice.reqInterestRate }}%
+                </div>
+                <div class="text-size-14" *ngIf="!invoice.reqInterestRate">-</div>
+              </div>
+              <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+                <div class="text-size-12 text-color-light-shade-1">Maximum Finance</div>
+                <div class="text-size-14">
+                  <app-base-currency
+                    [amount]="invoice.maxFinance"
+                    [currency]="invoice.currencyName"
+                  ></app-base-currency>
+                </div>
+              </div>
+              <!-- <ng-container *ngIf="applyFinanceDetails.isReview"> -->
+              <div
+                class="p-col-6 p-md-3 p-lg-3 p-p-0 p-mt-3"
+                *ngFor="let file of invoice.attachments; let j = index"
+              >
+                <div class="text-size-12 text-color-light-shade-1" *ngIf="i == 0">
+                  Supporting Documents
+                </div>
+                <div class="text-size-12 text-color-light-shade-1" *ngIf="i > 0">&nbsp;</div>
+                <div class="aps-card p-mt-1 p-mr-2">
+                  <div class="p-grid">
+                    <div class="p-col-2 p-px-3">
+                      <app-icon class="text-size-20" icon="fa-file"></app-icon>
+                    </div>
+                    <div class="p-col-8">
+                      <div class="text-size-12 p-text-nowrap p-text-truncate">{{ file.name }}</div>
+                      <div class="text-size-10 text-color-light-shade-3">
+                        {{ (file?.size / 1024 / 1024).toFixed(2) }} MB
+                      </div>
+                    </div>
+                    <div class="p-col-2">
+                      <app-icon
+                        *ngIf="!applyFinanceDetails.isReview"
+                        class="pointer"
+                        icon="fa-times"
+                        (click)="deleteAttachment(i, j)"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- </ng-container> -->
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summery Section -->
+      <div class="p-col-12 p-md-3 p-lg-3 p-py-0 p-mt-5 p-mb-3">
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-12 p-p-3 border-bottom">
+              <div class="text-size-14 text-semi-bold">
+                <span class="inline-block">Remarks&nbsp;</span>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-2 p-px-3 p-mt-1">
+              <div *ngIf="!applyFinanceDetails.isReview">
+                <aps-form-input
+                  id="remarks"
+                  label="Remarks"
+                  name="remarks"
+                  [(ngModel)]="applyFinanceDetails.remarks"
+                >
+                </aps-form-input>
+              </div>
+              <span class="text-size-14" *ngIf="applyFinanceDetails.isReview">{{
+                applyFinanceDetails.remarks
+              }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="aps-card p-mt-3">
+          <div class="p-grid">
+            <div class="p-col-12 p-p-3 border-bottom">
+              <div class="text-size-14 text-semi-bold">
+                <span class="inline-block">Finance Summary&nbsp;</span>
+                <span class="inline-block">({{ applyFinanceDetails.invoices.length }})</span>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-2 p-px-3">
+              <div class="p-grid">
+                <!-- <div class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1">
+                  Seller/Buyer
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-size-14">
+                  <span class="float-right">{{ applyFinanceDetails.sellerDetail[0].name }}</span>
+                </div> -->
+                <div class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1">
+                  <span class="inline-block">Credit Note&nbsp;</span>
+                  <span class="inline-block">({{ applyFinanceDetails.genericCNIds.length }})</span>
+                </div>
+                <div
+                  class="p-col-6 p-px-0 p-py-2 text-color-success"
+                  (click)="showCNDNModal(true, true)"
+                >
+                  <span
+                    class="float-right"
+                    [ngClass]="{ pointer: !applyFinanceDetails.isReview }"
+                    *ngIf="
+                      applyFinanceDetails.genericCNIds.length == 0 && !applyFinanceDetails.isReview
+                    "
+                    >Apply
+                  </span>
+                  <span
+                    class="float-right"
+                    [ngClass]="{ pointer: !applyFinanceDetails.isReview }"
+                    *ngIf="
+                      applyFinanceDetails.genericCNIds.length != 0 || applyFinanceDetails.isReview
+                    "
+                  >
+                    -<app-base-currency
+                      [amount]="applyFinanceDetails.genericCNAmount"
+                      [currency]="applyFinanceDetails.invoices[0].currencyName"
+                    ></app-base-currency>
+                  </span>
+                </div>
+                <div
+                  class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1 border-bottom"
+                >
+                  Finance Required
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 border-bottom">
+                  <span class="float-right">
+                    <app-base-currency
+                      [amount]="getsubTotalFinanceRequired()"
+                      [currency]="applyFinanceDetails.invoices[0].currencyName"
+                    ></app-base-currency>
+                  </span>
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2 text-size-12 text-color-light-shade-1">
+                  Total Finance Required
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2">
+                  <span class="float-right">
+                    <app-base-currency
+                      [amount]="getFinanceTotal()"
+                      [currency]="applyFinanceDetails.invoices[0].currencyName"
+                    ></app-base-currency>
+                  </span>
+                </div>
+
+                <div class="p-col-6 p-px-0 p-py-2 text-size-12">
+                  <span class="text-size-14 text-semi-bold">Total Finance&nbsp;&nbsp;</span>
+                </div>
+                <div class="p-col-6 p-px-0 p-py-2">
+                  <span class="text-size-14 text-bold">
+                    <app-base-currency
+                      showFlag="true"
+                      flagStyleClass="flag"
+                      [amount]="getFinanceTotal()"
+                      [currency]="applyFinanceDetails.invoices[0].currencyName"
+                    ></app-base-currency>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Apply Finance Actions -->
+      <div class="p-col-12 p-py-0 p-mb-2">
+        <div class="aps-card p-px-3 p-py-2">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-2 p-lg-2 p-p-0">
+              <button class="btn btn-md btn-tertiary" (click)="onCancelClick()">CANCEL</button>
+            </div>
+            <div class="p-col-12 p-md-10 p-lg-10 p-p-0">
+              <button
+                class="btn btn-md btn-primary float-right"
+                *ngIf="applyFinanceDetails.isReview == false"
+                [disabled]="applyFinanceForm.invalid || getFinanceTotal() <= 0"
+                (click)="applyFinanceDetails.isReview = true && mode != 'VIEW'"
+              >
+                REVIEW
+              </button>
+              <button
+                class="btn btn-md btn-primary float-right"
+                *ngIf="applyFinanceDetails.isReview == true && mode != 'VIEW'"
+                (click)="onFinanceSubmit()"
+              >
+                {{ mode ? 'UPDATE' : 'SUBMIT' }}
+              </button>
+              <button
+                class="btn btn-md btn-tertiary float-right p-mx-2"
+                *ngIf="applyFinanceDetails.isReview == true && mode != 'VIEW'"
+                (click)="applyFinanceDetails.isReview = false"
+              >
+                PREVIOUS
+              </button>
+              <button
+                class="btn btn-md btn-secondary float-right p-mx-2"
+                *ngIf="mode"
+                (click)="navigateToListing()"
+              >
+                BACK
+              </button>
+              <span class="float-right p-m-2">
+                <span class="text-size-14 text-semi-bold p-px-2 inline-block"
+                  >Total Finance&nbsp;&nbsp;</span
+                >
+                <span class="text-size-14 text-bold inline-block">
+                  <app-base-currency
+                    showFlag="true"
+                    flagStyleClass="flag"
+                    [amount]="getFinanceTotal()"
+                    [currency]="applyFinanceDetails.invoices[0].currencyName"
+                  ></app-base-currency>
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- CN DN Modal -->
+  <app-search-modal
+    *ngIf="isShowCNDNModal"
+    [(isShow)]="isShowCNDNModal"
+    [header]="CNDNHeader"
+    [isShowReset]="true"
+    selectBtnCaption="APPLY"
+    [colDefUrl]="CNDNColDefUrl"
+    [rowDefUrl]="CNDNRowDefUrl"
+    isMultiSelect="true"
+    [preSelectedIds]="CNDNSelectedIds"
+    (onSelection)="onCNDNSelection($event)"
+    (reset)="onCNDNSelection([])"
+  >
+  </app-search-modal>
+
+  <!-- Confirm Popup Modal -->
+  <app-modal
+    *ngIf="isOpenConfirm"
+    [(isShow)]="isOpenConfirm"
+    headerText="Successfully submitted"
+    (onClose)="onConfirm($event)"
+  >
+    <div class="p-grid" body>
+      <div class="p-col">
+        <div class="left-container text-size-16">
+          {{ confirmMessage }}
+        </div>
+      </div>
+    </div>
+    <div class="p-grid" footer>
+      <div class="p-col">
+        <button
+          class="btn btn-md btn-primary float-right"
+          (click)="onConfirm($event); isOpenConfirm = false"
+        >
+          OKAY
+        </button>
+      </div>
+    </div>
+  </app-modal>
+</div>

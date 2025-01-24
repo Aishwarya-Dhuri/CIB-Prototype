@@ -1,0 +1,132 @@
+<div class="aps-card">
+  <div class="p-px-3 border-bottom">
+    <div class="left-right-container disable-left-right-container-on-mobile">
+      <div class="left-container aps-pt-12">
+        <div class="text-semi-bold text-size-14">{{ 'Debit Cards' | apsTranslate }}</div>
+      </div>
+      <div class="right-container text-right aps-py-12">
+        <app-grid-listing-tools
+          (changeFloatingFilter)="
+            accountSummaryChildGrid ? accountSummaryChildGrid.changeFloatFilter($event) : null
+          "
+          (filterRecords)="
+            accountSummaryChildGrid ? accountSummaryChildGrid.onFilter($event) : null
+          "
+          (applyColDefs)="
+            accountSummaryChildGrid ? accountSummaryChildGrid.onApplyConfig($event) : null
+          "
+          (changeListingType)="listType = $event"
+          [colDefs]="
+            accountSummaryChildGrid && accountSummaryChildGrid.columnDefs
+              ? accountSummaryChildGrid.columnDefs
+              : []
+          "
+          [gridRef]="accountSummaryChildGrid"
+          [showSearch]="listType === 'grid' && viewport != 'mobile'"
+          [columnConfig]="listType === 'grid' && viewport != 'mobile'"
+          [showFloatingFilter]="listType === 'grid' && viewport != 'mobile'"
+          [moreOptions]="false"
+          [parentRef]="this"
+          [listingTypes]="viewport != 'mobile'"
+          [listingType]="listType"
+        ></app-grid-listing-tools>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-h-300 overflow-scroll">
+    <ng-container *ngIf="!loading; else loadingData">
+      <app-ag-grid-listing
+        *ngIf="listType === 'grid'"
+        [id]="'account-summary-child'"
+        #accountSummaryChild
+        [gridOptions]="gridOptions"
+        [context]="{ componentParent: this }"
+        colDefUrl="accountServices/services/accountSummary/private/debitCardColDefs"
+        [rowData]="rowData"
+        [supressAutoFit]="true"
+      ></app-ag-grid-listing>
+
+      <div class="card-list border-top" *ngIf="listType === 'card'">
+        <div class="p-grid p-p-2">
+          <div class="p-col-12" *ngFor="let data of cardData; let i = index">
+            <div class="aps-card text-size-12">
+              <div class="card-header">
+                <div class="p-grid">
+                  <div class="p-col-11 p-p-0">
+                    <div class="p-grid">
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div
+                          class="text-size-14 pointer text-bold p-py-2 text-underline"
+                          (click)="onLinkClick(data)"
+                        >
+                          {{ data[colDefs[0].field] }}
+                        </div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">{{ colDefs[1].headerName }}</div>
+                        <div class="">{{ data[colDefs[1].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">{{ colDefs[2].headerName }}</div>
+                        <div class="">{{ data[colDefs[2].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">{{ colDefs[3].headerName }}</div>
+                        <div class="">{{ data[colDefs[3].field] }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-col-1 p-p-3 text-right">
+                    <app-icon
+                      [icon]="data.isShow ? 'fa-chevron-up' : 'fa-chevron-down'"
+                      styleClasses="text-size-14 pointer"
+                      (click)="data.isShow = !data.isShow"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body border-top" *ngIf="data.isShow">
+                <div class="p-grid">
+                  <div
+                    class="p-md-3 p-sm-12 p-col-12 p-p-0"
+                    *ngFor="let field of colDefs; let i = index"
+                  >
+                    <div class="p-p-2" *ngIf="i >= 4 && colDefs[i].field != 'actions'">
+                      <div class="text-bold">{{ colDefs[i].headerName }}</div>
+                      <div class="">{{ data[colDefs[i].field] }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-right-container p-py-2 p-px-3" *ngIf="listType === 'card'">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-sm btn-tertiary p-mr-3">
+            <app-icon
+              icon="fa-chevron-left"
+              (click)="previous()"
+              [disabled]="this.currentPage <= 1"
+            ></app-icon>
+          </button>
+          <button class="btn btn-sm btn-tertiary">
+            <app-icon
+              icon="fa-chevron-right"
+              (click)="next()"
+              [disabled]="this.currentPage >= this.numberOfPages"
+            ></app-icon>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #loadingData>
+      <app-loading-spinner></app-loading-spinner>
+    </ng-template>
+  </div>
+</div>

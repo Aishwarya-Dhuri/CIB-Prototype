@@ -1,0 +1,103 @@
+<div class="p-grid g-margin-x" *ngIf="!loading">
+  <div class="p-md-3 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-480">
+      <div class="aps-card-header">
+        <app-header-with-search heading="Templates" [enableSearch]="false"></app-header-with-search>
+      </div>
+      <div class="aps-card-Body">
+        <div
+          class="aps-py-12 p-px-3 border-bottom hover-background-color-dark-5 pointer"
+          *ngFor="let template of templates"
+          [ngClass]="{
+            'background-color-primary text-color-inverted':
+              activeTemplate.templateName === template.templateName
+          }"
+          (click)="getTemplateData(template)"
+        >
+          <div class="text-size-14">
+            {{ template.templateName }}
+          </div>
+          <div class="text-size-12 p-mt-1">
+            {{ template.noOfProducts }} {{ 'Products' | apsTranslate }},&nbsp;{{
+              template.noOfAccounts
+            }}
+            {{ 'Accounts' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-9 p-sm-12 p-col-12">
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="text-bold text-size-16 p-mb-1">
+              {{ activeTemplate.templateName }}
+            </div>
+
+            <div class="text-size-16">
+              {{ activeTemplate.noOfProducts }} {{ 'Products' | apsTranslate }},&nbsp;{{
+                activeTemplate.noOfAccounts
+              }}
+              {{ 'Accounts' | apsTranslate }}
+            </div>
+          </div>
+
+          <div class="right-container">
+            <div class="text-size-14 p-mb-1">
+              {{ activeTemplate.templateDesc }}
+            </div>
+
+            <div class="text-size-10">
+              {{ 'Created by' | apsTranslate }}: <strong>{{ activeTemplate.modifiedBy }}</strong>
+              {{ activeTemplate.modifiedSysOn | date }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-4 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header">
+            <app-header-with-search
+              heading="{{ 'Products/Modules' | apsTranslate }}"
+              [enableSearch]="false"
+            ></app-header-with-search>
+          </div>
+          <div class="aps-card-body overflow-scroll">
+            <app-tree
+              *ngIf="!productLoading"
+              [treeNode]="products"
+              [selectedNode]="selectedProduct"
+              (leafNodeSelected)="leafNodeSelected($event)"
+              (nodeLabelClicked)="leafNodeSelected($event)"
+            ></app-tree>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-8 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header">
+            <app-header-with-search
+              heading="{{ 'Payments / Custom Products / Product' | apsTranslate }} 1"
+              [enableSearch]="false"
+            ></app-header-with-search>
+          </div>
+
+          <div class="aps-card-body">
+            <app-ag-grid-listing
+              #productAccountsGrid
+              id="productAccounts"
+              [colDefUrl]="dataGridColumnDefsUrl"
+              [rowData]="dataGridRowData"
+              [gridOptions]="dataGridOptions"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

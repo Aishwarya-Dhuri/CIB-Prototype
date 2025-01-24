@@ -1,0 +1,37 @@
+<app-widgets-header
+  [heading]="title"
+  [showChangeChartOption]="showChangeChartOption"
+  (action)="this.actionEvent($event)"
+></app-widgets-header>
+<div class="p-mt-2">
+  <app-select-group-button
+    [options]="tableTypes"
+    [selectedOption]="selectedTableType"
+    (onSelectionValue)="tableTypeChanged($event)"
+  ></app-select-group-button>
+</div>
+
+<div class="table-container gridster-item-content">
+  <table class="table">
+    <thead>
+      <tr class="text-size-10 text-center background-color-dark-3 text-color-dark-shade-1">
+        <th class="p-p-2">Sr No</th>
+        <th class="p-p-2">Name</th>
+        <th class="p-p-2">Amount</th>
+      </tr>
+    </thead>
+    <tbody class="">
+      <tr class="text-size-10 text-color-normal" *ngFor="let d of data; let i = index">
+        <td class="p-p-2 text-center">
+          {{ i + 1 }}
+        </td>
+        <td class="p-p-2 text-center">
+          {{ d.name }}
+        </td>
+        <td class="p-p-2 p-text-right">
+          <app-base-currency [amount]="d.amount"></app-base-currency>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

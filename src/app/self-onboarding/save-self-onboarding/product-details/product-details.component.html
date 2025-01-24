@@ -1,0 +1,221 @@
+<ng-container *ngIf="!reviewSelectedProduct">
+  <div class="text-size-16 text-bold text-color-dark-shade-2 p-pt-5">Select Subscription Plan:</div>
+
+  <div class="p-grid p-py-4">
+    <div class="p-md-4 p-sm-12 p-col-12 p-p-px-3 p-px-2">
+      <div
+        class="aps-card p-p-2 border-radius-6 aps-h-150"
+        (click)="onPlanChange('basic')"
+        [ngClass]="{
+          'aps-filled-card-sm border-primary':
+            productDetails[0].selectedPlan.length > 0 &&
+            productDetails[0].selectedPlan[0].planType === 'Basic Banking'
+        }"
+      >
+        <div class="text-size-14 text-semi-bold p-mb-1">Basic Banking</div>
+        <div class="text-size-12">- Account Services</div>
+        <div class="text-size-12">- Payments</div>
+        <div class="text-size-12">- Card Services</div>
+        <div class="text-size-12">- Service Request</div>
+        <div class="text-size-12">- All basic Digital banking features</div>
+      </div>
+    </div>
+    <div class="p-md-4 p-sm-12 p-col-12 p-p-px-3 p-px-2">
+      <div
+        class="aps-card p-p-3 border-radius-6 aps-h-150"
+        (click)="onPlanChange('advanced')"
+        [ngClass]="{
+          'aps-filled-card-sm border-primary':
+            productDetails[0].selectedPlan.length > 0 &&
+            productDetails[0].selectedPlan[0].planType === 'Advanced Banking'
+        }"
+      >
+        <div class="text-size-14 text-semi-bold p-mb-1">Advanced Banking</div>
+        <div class="text-size-12">- Basic Banking</div>
+        <div class="text-size-12">- E - Collections</div>
+        <div class="text-size-12">- Trade & Supply Chain</div>
+        <div class="text-size-12">- Receivable Management</div>
+      </div>
+    </div>
+    <div class="p-md-4 p-sm-12 p-col-12 p-p-px-3 p-px-2">
+      <div
+        class="aps-card p-p-3 border-radius-6 aps-h-150"
+        (click)="onPlanChange('advancedPlus')"
+        [ngClass]="{
+          'aps-filled-card-sm border-primary':
+            productDetails[0].selectedPlan.length > 0 &&
+            productDetails[0].selectedPlan[0].planType === 'Advanced Plus Banking'
+        }"
+      >
+        <div class="text-size-14 text-semi-bold p-mb-1">Advanced Plus Banking</div>
+        <div class="text-size-12">- Advanced Banking</div>
+        <div class="text-size-12">- Virtual Account Management</div>
+        <div class="text-size-12">- Cashflow Forecasting</div>
+        <div class="text-size-12">- Liquidity Management</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-size-16 text-bold text-color-dark-shade-2 p-pt-4">Add On Services:</div>
+
+  <div class="accordion p-pb-6">
+    <div class="accordion-tab">
+      <div class="accordion-tab-header">
+        <div class="left-right-container">
+          <div class="left-container">
+            <p-checkbox
+              class="aps-checkbox"
+              label="Custodian Services"
+              labelStyleClass="text-bold text-size-14"
+              [binary]="true"
+              [(ngModel)]="productDetails[0].addOnServices[0].custodianServices[0].show"
+            ></p-checkbox>
+          </div>
+
+          <div class="right-container">
+            <!-- <app-icon icon="fa-chevron-down" styleClasses="text-size-14"></app-icon> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-tab">
+      <div class="accordion-tab-header">
+        <div class="left-right-container">
+          <div class="left-container">
+            <p-checkbox
+              class="aps-checkbox"
+              label="Treasury Services"
+              labelStyleClass="text-bold text-size-14"
+              [binary]="true"
+              [(ngModel)]="productDetails[0].addOnServices[0].treasuryServices[0].show"
+            ></p-checkbox>
+          </div>
+
+          <div class="right-container">
+            <!-- <app-icon icon="fa-chevron-down" styleClasses="text-size-14"></app-icon> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-tab">
+      <div class="accordion-tab-header">
+        <div class="left-right-container">
+          <div class="left-container">
+            <p-checkbox class="aps-checkbox" label="Wealth Management" labelStyleClass="text-bold text-size-14"
+              [binary]="true" [(ngModel)]="productDetails[0].addOnServices[0].wealthManagement[0].show"></p-checkbox>
+          </div>
+
+          <div class="right-container">
+            <!-- <app-icon icon="fa-chevron-down" styleClasses="text-size-14"></app-icon> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-tab">
+      <div class="accordion-tab-header">
+        <div class="left-right-container">
+          <div class="left-container">
+            <p-checkbox class="aps-checkbox" label="Agri Gold loan" labelStyleClass="text-bold text-size-14"
+              [binary]="true" [(ngModel)]="productDetails[0].addOnServices[0].agriGoldloan[0].show"></p-checkbox>
+          </div>
+
+          <div class="right-container">
+            <!-- <app-icon icon="fa-chevron-down" styleClasses="text-size-14"></app-icon> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion-tab">
+      <div class="accordion-tab-header">
+        <div class="left-right-container">
+          <div class="left-container">
+            <p-checkbox class="aps-checkbox" label="Capital Loans" labelStyleClass="text-bold text-size-14"
+              [binary]="true" [(ngModel)]="productDetails[0].addOnServices[0].capitalLoans[0].show"></p-checkbox>
+          </div>
+
+          <div class="right-container">
+            <!-- <app-icon icon="fa-chevron-down" styleClasses="text-size-14"></app-icon> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="reviewSelectedProduct">
+  <div class="text-size-16 text-bold text-color-dark-shade-2 p-pt-4">Selected Products</div>
+
+  <ng-container *ngFor="let p of productDetails[0].selectedPlan[0].products; let i = index">
+    <div
+      class="p-grid"
+      *ngIf="
+        p.displayName !== 'All basic Digital banking features' &&
+        p.displayName !== 'Basic Banking' &&
+        p.displayName !== 'Advanced Banking'
+      "
+    >
+      <div class="p-col-12">
+        <div class="text-size-14">{{ p.displayName }}</div>
+      </div>
+
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+        <aps-custom-select
+          id="authorizationRule-{{ i }}"
+          name="authorizationRule-{{ i }}"
+          label="Authorization Rule"
+          [data]="[
+            { displayName: 'Self Authorization', id: 'self-authorization' },
+            { displayName: 'Auth Matrix', id: 'auth-matrix' },
+            { displayName: 'Maker/Checker', id: 'maker-checker' }
+          ]"
+          [value]="p.authorizationRule"
+          [(ngModel)]="p.authorizationRule"
+        ></aps-custom-select>
+      </div>
+
+      <div
+        class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0"
+        *ngIf="p.authorizationRule === 'self-authorization'"
+      >
+        <div class="text-size-12 text-color-normal">Limit</div>
+
+        <div class="p-pt-2">
+          <p-radioButton
+            class="p-mr-3"
+            id="unlimited-{{ i }}"
+            name="limitType-{{ i }}"
+            value="unlimited"
+            label="Unlimited"
+            [(ngModel)]="p.limitType"
+          ></p-radioButton>
+
+          <p-radioButton
+            id="set-limit-{{ i }}"
+            name="limitType-{{ i }}"
+            value="set-limit"
+            label="Set Limit"
+            [(ngModel)]="p.limitType"
+          ></p-radioButton>
+        </div>
+      </div>
+
+      <div
+        class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0"
+        *ngIf="p.authorizationRule === 'self-authorization' && p.limitType === 'set-limit'"
+      >
+        <aps-form-input
+          id="limit-{{ i }}"
+          name="limit-{{ i }}"
+          label="Limit"
+          inputType="currencyFormatNotZero"
+          [(ngModel)]="p.authenticationLimit"
+        ></aps-form-input>
+      </div>
+    </div>
+  </ng-container>
+</ng-container>
+
+<br /><br /><br />

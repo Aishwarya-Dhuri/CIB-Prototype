@@ -1,0 +1,31 @@
+<div class="announcement">
+  <div class="icon">
+    <app-icon icon="fa-bullhorn" class="app-icon" styleClasses="fas-default-color"></app-icon>
+  </div>
+  <div class="label">{{ broadcastMessage }}</div>
+  <div class="actions">
+    <div class="action" (click)="previous()">
+      <app-icon
+        icon="fa-chevron-left"
+        rtlIcon="fa-chevron-right"
+        class="app-icon"
+        styleClasses="fas-default-color"
+      ></app-icon>
+    </div>
+    <div class="action" (click)="playPause(!play)">
+      <app-icon
+        icon="{{ !play ? 'fa-play' : 'fa-pause' }}"
+        class="app-icon"
+        styleClasses="fas-default-color"
+      ></app-icon>
+    </div>
+    <div class="action" (click)="next()">
+      <app-icon
+        icon="fa-chevron-right"
+        rtlIcon="fa-chevron-left"
+        class="app-icon"
+        styleClasses="fas-default-color"
+      ></app-icon>
+    </div>
+  </div>
+</div>

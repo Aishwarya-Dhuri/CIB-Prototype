@@ -1,0 +1,419 @@
+<div class="container">
+  <app-modal [(isShow)]="showSubmitSuccess">
+    <div body>
+      <div class="text-size-16 text-bold text-color-dark-shade-1">
+        {{ 'Successfully Submitted' | apsTranslate }}
+      </div>
+      <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+        {{
+          'The edit request of Credit Card Controls / Usage Limit is succesfully submitted'
+            | apsTranslate
+        }}.
+      </div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button (click)="cancel()" class="btn btn-sm btn-primary p-px-3">
+            {{ 'OKAY' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <div *ngIf="creditCardData" class="p-grid p-pb-3">
+    <div class="p-col-12 p-px-0">
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Card Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <ng-container *ngIf="creditCardData.cardData">
+            <div class="p-grid">
+              <div
+                *ngIf="creditCardData.cardData.isSupplementary !== 'Primary'"
+                class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              >
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Supplementary Card No' | apsTranslate }}.
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ creditCardData.cardData.supplementaryCardNo }}
+                </div>
+              </div>
+              <div
+                *ngIf="creditCardData.cardData.isSupplementary === 'Primary'"
+                class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              >
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Card No' | apsTranslate }}.
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ creditCardData.cardData.cardNo }}
+                </div>
+              </div>
+
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Card Type' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ creditCardData.cardData.cardType }}
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Embossed Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ creditCardData.cardData.embossedName }}
+                </div>
+              </div>
+
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{
+                    creditCardData.cardData.isSupplementary === 'Primary'
+                      ? ('Primary' | apsTranslate)
+                      : ('Supplementary' | apsTranslate)
+                  }}
+                  {{ 'Card Limit' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ creditCardData.cardData.currency }} {{ creditCardData.cardData.cardLimit }}
+                </div>
+              </div>
+
+              <div
+                *ngIf="creditCardData.cardData.isSupplementary !== 'Primary'"
+                class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+              >
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Primary Card No' | apsTranslate }}.
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ creditCardData.cardData.cardNo }}
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Domestic Usage' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'ATM Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.domesticUsage.atmusage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+                <!--{{creditCardData.domesticUsage.atmusage ? 'ON' : 'OFF'}}-->
+              </div>
+            </div>
+
+            <!--<div class="p-col-12 p-p-0"></div>-->
+
+            <div
+              [style.visibility]="creditCardData.domesticUsage.atmusage ? 'visible' : 'hidden'"
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'ATM Usage Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ creditCardData.cardData.currency }}
+                {{ creditCardData.domesticUsage.atmUsageLimit }}
+              </div>
+            </div>
+
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Merchant Outlet Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <!--{{creditCardData.domesticUsage.domesticMerchantOutletUsage ? 'ON' : 'OFF'}}-->
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.domesticUsage.domesticMerchantOutletUsage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+              </div>
+            </div>
+
+            <!--<div class="p-col-12 p-p-0"></div>-->
+
+            <div
+              [style.visibility]="
+                creditCardData.domesticUsage.domesticMerchantOutletUsage ? 'visible' : 'hidden'
+              "
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Merchant Outlet Usage Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ creditCardData.cardData.currency }}
+                {{ creditCardData.domesticUsage.domesticMerchantOutletUsageLimit }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Online Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <!--{{creditCardData.domesticUsage.onlineUsage ? 'ON' : 'OFF'}}-->
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.domesticUsage.onlineUsage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+              </div>
+            </div>
+
+            <!--<div class="p-col-12 p-p-0"></div>-->
+
+            <div
+              [style.visibility]="creditCardData.domesticUsage.onlineUsage ? 'visible' : 'hidden'"
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Online Usage Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ creditCardData.cardData.currency }}
+                {{ creditCardData.domesticUsage.onlineUsageLimit }}
+              </div>
+            </div>
+
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Contactless Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <!--{{creditCardData.domesticUsage.contactlessUsage ? 'ON' : 'OFF'}}-->
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.domesticUsage.contactlessUsage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+              </div>
+            </div>
+
+            <!--<div class="p-col-12 p-p-0"></div>-->
+
+            <div
+              [style.visibility]="
+                creditCardData.domesticUsage.contactlessUsage ? 'visible' : 'hidden'
+              "
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Contactless Usage Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ creditCardData.cardData.currency }}
+                {{ creditCardData.domesticUsage.contactlessUsageLimit }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'International Usage' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'International Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <!--{{creditCardData.internationalUsage.allowInternationalUsage ? 'ON' : 'OFF'}}-->
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.internationalUsage.allowInternationalUsage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'ATM Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <!--{{creditCardData.internationalUsage.interAtmusage ? 'ON' : 'OFF'}}-->
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.internationalUsage.interAtmusage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+              </div>
+            </div>
+
+            <!--<div class="p-col-12 p-p-0"></div>-->
+
+            <div
+              [style.visibility]="
+                creditCardData.internationalUsage.interAtmusage ? 'visible' : 'hidden'
+              "
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'ATM Usage Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ creditCardData.cardData.currency }}
+                {{ creditCardData.internationalUsage.interAtmUsageLimit }}
+              </div>
+            </div>
+
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Merchant Outlet Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.internationalUsage.interMerchantOutletUsage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+              </div>
+            </div>
+
+            <div
+              [style.visibility]="
+                creditCardData.internationalUsage.interMerchantOutletUsage ? 'visible' : 'hidden'
+              "
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Merchant Outlet Usage Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ creditCardData.cardData.currency }}
+                {{ creditCardData.internationalUsage.interMerchantOutletUsageLimit }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Online Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.internationalUsage.interOnlineUsage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+              </div>
+            </div>
+
+            <div
+              [style.visibility]="
+                creditCardData.internationalUsage.interOnlineUsage ? 'visible' : 'hidden'
+              "
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Online Usage Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ creditCardData.cardData.currency }}
+                {{ creditCardData.internationalUsage.interOnlineUsageLimit }}
+              </div>
+            </div>
+
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Contactless Usage' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <p-inputSwitch
+                  [(ngModel)]="creditCardData.internationalUsage.interContactlessUsage"
+                  [disabled]="true"
+                >
+                </p-inputSwitch>
+              </div>
+            </div>
+
+            <div
+              [style.visibility]="
+                creditCardData.internationalUsage.interContactlessUsage ? 'visible' : 'hidden'
+              "
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Contactless Usage Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ creditCardData.cardData.currency }}
+                {{ creditCardData.internationalUsage.interContactlessUsageLimit }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-mt-3 p-px-3 aps-py-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <button (click)="cancel()" *ngIf="!viewMode" class="btn btn-md btn-tertiary p-mr-3">
+              {{ 'CANCEL' | apsTranslate }}
+            </button>
+          </div>
+          <div class="right-container">
+            <ng-container *ngIf="!viewMode">
+              <button (click)="previous()" class="btn btn-md btn-tertiary p-mr-3">
+                {{ 'PREVIOUS' | apsTranslate }}
+              </button>
+              <button (click)="updateData()" class="btn btn-md btn-primary">
+                {{ 'SUBMIT' | apsTranslate }}
+              </button>
+            </ng-container>
+            <button (click)="cancel()" *ngIf="viewMode" class="btn btn-md btn-primary">
+              {{ 'BACK' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

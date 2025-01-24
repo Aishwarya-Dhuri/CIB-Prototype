@@ -1,0 +1,117 @@
+<div class="container">
+  <app-search-modal
+    [(isShow)]="isSearchModel"
+    [colDefUrl]="billerColDefUrl"
+    [rowDefUrl]="billerRowDefUrl"
+    (onSelection)="setBiller($event)"
+  ></app-search-modal>
+
+  <app-modal [(isShow)]="isPrint" size="md" headerText="Receipt">
+    <div body *ngIf="printData">
+      <app-receipt [receiptData]="printData"></app-receipt>
+    </div>
+    <div footer>
+      <div class="inline-items">
+        <div class="item">
+          <app-icon icon="fa-print"></app-icon>
+        </div>
+        <div class="item p-px-3">
+          <app-icon icon="fa-download"></app-icon>
+        </div>
+        <div class="item">
+          <app-icon icon="fa-envelope"></app-icon>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid">
+    <div class="p-col-12 p-p-0">
+      <div class="aps-card p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-col-12 p-py-0">
+            <div class="left-right-container">
+              <div class="text-size-16px text-semi-bold">Searched By</div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-3 p-lg-3">
+            <aps-form-input
+              name="biller"
+              id="biller"
+              label="Biller"
+              rightIcon="fa-search"
+              (onRightIcon)="isSearchModel = true"
+              [(ngModel)]="searchBy.biller"
+              [readonly]="true"
+              [disabled]="true"
+            ></aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-3 p-lg-3">
+            <aps-custom-select
+              name="product"
+              id="product"
+              label="Product"
+              [value]="searchBy.product"
+              [(ngModel)]="searchBy.product"
+              [data]="products"
+            ></aps-custom-select>
+          </div>
+          <div class="p-col-12 p-md-3 p-lg-3">
+            <aps-custom-select
+              name="status"
+              id="status"
+              label="Status"
+              [value]="searchBy.status"
+              [(ngModel)]="searchBy.status"
+              [data]="statuses"
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-col-12 p-py-0">
+            <div class="left-right-container">
+              <div class="left-container">
+                <button class="btn btn-md btn-tertiary" (click)="onCancel()">CANCEL</button>
+              </div>
+              <div class="right-container">
+                <button class="btn btn-md btn-primary" (click)="onSearch()">SEARCH</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12 p-p-0 p-mt-3">
+      <div class="aps-card aps-h-420" *ngIf="showHistory">
+        <div class="aps-card-header p-px-3 p-py-2">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-color-dark-shade-1 text-bold">Bills</div>
+            </div>
+            <div class="right-container">
+              <app-grid-listing-tools
+                [showSearch]="false"
+                [showRefresh]="true"
+                (changeFloatingFilter)="searchResults.changeFloatFilter($event)"
+                (applyColDefs)="searchResults.onApplyConfig($event)"
+                [colDefs]="searchResults.columnDefs"
+              ></app-grid-listing-tools>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <app-ag-grid-listing
+            [id]="'transaction-details'"
+            #searchResults
+            [gridOptions]="gridOptions"
+            [supressAutoFit]="true"
+            [colDefUrl]="colDefUrl"
+            [rowDefUrl]="rowDefUrl"
+            [context]="context"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

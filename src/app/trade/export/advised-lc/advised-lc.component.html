@@ -1,0 +1,438 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <!-- <app-modal [(isShow)]="isView" (onClose)="isReject = false; rejectReason = ''" size="md"
+      headerText="{{ 'LC Details - View' | apsTranslate }}">
+      <div body *ngIf="isView">
+        <app-letter-of-credit-initiation [isViewMode]="true"></app-letter-of-credit-initiation>
+        <div class="p-px-4" *ngIf="isReject">
+          <div class="text-size-14 text-semi-bold">{{ 'Rejection Reason' | apsTranslate }}</div>
+          <aps-form-input name="rejectReason" id="rejectReason"
+            label="{{ 'Please mention Rejection Reasons' | apsTranslate }}" [required]="true"
+            [(ngModel)]="rejectReason">
+          </aps-form-input>
+        </div>
+      </div>
+      <div footer>
+        <div class="left-right-container p-mt-3">
+          <div class="left-container"></div>
+          <div class="right-container">
+            <button class="btn btn-md bt btn-tertiary p-px-3"
+              (click)="isView = false; isReject = false; rejectReason = ''">
+              {{ 'CANCEL' | apsTranslate }}
+            </button>
+            &nbsp;
+            <button *ngIf="!isReject" class="btn btn-md bt btn-primary p-px-3" (click)="isReject = true">
+              {{ 'REJECT' | apsTranslate }}
+            </button>
+            <button *ngIf="isReject" class="btn btn-md bt btn-primary p-px-3" (click)="isSubmit = true; isView = false">
+              {{ 'SUBMIT' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </app-modal> -->
+
+    <app-modal [(isShow)]="isReject" size="md" headerText="{{ 'Rejection Reason' | apsTranslate }}">
+      <div body>
+        <div class="p-col-12">
+          <aps-form-input label="Reject Reason" name="rejectReason" id="rejectReason" [(ngModel)]="rejectReason">
+          </aps-form-input>
+        </div>
+      </div>
+      <div class="left-right-container" footer>
+        <div class="left-container">
+          <button class="btn btn-md btn-tertiary p-mx-2" (click)="isReject = false">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="onSubmit()" [disabled]="!rejectReason">
+            {{ 'SUBMIT' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal [(isShow)]="isSubmit">
+      <div body>
+        <div class="text-size-16 text-bold text-color-dark-shade-1">
+          {{ 'Successfully Submitted' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+          {{ 'The Rejection Request has been successfully submitted.' | apsTranslate }}
+        </div>
+      </div>
+      <div footer>
+        <div class="left-right-container p-mt-3">
+          <div class="left-container"></div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary p-px-3" (click)="onOk()">
+              {{ 'OKAY' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x" *ngIf="!isView">
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="p-px-3 aps-py-12">
+            <div class="left-right-container">
+              <div class="left-container width-100per-minus-16px">
+                <div class="inline-items">
+                  <div class="item">
+                    <div class="text-size-14 text-bold">
+                      {{ 'Search By' | apsTranslate }}
+                    </div>
+                  </div>
+                  <ng-container *ngIf="!isShowSearch">
+                    <div class="item search-filter-container overflow-x-scroll overflow-y-hidden hide-scroll">
+                      <div class="inline-items">
+                        <div class="item p-ml-3" *ngFor="let filter of searchFilters">
+                          <div
+                            class="p-py-1 p-px-2 background-color-primary-light-shade-2 border-radius-4 text-size-12">
+                            <span class="inline-block p-mr-2 text-semi-bold">{{
+                              filter.displayName
+                              }}</span>
+                            <span class="inline-block">{{ filter.value }}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="right-container">
+                <app-icon [icon]="isShowSearch ? 'fa-chevron-up' : 'fa-chevron-down'" class="pointer"
+                  (click)="isShowSearch = !isShowSearch"></app-icon>
+              </div>
+            </div>
+          </div>
+          <div class="" *ngIf="isShowSearch">
+            <app-dynamic-search #dynamicSearch [entityName]="entityName" (onSearch)="getRecords($event)"
+              [preFillFilters]="searchFilters" [isShowSearchByHeader]="false" [isShowPrefillCriteria]="false"
+              mandatoryParametersColSize="4" optionalParametersColSize="4" [isDisplayPrefillCriteriaModal]="false"
+              cardHeight="375" (onFiltersReady)="onDynamicFiltersReady()" (onSaveCriteria)="getCriteriaList()">
+            </app-dynamic-search>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="inline-items">
+              <div class="item p-mr-3" *ngFor="let tab of tabs">
+                <div (click)="selectedTab = tab" class="p-p-2 pointer border border-radius-4 text-size-12" [ngClass]="{
+                    'background-color-primary text-color-inverted': selectedTab.id == tab.id
+                  }">
+                  <div class="left-right-container">
+                    <div class="left-container">
+                      {{ tab.displayName | apsTranslate }} ({{ tab.count }})
+                    </div>
+                    <div class="right-container" *ngIf="tab.id == 'searchResults'">
+                      <app-icon class="p-ml-3" icon="fa-times" (click)="removeSearchFilter()"></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="right-container">
+            <app-grid-listing-tools (changeFloatingFilter)="listingGrid.changeFloatFilter($event)"
+              (filterRecords)="listingGrid.onFilter($event)" (applyColDefs)="listingGrid.onApplyConfig($event)"
+              [colDefs]="listingGrid.columnDefs" [columnConfig]="true" [moreOptions]="true">
+            </app-grid-listing-tools>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-450">
+          <app-ag-grid-listing #listingGrid [colDefUrl]="selectedTab.colDefUrl" [rowDefUrl]="selectedTab.rowDefUrl"
+            [gridOptions]="gridOptions" [context]="context"></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="isView">
+      <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+          <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+              <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Bank Guarantee Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid p-px-2">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Type of Application/Undertaking"
+                    [value]="viewDetails.typefApp"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Applicable Rule"
+                    [value]="viewDetails.beneficiaryCode.appRule"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Corporate Ref No."
+                    [value]="viewDetails.corRefNo"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Transaction Date"
+                    [value]="viewDetails.transactionDate"></app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+              <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Applicant Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid p-px-2">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <app-review-form-field label="Name" [value]="viewDetails.applicantName"></app-review-form-field>
+                  </div>
+                </div>
+                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <app-review-form-field label="Email" [value]="viewDetails.applicantEmail"></app-review-form-field>
+                  </div>
+                </div>
+
+                <div class="p-col-12 p-p-0"></div>
+
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <app-review-form-field label="Mobile Number"
+                      [value]="viewDetails.applicantMobNo"></app-review-form-field>
+                  </div>
+                </div>
+                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <app-review-form-field label="Address"
+                      [value]="viewDetails.applicantAddress"></app-review-form-field>
+                  </div>
+                </div>
+
+                <div class="p-col-12 p-p-0"></div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <app-review-form-field label="Name For Clarification"
+                      [value]="viewDetails.applicantName"></app-review-form-field>
+                  </div>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <app-review-form-field label="Mobile Number For Clarification"
+                      [value]="viewDetails.applicantMobNo"></app-review-form-field>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+              <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Beneficiary Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid p-px-2">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Beneficiary Name"
+                    [value]="viewDetails.beneficiaryName"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Email" [value]="viewDetails"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Bank Swift Code"
+                    [value]="viewDetails.beneficiaryBankSwiftCode"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Beneficiary Address"
+                    [value]="viewDetails.beneficiaryAddress"></app-review-form-field>
+                </div>
+              </div>
+
+              <div class="p-grid p-px-2">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Country"
+                    [value]="viewDetails.beneficiaryCountry"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Beneficiary Account Number"
+                    [value]="viewDetails"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Beneficiary Bank Name"
+                    [value]="viewDetails.beneficiaryBankName"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Beneficiary Bank Address"
+                    [value]="viewDetails.beneficiaryBankAddress"></app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+              <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Transactions Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid p-px-2">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Currency" [value]="viewDetails.currency"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Amount" [value]="viewDetails.amount"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Effective Date"
+                    [value]="viewDetails.effectiveDate"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Validity" [value]="viewDetails.validity"></app-review-form-field>
+                </div>
+              </div>
+
+              <div class="p-grid p-px-2">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Expiry Date" [value]="viewDetails.expiryDate"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Claim Expiry Date"
+                    [value]="viewDetails.claimExpiryDate"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Guarantee Format"
+                    [value]="viewDetails.guaranteeFormat"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Preferred Language of Guarantee"
+                    [value]="viewDetails.language"></app-review-form-field>
+                </div>
+              </div>
+
+
+              <div class="p-grid p-px-2">
+                <div class="p-col-12 text-size-14 text-semi-bold text-color-dark-shade-1 p-px-1 p-pt-3">
+                  Guarantee to be Deliverd
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Name" [value]="viewDetails.guranteeName"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Telephone Number"
+                    [value]="viewDetails.guranteeTelNo"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="ID" [value]="viewDetails.guranteeId"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Purpose of Guarantee"
+                    [value]="viewDetails.guranteePurpose"></app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Account Number For Charges"
+                    [value]="viewDetails.guranteeAccNo"></app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+              <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Supporting Documents' | apsTranslate }}
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid p-px-2">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    Document Type
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    Reference Number
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    Upload Documents
+                  </div>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <p-checkbox name="bgStandard359" id="bgStandard359" label="BG Standard 359" [binary]="true"
+                    [disabled]="true" [(ngModel)]="viewDetails.docType">
+                  </p-checkbox>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <app-review-form-field label="Reference Number"
+                    [value]="viewDetails.corRefNo"></app-review-form-field>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="aps-card p-p-2">
+                    <div class="label-with-icon-container">
+                      <div class="icon">
+                        <app-icon icon="fa-file"></app-icon>
+                      </div>
+                      <div class="label">
+                        <div class="text-size-12">
+                          Sample.xlsx
+                        </div>
+                        <div class="text-size-10 text-color-normal">
+                          0.02Mb
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="aps-card steps-footer-container p-mb-3">
+            <div class="left-right-container p-p-2">
+              <div class="left-container">
+                <button class="p-mr-3 btn btn-md btn-tertiary text-size-14 text-semi-bold" (click)="isView = false">
+                  {{ 'CANCEL' | apsTranslate }}
+                </button>
+              </div>
+
+              <div class="right-container">
+                <button class="p-px-3 btn btn-md btn-secondary text-size-14 text-semi-bold" (click)="isView = false">
+                  {{ 'BACK' | apsTranslate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

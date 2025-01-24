@@ -1,0 +1,16 @@
+<div class="container" *ngIf="!loading">
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12" *ngIf="stepperDetails.currentStep == 1">
+      <app-statutory-payment-details #statutoryPaymentDetails></app-statutory-payment-details>
+    </div>
+    <div class="p-col-12" *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <app-statutory-payment-review
+        #statutoryPaymentReview
+        [parentRef]="this"
+      ></app-statutory-payment-review>
+    </div>
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"> </app-stepper-footer>
+    </div>
+  </div>
+</div>

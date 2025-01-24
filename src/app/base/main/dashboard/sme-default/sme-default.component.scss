@@ -1,0 +1,53 @@
+.container {
+  min-height: auto !important;
+}
+
+.quick-link-container {
+  .quick-link {
+    .link-icon {
+      position: absolute;
+      left: 50%;
+      top: 20%;
+    }
+
+    .link-text {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 100%;
+      transform: translate(-50%, 0%);
+      border-width: 0.15rem;
+      border-color: var(--secondary-color-light-shade-3);
+    }
+
+    .link-background {
+      color: var(--background-color-dark-5);
+      position: absolute;
+      left: -10px;
+      top: 15%;
+      font-size: 3rem;
+      overflow: hidden;
+    }
+  }
+
+  .quick-link:hover {
+    color: var(--primary-color) !important;
+
+    .link-text {
+      border-color: var(--primary-color);
+    }
+
+    .link-background {
+      color: var(--primary-color-light-shade-1);
+    }
+  }
+}
+
+.active {
+  color: var(--background-color) !important;
+  background-color: var(--primary-color) !important;
+}
+
+.account-container:hover {
+  background-color: var(--primary-color-light-shade-1);
+}

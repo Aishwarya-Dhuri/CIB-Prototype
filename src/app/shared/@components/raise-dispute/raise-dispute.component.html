@@ -1,0 +1,92 @@
+<div class="container">
+    <div class="aps-card">
+        <div class="text-size-16 text-bold p-p-3">Raise Dispute </div>
+        <div class="p-grid">
+            <div class="p-lg-3 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <aps-form-input name="transactionDate" id="transactionDate" [(ngModel)]="transactionDate"
+                    label="{{ 'Transaction Date' | apsTranslate }}" disabled></aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <aps-form-input name="valueDate" id="valueDate" [(ngModel)]="valueDate"
+                    label="{{ 'Value Date' | apsTranslate }}" disabled></aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <aps-form-input name="referenceNumber" id="referenceNumber" [(ngModel)]="referenceNumber"
+                    label="{{ 'Reference Number' | apsTranslate }}" disabled></aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <aps-form-input name="amount" id="amount" [(ngModel)]="amount" label="{{ 'Amount' | apsTranslate }}"
+                    disabled></aps-form-input>
+            </div>
+
+            <div class="p-lg-6 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <aps-custom-select name="disputeReason" label="Dispute Reason" id="disputeReason"
+                    [data]="disputeReasonList" [(ngModel)]="selectedAccessType" [value]="selectedAccessType">
+                </aps-custom-select>
+            </div>
+            <div class="p-col-9 p-md-9 p-sm-12 p-px-3">
+
+            </div>
+            <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                <aps-form-input label="Remarks" name="remarks" id="remarks" [required]="true">
+                </aps-form-input>
+            </div>
+            <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+
+            </div>
+            <div class="p-lg-3 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <aps-form-input label="Document Type" name="documentType" id="documentType" [required]="true">
+                </aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <div class="upload-container" (drop)="onFileDropped($event)" (dragover)="onFileDropoverAndLeave($event)"
+                    (dragleave)="onFileDropoverAndLeave($event)">
+                    <input type="file" class="input pointer" #fileDropRef id="fileDropRef"
+                        (change)="fileBrowseHandler($event.target.files)" />
+                    <div class="text-size-12">
+                        <app-icon icon="fa-upload"></app-icon>
+                        {{ 'Drop your file here or browse' | apsTranslate }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="aps-card p-mt-3 p-px-3 aps-py-12">
+        <div class="left-right-container">
+            <div class="left-container">
+                <button class="btn btn-md btn-tertiary p-mr-3" (click)="cancel()">
+                    {{ 'CANCEL' | apsTranslate }}
+                </button>
+            </div>
+            <div class="right-container">
+                <button class="btn btn-md btn-primary" (click)="isSubmit = true;">
+                    {{ 'SUMBIT' | apsTranslate }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <app-modal [(isShow)]=" isSubmit">
+        <div body>
+            <div class="text-size-16 text-bold text-color-dark-shade-1">
+                {{ 'Successfully Submitted' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+                {{ 'The dispute request has been successfully raised.' | apsTranslate }}
+            </div>
+        </div>
+        <div footer>
+            <div class="left-right-container p-mt-3">
+                <div class="left-container"></div>
+                <div class="right-container">
+                    <button class="btn btn-md btn-primary p-px-3" (click)="isSubmit = false;cancel()">
+                        {{ 'OKAY' | apsTranslate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </app-modal>
+
+
+</div>

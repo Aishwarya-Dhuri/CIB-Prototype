@@ -1,0 +1,1416 @@
+<div class="container">
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <div *ngIf="stepperDetails.currentStep === 1">
+    <ng-container *ngTemplateOutlet="paymentDetailsTemplate"></ng-container>
+  </div>
+
+  <div *ngIf="stepperDetails.currentStep === 2">
+    <ng-container *ngTemplateOutlet="beneficiaryDetailsTemplate"></ng-container>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+              <aps-form-input
+                id="templateName"
+                name="templateName"
+                label="{{ 'Template Name' | apsTranslate }}"
+                placeholder="{{ 'Template Name' | apsTranslate }}"
+                [required]="true"
+                [(ngModel)]="formData.templateName"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+              <aps-custom-select
+                id="templateType"
+                name="templateType"
+                label="{{ 'Template Type' | apsTranslate }}"
+                [(ngModel)]="formData.templateType"
+                [data]="[
+                  { id: 'Generic', displayName: 'Generic' },
+                  { id: 'User Wise', displayName: 'User Wise' }
+                ]"
+                [required]="true"
+              >
+              </aps-custom-select>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-px-3">
+              <aps-custom-select
+                id="charge"
+                name="charge"
+                label="{{ 'Charge' | apsTranslate }}"
+                [(ngModel)]="formData.charge"
+                dataUrl="payments/transactions/templateManagement/private/dropdown/chargeList"
+                [required]="true"
+              >
+              </aps-custom-select>
+            </div>
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-px-3">
+              <aps-custom-select
+                id="remittancePurpose"
+                name="remittancePurpose"
+                label="{{ 'Remittance Purpose' | apsTranslate }}"
+                [(ngModel)]="formData.remittancePurpose"
+                dataUrl="payments/transactions/templateManagement/private/dropdown/remittancePurposeList"
+              >
+              </aps-custom-select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+    <div class="p-py-3 text-size-16 text-bold">
+      {{
+        mode == 'VIEW' ? 'Template Management - View' : ('Review Details & Confirm' | apsTranslate)
+      }}
+    </div>
+    <div class="aps-card p-px-3">
+      <ng-container *ngTemplateOutlet="paymentDetailsReviewTemplate"></ng-container>
+    </div>
+
+    <div class="aps-card p-my-3 p-px-3">
+      <ng-container *ngTemplateOutlet="beneficiaryReviewTemplate"></ng-container>
+    </div>
+
+    <app-dynamic-enrichment
+      mode="VIEW"
+      [classes]="mode ? 'p-mt-3' : 'p-my-3'"
+      [enrichmentModel]="
+        formData && formData.paymentRequestDetails
+          ? formData.paymentRequestDetails[0].enrichments
+          : []
+      "
+    >
+    </app-dynamic-enrichment>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+              <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Template Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.templateName }}</div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+              <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Template Type' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.templateType }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+              <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Charge' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.charge }}</div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+              <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Remittance Purpose' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.remittancePurpose }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-maker-checker-detail classes="p-my-3" [formData]="formData"></app-maker-checker-detail>
+  </div>
+  <div class="p-my-3">
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </div>
+</div>
+
+<ng-template #paymentDetailsTemplate>
+  <div class="p-py-3 text-size-16 text-bold">
+    {{ 'Payment Details' | apsTranslate }}
+  </div>
+  <form #paymentDetails="ngForm">
+    <div class="p-grid g-margin-x">
+      <!-- value Date and Payment method card -->
+      <div class="p-col-12 p-md-3 p-lg-3" [ngClass]="{ 'p-py-0': viewport === 'web' }">
+        <div class="aps-card p-p-3 aps-h-100p">
+          <app-aps-calender
+            label="Value Date"
+            id="valueDate"
+            name="valueDate"
+            [(ngModel)]="formData.valueDate"
+            (blur)="onValueDateChange()"
+            [required]="true"
+          >
+          </app-aps-calender>
+          <aps-custom-select
+            id="paymentMethodId"
+            name="paymentMethodId"
+            label="Payment Method"
+            [(ngModel)]="formData.paymentMethodId"
+            [value]="formData.paymentMethodId"
+            (change)="onPaymentMethodChange($event)"
+            dataUrl="payments/transactions/singlePaymentRequest/private/dropdown/paymentMethodList"
+            [required]="true"
+          >
+          </aps-custom-select>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-9 p-lg-9 p-p-0">
+        <div class="p-grid">
+          <!-- Debit from Card -->
+          <div class="p-col-12 p-md-6 p-lg-6" [ngClass]="{ 'p-py-0': viewport === 'web' }">
+            <div class="aps-card p-p-3 aps-h-100p">
+              <aps-custom-select
+                id="debitAccountId"
+                name="debitAccountId"
+                label="Debit From Account"
+                [(ngModel)]="formData.debitAccountId"
+                [value]="formData.debitAccountId"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                [reqBody]="debitAccountReqBody"
+                [isLoadUrlData]="!!formData.paymentMethodId"
+                (change)="onDebitAccountChange($event)"
+                [required]="true"
+                *ngIf="!isGroupUser"
+              >
+              </aps-custom-select>
+
+              <aps-group-select
+                label="Debit From Account"
+                id="debitAccount"
+                name="debitAccount"
+                [(ngModel)]="formData.debitAccountId"
+                [value]="formData.debitAccountId"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/groupAccountList"
+                [isLoadUrlData]="!!formData.paymentMethodId"
+                (change)="onDebitAccountChange($event)"
+                [required]="true"
+                *ngIf="isGroupUser"
+              >
+              </aps-group-select>
+
+              <div class="p-grid">
+                <div class="p-col-4 p-md-4 p-lg-3 p-px-0">
+                  <span class="text-size-12 text-color-light-shade-1">{{
+                    'Account Title' | apsTranslate
+                  }}</span>
+                </div>
+                <div class="p-col-8 p-md-8 p-lg-9">
+                  <span
+                    class="text-size-14 text-color-light-shade-3"
+                    *ngIf="!formData.accountTitle"
+                    >{{ 'Account Title' | apsTranslate }}</span
+                  >
+                  <span class="text-size-14" *ngIf="formData.accountTitle">{{
+                    formData.accountTitle
+                  }}</span>
+                </div>
+                <div class="p-col-4 p-md-4 p-lg-3 p-px-0 p-pb-0">
+                  <span class="text-size-12 text-color-light-shade-1">{{
+                    'Account Balance' | apsTranslate
+                  }}</span>
+                </div>
+                <div class="p-col-8 p-md-8 p-lg-9 p-pb-0">
+                  <span
+                    class="text-size-14 text-color-light-shade-3"
+                    *ngIf="!formData.debitAccountBalance"
+                    >0.00</span
+                  >
+                  <span class="text-size-14" *ngIf="formData.debitAccountBalance">
+                    <app-base-currency
+                      [amount]="formData.debitAccountBalance"
+                      [currency]="formData.debitAccountCurrency"
+                    ></app-base-currency>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Payable Amount Card -->
+          <div class="p-col-12 p-md-6 p-lg-6" [ngClass]="{ 'p-py-0': viewport === 'web' }">
+            <div class="aps-card p-p-3 aps-h-100p">
+              <div class="p-grid">
+                <div class="p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-col-5 p-p-0">
+                      <p-radioButton
+                        id="amountType"
+                        name="amountType"
+                        value="PAYABLE"
+                        label="Payable Amount"
+                        [(ngModel)]="formData.paymentRequestDetails[0].amountType"
+                      >
+                      </p-radioButton>
+                    </div>
+                    <div
+                      class="p-col-5 p-p-1 text-size-12"
+                      *ngIf="
+                        formData.paymentRequestDetails[0].amountType != 'PAYABLE' &&
+                        formData.debitCurrencyId &&
+                        formData.payableAmount
+                      "
+                    >
+                      <span>
+                        <app-base-currency
+                          [amount]="getCharges(formData.payableAmount)"
+                          [value]="formData.payableCurrencyCode"
+                        ></app-base-currency>
+                      </span>
+                    </div>
+                    <div
+                      class="p-p-1"
+                      [ngClass]="{
+                        'p-col-2':
+                          formData.paymentRequestDetails[0].amountType != 'PAYABLE' &&
+                          formData.debitCurrencyId &&
+                          formData.payableAmount,
+                        'p-col-7':
+                          formData.paymentRequestDetails[0].amountType == 'PAYABLE' ||
+                          !formData.debitCurrencyId ||
+                          !formData.payableAmount
+                      }"
+                    >
+                      <app-icon
+                        class="pointer float-right"
+                        icon="fa-info-circle"
+                        pTooltip="Either Payable amount or Debit amount to be entered. On entering amount in any of the field, the corresponding amount will be calculated as per the prevailing exchange rate."
+                      >
+                      </app-icon>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="p-col-12 p-p-0"
+                  *ngIf="formData.paymentRequestDetails[0].amountType == 'PAYABLE'"
+                >
+                  <div class="p-grid">
+                    <div class="p-col-3">
+                      <aps-custom-select
+                        id="debitCurrencyId"
+                        name="debitCurrencyId"
+                        label="CCY"
+                        [(ngModel)]="formData.payableCurrencyId"
+                        [value]="formData.payableCurrencyId"
+                        (change)="onPayableCurrencyChange($event)"
+                        dataUrl="setup/generalMasters/currency/private/currencyList"
+                        [required]="true"
+                      >
+                      </aps-custom-select>
+                    </div>
+                    <div class="p-col-9 p-md-5 p-lg-5">
+                      <aps-form-input
+                        id="payableAmount"
+                        name="payableAmount"
+                        label="Amount"
+                        minLength="1"
+                        maxLength="16"
+                        inputType="currencyFormatNotZero"
+                        [required]="true"
+                        [(ngModel)]="formData.payableAmount"
+                        (change)="onPayableAmountChange()"
+                      >
+                      </aps-form-input>
+                    </div>
+                    <div class="p-col-12 p-md-4 p-lg-4 p-lg-4 p-md-pt-4 p-sm-pt-2 p-pt-2">
+                      <div class="text-size-12 text-color-light-shade-1">
+                        {{ 'Charges' | apsTranslate }}
+                      </div>
+                      <div
+                        class="text-size-14 text-color-light-shade-3"
+                        *ngIf="!formData.payableAmount"
+                      >
+                        0.00
+                      </div>
+                      <div
+                        class="text-size-14 text-color-light-shade-3"
+                        *ngIf="formData.payableAmount"
+                      >
+                        <app-base-currency
+                          [amount]="getCharges(formData.payableAmount)"
+                          [value]="formData.debitCurrencyCode"
+                        ></app-base-currency>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-col-5 p-p-0">
+                      <p-radioButton
+                        id="amountType1"
+                        name="amountType1"
+                        value="DEBIT"
+                        label="Debit Amount"
+                        [(ngModel)]="formData.paymentRequestDetails[0].amountType"
+                      >
+                      </p-radioButton>
+                    </div>
+                    <div
+                      class="p-col-7 p-p-1 text-size-12"
+                      *ngIf="
+                        formData.paymentRequestDetails[0].amountType != 'DEBIT' &&
+                        formData.debitCurrencyId &&
+                        formData.debitAmount
+                      "
+                    >
+                      <span>
+                        <app-base-currency
+                          [amount]="getCharges(formData.debitAmount)"
+                          [value]="formData.debitCurrencyCode"
+                        ></app-base-currency>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="p-col-12 p-p-0"
+                  *ngIf="formData.paymentRequestDetails[0].amountType == 'DEBIT'"
+                >
+                  <div class="p-grid">
+                    <div class="p-col-3">
+                      <aps-custom-select
+                        id="debitCurrencyId1"
+                        name="debitCurrencyId1"
+                        label="CCY"
+                        [(ngModel)]="formData.debitCurrencyId"
+                        [value]="formData.debitCurrencyId"
+                        (change)="onDebitCurrencyChange($event)"
+                        dataUrl="setup/generalMasters/currency/private/currencyList"
+                        [isDisabled]="true"
+                        [required]="true"
+                      >
+                      </aps-custom-select>
+                    </div>
+                    <div class="p-col-9 p-md-5 p-lg-5">
+                      <aps-form-input
+                        id="debitAmount"
+                        name="debitAmount"
+                        label="Amount"
+                        minLength="1"
+                        maxLength="16"
+                        inputType="currencyFormatNotZero"
+                        [required]="true"
+                        [(ngModel)]="formData.debitAmount"
+                        (change)="onDebitAmountChange()"
+                      >
+                      </aps-form-input>
+                    </div>
+                    <div class="p-col-12 p-md-4 p-lg-4 p-md-pt-4 p-sm-pt-2 p-pt-2">
+                      <div class="text-size-12 text-color-light-shade-1">
+                        {{ 'Charges' | apsTranslate }}
+                      </div>
+                      <div
+                        class="text-size-14 text-color-light-shade-3"
+                        *ngIf="!formData.debitAmount"
+                      >
+                        0.00
+                      </div>
+                      <div
+                        class="text-size-14 text-color-light-shade-3"
+                        *ngIf="formData.debitAmount"
+                      >
+                        <app-base-currency
+                          [amount]="getCharges(formData.debitAmount)"
+                          [currency]="formData.debitCurrencyCode"
+                        ></app-base-currency>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12 p-md-9 p-lg-9 p-p-0 p-mt-3" [ngClass]="{ 'p-mb-3': viewport === 'web' }">
+        <div class="p-grid">
+          <!-- Exchange Details card -->
+          <div class="p-col-12 p-py-0" *ngIf="isExchangeDetails">
+            <div class="aps-card p-py-3">
+              <div class="p-px-3 p-mb-1 text-size-14 text-semi-bold">
+                {{ 'Exchange Detail' | apsTranslate }} <sup class="text-color-danger">*</sup>
+              </div>
+              <div class="p-grid">
+                <div class="p-col-12 p-md-4 p-lg-4 p-px-2 p-pt-0">
+                  <span class="p-px-2">
+                    <p-radioButton
+                      id="exchangeType"
+                      name="exchangeType"
+                      value="CARD"
+                      label="Card"
+                      [(ngModel)]="formData.paymentRequestDetails[0].exchangeType"
+                    >
+                    </p-radioButton>
+                  </span>
+                  <span class="p-px-2">
+                    <p-radioButton
+                      id="exchangeType1"
+                      name="exchangeType"
+                      value="DEALNO"
+                      label="Deal No"
+                      [(ngModel)]="formData.paymentRequestDetails[0].exchangeType"
+                    >
+                    </p-radioButton>
+                  </span>
+                  <span class="p-px-2">
+                    <p-radioButton
+                      id="exchangeType2"
+                      name="exchangeType"
+                      value="FORWARD"
+                      label="Forward"
+                      [(ngModel)]="formData.paymentRequestDetails[0].exchangeType"
+                    >
+                    </p-radioButton>
+                  </span>
+                </div>
+                <div class="p-col-12 p-md-8 p-lg-8 p-pt-1">
+                  <span *ngIf="formData.paymentRequestDetails[0].exchangeType == 'CARD'">
+                    <span
+                      class="p-px-2 text-size-12 text-color-light-shade-1 inline-block aps-pt-1"
+                      >{{ 'FX Rates' | apsTranslate }}</span
+                    >
+                    <span class="text-size-14 inline-block">{{ formData.fxRate }}</span>
+                  </span>
+                </div>
+                <div
+                  class="p-col-12 p-px-3 aps-h-150"
+                  *ngIf="formData.paymentRequestDetails[0].exchangeType == 'FORWARD'"
+                >
+                  <app-ag-grid-listing
+                    #forwardExchangeDetails
+                    [id]="forwardExchangeDetails"
+                    [gridOptions]="forwardExchangeGridOptions"
+                    [colDefUrl]="forwardExchangeColDefUrl"
+                    [rowDefUrl]="forwardExchangeRowDataUrl"
+                    (rowSelected)="onForwardExchangeSelection($event)"
+                  >
+                  </app-ag-grid-listing>
+                </div>
+                <div
+                  class="p-col-12 p-md-4 p-lg-4 p-px-3"
+                  *ngIf="formData.paymentRequestDetails[0].exchangeType == 'DEALNO'"
+                >
+                  <aps-form-input
+                    id="dealNo"
+                    name="dealNo"
+                    label="Deal No"
+                    minLength="1"
+                    maxLength="35"
+                    inputType="alphaNumeric"
+                    [required]="true"
+                    [(ngModel)]="formData.paymentRequestDetails[0].dealNo"
+                  ></aps-form-input>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Payment Instructions card -->
+          <div class="p-col-12 p-md-8 p-lg-8 p-py-0" [ngClass]="{ 'p-mt-3': isExchangeDetails }">
+            <div class="aps-card aps-h-100p">
+              <div class="p-grid">
+                <div class="p-col-7 p-px-3 p-pt-3 text-size-14 text-semi-bold">
+                  {{ 'Payment Instruction' | apsTranslate }} <sup class="text-color-danger">*</sup>
+                </div>
+                <div class="p-col-5 p-pt-2">
+                  <button
+                    class="btn btn-md btn-tertiary float-right"
+                    [disabled]="instructionCount > 3"
+                    (click)="addMoreInstruction()"
+                  >
+                    <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+                    {{ 'add more' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-px-3" *ngIf="instructionCount > 0">
+                  <aps-form-input
+                    id="paymentDetails1"
+                    name="paymentDetails1"
+                    label="Payment Instruction"
+                    minLength="1"
+                    maxLength="35"
+                    inputType="alphaNumeric"
+                    [required]="true"
+                    [(ngModel)]="formData.paymentRequestDetails[0].paymentDetails1"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-px-3" *ngIf="instructionCount > 1">
+                  <aps-form-input
+                    id="paymentDetails2"
+                    name="paymentDetails2"
+                    label="Payment Instruction"
+                    minLength="0"
+                    maxLength="35"
+                    [required]="true"
+                    rightIcon="fa-trash-alt"
+                    (onRightIcon)="instructionCount = instructionCount - 1"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="formData.paymentRequestDetails[0].paymentDetails2"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-px-3" *ngIf="instructionCount > 2">
+                  <aps-form-input
+                    id="paymentDetails3"
+                    name="paymentDetails3"
+                    label="Payment Instruction"
+                    minLength="0"
+                    maxLength="35"
+                    [required]="true"
+                    rightIcon="fa-trash-alt"
+                    (onRightIcon)="instructionCount = instructionCount - 1"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="formData.paymentRequestDetails[0].paymentDetails3"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-px-3" *ngIf="instructionCount > 3">
+                  <aps-form-input
+                    id="paymentDetails4"
+                    name="paymentDetails4"
+                    label="Payment Instruction"
+                    minLength="0"
+                    maxLength="35"
+                    [required]="true"
+                    rightIcon="fa-trash-alt"
+                    (onRightIcon)="instructionCount = instructionCount - 1"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="formData.paymentRequestDetails[0].paymentDetails4"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- corporate ref no card -->
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0" [ngClass]="{ 'p-mt-3': isExchangeDetails }">
+            <div class="aps-card aps-h-100p">
+              <div class="p-p-3">
+                <aps-form-input
+                  id="corporateRefNo"
+                  name="corporateRefNo"
+                  label="Corporate Reference No"
+                  minLength="0"
+                  maxLength="35"
+                  [required]="true"
+                  inputType="alphaNumeric"
+                  [(ngModel)]="formData.paymentRequestDetails[0].corporateRefNo"
+                  (change)="onCorporateRefNoChange()"
+                >
+                </aps-form-input>
+              </div>
+            </div>
+          </div>
+          <!-- Enrichments -->
+          <div class="p-col-12 p-py-0" *ngIf="formData.initiateMode == 'BENEFICIARYWISE'">
+            <app-dynamic-enrichment
+              classes="p-mt-3"
+              [enrichmentModel]="formData.paymentRequestDetails[0].enrichments"
+            >
+            </app-dynamic-enrichment>
+          </div>
+        </div>
+      </div>
+      <!-- supporting Doc attachments -->
+      <div class="p-col-12 p-md-3 p-lg-3 p-my-3 p-py-0">
+        <div class="aps-card aps-h-100p">
+          <div class="p-px-3 p-pt-3 text-size-14 text-semi-bold">
+            {{ 'Upload Documents' | apsTranslate }}
+          </div>
+          <div class="p-px-3 text-size-8 text-color-light-shade-1">
+            {{ 'Max 10mb Each' | apsTranslate }}
+          </div>
+          <div class="p-px-3 p-py-2">
+            <upload-form-control
+              isMultiple="true"
+              [files]="uploadedFiles"
+              (onUploaded)="onFileUploaded($event)"
+            >
+            </upload-form-control>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #beneficiaryDetailsTemplate>
+  <div class="p-py-3 text-size-16 text-bold">
+    {{ 'beneficiary & enrichment details' | apsTranslate }}
+  </div>
+  <form #beneficiaryDetails="ngForm">
+    <!-- Exsisting beneficiary selection and flow -->
+    <div
+      *ngIf="!isAddNewBeneficiary"
+      [ngClass]="{ 'p-mb-3': formData.initiateMode == 'BENEFICIARYWISE' }"
+    >
+      <!-- Top cards to select or add new -->
+      <div [ngClass]="{ 'left-right-container': viewport === 'web' }">
+        <div
+          class="left-container"
+          [ngClass]="{ 'aps-w-48p': viewport === 'web', 'aps-w-100p': viewport !== 'web' }"
+        >
+          <div class="aps-card p-py-3">
+            <div class="p-px-3 p-mb-1 text-size-14 text-semi-bold">
+              {{ 'Select Beneficiary' | apsTranslate }}
+            </div>
+            <div class="p-grid">
+              <div
+                *ngIf="!formData.paymentRequestDetails[0].beneficiaryName"
+                class="p-col-12 p-md-6 p-lg-6 p-px-3 p-pt-4 text-size-14 text-color-light-shade-3"
+              >
+                {{ 'Beneficiary Name' | apsTranslate }}
+              </div>
+              <div
+                *ngIf="formData.paymentRequestDetails[0].beneficiaryName"
+                class="p-col-12 p-md-6 p-lg-6 p-px-3 p-pt-4 text-size-14 text-semi-bold"
+              >
+                {{ formData.paymentRequestDetails[0].beneficiaryName }}
+              </div>
+              <div class="p-col-12 p-md-6 p-lg-6">
+                <button
+                  class="btn btn-md btn-tertiary float-right"
+                  (click)="isShowBeneficiaryModal = true"
+                >
+                  <span *ngIf="!formData.paymentRequestDetails[0].beneficiaryName">{{
+                    'SELECT ' | apsTranslate | uppercase
+                  }}</span>
+                  <span *ngIf="formData.paymentRequestDetails[0].beneficiaryName">{{
+                    'CHANGE ' | apsTranslate | uppercase
+                  }}</span>
+                  <span>{{ 'BENEFICIARY' | apsTranslate | uppercase }}</span>
+                </button>
+                <app-search-modal
+                  [(isShow)]="isShowBeneficiaryModal"
+                  header="Select Beneficiary"
+                  [colDefUrl]="beneficiaryColDefUrl"
+                  [rowDefUrl]="beneficiaryRowDefUrl"
+                  (onSelection)="onBeneficiarySelection($event)"
+                >
+                </app-search-modal>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="p-px-3"
+          [ngClass]="{ 'p-pt-6': viewport === 'web', 'p-py-3': viewport !== 'web' }"
+        >
+          {{ 'or' | apsTranslate }}
+        </div>
+        <div
+          class="right-container"
+          [ngClass]="{ 'aps-w-48p': viewport === 'web', 'aps-w-100p': viewport !== 'web' }"
+        >
+          <div class="aps-card p-py-3">
+            <div class="p-px-3 p-mb-1 text-size-14 text-semi-bold">
+              {{ 'Add New Beneficiary' | apsTranslate }}
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-px-3">
+                <button
+                  class="btn btn-md btn-tertiary aps-w-100p border-primary"
+                  (click)="showAddBeneficiary()"
+                >
+                  {{ 'ADD NEW BENEFICIARY' | apsTranslate | uppercase }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Nothing here -->
+      <div
+        *ngIf="!formData.paymentRequestDetails[0].beneficiaryName"
+        class="aps-card p-my-3 aps-h-100p"
+      >
+        <app-nothing-here
+          message="Select or Add a Beneficiary to Begin"
+          [colSize]="viewport === 'web' ? 2 : 8"
+        ></app-nothing-here>
+      </div>
+      <!-- Beneficiary Details after selected  -->
+      <div *ngIf="formData.paymentRequestDetails[0].beneficiaryName" class="aps-card p-mt-3 p-px-3">
+        <div class="p-py-3 text-size-14 text-semi-bold">
+          {{ 'Beneficiary Details' | apsTranslate }}
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="beneficiaryAccountNo"
+              name="beneficiaryAccountNo"
+              label="Beneficiary Account"
+              inputType="alphaNumeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].accountNo"
+              [required]="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="remarks"
+              name="remarks"
+              label="Remark"
+              [(ngModel)]="formData.paymentRequestDetails[0].remarks"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+        <div class="p-py-3 text-size-14 text-semi-bold">
+          {{ 'beneficiary address' | apsTranslate }}
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="pinCode"
+              name="pinCode"
+              label="Zip Code"
+              inputType="numeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].pinCode"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="phoneNo"
+              name="phoneNo"
+              label="Contact Number"
+              inputType="numeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].phoneNo"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="email"
+              name="email"
+              label="Email Id"
+              [(ngModel)]="formData.paymentRequestDetails[0].email"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0">
+            <aps-form-input
+              id="beneficiaryAddress1"
+              name="beneficiaryAddress1"
+              label="Address"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress1"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-2 p-lg-2 p-pt-3 p-pb-0">
+            <button
+              class="btn btn-md btn-tertiary float-right"
+              (click)="extraAddressCount = extraAddressCount + 1"
+              [disabled]="extraAddressCount == 2"
+            >
+              <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+              {{ 'Add More' | apsTranslate }}
+            </button>
+          </div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0" *ngIf="extraAddressCount > 0">
+            <aps-form-input
+              id="beneficiaryAddress2"
+              name="beneficiaryAddress2"
+              label="Address1"
+              rightIcon="fa-trash-alt"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress2"
+              (onRightIcon)="extraAddressCount = extraAddressCount - 1"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-2 p-lg-2 p-py-0" *ngIf="extraAddressCount > 0"></div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0" *ngIf="extraAddressCount > 1">
+            <aps-form-input
+              id="beneficiaryAddress3"
+              name="beneficiaryAddress3"
+              label="Address2"
+              rightIcon="fa-trash-alt"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress3"
+              (onRightIcon)="extraAddressCount = extraAddressCount - 1"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+      </div>
+      <!-- Enrichments -->
+      <ng-container
+        *ngIf="
+          formData.paymentRequestDetails[0].beneficiaryName &&
+          formData.initiateMode == 'PAYMENTMETHODWISE'
+        "
+      >
+        <app-dynamic-enrichment
+          classes="p-mt-3 p-mb-3"
+          [enrichmentModel]="formData.paymentRequestDetails[0].enrichments"
+        ></app-dynamic-enrichment>
+      </ng-container>
+    </div>
+
+    <!-- add New Beneficiary at runtime -->
+    <div
+      *ngIf="isAddNewBeneficiary"
+      [ngClass]="{ 'p-mb-3': formData.initiateMode == 'BENEFICIARYWISE' }"
+    >
+      <div class="aps-card p-px-3">
+        <div class="p-py-3 text-size-14 text-semi-bold">
+          {{ 'Add New Beneficiary' | apsTranslate }}
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="beneficiaryCode"
+              name="beneficiaryCode"
+              label="Beneficiary Code"
+              inputType="noSpaceAlphaNumeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryCode"
+              [required]="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="beneficiaryName"
+              name="beneficiaryName"
+              label="Beneficiary Name"
+              inputType="alphaNumeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryName"
+              [required]="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-custom-select
+              id="beneficiaryType"
+              name="beneficiaryType"
+              label="Beneficiary Type"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryType"
+              [value]="formData.paymentRequestDetails[0].beneficiaryType"
+              [data]="[
+                { displayName: 'Generic', id: 'GENERIC' },
+                { displayName: 'User - Wise', id: 'USERWISE' }
+              ]"
+              [required]="true"
+            >
+            </aps-custom-select>
+          </div>
+        </div>
+        <div class="p-py-3 text-size-14 text-semi-bold">
+          {{ 'beneficiary address' | apsTranslate }}
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="pinCode"
+              name="pinCode"
+              label="Zip Code"
+              inputType="numeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].pinCode"
+              maxLength="6"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="phoneNo"
+              name="phoneNo"
+              label="Contact Number"
+              inputType="numeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].phoneNo"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="email"
+              name="email"
+              label="Email Id"
+              [(ngModel)]="formData.paymentRequestDetails[0].email"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0">
+            <aps-form-input
+              id="beneficiaryAddress1"
+              name="beneficiaryAddress1"
+              label="Address"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress1"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-2 p-lg-2 p-pt-3 p-pb-0">
+            <button
+              class="btn btn-md btn-tertiary float-right"
+              (click)="extraAddressCount = extraAddressCount + 1"
+              [disabled]="extraAddressCount == 2"
+            >
+              <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+              {{ 'Add More' | apsTranslate }}
+            </button>
+          </div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0" *ngIf="extraAddressCount > 0">
+            <aps-form-input
+              id="beneficiaryAddress2"
+              name="beneficiaryAddress2"
+              label="Address1"
+              rightIcon="fa-trash-alt"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress2"
+              (onRightIcon)="extraAddressCount = extraAddressCount - 1"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-2 p-lg-2 p-py-0" *ngIf="extraAddressCount > 0"></div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0" *ngIf="extraAddressCount > 1">
+            <aps-form-input
+              id="beneficiaryAddress3"
+              name="beneficiaryAddress3"
+              label="Address2"
+              rightIcon="fa-trash-alt"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress3"
+              (onRightIcon)="extraAddressCount = extraAddressCount - 1"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+        <div class="p-py-3 text-size-14 text-semi-bold">
+          {{ 'Additional Details' | apsTranslate }}
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <div class="left-right-container">
+              <div class="left-container p-mt-3">
+                <div
+                  *ngIf="
+                    !formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].bicCodeId
+                  "
+                  class="p-mt-1 text-size-14 text-color-light-shade-3"
+                >
+                  {{ 'Bic Code' | apsTranslate }}
+                </div>
+                <div
+                  *ngIf="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].bicCodeId
+                  "
+                  class="p-mt-1 text-size-14 text-semi-bold"
+                >
+                  {{
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].bicCodeId
+                  }}
+                </div>
+              </div>
+              <div class="right-container p-mt-3">
+                <button class="btn btn-md btn-tertiary p-p-1" (click)="isShowBicCodeModal = true">
+                  {{ 'Search Bic Code' | apsTranslate }}
+                </button>
+                <app-search-modal
+                  [(isShow)]="isShowBicCodeModal"
+                  header="select bic code"
+                  [colDefUrl]="bicCodeColDefUrl"
+                  [rowDefUrl]="bicCodeRowDefUrl"
+                  (onSelection)="onBicCodeSelection($event)"
+                >
+                </app-search-modal>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="beneficiaryAccount"
+              name="beneficiaryAccount"
+              label="Account Number/IBAN"
+              inputType="alphaNumeric"
+              [(ngModel)]="
+                formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0]
+                  .beneficiaryAccountNo
+              "
+              [required]="true"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3 p-px-3">
+        <div class="p-py-3 text-size-14 text-semi-bold">{{ 'Enter Details' | apsTranslate }}</div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <div class="p-py-1 text-size-14 text-color-light-shade-1">
+              {{ 'Advise Dispatch Details' | apsTranslate }}<sup class="text-color-danger">*</sup>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-6 p-p-0">
+                <div class="p-py-2 text-size-12 text-semi-bold">
+                  {{ 'Electronic Mode' | apsTranslate }}
+                </div>
+                <p-checkbox
+                  class="p-mx-1"
+                  name="adviseDispatchDetails"
+                  value="E"
+                  label="Email"
+                  [(ngModel)]="extraFormData.beneDispatchMode"
+                  (onChange)="OnBeneDispatchModeChange()"
+                ></p-checkbox>
+                <p-checkbox
+                  class="p-mx-1"
+                  name="adviseDispatchDetails"
+                  value="S"
+                  label="SMS"
+                  [(ngModel)]="extraFormData.beneDispatchMode"
+                  (onChange)="OnBeneDispatchModeChange()"
+                ></p-checkbox>
+              </div>
+              <div class="p-col-6 p-p-0">
+                <div class="p-py-2 text-size-12 text-semi-bold">
+                  {{ 'Print Mode' | apsTranslate }}
+                </div>
+                <p-checkbox
+                  class="p-mx-1"
+                  name="adviseDispatchDetails"
+                  value="M"
+                  label="Mail"
+                  [(ngModel)]="extraFormData.beneDispatchMode"
+                  (onChange)="OnBeneDispatchModeChange()"
+                ></p-checkbox>
+                <p-checkbox
+                  class="p-mx-1"
+                  name="adviseDispatchDetails"
+                  value="C"
+                  label="Courier"
+                  [(ngModel)]="extraFormData.beneDispatchMode"
+                  (onChange)="OnBeneDispatchModeChange()"
+                ></p-checkbox>
+              </div>
+            </div>
+          </div>
+          <p-divider *ngIf="viewport === 'web'" layout="vertical"></p-divider>
+          <div class="p-col-12 p-md-7 p-lg-7 p-py-0" *ngIf="formData.isPaperBasedTransaction">
+            <div class="p-py-1 text-size-14 text-color-light-shade-1">
+              {{ 'Instrument Details' | apsTranslate }}<sup class="text-color-danger">*</sup>
+            </div>
+            <div class="p-grid p-pb-3">
+              <div class="p-col-5 p-p-0">
+                <div class="p-py-2 text-size-12 text-semi-bold">
+                  {{ 'Dispatch To' | apsTranslate }}
+                </div>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="dispatchTo"
+                  value="BENEFICIARY"
+                  label="Beneficiary"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].dispatchTo
+                  "
+                >
+                </p-radioButton>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="dispatchTo"
+                  value="CORPORATE"
+                  label="Corporate"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].dispatchTo
+                  "
+                >
+                </p-radioButton>
+              </div>
+              <div class="p-col-7 p-p-0">
+                <div class="p-py-2 text-size-12 text-semi-bold">
+                  {{ 'Dispatch' | apsTranslate }}
+                </div>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="instrumentDispatchMode"
+                  value="EMAIL"
+                  label="Mail"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0]
+                      .instrumentDispatchMode
+                  "
+                >
+                </p-radioButton>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="instrumentDispatchMode"
+                  value="COURIER"
+                  label="Courier"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0]
+                      .instrumentDispatchMode
+                  "
+                >
+                </p-radioButton>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="instrumentDispatchMode"
+                  value="COUNTERCOLLECT"
+                  label="Counter Collect"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0]
+                      .instrumentDispatchMode
+                  "
+                >
+                </p-radioButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-grid p-my-3">
+        <div class="p-col">
+          <button
+            class="p-mx-2 btn btn-md btn-primary float-right"
+            [disabled]="beneficiaryDetails.invalid"
+            (click)="onAddBeneficiary()"
+          >
+            {{ 'ADD' | apsTranslate }}
+          </button>
+          <button
+            class="p-mx-2 btn btn-md btn-tertiary float-right"
+            (click)="onAddCancelBeneficiary()"
+          >
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #paymentDetailsReviewTemplate>
+  <div class="p-py-3 text-size-14 text-semi-bold">
+    {{ 'Payment Details' | apsTranslate }}
+    <app-icon
+      *ngIf="mode != 'VIEW'"
+      icon="fa-pencil"
+      class="float-right pointer"
+      (click)="onEditClick(true)"
+    >
+    </app-icon>
+  </div>
+
+  <div class="p-grid">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Value Date"
+        [value]="formData.valueDate"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Debit From Account"
+        [value]="formData.debitAccountNo"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Account Title"
+        [value]="formData.accountTitle"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Account Balance"
+        [value]="formData.debitAccountBalance"
+        type="baseCurrency"
+        [baseCurrency]="currencyName"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Corporate Reference No"
+        [value]="formData.corporateRefNo"
+      ></app-review-form-field>
+    </div>
+  </div>
+
+  <div class="p-grid">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Method"
+        [value]="formData.paymentMethodName"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payable Amount"
+        [value]="formData.payableAmount"
+        type="baseCurrency"
+        [baseCurrency]="formData.debitCurrencyCode"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Debit Amount"
+        [value]="formData.debitAmount"
+        type="baseCurrency"
+        [baseCurrency]="formData.debitCurrencyCode"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        *ngIf="formData.paymentRequestDetails[0].amountType == 'PAYABLE'"
+        label="Charges"
+        [value]="getCharges(formData.payableAmount)"
+        type="baseCurrency"
+        [baseCurrency]="formData.debitCurrencyCode"
+      ></app-review-form-field>
+      <app-review-form-field
+        *ngIf="formData.paymentRequestDetails[0].amountType == 'DEBIT'"
+        label="Charges"
+        [value]="getCharges(formData.debitAmount)"
+        type="baseCurrency"
+        [baseCurrency]="formData.debitCurrencyCode"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'"></div>
+  </div>
+
+  <div class="p-grid">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Instruction 1"
+        [value]="formData.paymentRequestDetails[0].paymentDetails1"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Instruction 2"
+        [value]="formData.paymentRequestDetails[0].paymentDetails2"
+        *ngIf="formData.paymentRequestDetails[0].paymentDetails2"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Instruction 3"
+        [value]="formData.paymentRequestDetails[0].paymentDetails3"
+        *ngIf="formData.paymentRequestDetails[0].paymentDetails3"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Instruction 4"
+        [value]="formData.paymentRequestDetails[0].paymentDetails4"
+        *ngIf="formData.paymentRequestDetails[0].paymentDetails4"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'"></div>
+  </div>
+
+  <div class="p-py-3 text-size-14 text-semi-bold">{{ 'Uploaded Documents' | apsTranslate }}</div>
+
+  <div class="p-grid p-pb-2">
+    <div
+      class="p-col-12 p-md-2 p-lg-2 p-pt-0"
+      *ngFor="let file of formData.paymentRequestDetails[0].supportingDocList"
+    >
+      <div class="aps-card">
+        <div class="p-grid">
+          <div class="p-col-2">
+            <app-icon icon="fa-file" class="p-mt-2"></app-icon>
+          </div>
+          <div class="p-col-10">
+            <div class="text-size-12 review-file-name">{{ file.originalFileName }}</div>
+            <div class="text-size-10 text-color-light-shade-1">
+              {{ (file.size / 1024 / 1024).toFixed(2) }}Mb
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #beneficiaryReviewTemplate>
+  <div class="p-py-3 text-size-14 text-semi-bold">
+    {{ 'Beneficiary Details' | apsTranslate }}
+    <app-icon
+      *ngIf="mode != 'VIEW'"
+      icon="fa-pencil"
+      class="float-right pointer"
+      (click)="onEditClick(false)"
+    >
+    </app-icon>
+  </div>
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Beneficiary Name"
+        [value]="formData.paymentRequestDetails[0].beneficiaryName"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Beneficiary Account"
+        [value]="formData.paymentRequestDetails[0].accountNo"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Remark"
+        [value]="formData.paymentRequestDetails[0].remarks"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'"></div>
+  </div>
+  <div class="p-py-3 text-size-14 text-semi-bold">{{ 'Beneficiary Address' | apsTranslate }}</div>
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Zop Code"
+        [value]="formData.paymentRequestDetails[0].pinCode"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Contact Number"
+        [value]="formData.paymentRequestDetails[0].phoneNo"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Email Id"
+        [value]="formData.paymentRequestDetails[0].email"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Address"
+        [value]="
+          formData.paymentRequestDetails[0].beneficiaryAddress1 +
+          ', ' +
+          formData.paymentRequestDetails[0].beneficiaryAddress2 +
+          ', ' +
+          formData.paymentRequestDetails[0].beneficiaryAddress3
+        "
+      ></app-review-form-field>
+    </div>
+  </div>
+</ng-template>

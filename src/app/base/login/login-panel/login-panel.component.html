@@ -1,0 +1,38 @@
+<div class="login-panel-container">
+  <div class="login-header text-bold tour-login-step1">{{ 'msg_login_welcome' | translate }}</div>
+
+  <div class="login-card">
+    <p-tabView orientation="left">
+      <p-tabPanel [header]="'msg_login_id' | translate">
+        <div class="view-panel">
+          <app-login-id></app-login-id>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel [header]="'msg_biometric' | translate">
+        <div class="view-panel">
+          <app-biomatric></app-biomatric>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel [header]="'msg_mpin' | translate">
+        <div class="view-panel">
+          <app-mpin></app-mpin>
+        </div>
+      </p-tabPanel>
+      <p-tabPanel [header]="'msg_qr_code' | translate" *ngIf="isMobile()">
+        <div class="view-panel">
+          <app-qrcode></app-qrcode>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+
+  <div class="login-help">
+    {{ 'msg_new_online_banking' | translate }}
+    <a class="link" routerLink="/self-onboarding">{{ 'msg_click_here' | translate }}</a>
+    {{ 'msg_get_started' | translate }}
+  </div>
+
+  <div class="footer-wrapper show-on-mobile">
+    <app-footer></app-footer>
+  </div>
+</div>

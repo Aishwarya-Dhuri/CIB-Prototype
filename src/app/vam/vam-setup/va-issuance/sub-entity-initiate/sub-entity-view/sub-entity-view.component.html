@@ -1,0 +1,167 @@
+<div *ngIf="subEntityDetails" class="p-mt-3">
+  <ng-container>
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+          {{ 'Sub Entity Details' | apsTranslate }}
+        </div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Sub Entity Code' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityCode }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Sub Entity Name' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityName }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Sub Entity Alias Name' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityAliasName }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Sub Entity Unique ID' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityUniqueID }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container>
+    <div class="aps-card p-my-3">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+          {{ 'Contact Details' | apsTranslate }}
+        </div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div
+          *ngIf="
+            subEntityDetails.subEntityContactDetList &&
+            subEntityDetails.subEntityContactDetList.length > 0
+          "
+          class="p-grid g-margin-x"
+        >
+          <div class="p-col-12 aps-h-200 border-top">
+            <app-ag-grid-listing
+              #contactDetailsTable
+              [columnDefs]="contactColDef"
+              [context]="{ componentParent: this }"
+              [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+              [rowData]="subEntityDetails.subEntityContactDetList"
+              id="vaContactDetailsTable"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container>
+    <div class="aps-card p-my-3">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+          {{ 'Limit Arrangement Details' | apsTranslate }}
+        </div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <label class="input-label">
+              <span class="label"
+                >{{ 'Limit Applicable' | apsTranslate
+                }}<span class="text-color-danger">*</span></span
+              >
+            </label>
+            <div class="p-pt-2">
+              <p-inputSwitch
+                [(ngModel)]="subEntityDetails.subEntityLimitApplicable"
+                disabled="true"
+                name="subEntityLimitApplicable"
+              >
+              </p-inputSwitch
+              ><!--(onChange)="resetFormSubEntityLimitForm(subEntityLimitForm)"-->
+            </div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Limit Type' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityLimitType }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Allocated Limit' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityAllocatedLimit }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Limit Replenish Period' | apsTranslate }}
+            </div>
+            <p-inputSwitch [(ngModel)]="subEntityDetails.subEntityLimitApplicable" disabled="true">
+            </p-inputSwitch>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Limit Replenish Day/Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityLimitResetOnId }}</div>
+          </div>
+        </div>
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Allow Override Limit' | apsTranslate }}
+            </div>
+            <p-inputSwitch
+              [(ngModel)]="subEntityDetails.subEntityAllowOverrideLimit"
+              disabled="true"
+            >
+            </p-inputSwitch>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Allow Override in' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityAllowOverrideIn }}</div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div
+              *ngIf="subEntityDetails.subEntityAllowOverrideInId == 'ADHOCLIMITINPERCENT'"
+              class="text-size-12 text-color-light-shade-1"
+            >
+              {{ 'Adhoc Limit %' | apsTranslate }}
+            </div>
+            <div
+              *ngIf="subEntityDetails.subEntityAllowOverrideInId == 'ADHOCLIMIT'"
+              class="text-size-12 text-color-light-shade-1"
+            >
+              {{ 'Adhoc Limit %' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ subEntityDetails.subEntityAdhocLimit }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

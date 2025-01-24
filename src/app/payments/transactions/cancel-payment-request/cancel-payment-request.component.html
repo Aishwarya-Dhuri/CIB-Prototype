@@ -1,0 +1,196 @@
+<div class="container">
+  <!-- Filters Screen -->
+  <div class="p-grid g-margin-x" *ngIf="currentScreen == 'FILTERS'">
+    <!-- Dynamic Filters -->
+    <div class="p-col-12 p-md-7 p-lg-7">
+      <div class="aps-card p-mb-3">
+        <div class="p-grid p-px-2">
+          <div class="p-col-12 p-px-3 p-md-6 p-lg-6">
+            <aps-custom-select
+              id="paymentRequest"
+              name="paymentRequest"
+              label="Search By"
+              (change)="onPaymentRequestChanged($event)"
+              required="true"
+              [value]="paymentRequest"
+              [(ngModel)]="paymentRequest"
+              [data]="paymentRequests"
+            >
+            </aps-custom-select>
+          </div>
+        </div>
+      </div>
+      <div class="p-grid" *ngIf="!isLoadGenericFilters">
+        <div class="p-col-12 p-p-0">
+          <app-dynamic-search
+            #dynamicSearch
+            [(entityName)]="genericFilterEntityName"
+            (onSearch)="getRecords($event)"
+            [isShowSearchByHeader]="false"
+            (onSaveCriteria)="getCriteriaList()"
+            (onFiltersReady)="onDynamicFiltersReady()"
+          >
+          </app-dynamic-search>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved Criterias -->
+    <div class="p-col-12 p-md-5 p-lg-5">
+      <div class="aps-card aps-h-100p p-px-3 p-pb-3 p-pt-0">
+        <p-tabView>
+          <p-tabPanel header="Unprocessed Recent Payments">
+            <div
+              class="p-px-0 p-pt-3 p-pb-1 border-bottom"
+              *ngFor="let unprocessedPayment of unprocessedPayments"
+            >
+              <div class="left-right-container">
+                <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                  <div class="text-size-12">{{ unprocessedPayment.beneficiary }}</div>
+                  <div class="text-size-10">
+                    <app-base-currency [amount]="unprocessedPayment.amount"></app-base-currency> |
+                    {{ unprocessedPayment.activationDate }}
+                  </div>
+                </div>
+                <div class="right-container">
+                  <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                    <app-icon icon="fa-eye" class="text-size-14 pointer"></app-icon>
+                  </span>
+                  <button
+                    class="btn btn-md btn-tertiary"
+                    (click)="
+                      cancelRequest(
+                        unprocessedPayment.id,
+                        unprocessedPayment.entryType,
+                        unprocessedPayment.activationDate,
+                        unprocessedPayment.corporateRefNo,
+                        unprocessedPayment.batchNo
+                      )
+                    "
+                  >
+                    Cancel Request
+                  </button>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+          <p-tabPanel header="Recent Cancelled Payment">
+            <div
+              class="p-px-0 p-pt-3 p-pb-1 border-bottom"
+              *ngFor="let recentPayment of recentPayments"
+            >
+              <div class="left-right-container">
+                <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                  <div class="text-size-12">{{ recentPayment.beneficiary }}</div>
+                  <div class="text-size-10">
+                    <app-base-currency [amount]="recentPayment.amount"></app-base-currency> |
+                    {{ recentPayment.activationDate }}
+                  </div>
+                </div>
+                <div class="right-container">
+                  <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                    <app-icon icon="fa-eye" class="text-size-14 pointer"></app-icon>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Listing Screen -->
+  <div class="p-grid" *ngIf="currentScreen == 'LISTING'">
+    <app-modal
+      [(isShow)]="!!cancelBulkPaymentData"
+      headerText="Cancel Batch"
+      (onClose)="cancelBulkPaymentData = null"
+    >
+      <div class="text-size-14" body>
+        {{ 'Are you sure you want to cancel a batch?' | apsTranslate }}
+      </div>
+      <div class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-tertiary p-mr-3" (click)="cancelBulkPaymentData = null">
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+          <button class="btn btn-md btn-primary" (click)="onCancelBatchRequest()">
+            {{ 'YES' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <!-- Searched Filters -->
+    <div class="p-col-12 p-p-0">
+      <div class="aps-card p-p-3">
+        <div class="p-grid">
+          <div class="p-col-12 p-p-0">
+            <div class="left-right-container p-pb-2">
+              <div class="left-container">
+                <div class="text-size-16px text-semi-bold">{{ 'Searched By' | apsTranslate }}</div>
+              </div>
+              <div class="right-container">
+                <button
+                  class="btn btn-md btn-tertiary p-py-0"
+                  (click)="selectedFilters = []; currentScreen = 'FILTERS'"
+                >
+                  {{ 'CLEAR SEARCH' | apsTranslate }}
+                </button>
+                <button
+                  class="btn btn-md btn-tertiary p-mr-1 p-py-0"
+                  (click)="currentScreen = 'FILTERS'"
+                >
+                  {{ 'MODIFY' | apsTranslate }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-3 p-lg-3" *ngFor="let filter of selectedFilters">
+            <div class="text-size-14 text-color-light-shade-1">{{ filter.displayName }}</div>
+            <div class="text-size-16">{{ filter.displayValue }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Listing -->
+    <div class="p-col-12 p-p-0 p-mt-3">
+      <div class="aps-card aps-h-400">
+        <div class="aps-card-header overflow-visible p-px-3 p-py-2">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-color-dark-shade-1 text-bold">
+                {{ 'Transactions' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-grid-listing-tools
+                [showSearch]="false"
+                [showRefresh]="false"
+                (changeFloatingFilter)="searchResults.changeFloatFilter($event)"
+                (applyColDefs)="searchResults.onApplyConfig($event)"
+                [colDefs]="searchResults.columnDefs"
+              >
+              </app-grid-listing-tools>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <app-ag-grid-listing
+            id="searchDetails"
+            #searchResults
+            [context]="context"
+            [colDefUrl]="searchColDefUrl"
+            [rowDefUrl]="searchRowDefUrl"
+            [supressAutoFit]="false"
+          >
+          </app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

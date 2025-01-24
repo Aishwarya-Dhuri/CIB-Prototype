@@ -1,0 +1,164 @@
+<div class="container">
+    <ng-container *ngIf="!loading; else loadingTemplate">
+
+        <div class="p-grid g-margin-x" *ngIf="stepperDetails.currentStep == 1">
+            <div class="p-col-12">
+                <div class="aps-card">
+                    <div class="text-size-16 text-bold p-p-3">{{'Manual Forecasting Details' | apsTranslate}}</div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <aps-custom-select label="Forecasting As" name="forecastingAs" id="forecastingAs"
+                                [(ngModel)]="formData.forecastingAs" [value]="formData.forecastingAs"
+                                dataUrl="accountServices/services/manualForecast/private/dropdown/forecastingAsList"
+                                [required]="true">
+                            </aps-custom-select>
+                        </div>
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <aps-custom-select label="Entry Type" name="entryType" id="entryType"
+                                [(ngModel)]="formData.entryType" [value]="formData.entryType"
+                                dataUrl="accountServices/services/manualForecast/private/dropdown/entryTypeList"
+                                [required]="true">
+                            </aps-custom-select>
+                        </div>
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <aps-form-input label="Description" name="description" id="description"
+                                [(ngModel)]="formData.description" [required]="true">
+                            </aps-form-input>
+                        </div>
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <div class="text-size-12 text-semi-bold p-pb-2">{{'Lock Record In Cash flow' |
+                                apsTranslate}}</div>
+                            <p-inputSwitch id="lockRecordInCashflow" name="lockRecordInCashflow"
+                                [(ngModel)]="formData.lockRecordInCashflow">
+                            </p-inputSwitch>
+                        </div>
+                        <div class="p-col-12 p-lg-6 p-md-6 p-sm-6">
+                            <aps-form-input label="Narration" name="narration" id="narration"
+                                [(ngModel)]="formData.narration" [required]="true">
+                            </aps-form-input>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <aps-custom-select label="Account Number" name="accountNumberId" id="accountNumberId"
+                                [(ngModel)]="formData.accountNumberId" [value]="formData.accountNumberId"
+                                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                (change)="onAccountSelected($event)">
+                            </aps-custom-select>
+                        </div>
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <div class="p-grid">
+                                <div class="p-col-3 p-py-0">
+                                    <aps-custom-select [label]="'Currency' | apsTranslate" id="forecastedCurrencyId"
+                                        name="forecastedCurrencyId" [value]="formData.forecastedCurrencyId"
+                                        [(ngModel)]="formData.forecastedCurrencyId"
+                                        dataUrl="setup/generalMasters/currency/private/currencyList"
+                                        (change)="formData.forecastedCurrencyDisplayName = $event.displayName">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-9 p-py-0">
+                                    <aps-form-input [label]="'Forecasted Amount' | apsTranslate" id="forecastedAmount"
+                                        name="forecastedAmount" inputType="currencyFormatNotZero"
+                                        [(ngModel)]="formData.forecastedAmount" required="true">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <div class="p-grid">
+                                <div class="p-col-3 p-py-0">
+                                    <aps-custom-select [label]="'Currency' | apsTranslate"
+                                        id="forecastedCurrencyInCcyId" name="forecastedCurrencyInCcyId"
+                                        [value]="formData.forecastedCurrencyInCcyId"
+                                        [(ngModel)]="formData.forecastedCurrencyInCcyId"
+                                        dataUrl="setup/generalMasters/currency/private/currencyList"
+                                        (change)="formData.forecastedCurrencyInCcyDisplayName = $event.displayName"
+                                        [disabled]="true">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-9 p-py-0">
+                                    <aps-form-input [label]="'Forecasted Amount CCY' | apsTranslate"
+                                        id="forecastedAmountInCcy" name="forecastedAmountInCcy"
+                                        inputType="currencyFormatNotZero" [(ngModel)]="formData.forecastedAmountInCcy"
+                                        required="true">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <aps-form-input [label]="'FX Rate' | apsTranslate" id="fxRate" name="fxRate"
+                                [(ngModel)]="formData.fxRate" disabled="true">
+                            </aps-form-input>
+                        </div>
+                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                            <aps-custom-select [label]="'Do you have Deal number or Forward contract' | apsTranslate"
+                                id="forwardContractId" name="forwardContractId" [value]="formData.forwardContractId"
+                                [(ngModel)]="formData.forwardContractId"
+                                dataUrl="accountServices/services/manualForecast/private/dropdown/forwardContractList"
+                                (change)="formData.forwardContractDisplayName = $event.displayName">
+                            </aps-custom-select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-grid g-margin-x" *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+            <div class="p-col-12">
+                <div class="aps-card">
+                    <div class="p-col-12 p-p-3 text-size-16 text-semi-bold">
+                        {{ 'Manual Forecasting Details' | apsTranslate }}
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <app-review-form-field label="Forecasting As"
+                                [value]="formData.forecastingAs"></app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <app-review-form-field label="Entry Type"
+                                [value]="formData.entryType"></app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <app-review-form-field label="Description"
+                                [value]="formData.description"></app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <app-review-form-field label="Lock Record in Cash Flow"
+                                [value]="formData.lockRecordInCashflow ? 'Yes' : 'No'"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-md-6 p-lg-6 p-sm-6">
+                            <app-review-form-field label="Narration"
+                                [value]="formData.narration"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <app-review-form-field label="Account Number"
+                                [value]="formData.accountNumberDisplayName"></app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <div class="text-size-12 text-semi-bold">Forecasted Amount</div>
+                            <app-base-currency [amount]="formData.forecastedAmount"></app-base-currency>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <div class="text-size-12 text-semi-bold">Forecasted Amount CCY</div>
+                            <app-base-currency [amount]="formData.forecastedAmountInCcy"></app-base-currency>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <app-review-form-field label="FX Rate" [value]="formData.fxRate"></app-review-form-field>
+                        </div>
+                        <div class="p-col-12 p-md-3 p-lg-3 p-sm-3">
+                            <app-review-form-field label="Do you have Deal number or Forward contract"
+                                [value]="formData.forwardContractDisplayName"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </ng-container>
+</div>
+
+<ng-template #loadingTemplate> <app-loading-spinner></app-loading-spinner> </ng-template>

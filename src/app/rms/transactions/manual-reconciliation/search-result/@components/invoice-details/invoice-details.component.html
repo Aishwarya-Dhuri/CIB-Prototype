@@ -1,0 +1,75 @@
+<app-backdrop [zIndex]="10" [background]="'rgba(0, 0, 0, 0.5)'"></app-backdrop>
+<div class="invoice-details-container aps-card p-p-3">
+  <div class="left-right-container">
+    <div class="left-container">
+      <div class="text-size-18 text-bold text-color-dark-shade-1">
+        {{ 'Invoice Details' | apsTranslate }}
+      </div>
+    </div>
+    <div class="right-container">
+      <!-- <i class="pi pi-times text-size-12 text-color-light-shade-1 pointer" (click)="close.emit()"></i> -->
+      <app-icon
+        icon="fa-times"
+        class="text-size-12 text-color-light-shade-1 pointer"
+        (click)="close.emit()"
+      ></app-icon>
+    </div>
+  </div>
+  <div class="p-grid text-size-14 p-py-3 border-bottom">
+    <div class="p-col-6 p-pt-0 p-pb-3 p-pl-0">
+      <div class="text-color-light-shade-1">{{ 'Corporate Client Name' | apsTranslate }}</div>
+      <div class="text-color-dark-shade-1">{{ searchDetails.corporateClientName }}</div>
+    </div>
+    <div class="p-col-6 p-pt-0 p-pb-3 p-pr-0">
+      <div class="text-color-light-shade-1">{{ 'Corporate Client Code' | apsTranslate }}</div>
+      <div class="text-color-dark-shade-1">B0001</div>
+    </div>
+    <div class="p-col-6 p-py-0 p-pl-0">
+      <div class="text-color-light-shade-1">{{ 'Program' | apsTranslate }}</div>
+      <div class="text-color-dark-shade-1">{{ searchDetails.program }}</div>
+    </div>
+    <div class="p-col-6 p-py-0 p-pr-0">
+      <div class="text-color-light-shade-1">{{ 'Account Number' | apsTranslate }}</div>
+      <div class="text-color-dark-shade-1">
+        <div class="label-with-icon-container">
+          <div class="icon">
+            <img src="assets/images/flag/us-flag.png" alt="USD" width="16px" height="12px" />
+          </div>
+          <div class="label">
+            <span class="text-color-dark-shade-1 text-semi-bold">
+              {{ searchDetails.accountNumber }}</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="p-grid text-size-14 p-py-3 border-bottom">
+    <div class="p-col-6 p-pt-0 p-pb-3 p-pl-0">
+      <div class="text-color-light-shade-1">{{ 'Invoice Number' | apsTranslate }}</div>
+      <div class="text-color-dark-shade-1">{{ invoiceDetails.id }}</div>
+    </div>
+    <div class="p-col-6 p-pt-0 p-pb-3 p-pr-0">
+      <div class="text-color-light-shade-1">{{ 'Invoice Amount' | apsTranslate }}</div>
+      <div class="text-color-dark-shade-1">
+        {{ invoiceDetails.invoiceAmount | currency: 'USD ':'code' }}
+      </div>
+    </div>
+    <div class="p-col-6 p-py-0 p-pl-0">
+      <div class="text-color-light-shade-1">{{ 'Invoice Date' | apsTranslate }}</div>
+      <div class="text-color-dark-shade-1">{{ invoiceDetails.invoiceDate }}</div>
+    </div>
+    <div class="p-col-6 p-py-0 p-pr-0">
+      <div class="text-color-light-shade-1">{{ 'Invoice Due Date' | apsTranslate }}</div>
+      <div class="text-color-dark-shade-1">{{ invoiceDetails.dueDate }}</div>
+    </div>
+  </div>
+  <div class="left-right-container p-pt-3">
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="btn btn-md btn-primary" (click)="close.emit()">
+        {{ 'CLOSE' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</div>

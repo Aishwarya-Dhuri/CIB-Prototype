@@ -1,0 +1,20 @@
+.payment-method-wise-divbtn {
+  margin-right: 0.187rem;
+  margin-bottom: 0.687rem;
+  padding: 1.437rem 1rem;
+  background: url('../../../../../assets/images/mask/circle-pattern.png'), var(--primary-color);
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.beneficiary-wise-divbtn {
+  margin-top: 1.437rem;
+  margin-right: 0.187rem;
+  padding: 1.437rem 1rem;
+  cursor: pointer;
+  border: 2px solid var(--primary-color);
+
+  .divider {
+    border-color: var(--primary-color);
+  }
+}

@@ -1,0 +1,18 @@
+.account-dropdown {
+  select {
+    background: #ffffff33 !important;
+    color: #fff !important;
+    border: 1px solid transparent;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem !important;
+    border-radius: 4px !important;
+    outline: none;
+    margin-top: 4px;
+    option {
+      padding: 10px;
+      color: #000;
+    }
+  }
+}

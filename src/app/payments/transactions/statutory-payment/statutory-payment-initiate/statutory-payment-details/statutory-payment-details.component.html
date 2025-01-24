@@ -1,0 +1,519 @@
+<app-modal [(isShow)]="uploadDocuments" size="md" headerText="Upload Documents">
+  <div class="" body>
+    <upload-form-control isMultiple="true" [files]="uploadDocumentFiles"></upload-form-control>
+  </div>
+
+  <div class="left-right-container" footer>
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="btn btn-md btn-tertiary p-mr-3" (click)="uploadDocuments = false">
+        CANCEL
+      </button>
+
+      <button class="btn btn-md btn-primary" (click)="onUploadDocuments(uploadDocumentFiles)">
+        UPLOAD
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal [(isShow)]="viewDocuments" size="md" headerText="View Documents">
+  <div class="p-grid" body>
+    <div class="p-md-4 p-sm-6 p-col-6" *ngFor="let document of statutoryPaymentDetails.documents; let i = index">
+      <div class="aps-card p-p-2">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="inline-items">
+              <div class="item">
+                <app-icon icon="fa-file"></app-icon>
+              </div>
+              <div class="item text-color-normal p-px-2">
+                <div class="text-size-12">{{ document.fileName }}</div>
+                <div class="text-size-10">
+                  {{ (+document.fileSize / 1024 / 1024).toFixed(2) }}Mb
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-container">
+            <div class="item">
+              <app-icon icon="fa-trash-alt" class="pointer" (click)="deleteDoc(i)"></app-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<div class="text-color-dark-shade-1">
+  <div class="p-grid g-margin-x">
+    <div class="p-md-4 p-sm-12 p-col-12 p-pt-0 p-pb-0">
+      <div class="aps-card fixed-bottom-container p-pb-6 aps-h-100p">
+        <div class="aps-card-header p-p-2">
+          <div class="text-size-16 text-bold p-p-1">{{ 'Institution Details' | apsTranslate }}</div>
+        </div>
+        <div class="aps-card-body">
+          <form name="institutionDetailsForm" #institutionDetailsForm="ngForm"
+            (ngSubmit)="fetchInstitutionTaxDetails(institutionDetailsForm)">
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-pb-0">
+                <aps-custom-select label="{{ 'Institution Type' | apsTranslate }}" name="institutionType"
+                  id="institutionType" [data]="institutionTypes" #institutionType="ngModel"
+                  [value]="statutoryPaymentDetails.institutionDetails.institutionType"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.institutionType"
+                  (change)="onChangeInstituteType($event)" [required]="true"></aps-custom-select>
+              </div>
+              <div class="p-col-12 p-py-0">
+                <app-aps-calender label="{{ 'Value Date' | apsTranslate }}" name="valueDate" id="valueDate"
+                  showIcon="true" #valueDate="ngModel"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.valueDate"
+                  [required]="true"></app-aps-calender>
+              </div>
+              <div class="p-col-12 p-py-0" *ngIf="!institution.isComplexData">
+                <aps-form-input [label]="
+                    (statutoryPaymentDetails.institutionDetails.institutionType == 'GST'
+                      ? 'GST Number'
+                      : statutoryPaymentDetails.institutionDetails.institutionType == 'Direct Tax'
+                      ? 'PAN Number'
+                      : 'Consumer ID'
+                    ) | apsTranslate
+                  " name="paymentId" id="paymentId" #paymentId="ngModel"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.paymentId"
+                  [required]="!institution.isComplexData"></aps-form-input>
+              </div>
+              <ng-container
+                *ngIf="institution.isComplexData && statutoryPaymentDetails.institutionDetails.institutionType != 'Custom Duty'">
+                <div class="p-col-12 p-py-0">
+                  <aps-custom-select label="{{ 'Search By' | apsTranslate }}" name="searchBy" id="searchBy" [data]="[
+                      {
+                        id: 'Custdec Number',
+                        value: 'Custdec Number',
+                        displayName: 'Custdec Number'
+                      },
+                      {
+                        id: 'Container Number',
+                        value: 'Container Number',
+                        displayName: 'Container Number'
+                      }
+                    ]" #institutionType="ngModel" [value]="statutoryPaymentDetails.institutionDetails.searchBy"
+                    [(ngModel)]="statutoryPaymentDetails.institutionDetails.searchBy"
+                    [required]="institution.isComplexData"></aps-custom-select>
+                </div>
+                <div class="p-col-12 p-py-0"
+                  *ngIf="statutoryPaymentDetails.institutionDetails.searchBy === 'Custdec Number'">
+                  <aps-form-input label="{{ 'Custdec Number' | apsTranslate }}" name="custdecNumber" id="  "
+                    #custdecNumber="ngModel" [(ngModel)]="statutoryPaymentDetails.institutionDetails.custdecNumber"
+                    [required]="
+                      statutoryPaymentDetails.institutionDetails.searchBy === 'Custdec Number'
+                    "></aps-form-input>
+                </div>
+                <div class="p-col-12 p-py-0"
+                  *ngIf="statutoryPaymentDetails.institutionDetails.searchBy === 'Container Number'">
+                  <aps-form-input label="{{ 'Container Number' | apsTranslate }}" name="containerNumber"
+                    id="containerNumber" #containerNumber="ngModel"
+                    [(ngModel)]="statutoryPaymentDetails.institutionDetails.containerNumber" [required]="
+                      statutoryPaymentDetails.institutionDetails.searchBy === 'Container Number'
+                    "></aps-form-input>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="statutoryPaymentDetails.institutionDetails.institutionType == 'Custom Duty'">
+                <div class="p-col-12 p-py-0">
+                  <aps-custom-select label="{{ 'Search By' | apsTranslate }}" name="searchBy" id="searchBy" [data]="[
+                      {
+                        id: 'IE Code',
+                        value: 'IE Code',
+                        displayName: 'IE Code'
+                      },
+                      {
+                        id: 'IG Reference Number',
+                        value: 'IG Reference Number',
+                        displayName: 'IG Reference Number'
+                      }
+                    ]" #institutionType="ngModel" [value]="statutoryPaymentDetails.institutionDetails.searchBy"
+                    [(ngModel)]="statutoryPaymentDetails.institutionDetails.searchBy"
+                    [required]="institution.isComplexData"></aps-custom-select>
+                </div>
+                <div class="p-col-12 p-py-0" *ngIf="statutoryPaymentDetails.institutionDetails.searchBy === 'IE Code'">
+                  <aps-form-input label="{{ 'IE Code' | apsTranslate }}" name="ieCode" id="ieCode" #ieCode="ngModel"
+                    [(ngModel)]="statutoryPaymentDetails.institutionDetails.ieCode" [required]="
+                      statutoryPaymentDetails.institutionDetails.searchBy === 'IE Code'
+                    "></aps-form-input>
+                </div>
+                <div class="p-col-12 p-py-0"
+                  *ngIf="statutoryPaymentDetails.institutionDetails.searchBy === 'IG Reference Number'">
+                  <aps-form-input label="{{ 'IG Reference Number' | apsTranslate }}" name="igRefNo" id="containerNumber"
+                    #igRefNo="ngModel" [(ngModel)]="statutoryPaymentDetails.institutionDetails.igRefNo" [required]="
+                      statutoryPaymentDetails.institutionDetails.searchBy === 'IG Reference Number'
+                    "></aps-form-input>
+                </div>
+              </ng-container>
+            </div>
+
+            <div class="bottom-container">
+              <div class="p-grid">
+                <div class="p-col-12 p-p-3">
+                  <div class="left-right-container">
+                    <div class="left-container"></div>
+                    <div class="right-container">
+                      <button type="button" class="btn btn-md btn-tertiary p-mr-3"
+                        (click)="resetInstitutionDetailsForm(institutionDetailsForm)">
+                        {{ 'RESET' | apsTranslate }}
+                      </button>
+
+                      <button type="submit" class="btn btn-md btn-primary" [disabled]="institutionDetailsForm.invalid">
+                        {{ 'FETCH' | apsTranslate }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-8 p-sm-12 p-col-12 p-pt-0 p-pb-0">
+      <div class="aps-card aps-h-340 p-mb-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container p-pl-3 p-pr-md-3 p-pr-sm-2 p-pr-1 p-py-3 p-p-2">
+              <div class="text-size-16 text-bold white-space-nowrap text-overflow-ellipsis p-p-1">
+                {{ 'Statutory Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container p-pr-3 p-pl-md-3 p-pl-sm-2 p-pl-1 p-py-2">
+              <div class="inline-items" *ngIf="statutoryPaymentDetails.taxDetails">
+                <div class="item">
+                  <div
+                    class="text-size-10 background-color-primary-light-shade-2 border-radius-4 pointer p-p-1 p-mt-1 p-mr-2"
+                    (click)="viewDocuments = true" *ngIf="statutoryPaymentDetails.documents.length > 0">
+                    {{ this.statutoryPaymentDetails.documents.length }}
+                    {{ 'Uploaded' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="item">
+                  <button class="btn btn-md btn-tertiary" (click)="uploadDocuments = true">
+                    <app-icon styleClasses="text-color-primary" icon="fa-upload" class="p-mr-2"></app-icon>
+                    {{ 'UPLOAD DOCUMENT' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body overflow-scroll p-p-2">
+          <div class="p-grid" *ngIf="statutoryPaymentDetails.taxDetails && !institution.isComplexData">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-color-light-shade-1">
+                {{
+                (statutoryPaymentDetails.institutionDetails.institutionType == 'GST'
+                ? 'GST Amount'
+                : statutoryPaymentDetails.institutionDetails.institutionType == 'Direct Tax'
+                ? 'Tax Amount'
+                : 'Voucher Amount'
+                ) | apsTranslate
+                }}
+              </div>
+              <div class="text-size-16">
+                <app-base-currency [amount]="statutoryPaymentDetails.taxDetails.voucherAmount"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-color-light-shade-1">
+                {{ 'Payment Reference Number' | apsTranslate }}
+              </div>
+              <div class="text-size-16">
+                {{ statutoryPaymentDetails.taxDetails.paymentReferenceNumber }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-color-light-shade-1">{{ 'Status' | apsTranslate }}</div>
+              <div class="text-size-16">{{ statutoryPaymentDetails.taxDetails.status }}</div>
+            </div>
+          </div>
+
+          <div class="p-grid"
+            *ngIf="statutoryPaymentDetails.taxDetails && institution.isComplexData && statutoryPaymentDetails.institutionDetails.institutionType != 'Custom Duty'">
+            <div class="p-col-12 p-p-0" *ngFor="let td of statutoryPaymentDetails.taxDetails; let i = index">
+              <div class="border border-radius-4 p-pb-0 p-pt-3 p-px-3 p-mb-2">
+                <div class="left-right-container no-left-right-container-on-mobile">
+                  <div class="left-container">
+                    <div class="p-grid">
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                        <div class="inline-items">
+                          <div class="item p-pt-2 p-mr-2">
+                            <p-checkbox name="containerNumber{{ i }}" id="ContainerNumber{{ i }}" label=""
+                              [binary]="true" [(ngModel)]="td.isSelected"></p-checkbox>
+                          </div>
+                          <div class="item text-size-14">
+                            <div class="text-color-light-shade-1 p-pb-1">
+                              {{ 'Container No.' | apsTranslate }}
+                            </div>
+                            <div class="text-color-dark-shade-1">{{ td.containerNo }}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select label="Weight Charges" name="weightCharges" id="weightCharges" [data]="[
+                            {
+                              id: '1way',
+                              value: '1way',
+                              displayName: '1-Way'
+                            },
+                            {
+                              id: '2way',
+                              value: '2way',
+                              displayName: '2-Way'
+                            }
+                          ]" [value]="td.weightCharges" [(ngModel)]="td.weightCharges"
+                          [disabled]="!td.isSelected"></aps-custom-select>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender label="Collection Start Date" icon="true" name="collectionStartDate{{ i }}"
+                          id="collectionStartDate{{ i }}" [(ngModel)]="td.collectionStartDate"
+                          [disabled]="!td.isSelected"></app-aps-calender>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender label="Collection End Date" icon="true" name="collectionEndDate{{ i }}"
+                          id="collectionEndDate{{ i }}" [(ngModel)]="td.collectionEndDate"
+                          [disabled]="!td.isSelected"></app-aps-calender>
+                      </div>
+                    </div>
+                    <div class="p-grid text-size-14 p-pb-3" *ngIf="td.isTaxDetailsFetched">
+                      <div class="p-md-3 p-sm-12 p-col-12 p-pl-0 p-py-0"></div>
+                      <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                        <div class="text-color-light-shade-1">
+                          {{ 'Outstanding Amount' | apsTranslate }}
+                        </div>
+                        <div class="text-color-dark-shade-1">
+                          <app-base-currency [amount]="td.outstandingAmount"></app-base-currency>
+                        </div>
+                      </div>
+                      <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                        <div class="text-color-light-shade-1">{{ 'Tax' | apsTranslate }}</div>
+                        <app-base-currency [amount]="td.tax"></app-base-currency>
+                      </div>
+                      <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                        <div class="text-color-light-shade-1">{{ 'Total' | apsTranslate }}</div>
+                        <app-base-currency [amount]="td.total"></app-base-currency>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="right-container text-right p-pb-3">
+                    <button type="button" class="btn btn-md btn-tertiary" (click)="fetchTaxDetails(td, i)"
+                      [disabled]="validateTaxDetails(td)">
+                      {{ 'FETCH' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid"
+            *ngIf="statutoryPaymentDetails.taxDetails && institution.isComplexData && statutoryPaymentDetails.institutionDetails.institutionType == 'Custom Duty'">
+            <div class="p-col-12 p-p-0" *ngFor="let td of statutoryPaymentDetails.taxDetails; let i = index">
+              <div class="border border-radius-4 p-pb-0 p-px-3 p-mb-2">
+                <div class="p-grid">
+                  <!-- <div class="p-md-3 p-sm-12 p-col-12 p-py-0 p-pl-0">
+                    <div class="inline-items">
+                      <div class="item p-pt-2 p-mr-2">
+                        <p-checkbox
+                          name="containerNumber{{ i }}"
+                          id="ContainerNumber{{ i }}"
+                          label=""
+                          [binary]="true"
+                          [(ngModel)]="td.isSelected"
+                        ></p-checkbox>
+                      </div>
+                      <div class="item text-size-14">
+                        <div class="text-color-light-shade-1 p-pb-1">
+                          {{ 'Container No.' | apsTranslate }}
+                        </div>
+                        <div class="text-color-dark-shade-1">{{ td.containerNo }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                    <aps-custom-select
+                      label="Weight Charges"
+                      name="weightCharges"
+                      id="weightCharges"
+                      [data]="[
+                        {
+                          id: '1way',
+                          value: '1way',
+                          displayName: '1-Way'
+                        },
+                        {
+                          id: '2way',
+                          value: '2way',
+                          displayName: '2-Way'
+                        }
+                      ]"
+                      [value]="td.weightCharges"
+                      [(ngModel)]="td.weightCharges"
+                      [disabled]="!td.isSelected"
+                    ></aps-custom-select>
+                  </div>
+                  <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                    <app-aps-calender
+                      label="Collection Start Date"
+                      icon="true"
+                      name="collectionStartDate{{ i }}"
+                      id="collectionStartDate{{ i }}"
+                      [(ngModel)]="td.collectionStartDate"
+                      [disabled]="!td.isSelected"
+                    ></app-aps-calender>
+                  </div>
+                  <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                    <app-aps-calender
+                      label="Collection End Date"
+                      icon="true"
+                      name="collectionEndDate{{ i }}"
+                      id="collectionEndDate{{ i }}"
+                      [(ngModel)]="td.collectionEndDate"
+                      [disabled]="!td.isSelected"
+                    ></app-aps-calender>
+                  </div> -->
+
+
+                  <div class="p-md-1 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Sr No</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.srNo}}</div>
+                  </div>
+                  <div class="p-md-2 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Document No</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.docNo}}</div>
+                  </div>
+                  <div class="p-md-2 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Document Date</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.docDate}}</div>
+                  </div>
+                  <div class="p-md-3 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Challan Number</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.challanNo}}</div>
+                  </div>
+                  <div class="p-md-2 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">JEC Name</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.jecName}}</div>
+                  </div>
+                  <div class="p-md-2 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Duty Amount</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.dutyAmount}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <app-nothing-here colSize="3" *ngIf="!statutoryPaymentDetails.taxDetails"></app-nothing-here>
+        </div>
+      </div>
+      <div class="aps-card">
+        <div class="left-right-container p-pt-2 p-px-3">
+          <div class="left-container">
+            <div class="text-size-16 text-bold">{{ 'Payment Details' | apsTranslate }}</div>
+          </div>
+          <div class="right-container">
+            <div class="inline-items text-size-14" *ngIf="statutoryPaymentDetails.totalAmount">
+              <div class="item">
+                <div class="text-color-normal p-mr-2">{{ 'Total Amount' | apsTranslate }}:</div>
+              </div>
+
+              <div class="item">
+                <app-base-currency [amount]="statutoryPaymentDetails.totalAmount" [showFlag]="true"></app-base-currency>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-grid p-px-2">
+          <div class="p-col-12">
+            <p-radioButton class="p-mr-3" name="paymentDetails" id="debitFromAccount"
+              label="{{ 'Debit From Account' | apsTranslate }}" value="Debit From Account"
+              [(ngModel)]="statutoryPaymentDetails.paymentDetails"></p-radioButton>
+
+            <!-- <p-radioButton
+              name="paymentDetails"
+              id="merchantFromAccount"
+              label="{{ 'From Merchant Account' | apsTranslate }}"
+              value="From Merchant Account"
+              [(ngModel)]="statutoryPaymentDetails.paymentDetails"
+            ></p-radioButton> -->
+          </div>
+          <!-- <div
+            class="p-col-12 p-p-0 p-mb-3"
+            *ngIf="statutoryPaymentDetails.paymentDetails === 'From Merchant Account'"
+          >
+            <p-radioButton
+              class="p-mr-3"
+              name="merchantPayment"
+              id="merchantPayment1"
+              label="{{ 'Merchant 1' | apsTranslate }}"
+              value="Merchant 1"
+              [(ngModel)]="statutoryPaymentDetails.merchantAccount"
+            ></p-radioButton>
+
+            <p-radioButton
+              name="merchantPayment"
+              id="merchantPayment2"
+              label="{{ 'Merchant 2' | apsTranslate }}"
+              value="Merchant 2"
+              [(ngModel)]="statutoryPaymentDetails.merchantAccount"
+            ></p-radioButton>
+          </div> -->
+
+          <ng-container *ngIf="statutoryPaymentDetails.paymentDetails === 'Debit From Account'">
+            <div class="p-md-4 p-sm-6 p-col-6 p-py-0">
+              <aps-custom-select label="{{ 'Debit Account' | apsTranslate }}" name="debitAccount" id="debitAccount"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                [value]="statutoryPaymentDetails.debitAccount" [(ngModel)]="statutoryPaymentDetails.debitAccount"
+                [required]="true" (change)="
+                  statutoryPaymentDetails.balanceAmount = $event.enrichments.balance;
+                  statutoryPaymentDetails.debitAccountNumber = $event.displayName
+                "></aps-custom-select>
+            </div>
+
+            <div class="p-md-4 p-sm-6 p-col-6 p-pb-0 p-pl-3 text-size-14" *ngIf="statutoryPaymentDetails.debitAccount">
+              <div class="text-color-normal">{{ 'Balance Amount' | apsTranslate }}</div>
+              <app-base-currency [amount]="statutoryPaymentDetails.balanceAmount"></app-base-currency>
+            </div>
+
+            <div class="p-md-4 p-sm-6 p-col-6 p-py-0"></div>
+            <div class="p-md-4 p-sm-6 p-col-6 p-py-0" *ngIf="!statutoryPaymentDetails.debitAccount"></div>
+
+            <ng-container *ngIf="statutoryPaymentDetails.institutionDetails.institutionType === 'Direct Tax'">
+              <div class="p-md-4 p-sm-6 p-col-6 p-py-0">
+                <aps-form-input label="Tax" name="tax" id="tax" #tax="ngModel"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.tax"></aps-form-input>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6 p-py-0">
+                <aps-form-input label="Surcharge" name="surcharge" id="surcharge" #surcharge="ngModel"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.surcharge"></aps-form-input>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6 p-py-0">
+                <aps-form-input label="Education Cess" name="educationCess" id="educationCess" #educationCess="ngModel"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.educationCess"></aps-form-input>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6 p-py-0">
+                <aps-form-input label="Interest" name="interest" id="interest" #interest="ngModel"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.interest"></aps-form-input>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6 p-py-0">
+                <aps-form-input label="Penalty" name="penalty" id="penalty" #penalty="ngModel"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.penalty"></aps-form-input>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6 p-py-0">
+                <aps-form-input label="Others" name="others" id="others" #others="ngModel"
+                  [(ngModel)]="statutoryPaymentDetails.institutionDetails.others"></aps-form-input>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

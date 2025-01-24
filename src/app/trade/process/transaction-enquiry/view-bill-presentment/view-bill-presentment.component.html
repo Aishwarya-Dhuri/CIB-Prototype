@@ -1,0 +1,10 @@
+<div class="p-px-4">
+  <span class="p-p-1 p-mx-1 border-primary pointer" (click)="backToSearch()">
+    <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right" class="app-icon"></app-icon>
+  </span>
+  <div class="text-size-16 text-color-dark-shade-1 text-bold inline-block">
+    {{ 'Bill Presentment Workflow' | apsTranslate }}
+  </div>
+  <app-org-tree [treeData]="orgTreeData"></app-org-tree>
+</div>
+<app-bill-presentment-initiation [isViewMode]="true"></app-bill-presentment-initiation>

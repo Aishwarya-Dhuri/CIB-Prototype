@@ -1,0 +1,139 @@
+<div *ngIf="cardData" class="container text-color-dark-shade-1">
+  <ng-container>
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">
+          {{ 'Card Details' | apsTranslate }}
+        </div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Credit Number' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.cardNo }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Statement Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.statementDate }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Payment Due Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.dueDate }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Credit Card Type' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.cardType }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Credit Card Limit' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.cardLimit }}</div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Total Outstanding Amount' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.outStandingAmount }}</div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Cash Limit' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.cashLimit }}</div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">{{ 'Status' | apsTranslate }}</div>
+            <div class="text-size-14">{{ cardData.cardStatus }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container>
+    <div class="aps-card p-my-3">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">{{ 'Details' | apsTranslate }}</div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Last Statement Balance' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.lastStatementBalance }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Last Statement Purchases / Debits' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.lastStatementDebits }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Last Statement Payments Credits' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.lastStatementCredits }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Finance Charges' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.financeCharges }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Interest Amount' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.interestAmount }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container>
+    <div class="aps-card p-my-3">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">{{ 'Amount' | apsTranslate }}</div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Total Amount Due' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.totalAmountDue }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Card Available Balance' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ cardData.cardAvailableBalance }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

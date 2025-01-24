@@ -1,0 +1,277 @@
+<div class="parameters-container">
+  <div class="p-grid">
+    <div class="p-col-12 p-p-0">
+      <form #parameterForm="ngForm">
+        <div class="p-grid">
+          <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0">
+            <div class="aps-card p-px-3 p-pb-3">
+              <div class="aps-card-header p-py-3">
+                <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">
+                  Security Office
+                </div>
+              </div>
+              <div class="aps-card-body p-pb-3">
+                <div class="text-size-14 text-color-light-shade-1 p-mb-1 p-mt-3">
+                  Corporate User administration by
+                </div>
+                <p-radioButton
+                  class="p-mr-4"
+                  name="securityOfficer"
+                  value="Corporate"
+                  label="Corporate"
+                  [(ngModel)]="parameters.securityOfficer[0].corporateUserAdministrationBy"
+                ></p-radioButton>
+
+                <p-radioButton
+                  name="securityOfficer"
+                  value="Bank"
+                  label="Bank"
+                  [(ngModel)]="parameters.securityOfficer[0].corporateUserAdministrationBy"
+                ></p-radioButton>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-md-9 p-lg-9 p-sm-12 p-col-12 p-pl-0 p-pr-0">
+            <div class="aps-card p-px-3 p-pb-3">
+              <div class="aps-card-header p-py-3">
+                <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">
+                  Other Parameters Configuration
+                </div>
+              </div>
+              <div class="aps-card-body">
+                <div class="p-grid">
+                  <div class="p-md-3 p-lg-3 p-col-12 p-sm-12 p-py-0 p-pl-0">
+                    <div class="text-size-14 text-color-light-shade-1 p-mb-1 p-mt-3">
+                      Holiday access
+                    </div>
+                    <p-radioButton
+                      class="p-mr-4"
+                      name="holidayAccess"
+                      value="Yes"
+                      label="Yes"
+                      [(ngModel)]="parameters.otherParameterConfiguration[0].holidayAccess"
+                    ></p-radioButton>
+
+                    <p-radioButton
+                      name="holidayAccess"
+                      value="No"
+                      label="No"
+                      [(ngModel)]="parameters.otherParameterConfiguration[0].holidayAccess"
+                    ></p-radioButton>
+                  </div>
+                  <div class="p-md-3 p-lg-3 p-col-12 p-sm-12 p-py-0">
+                    <div class="text-size-14 text-color-light-shade-1 p-mb-1 p-mt-3">
+                      Report Access on holiday
+                    </div>
+                    <p-radioButton
+                      class="p-mr-4"
+                      name="reportAccessOnHoliday"
+                      value="Yes"
+                      label="Yes"
+                      [(ngModel)]="parameters.otherParameterConfiguration[0].reportAccessOnHoliday"
+                    ></p-radioButton>
+
+                    <p-radioButton
+                      name="reportAccessOnHoliday"
+                      value="No"
+                      label="No"
+                      [(ngModel)]="parameters.otherParameterConfiguration[0].reportAccessOnHoliday"
+                    ></p-radioButton>
+                  </div>
+                  <div class="p-md-3 p-lg-3 p-col-12 p-sm-12 p-py-0">
+                    <div class="text-size-14 text-color-light-shade-1 p-mb-1 p-mt-3">
+                      Verification Required
+                    </div>
+                    <p-radioButton
+                      class="p-mr-4"
+                      name="VerificationRequired"
+                      value="Yes"
+                      label="Yes"
+                      [(ngModel)]="parameters.otherParameterConfiguration[0].verificationRequired"
+                    ></p-radioButton>
+
+                    <p-radioButton
+                      name="VerificationRequired"
+                      value="No"
+                      label="No"
+                      [(ngModel)]="parameters.otherParameterConfiguration[0].verificationRequired"
+                    ></p-radioButton>
+                  </div>
+                  <div class="p-md-3 p-lg-3 p-col-12 p-sm-12 p-py-0 p-pr-0">
+                    <aps-form-input
+                      class=""
+                      name="noOfVerifiers"
+                      label="No of verifiers"
+                      required="true"
+                      [(ngModel)]="parameters.otherParameterConfiguration[0].noOfVerifiers"
+                    ></aps-form-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="p-col-12 p-px-0">
+      <div class="aps-card p-p-3">
+        <div class="p-grid">
+          <div class="p-col-12 p-p-0">
+            <div class="text-size-16 text-semi-bold text-color-dark-shade-1 p-mb-1">IP Mapping</div>
+            <p-radioButton
+              class="p-mr-4"
+              name="ipMapping"
+              value="Yes"
+              label="Yes"
+              [(ngModel)]="parameters.isIpMapping"
+            ></p-radioButton>
+            <p-radioButton
+              name="ipMapping"
+              value="No"
+              label="No"
+              [(ngModel)]="parameters.isIpMapping"
+            ></p-radioButton>
+          </div>
+
+          <div class="p-col-12 p-p-0" *ngIf="parameters.isIpMapping === 'Yes'">
+            <form #form="ngForm" (ngSubmit)="onSubmitIpMapped(form)">
+              <div class="p-grid">
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-pl-0 p-pt-4">
+                  <div class="text-size-14 text-color-light-shade-1">Start Range</div>
+                  <div class="p-grid">
+                    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0">
+                      <aps-form-input
+                        name="startRange1"
+                        id="startRange1"
+                        label="Start Range 1"
+                        required="true"
+                        numericInput
+                        maxLength="3"
+                        [showLabel]="false"
+                        [(ngModel)]="ipMapping.startRange1"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0">
+                      <aps-form-input
+                        name="startRange2"
+                        id="startRange2"
+                        label="Start Range 2"
+                        required="true"
+                        numericInput
+                        maxLength="3"
+                        [showLabel]="false"
+                        [(ngModel)]="ipMapping.startRange2"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0">
+                      <aps-form-input
+                        name="startRange3"
+                        id="startRange3"
+                        label="Start Range 3"
+                        required="true"
+                        numericInput
+                        maxLength="3"
+                        [showLabel]="false"
+                        [(ngModel)]="ipMapping.startRange3"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0 p-pr-0">
+                      <aps-form-input
+                        name="startRange4"
+                        id="startRange4"
+                        label="Start Range 4"
+                        required="true"
+                        numericInput
+                        maxLength="3"
+                        [showLabel]="false"
+                        [(ngModel)]="ipMapping.startRange4"
+                      ></aps-form-input>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-col-12 p-md-1 p-lg-1 p-sm-12 p-pt-4"></div>
+
+                <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-pl-0 p-pt-4">
+                  <div class="text-size-14 text-color-light-shade-1">End Range</div>
+                  <div class="p-grid">
+                    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0">
+                      <aps-form-input
+                        name="endRange1"
+                        id="endRange1"
+                        label="End Range 1"
+                        required="true"
+                        numericInput
+                        maxLength="3"
+                        [showLabel]="false"
+                        [(ngModel)]="ipMapping.endRange1"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="endRange2"
+                        id="endRange2"
+                        label="End Range 2"
+                        required="true"
+                        numericInput
+                        maxLength="3"
+                        [showLabel]="false"
+                        [(ngModel)]="ipMapping.endRange2"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="endRange3"
+                        id="endRange3"
+                        label="End Range 3"
+                        required="true"
+                        numericInput
+                        maxLength="3"
+                        [showLabel]="false"
+                        [(ngModel)]="ipMapping.endRange3"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="endRange4"
+                        id="endRange4"
+                        label="End Range 4"
+                        required="true"
+                        numericInput
+                        maxLength="3"
+                        [showLabel]="false"
+                        [(ngModel)]="ipMapping.endRange4"
+                      ></aps-form-input>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-md-2 p-lg-2 p-sm-12 p-col-12 p-pt-6">
+                  <button type="submit" class="btn btn-md btn-primary text-bold">
+                    {{ editing ? 'SAVE' : 'ADD' }}
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div
+            class="p-col-12"
+            *ngIf="parameters.isIpMapping === 'Yes' && this.parameters.ipMapping.length > 0"
+          >
+            <div class="ag-grid-listing aps-h-150 border-radius-5">
+              <app-ag-grid-listing
+                id="ipMappedGrid"
+                #ipMappedGrid
+                [gridOptions]="gridOptions"
+                (actionClicked)="onActionClicked($event)"
+              ></app-ag-grid-listing>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

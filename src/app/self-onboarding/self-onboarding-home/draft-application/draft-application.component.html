@@ -1,0 +1,90 @@
+<div class="draft-application-container text-center p-p-3 p-shadow-3">
+  <div class="p-mt-2">
+    <img src="./../../../../assets/images/draft.png" alt="" />
+  </div>
+
+  <div class="text-size-20 text-color-dark-shade-2 text-bold p-mt-3">
+    {{ 'lbl_already_started_an_application' | translate }}
+  </div>
+
+  <ng-container *ngIf="!appNo">
+    <div class="p-pt-3 p-px-6">
+      <aps-form-input
+        [label]="'lbl_application_number' | translate"
+        id="draft-app-no"
+        [(ngModel)]="applicationNumber"
+      ></aps-form-input>
+    </div>
+
+    <div class="p-mt-3">
+      <button
+        type="button"
+        class="btn btn-md btn-secondary"
+        (click)="appNo = true"
+        [disabled]="!applicationNumber"
+      >
+        {{ 'lbl_start' | translate }}
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="appNo && !sendOtp">
+    <div class="p-pt-3 p-px-6">
+      <aps-form-input
+        [label]="'lbl_mobile_number' | translate"
+        id="draft-mo-no"
+        maxLength="10"
+        inputType="numeric"
+        [(ngModel)]="mobileNumber"
+      ></aps-form-input>
+    </div>
+
+    <div class="p-mt-3">
+      <button type="button" class="btn btn-md btn-secondary p-mr-3" (click)="cancel()">
+        {{ 'lbl_cancel' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-md btn-primary"
+        (click)="sendOtp = true"
+        [disabled]="!mobileNumber"
+      >
+        {{ 'lbl_send_otp' | translate }}
+      </button>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="appNo && sendOtp">
+    <div class="p-pt-3 p-mx-6">
+      <aps-form-input
+        [label]="'lbl_verify_code' | translate"
+        id="draft-verify-code"
+        type="password"
+        maxLength="4"
+        inputType="numeric"
+        [(ngModel)]="verifyCode"
+      ></aps-form-input>
+
+      <div class="left-right-container mt--3 text-color-light-shade-1 text-size-14">
+        <div class="left-container">{{ 'err_resend_code' | translate }}</div>
+        <div class="left-container">
+          <div class="info-card">
+            <div class="icon">
+              <i class="pi pi-clock text-size-14"></i>
+            </div>
+            <div class="label">00:40</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-mt-3">
+      <button type="button" class="btn btn-md btn-tertiary p-mr-3" (click)="cancel()">
+        {{ 'lbl_cancel' | translate }}
+      </button>
+      <button type="button" class="btn btn-md btn-primary" (click)="onVerify()">
+        {{ 'lbl_verify' | translate }}
+      </button>
+    </div>
+  </ng-container>
+</div>

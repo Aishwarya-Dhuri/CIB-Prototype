@@ -1,0 +1,44 @@
+.footer-container {
+  display: block;
+  background: url('./../../../assets/images/mask/mask-group-1.png'), var(--primary-color);
+  background-position: bottom;
+  background-repeat: no-repeat;
+  overflow: hidden;
+
+  .download-app-container {
+    width: 100%;
+
+    img {
+      width: auto;
+      height: 2.5rem;
+      border-radius: 10px;
+    }
+  }
+
+  .mobile-container {
+    position: absolute;
+    height: 17.5rem;
+    overflow: hidden;
+    bottom: 0rem;
+
+    img {
+      width: 100%;
+    }
+  }
+  @media screen and (max-width: 992px) {
+    height: auto;
+
+    .mobile-container {
+      position: relative;
+    }
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

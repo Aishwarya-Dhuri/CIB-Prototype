@@ -1,0 +1,986 @@
+<div class="container">
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <div *ngIf="stepperDetails.currentStep === 1">
+    <ng-container *ngTemplateOutlet="paymentDetailsTemplate"></ng-container>
+  </div>
+
+  <div *ngIf="stepperDetails.currentStep === 2">
+    <ng-container *ngTemplateOutlet="beneficiaryDetailsTemplate"></ng-container>
+    <div class="aps-card">
+      <div class="p-grid">
+        <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-px-3">
+          <aps-custom-select
+            id="remittancePurpose"
+            name="remittancePurpose"
+            label="{{ 'Remittance Purpose' | apsTranslate }}"
+            [(ngModel)]="formData.remittancePurpose"
+            dataUrl="payments/transactions/oatSiManagement/private/dropdown/remittancePurposeList"
+          >
+          </aps-custom-select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="stepperDetails.currentStep === 3">
+    <ng-container *ngTemplateOutlet="siDetailsTemplate"></ng-container>
+  </div>
+
+  <div *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+    <div class="p-py-3 text-size-16 text-bold">
+      {{
+        (mode === 'VIEW' ? 'OAT SI Management - View' : 'Review Details & Confirm') | apsTranslate
+      }}
+    </div>
+    <div class="aps-card p-px-3">
+      <ng-container *ngTemplateOutlet="paymentDetailsReviewTemplate"></ng-container>
+    </div>
+
+    <div class="aps-card p-my-3 p-px-3">
+      <ng-container *ngTemplateOutlet="beneficiaryReviewTemplate"></ng-container>
+    </div>
+
+    <div class="aps-card p-my-3 p-px-3">
+      <ng-container *ngTemplateOutlet="siReviewTemplate"></ng-container>
+    </div>
+
+    <app-dynamic-enrichment
+      mode="VIEW"
+      [classes]="mode ? 'p-mt-3' : 'p-my-3'"
+      [enrichmentModel]="
+        formData && formData.oatSiManagementDetails
+          ? formData.oatSiManagementDetails[0].enrichments
+          : []
+      "
+    >
+    </app-dynamic-enrichment>
+
+    <app-maker-checker-detail classes="p-my-3" [formData]="formData"></app-maker-checker-detail>
+  </div>
+  <div class="p-my-3">
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </div>
+</div>
+
+<ng-template #paymentDetailsTemplate>
+  <div class="p-py-3 text-size-16 text-bold">
+    {{ 'Payment Details' | apsTranslate }}
+  </div>
+  <form #paymentDetails="ngForm">
+    <div class="p-grid g-margin-x">
+      <div class="p-md-5 p-sm-12 p-col-12" [ngClass]="{ 'p-py-0': viewport === 'web' }">
+        <div class="aps-card p-px-3 p-py-2 aps-h-100p aps-min-h-165">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-6 p-col-12 p-py-0">
+              <aps-custom-select
+                id="debitAccountId"
+                name="debitAccountId"
+                label="Debit From Account"
+                [value]="formData.debitAccountId"
+                [(ngModel)]="formData.debitAccountId"
+                (change)="onDebitAccountChange($event)"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                [required]="true"
+                *ngIf="!isGroupUser"
+              >
+              </aps-custom-select>
+
+              <aps-group-select
+                label="Debit Account"
+                id="debitAccount"
+                name="debitAccount"
+                [(ngModel)]="formData.debitAccountId"
+                [value]="formData.debitAccountId"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/groupAccountList"
+                [required]="true"
+                (change)="onDebitAccountChange($event)"
+                *ngIf="isGroupUser"
+              >
+              </aps-group-select>
+            </div>
+
+            <div
+              class="p-md-6 p-col-12"
+              [ngClass]="{ 'p-py-4': viewport === 'web', 'p-py-1': viewport !== 'web' }"
+            >
+              <app-review-form-field
+                label="Debit Account Balance"
+                [value]="formData.debitAccountBalance"
+                type="baseCurrency"
+                [currency]="currencyName"
+                [isDisplayInline]="true"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-6 p-col-12 p-py-0">
+              <aps-custom-select
+                id="creditAccountId"
+                name="creditAccountId"
+                label="Credit From Account"
+                [value]="formData.creditAccountId"
+                [(ngModel)]="formData.creditAccountId"
+                (change)="onCreditAccountChange($event)"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                [required]="true"
+                *ngIf="!isGroupUser"
+              >
+              </aps-custom-select>
+
+              <aps-group-select
+                id="creditAccountId"
+                name="creditAccountId"
+                label="Credit From Account"
+                [value]="formData.creditAccountId"
+                [(ngModel)]="formData.creditAccountId"
+                (change)="onCreditAccountChange($event)"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/groupAccountList"
+                [required]="true"
+                *ngIf="isGroupUser"
+              >
+              </aps-group-select>
+            </div>
+
+            <div
+              class="p-md-6 p-col-12"
+              [ngClass]="{ 'p-py-4': viewport === 'web', 'p-py-1': viewport !== 'web' }"
+            >
+              <app-review-form-field
+                label="Credit Account Balance"
+                [value]="formData.creditAccountBalance"
+                type="baseCurrency"
+                [currency]="currencyName"
+                [isDisplayInline]="true"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-6 p-col-12 p-py-0">
+              <app-aps-calender
+                label="Value Date"
+                id="valueDate"
+                name="valueDate"
+                [(ngModel)]="formData.valueDate"
+                (blur)="onValueDateChange()"
+                [required]="true"
+              >
+              </app-aps-calender>
+            </div>
+
+            <div class="p-md-6 p-col-12 p-py-0">
+              <aps-form-input
+                id="corporateRefNo"
+                name="corporateRefNo"
+                label="Corporate Reference No"
+                minLength="0"
+                maxLength="35"
+                [required]="true"
+                inputType="alphaNumeric"
+                [(ngModel)]="formData.corporateRefNo"
+                (change)="onCorporateRefNoChange()"
+              >
+              </aps-form-input>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+        <div class="p-grid aps-h-100p">
+          <div class="p-col-12 p-md-6 p-lg-6" [ngClass]="{ 'p-py-0': viewport === 'web' }">
+            <div class="aps-card p-p-3 aps-h-100p aps-min-h-165">
+              <div class="p-grid">
+                <div class="p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-col-5 p-p-0">
+                      <p-radioButton
+                        id="amountType"
+                        name="amountType"
+                        value="PAYABLE"
+                        label="Payable Amount"
+                        [(ngModel)]="formData.oatSiManagementDetails[0].amountType"
+                      >
+                      </p-radioButton>
+                    </div>
+                    <div
+                      class="p-col-5 p-p-1 text-size-12"
+                      *ngIf="
+                        formData.oatSiManagementDetails[0].amountType != 'PAYABLE' &&
+                        formData.creditCurrencyId &&
+                        formData.payableAmount
+                      "
+                    >
+                      <app-base-currency
+                        [amount]="formData.payableAmount"
+                        [value]="formData.creditCurrencyCode"
+                      ></app-base-currency>
+                    </div>
+                    <div
+                      class="p-p-1"
+                      [ngClass]="{
+                        'p-col-2':
+                          formData.oatSiManagementDetails[0].amountType != 'PAYABLE' &&
+                          formData.creditCurrencyId &&
+                          formData.payableAmount,
+                        'p-col-7':
+                          formData.oatSiManagementDetails[0].amountType == 'PAYABLE' ||
+                          !formData.creditCurrencyId ||
+                          !formData.payableAmount
+                      }"
+                    >
+                      <app-icon
+                        class="pointer float-right"
+                        icon="fa-info-circle"
+                        pTooltip="Either Payable amount or Debit amount to be entered. On entering amount in any of the field, the corresponding amount will be calculated as per the prevailing exchange rate
+                        "
+                        tooltipStyleClass="text-size-14"
+                      >
+                      </app-icon>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="p-col-12 p-p-0"
+                  *ngIf="formData.oatSiManagementDetails[0].amountType == 'PAYABLE'"
+                >
+                  <div class="p-grid">
+                    <div class="p-col-3">
+                      <aps-custom-select
+                        id="creditCurrencyId"
+                        name="creditCurrencyId"
+                        label="CCY"
+                        [(ngModel)]="formData.creditCurrencyId"
+                        (change)="onCreditCurrencyChange($event)"
+                        dataUrl="setup/generalMasters/currency/private/currencyList"
+                      >
+                      </aps-custom-select>
+                    </div>
+                    <div class="p-col-9 p-md-5 p-lg-5">
+                      <aps-form-input
+                        id="payableAmount"
+                        name="payableAmount"
+                        label="Amount"
+                        minLength="1"
+                        maxLength="16"
+                        inputType="currencyFormatNotZero"
+                        [required]="true"
+                        [(ngModel)]="formData.payableAmount"
+                        (change)="onPayableAmoutChange()"
+                      >
+                      </aps-form-input>
+                    </div>
+                    <div class="p-col-12 p-md-4 p-lg-4 p-pt-4">
+                      <app-review-form-field
+                        label="Charges"
+                        [value]="getCharges(formData.payableAmount)"
+                        type="baseCurrency"
+                        [currency]="formData.debitCurrencyCode"
+                        [isDisplayInline]="true"
+                      ></app-review-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-col-5 p-p-0">
+                      <p-radioButton
+                        id="amountType1"
+                        name="amountType1"
+                        value="DEBIT"
+                        label="Debit Amount"
+                        [(ngModel)]="formData.oatSiManagementDetails[0].amountType"
+                      >
+                      </p-radioButton>
+                    </div>
+                    <div
+                      class="p-col-7 p-p-1 text-size-12"
+                      *ngIf="
+                        formData.oatSiManagementDetails[0].amountType != 'DEBIT' &&
+                        formData.debitCurrencyId &&
+                        formData.debitAmount
+                      "
+                    >
+                      <app-base-currency
+                        [amount]="formData.debitAmount"
+                        [value]="formData.debitCurrencyCode"
+                      ></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="p-col-12 p-p-0"
+                  *ngIf="formData.oatSiManagementDetails[0].amountType == 'DEBIT'"
+                >
+                  <div class="p-grid">
+                    <div class="p-col-3">
+                      <aps-custom-select
+                        id="debitCurrencyId"
+                        name="debitCurrencyId"
+                        [(ngModel)]="formData.debitCurrencyId"
+                        (change)="onDebitCurrencyChange($event)"
+                        dataUrl="setup/generalMasters/currency/private/currencyList"
+                      >
+                      </aps-custom-select>
+                    </div>
+                    <div class="p-col-9 p-md-5 p-lg-5">
+                      <aps-form-input
+                        id="debitAmount"
+                        name="debitAmount"
+                        label="Amount"
+                        minLength="1"
+                        maxLength="16"
+                        inputType="currencyFormatNotZero"
+                        [required]="true"
+                        [(ngModel)]="formData.debitAmount"
+                        (change)="onDebitAmountChange()"
+                      >
+                      </aps-form-input>
+                    </div>
+                    <div class="p-col-12 p-md-4 p-lg-4 p-pt-4">
+                      <app-review-form-field
+                        label="Charges"
+                        [value]="getCharges(formData.debitAmount)"
+                        type="baseCurrency"
+                        [currency]="formData.debitCurrencyCode"
+                        [isDisplayInline]="true"
+                      ></app-review-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-md-6 p-col-12" [ngClass]="{ 'p-py-0': viewport === 'web' }">
+            <div class="aps-card aps-h-100p p-p-2">
+              <div class="p-grid">
+                <div class="p-col-12">
+                  <aps-custom-select
+                    label="Payment Method"
+                    id="paymentMethod"
+                    name="paymentMethod"
+                    [value]="formData.paymentMethodId"
+                    [(ngModel)]="formData.paymentMethodId"
+                    dataUrl="payments/transactions/ownAccountTransfer/private/dropdown/paymentMethodList"
+                    (change)="onPaymentMethodChange($event)"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+
+                  <ng-container *ngIf="formData.paymentMethodId">
+                    <div class="text-size-14 p-pb-2">
+                      <span *ngIf="paymentMethod?.enrichments.limit">
+                        {{ 'Up To' | apsTranslate }}&nbsp;{{ paymentMethod?.enrichments.limit }}
+                      </span>
+                      <span *ngIf="paymentMethod?.enrichments.minimumTransfer">
+                        {{ 'Minimum' | apsTranslate }}&nbsp;{{
+                          paymentMethod?.enrichments.minimumTransfer
+                        }}
+                      </span>
+                      <span
+                        *ngIf="
+                          !paymentMethod?.enrichments.limit &&
+                          !paymentMethod?.enrichments.minimumTransfer
+                        "
+                      >
+                        {{ 'No Limit' | apsTranslate }}
+                      </span>
+                    </div>
+                    <div class="text-size-14">
+                      <span *ngIf="paymentMethod?.enrichments.fee">
+                        {{ 'Fee' | apsTranslate }}&nbsp;{{ paymentMethod?.enrichments.fee }}&nbsp;{{
+                          'Per Transfer' | apsTranslate
+                        }}
+                      </span>
+                      <span *ngIf="!paymentMethod?.enrichments.fee">
+                        {{ 'No Transfer Fee' | apsTranslate }}
+                      </span>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12 p-md-9 p-lg-9 p-p-0 p-mt-3" [ngClass]="{ 'p-mb-3': viewport === 'web' }">
+        <div class="p-grid aps-h-100p">
+          <!-- Exchange Details card -->
+          <div class="p-col-12 p-py-0" *ngIf="isExchangeDetails">
+            <div class="aps-card p-py-3">
+              <div class="p-px-3 p-mb-1 text-size-14 text-semi-bold">
+                {{ 'Exchange Detail' | apsTranslate }} <sup class="text-color-danger">*</sup>
+              </div>
+              <div class="p-grid">
+                <div class="p-col-12 p-md-4 p-lg-4 p-px-2 p-pt-0">
+                  <span class="p-px-2">
+                    <p-radioButton
+                      id="exchangeType"
+                      name="exchangeType"
+                      value="CARD"
+                      label="Card"
+                      [(ngModel)]="formData.oatSiManagementDetails[0].exchangeType"
+                    >
+                    </p-radioButton>
+                  </span>
+                  <span class="p-px-2">
+                    <p-radioButton
+                      id="exchangeType1"
+                      name="exchangeType"
+                      value="DEALNO"
+                      label="Deal No"
+                      [(ngModel)]="formData.oatSiManagementDetails[0].exchangeType"
+                    >
+                    </p-radioButton>
+                  </span>
+                  <span class="p-px-2">
+                    <p-radioButton
+                      id="exchangeType2"
+                      name="exchangeType"
+                      value="FORWARD"
+                      label="Forward"
+                      [(ngModel)]="formData.oatSiManagementDetails[0].exchangeType"
+                    >
+                    </p-radioButton>
+                  </span>
+                </div>
+                <div class="p-col-12 p-md-8 p-lg-8 p-pt-1">
+                  <span *ngIf="formData.oatSiManagementDetails[0].exchangeType == 'CARD'">
+                    <span
+                      class="p-px-2 text-size-12 text-color-light-shade-1 inline-block aps-pt-1"
+                      >{{ 'FX Rates' | apsTranslate }}</span
+                    >
+                    <span class="text-size-14 inline-block">{{ fxRates }}</span>
+                  </span>
+                </div>
+                <div
+                  class="p-col-12 p-px-3 aps-h-200"
+                  *ngIf="formData.oatSiManagementDetails[0].exchangeType == 'FORWARD'"
+                >
+                  <app-ag-grid-listing
+                    #forwardExchangeDetails
+                    [id]="forwardExchangeDetails"
+                    [gridOptions]="{
+                      rowSelection: 'single',
+                      pagination: false
+                    }"
+                    colDefUrl="payments/transactions/ownAccountTransfer/private/forwardExchangeColDef"
+                    rowDefUrl="payments/transactions/ownAccountTransfer/private/forwardExchangeData"
+                    (rowSelected)="onForwardExchangeSelection($event)"
+                  >
+                  </app-ag-grid-listing>
+                </div>
+                <div
+                  class="p-col-12 p-md-4 p-lg-4 p-px-3"
+                  *ngIf="formData.oatSiManagementDetails[0].exchangeType == 'DEALNO'"
+                >
+                  <aps-form-input
+                    id="dealNo"
+                    name="dealNo"
+                    label="Deal No"
+                    minLength="1"
+                    maxLength="35"
+                    inputType="alphaNumeric"
+                    [required]="true"
+                    [(ngModel)]="formData.oatSiManagementDetails[0].dealNo"
+                  ></aps-form-input>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Payment Instructions card -->
+          <div class="p-col-12 p-py-0" [ngClass]="{ 'p-mt-3': isExchangeDetails }">
+            <div class="aps-card aps-h-100p">
+              <div class="p-grid">
+                <div class="p-col-7 p-px-3 p-pt-3 text-size-14 text-semi-bold">
+                  {{ 'Payment Instruction' | apsTranslate }} <sup class="text-color-danger">*</sup>
+                </div>
+                <div class="p-col-5 p-pt-2">
+                  <button
+                    class="btn btn-md btn-tertiary float-right"
+                    [disabled]="instructionCount > 3"
+                    (click)="addMoreInstruction()"
+                  >
+                    <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+                    {{ 'Add More' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-px-3" *ngIf="instructionCount > 0">
+                  <aps-form-input
+                    id="paymentDetails1"
+                    name="paymentDetails1"
+                    label="Payment Instruction"
+                    minLength="1"
+                    maxLength="35"
+                    inputType="alphaNumeric"
+                    [required]="true"
+                    [(ngModel)]="formData.oatSiManagementDetails[0].paymentDetails1"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-px-3" *ngIf="instructionCount > 1">
+                  <aps-form-input
+                    id="paymentDetails2"
+                    name="paymentDetails2"
+                    label="Payment Instruction"
+                    minLength="0"
+                    maxLength="35"
+                    [required]="true"
+                    rightIcon="fa-trash-alt"
+                    (onRightIcon)="instructionCount = instructionCount - 1"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="formData.oatSiManagementDetails[0].paymentDetails2"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-px-3" *ngIf="instructionCount > 2">
+                  <aps-form-input
+                    id="paymentDetails3"
+                    name="paymentDetails3"
+                    label="Payment Instruction"
+                    minLength="0"
+                    maxLength="35"
+                    [required]="true"
+                    rightIcon="fa-trash-alt"
+                    (onRightIcon)="instructionCount = instructionCount - 1"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="formData.oatSiManagementDetails[0].paymentDetails3"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-px-3" *ngIf="instructionCount > 3">
+                  <aps-form-input
+                    id="paymentDetails4"
+                    name="paymentDetails4"
+                    label="Payment Instruction"
+                    minLength="0"
+                    maxLength="35"
+                    [required]="true"
+                    rightIcon="fa-trash-alt"
+                    (onRightIcon)="instructionCount = instructionCount - 1"
+                    inputType="alphaNumeric"
+                    [(ngModel)]="formData.oatSiManagementDetails[0].paymentDetails4"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-3 p-lg-3 p-my-3 p-py-0">
+        <div class="aps-card aps-h-100p">
+          <div class="p-px-3 p-pt-3 text-size-14 text-semi-bold">
+            {{ 'Upload Documents' | apsTranslate }}
+          </div>
+          <div class="p-px-3 text-size-8 text-color-light-shade-1">
+            {{ 'Max 10mb Each' | apsTranslate }}
+          </div>
+          <div class="p-px-3 p-py-2">
+            <upload-form-control
+              isMultiple="true"
+              (onUploaded)="onFileUploaded($event)"
+              [files]="formData.oatSiManagementDetails[0].supportingDocList"
+            >
+            </upload-form-control>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #enrichmentsTemplate>
+  <div class="aps-card p-mt-3 p-px-3 p-mb-3">
+    <div class="p-py-3 text-size-14 text-semi-bold">{{ 'Enrichment Details' | apsTranslate }}</div>
+    <div class="p-grid">
+      <div
+        class="p-col-12 p-md-4 p-lg-4 p-py-0"
+        *ngFor="let enrich of formData.oatSiManagementDetails[0].enrichments; let i = index"
+      >
+        <ng-container *ngIf="enrich.type != 'DATE'">
+          <aps-form-input
+            [id]="'enric' + i"
+            name="'enric'+ i"
+            [label]="enrich.name"
+            [(ngModel)]="enrich.value"
+            [required]="enrich.required"
+          >
+          </aps-form-input>
+        </ng-container>
+        <ng-container *ngIf="enrich.type == 'DATE'">
+          <app-aps-calender
+            [label]="enrich.name"
+            [id]="'enric' + i"
+            [name]="'enric' + i"
+            [(ngModel)]="enrich.value"
+            [required]="enrich.required"
+          >
+          </app-aps-calender>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #siDetailsTemplate>
+  <div class="p-py-3 text-size-16 text-bold">
+    {{ 'SI Details' | apsTranslate }}
+  </div>
+  <form #siDetails="ngForm">
+    <div class="aps-card p-py-2 p-px-3 p-mb-3">
+      <div class="p-grid">
+        <div class="p-col-12 p-md-4 p-lg-4">
+          <aps-form-input
+            id="name"
+            name="name"
+            label="Name"
+            inputType="alphaNumeric"
+            [required]="true"
+            [(ngModel)]="formData.siDetails[0].name"
+          >
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 p-md-6 p-lg-6">
+          <div class="p-mb-1 text-size-14 text-semi-bold">
+            {{ 'Authorization' | apsTranslate }} <sup class="text-color-danger">*</sup>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-p-0">
+              <span class="p-px-0">
+                <p-radioButton
+                  id="yes"
+                  name="yes"
+                  value="YES"
+                  label="Yes"
+                  [(ngModel)]="formData.siDetails[0].authorization"
+                >
+                </p-radioButton>
+              </span>
+              <span class="p-px-2">
+                <p-radioButton
+                  id="no"
+                  name="no"
+                  value="NO"
+                  label="No"
+                  [(ngModel)]="formData.siDetails[0].authorization"
+                >
+                </p-radioButton>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-grid">
+        <div class="p-col-12 p-md-4 p-lg-4">
+          <app-aps-calender
+            label="Start Sate"
+            id="startDate"
+            name="startDate"
+            [(ngModel)]="formData.siDetails[0].startDate"
+            [required]="true"
+            [minDate]="userService.applicationDate"
+          >
+          </app-aps-calender>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4">
+          <app-aps-calender
+            label="End date"
+            id="endDate"
+            name="endDate"
+            [(ngModel)]="formData.siDetails[0].endDate"
+            [required]="true"
+            [minDate]="formData.siDetails[0].startDate"
+          >
+          </app-aps-calender>
+        </div>
+      </div>
+      <div class="p-grid">
+        <div class="p-col-12 p-lg-4 p-md-4">
+          <aps-custom-select
+            id="frequency"
+            name="frequency"
+            label="Frequency"
+            [(ngModel)]="formData.siDetails[0].frequency"
+            [value]="formData.siDetails[0].frequency"
+            [dataUrl]="frequencyDetailsUrl"
+            (change)="onFrequencyChange($event)"
+            [required]="true"
+          >
+          </aps-custom-select>
+        </div>
+        <div
+          class="p-col-12 p-lg-4 p-md-4"
+          *ngIf="
+            formData.siDetails[0].frequency === 'Weekly' ||
+            formData.siDetails[0].frequency === 'Monthly'
+          "
+        >
+          <aps-custom-select
+            id="frequencyDetails"
+            name="frequencyDetails"
+            label="Frequency Details"
+            [(ngModel)]="formData.siDetails[0].frequencyDetails"
+            [dataUrl]="frequencyDetailsUrl"
+            [required]="true"
+          >
+          </aps-custom-select>
+        </div>
+      </div>
+      <div class="p-grid">
+        <div class="p-col-12 p-md-6 p-lg-6">
+          <div class="p-mb-1 text-size-14 text-semi-bold">
+            {{ 'If Holiday' | apsTranslate }} <sup class="text-color-danger">*</sup>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-p-0">
+              <span class="p-px-0">
+                <p-radioButton
+                  id="prepone"
+                  name="prepone"
+                  value="Prepone"
+                  label="Prepone"
+                  [(ngModel)]="formData.siDetails[0].ifHoliday"
+                >
+                </p-radioButton>
+              </span>
+              <span class="p-px-2">
+                <p-radioButton
+                  id="postpone"
+                  name="postpone"
+                  value="Postpone"
+                  label="Postpone"
+                  [(ngModel)]="formData.siDetails[0].ifHoliday"
+                >
+                </p-radioButton>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #paymentDetailsReviewTemplate>
+  <div class="p-py-3 text-size-14 text-semi-bold">
+    {{ 'Payment Details' | apsTranslate }}
+    <app-icon
+      *ngIf="mode != 'VIEW'"
+      icon="fa-pencil"
+      class="float-right pointer"
+      (click)="onEditClick(true)"
+    >
+    </app-icon>
+  </div>
+
+  <div class="p-grid">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Corporate Reference No"
+        [value]="formData.corporateRefNo"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Value Date"
+        [value]="formData.valueDate"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Debit From Account"
+        [value]="formData.debitAccountNo"
+      ></app-review-form-field>
+    </div>
+
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Account Balance"
+        [value]="formData.debitAccountBalance"
+        type="baseCurrency"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Credit From Account"
+        [value]="formData.creditAccountNo"
+      ></app-review-form-field>
+    </div>
+  </div>
+
+  <div class="p-grid">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Account Balance"
+        [value]="formData.creditAccountBalance"
+        type="baseCurrency"
+      ></app-review-form-field>
+    </div>
+
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Method"
+        [value]="formData.paymentMethodName"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payable Amount"
+        [value]="formData.payableAmount"
+        [currency]="formData.debitCurrencyCode"
+        type="baseCurrency"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Debit Amount"
+        [value]="formData.debitAmount"
+        [currency]="formData.debitCurrencyCode"
+        type="baseCurrency"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Charges"
+        [value]="getCharges(formData.payableAmount)"
+        [currency]="formData.debitCurrencyCode"
+        type="baseCurrency"
+        *ngIf="formData.oatSiManagementDetails[0].amountType == 'PAYABLE'"
+      ></app-review-form-field>
+      <app-review-form-field
+        label="Charges"
+        [value]="getCharges(formData.debitAmount)"
+        [currency]="formData.debitCurrencyCode"
+        type="baseCurrency"
+        *ngIf="formData.oatSiManagementDetails[0].amountType == 'DEBIT'"
+      ></app-review-form-field>
+    </div>
+  </div>
+
+  <div class="p-grid">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Instruction 1"
+        [value]="formData.oatSiManagementDetails[0].paymentDetails1"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Instruction 2"
+        [value]="formData.oatSiManagementDetails[0].paymentDetails2"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Instruction 3"
+        [value]="formData.oatSiManagementDetails[0].paymentDetails3"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Payment Instruction 4"
+        [value]="formData.oatSiManagementDetails[0].paymentDetails4"
+      ></app-review-form-field>
+    </div>
+  </div>
+
+  <div class="p-pt-3 text-size-14 text-semi-bold">{{ 'Uploaded Documents' | apsTranslate }}</div>
+  <div class="p-grid p-pb-2">
+    <div
+      class="p-col-12 p-md-2 p-lg-2 p-pt-0"
+      *ngFor="let file of formData.oatSiManagementDetails[0].supportingDocList"
+    >
+      <app-review-form-field type="file" [value]="file"></app-review-form-field>
+    </div>
+  </div>
+
+  <ng-container *ngIf="formData.initiateMode == 'BENEFICIARYWISE'">
+    <ng-container *ngTemplateOutlet="enrichmentsReviewTemplate"></ng-container>
+  </ng-container>
+</ng-template>
+
+<ng-template #enrichmentsReviewTemplate>
+  <div class="p-py-3 text-size-14 text-semi-bold">{{ 'Enrichment Details' | apsTranslate }}</div>
+  <div class="p-grid p-pb-2">
+    <div
+      [ngClass]="{
+        'p-col aps-max-w-20p aps-min-w-20p': viewport === 'web',
+        'p-col-6': viewport !== 'web'
+      }"
+      *ngFor="let enrich of formData.oatSiManagementDetails[0].enrichments; let i = index"
+    >
+      <app-review-form-field [label]="enrich.name" [value]="enrich.value"></app-review-form-field>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #siReviewTemplate>
+  <div class="p-py-3 text-size-14 text-semi-bold">
+    {{ 'SI Details' | apsTranslate }}
+    <app-icon
+      *ngIf="mode != 'VIEW'"
+      icon="fa-pencil"
+      class="float-right pointer"
+      (click)="onEditClick(false)"
+    >
+    </app-icon>
+  </div>
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Name"
+        [value]="formData.siDetails[0].name"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Authorization"
+        [value]="formData.siDetails[0].authorization"
+      ></app-review-form-field>
+    </div>
+  </div>
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Start Date"
+        [value]="formData.siDetails[0].startDate"
+      ></app-review-form-field>
+
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'Start Date' | apsTranslate }}
+      </div>
+      <div class="text-size-14">{{ formData.siDetails[0].startDate }}</div>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="End Date"
+        [value]="formData.siDetails[0].endDate"
+      ></app-review-form-field>
+    </div>
+  </div>
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Frequency"
+        [value]="formData.siDetails[0].frequency"
+      ></app-review-form-field>
+    </div>
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="Frequency Details"
+        [value]="formData.siDetails[0].frequencyDetails"
+      ></app-review-form-field>
+    </div>
+  </div>
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="viewport === 'web' ? 'p-col' : 'p-col-6'">
+      <app-review-form-field
+        label="If Holiday"
+        [value]="formData.siDetails[0].ifHoliday"
+      ></app-review-form-field>
+    </div>
+  </div>
+</ng-template>

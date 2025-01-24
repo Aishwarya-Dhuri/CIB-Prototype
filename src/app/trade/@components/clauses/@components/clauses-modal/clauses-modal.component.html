@@ -1,0 +1,89 @@
+<app-modal
+  [(isShow)]="clause.isClausesCheck"
+  *ngIf="clause.isClausesCheck && parentRef.selectedClauseIndex == index"
+  size="md"
+>
+  <div header>
+    <div class="left-right-container">
+      <div class="left-container">
+        <div class="text-size-16 text-semi-bold">{{ 'Add Clause' | apsTranslate }}</div>
+      </div>
+    </div>
+  </div>
+  <div body>
+    <form #form="ngForm" name="form">
+      <div class="p-grid" *ngIf="selectedClauseIndex !== -1">
+        <div
+          class="p-col-12 p-md-6 p-lg-6 p-sm-12"
+          *ngFor="let field of clause.documeMappingTAG; let i = index"
+        >
+          <!-- Text Field -->
+          <ng-container *ngIf="field.LABELTYPE == 'TEXT'">
+            <aps-form-input
+              [id]="field.LABEL"
+              [label]="field.LABEL"
+              [name]="field.LABEL"
+              [(ngModel)]="field.value"
+              required="true"
+            >
+            </aps-form-input>
+          </ng-container>
+          <!-- Date Field -->
+          <ng-container *ngIf="field.LABELTYPE == 'DATE'">
+            <app-aps-calender
+              [label]="field.LABEL"
+              [id]="field.LABEL"
+              [name]="field.LABEL"
+              [(ngModel)]="field.value"
+              required="true"
+            >
+            </app-aps-calender>
+          </ng-container>
+          <!-- Numeric Field -->
+          <ng-container *ngIf="field.LABELTYPE == 'NUMERIC'">
+            <aps-form-input
+              [id]="field.LABEL"
+              inputType="numeric"
+              [label]="field.LABEL"
+              [name]="field.LABEL"
+              [(ngModel)]="field.value"
+              required="true"
+            >
+            </aps-form-input>
+          </ng-container>
+          <!-- Select Field -->
+          <ng-container *ngIf="field.LABELTYPE == 'SELECT'">
+            <aps-custom-select
+              [id]="field.LABEL"
+              [label]="field.LABEL"
+              [name]="field.LABEL"
+              [dataUrl]="field.DROPDOWNDATA"
+              [(ngModel)]="field.value"
+              [value]="field.value"
+              required="true"
+            >
+            </aps-custom-select>
+          </ng-container>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div footer>
+    <div class="left-right-container p-mt-3">
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-md btn-tertiary p-px-3" (click)="cancel()">
+          {{ 'CANCEL' | apsTranslate }}
+        </button>
+        &nbsp;
+        <button
+          class="btn btn-md btn-primary p-px-3"
+          (click)="parentRef.onSubmit()"
+          [disabled]="form.invalid"
+        >
+          {{ 'SUBMIT' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</app-modal>

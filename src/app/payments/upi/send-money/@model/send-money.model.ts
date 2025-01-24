@@ -1,0 +1,36 @@
+export class SendMoney {
+  constructor(
+    public valueDate: string = '',
+    public debitVpaId: string = '',
+    public accountNo: string = 'xxxxx005678',
+    public accountBalance: string = 'Swadesh Agarwal',
+    public accountName: string = 'SDCORP1',
+    public upiId: string = '',
+    public transferType: string = '',
+    public beneficiaryDetails: string = '',
+    public beneficiaryCode: string = '',
+    public beneficiaryName: string = '',
+    public email: string = '',
+    public bankSwiftCode: string = '',
+    public beneficiaryAddress1: string = '',
+    public beneficiaryAddress2: string = '',
+    public beneficiaryAddress3: string = '',
+    public beneficiaryAddress2show = false,
+    public beneficiaryAddress3show = false,
+    public country: string = '',
+    public beneficiaryAccountNumber: string = '',
+    public beneficiaryBankName: string = '',
+    public debitAmount: string = '',
+    public paymentRemarks: string = '',
+    public beneficiaryBankAddress1: string = '',
+    public beneficiaryBankAddress2: string = '',
+    public beneficiaryBankAddress3: string = '',
+    public beneficiaryBankAddress2show = false,
+    public beneficiaryBankAddress3show = false,
+    public beneficiaryVpId: string = '',
+    public reneterbeneficiaryAccountNumber: string = '',
+    public ifscCode: string = '',
+
+
+  ) { }
+}

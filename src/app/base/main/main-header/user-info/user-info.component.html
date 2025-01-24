@@ -1,0 +1,56 @@
+<div class="user-info-wrapper aps-shadow">
+  <div class="user-details-wrapper">
+    <div class="user-image">
+      <img [src]="userDetails.profilePicUrl" alt="" />
+    </div>
+    <div class="user-details">
+      <div class="user-name">{{ userDetails.fullName }}</div>
+      <div class="designation">{{ userDetails.profileName }}</div>
+    </div>
+  </div>
+  <div class="corporate-details-wrapper">
+    <div class="corporate-details">
+      {{ 'Corporate Login' | apsTranslate }}: {{ userDetails.lastCorporateLoginDateTime }}
+    </div>
+    <div class="corporate-details">
+      {{ 'Corporate Name' | apsTranslate }}: {{ userDetails.corporateName }}
+    </div>
+    <div class="corporate-details">{{ 'Token Used' | apsTranslate }}: {{ userDetails.token }}</div>
+    <hr />
+    <div class="corporate-details">
+      {{ 'Last Logged In' | apsTranslate }} - {{ userDetails.lastLoginDateTime }}
+    </div>
+    <div class="corporate-details">
+      {{ 'Last Failed Log In' | apsTranslate }} - {{ userDetails.lastFailedLogin }}
+    </div>
+  </div>
+  <div class="user-actions">
+    <div class="action pointer" (click)="routeTo('setting/userPersonalization')">
+      <div class="icon">
+        <app-icon icon="fa-cog"></app-icon>
+      </div>
+      <div class="text">{{ 'Settings' | apsTranslate }}</div>
+    </div>
+    <div class="action pointer" (click)="openConfigSidebar()">
+      <div class="icon">
+        <app-icon icon="fa-sliders-v"></app-icon>
+      </div>
+      <div class="text">{{ 'My Preferences' | apsTranslate }}</div>
+    </div>
+    <div class="action">
+      <div class="icon">
+        <app-icon icon="fa-pencil"></app-icon>
+      </div>
+      <div class="text">{{ 'Edit Profile' | apsTranslate }}</div>
+    </div>
+    <div class="action">
+      <div class="icon">
+        <app-icon icon="fa-lock"></app-icon>
+      </div>
+      <div class="text">{{ 'Change Password' | apsTranslate }}</div>
+    </div>
+  </div>
+  <button class="logout-btn" (click)="logout()">
+    <span>{{ 'LOGOUT' | apsTranslate }}</span>
+  </button>
+</div>

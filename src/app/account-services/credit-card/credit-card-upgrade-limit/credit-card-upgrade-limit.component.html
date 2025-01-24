@@ -1,0 +1,192 @@
+<div class="container p-mt-3">
+  <!-- Step Tracker -->
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <!-- Step 1 Details -->
+  <ng-container *ngIf="stepperDetails.currentStep == 1">
+    <div class="aps-card p-my-3 p-p-2 aps-min-h-400">
+      <form #form="ngForm" name="form">
+        <div class="p-grid">
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <aps-form-input
+              (onRightIcon)="showCreditCardSearch = true"
+              [(ngModel)]="formData.cardNo"
+              disabled="true"
+              id="creditCard"
+              [label]="'Credit Card' | apsTranslate"
+              name="creditCard"
+              required="true"
+              rightIcon="fa-search"
+            >
+            </aps-form-input>
+            <app-search-modal
+              (onSelection)="onCreditCardSelection($event)"
+              *ngIf="showCreditCardSearch"
+              [(isShow)]="showCreditCardSearch"
+              [colDefUrl]="URLs.CREDICARD_COLDEF_URL"
+              [rowDefUrl]="URLs.GET_CREDITCARDS"
+              [header]="'Select Credit Card' | apsTranslate"
+            >
+            </app-search-modal>
+          </div>
+          <ng-container *ngIf="formData?.cardNo">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Card Type"
+                [value]="formData.cardType"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Embossed Name"
+                [value]="formData.embossedName"
+              ></app-review-form-field>
+            </div>
+          </ng-container>
+          <div class="p-col-12 p-p-0"></div>
+
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <app-review-form-field
+              label="Current Card limit"
+              [value]="formData.cardLimit"
+              type="baseCurrency"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <app-review-form-field
+              label="Eligible limit"
+              [value]="formData.eligibleLimit"
+              type="baseCurrency"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <aps-form-input
+              #newLimit="ngModel"
+              [(ngModel)]="formData.newCardLimit"
+              [disabled]="!formData.cardNo"
+              [customErrorMessage]="
+                +formData.newCardLimit > +formData.eligibleLimit
+                  ? 'New limit should not be greater than Eligible Limit'
+                  : ''
+              "
+              [required]="true"
+              [value]="formData.newCardLimit"
+              id="newLimit"
+              inputType="currencyFormatNotZero"
+              [label]="'New Limit' | apsTranslate"
+              maxLength="16"
+              minLength="1"
+              name="newCardLimit"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+
+  <!--Step 2 Details-->
+  <ng-container *ngIf="stepperDetails.currentStep == this.stepperDetails.headings.length">
+    <div class="aps-card p-my-3 p-p-2 aps-h-400 overflow-y-scroll">
+      <div class="p-grid">
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Credit Card"
+            [value]="formData.cardNo"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Card Type"
+            [value]="formData.cardType"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Embossed Name"
+            [value]="formData.embossedName"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Current Card limit"
+            [value]="formData.cardLimit"
+            type="baseCurrency"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Eligible limit"
+            [value]="formData.eligibleLimit"
+            type="baseCurrency"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="New limit"
+            [value]="formData.newCardLimit"
+            type="baseCurrency"
+          ></app-review-form-field>
+        </div>
+        <!-- Structure Preview -->
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- Form Actions -->
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>
+
+<app-modal
+  (onClose)="goToListing()"
+  [(isShow)]="showSubmitSuccess"
+  [headerText]="'Your request for limit is upgrade is submitted' | apsTranslate"
+  size="sm"
+>
+  <ng-container body>
+    <div class="p-grid p-pt-2">
+      <div class="p-col-12">
+        <app-review-form-field label="Card No" [value]="formData.cardNo"></app-review-form-field>
+      </div>
+    </div>
+    <div class="p-grid p-pb-2">
+      <div class="p-col-12 p-md-3 p-sm-12 p-px-3">
+        <app-review-form-field
+          label="Reference No"
+          [value]="submitResponse?.dataMap?.id"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-3 p-sm-12 p-px-3">
+        <app-review-form-field
+          label="Date"
+          [value]="submitResponse?.dataMap?.id | date: 'dd MMM yyyy'"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-2 p-sm-12 p-px-md-0 p-px-3">
+        <app-review-form-field
+          label="Time"
+          [value]="submitResponse?.dataMap?.id | date: 'shortTime'"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+        <app-review-form-field
+          label=""
+          [value]="formData.newCardLimit"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+    </div>
+  </ng-container>
+  <div footer>
+    <div class="left-right-container">
+      <div class="left-container p-py-2">
+        <app-icon class="p-px-2" icon="fa-print"></app-icon>
+        <app-icon class="p-px-2" icon="fa-download"></app-icon>
+        <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+      </div>
+      <div class="right-container">
+        <button (click)="goToListing()" class="btn btn-md btn-primary" type="button">CLOSE</button>
+      </div>
+    </div>
+  </div>
+</app-modal>

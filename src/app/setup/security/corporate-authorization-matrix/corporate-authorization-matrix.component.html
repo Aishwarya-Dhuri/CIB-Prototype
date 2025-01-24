@@ -1,0 +1,27 @@
+<div class="container" *ngIf="!loading">
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <div class="p-my-3">
+    <aps-matrix-details
+      *ngIf="stepperDetails.currentStep == 1"
+      [parentRef]="this"
+    ></aps-matrix-details>
+
+    <ng-container *ngIf="stepperDetails.currentStep == 2">
+      <aps-add-users [parentRef]="this" *ngIf="!showAddSlab"></aps-add-users>
+
+      <app-add-slab
+        [parentRef]="this"
+        [slabFormData]="slabForEdit"
+        *ngIf="showAddSlab"
+      ></app-add-slab>
+    </ng-container>
+
+    <aps-review-and-submit
+      *ngIf="stepperDetails.currentStep == 3"
+      [parentRef]="this"
+    ></aps-review-and-submit>
+  </div>
+
+  <app-stepper-footer [parentRef]="this" *ngIf="!showAddSlab"></app-stepper-footer>
+</div>

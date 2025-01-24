@@ -1,0 +1,55 @@
+<div class="aps-card">
+  <div class="p-px-3">
+    <div class="left-right-container">
+      <div class="left-container aps-py-12">
+        <div class="heading text-size-16 text-bold p-pt-md-0 p-pt-sm-1 p-pt-1">
+          {{
+            (summaryType == 'Credit Card' ? 'Unbilled Transactions' : 'Transactions') | apsTranslate
+          }}
+        </div>
+      </div>
+      <div class="right-container aps-py-12">
+        <app-grid-listing-tools
+          [label]="
+            viewport != 'mobile'
+              ? summaryType == 'Credit Card'
+                ? 'View Credit Card Summary'
+                : 'View Account Summary'
+              : ''
+          "
+          redirectUrl="/accountServices/services/accountSummary"
+          (changeFloatingFilter)="
+            transactionDetailsGrid ? transactionDetailsGrid.changeFloatFilter($event) : null
+          "
+          (filterRecords)="transactionDetailsGrid ? transactionDetailsGrid.onFilter($event) : null"
+          (applyColDefs)="
+            transactionDetailsGrid ? transactionDetailsGrid.onApplyConfig($event) : null
+          "
+          [parentRef]="this"
+          [colDefs]="transactionDetailsGrid ? transactionDetailsGrid.columnDefs : []"
+          [gridRef]="transactionDetailsGrid"
+          [showSearch]="viewport != 'mobile'"
+          [columnConfig]="viewport != 'mobile'"
+          [showFloatingFilter]="viewport != 'mobile'"
+          [moreOptions]="false"
+        ></app-grid-listing-tools>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-h-400">
+    <app-ag-grid-listing
+      *ngIf="!loading"
+      [id]="'transaction-details'"
+      #transactionDetails
+      [colDefUrl]="colDefUrl"
+      [rowData]="rowData"
+      [frameworkComponents]="frameworkComponents"
+      [context]="{ componentParent: this }"
+      [gridOptions]="gridOptions"
+      [supressAutoFit]="true"
+    ></app-ag-grid-listing>
+
+    <div class="text-center p-py-6" *ngIf="loading">{{ 'Loading' | apsTranslate }}...</div>
+  </div>
+</div>

@@ -1,0 +1,67 @@
+<ng-container *ngIf="viewData">
+  <div class="p-my-3">
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+          {{ 'Account Details' | apsTranslate }}
+        </div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Corporate Structure' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ viewData.corporateStructureId }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Length of Virtual Account' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ viewData.lenOfVA }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Total no of VA' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ viewData.countOfVA }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Unissued Virtual Account' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ viewData.unIssuedVirtualAccount }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Virtual Account Creation Logic' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ viewData.vaCreationLogic }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Account No' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ viewData.corporateAccount }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-sub-entity-view [subEntityDetails]="viewData"> </app-sub-entity-view>
+  <ng-container
+    *ngIf="viewData.vAIssuanceAccountDetList && viewData.vAIssuanceAccountDetList.length > 0"
+  >
+    <ng-container *ngFor="let vaAccount of viewData.vAIssuanceAccountDetList">
+      <app-virtual-account-details [addContainer]="false" [vaData]="vaAccount">
+      </app-virtual-account-details>
+    </ng-container>
+  </ng-container>
+</ng-container>

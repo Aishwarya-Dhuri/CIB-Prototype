@@ -1,0 +1,293 @@
+<app-modal headerText="Documents Tutorial" [(isShow)]="howToUseThis" size="md">
+  <div class="document-tutorial-container">
+    <div class="video-player-container">
+      <video
+        #videoPlayer
+        class="video"
+        id="video"
+        name="video"
+        oncontextmenu="() => {return false;}"
+        controls
+        src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+      ></video>
+      <div class="sub-heading text-size-16 text-bold p-pt-2">How to do the upload</div>
+    </div>
+
+    <div class="video-list-container">
+      <div class="video-list">
+        <div class="list-item">
+          <img src="./../../../../../assets/images/demo-video.PNG" alt="Demo Video" />
+          <div class="sub-heading text-size-12">Company Information</div>
+        </div>
+
+        <div class="list-item">
+          <img src="./../../../../../assets/images/demo-video.PNG" alt="Demo Video" />
+          <div class="sub-heading text-size-12">Company Information</div>
+        </div>
+
+        <div class="list-item">
+          <img src="./../../../../../assets/images/demo-video.PNG" alt="Demo Video" />
+          <div class="sub-heading text-size-12">Company Information</div>
+        </div>
+
+        <div class="list-item">
+          <img src="./../../../../../assets/images/demo-video.PNG" alt="Demo Video" />
+          <div class="sub-heading text-size-12">Company Information</div>
+        </div>
+
+        <div class="list-item">
+          <img src="./../../../../../assets/images/demo-video.PNG" alt="Demo Video" />
+          <div class="sub-heading text-size-12">Company Information</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<div class="save-self-onboarding-container" *ngIf="!showSuccess; else successTemplate">
+  <div class="steps-container p-shadow-1">
+    <div
+      class="steps-container-header text-size-20 text-color-dark-shade-2 text-bold hide-on-mobile"
+    >
+      Get onboarded in 3 easy steps
+    </div>
+
+    <div
+      *ngFor="let curStep of steps"
+      class="step"
+      [ngClass]="{ 'step-active': curStep.step === step }"
+      (click)="step = curStep.step; demoVideo = false; reviewSubmit = false"
+    >
+      <div class="step-heading">{{ curStep.heading }}</div>
+
+      <div class="step-sub-heading">
+        {{ curStep.subHeading }}
+      </div>
+
+      <div class="step-knob aps-shadow">
+        <p-knob
+          [ngModel]="curStep.completed"
+          [valueTemplate]="curStep.completed !== 100 ? curStep.label : '&#10003;'"
+          [strokeWidth]="5"
+          [size]="48"
+          [min]="0"
+          [max]="100"
+          [readonly]="true"
+          [disabled]="curStep.disabled"
+        ></p-knob>
+      </div>
+    </div>
+
+    <div class="info-card p-pl-5 p-ml-2 p-pt-4 text-color-primary">
+      <div class="icon">
+        <app-icon icon="fa-play-circle" styleClasses="text-size-14"></app-icon>
+        <!-- <i class="pi pi-play text-size-14"></i> -->
+      </div>
+
+      <div
+        class="label text-size-14 pointer"
+        (click)="reviewSubmit = false; demoVideo = true; lastStep = step; step = null"
+      >
+        Demo Video
+      </div>
+    </div>
+
+    <div class="p-pl-6">
+      <img
+        [src]="!reviewSubmit ? stepImages[step] : './../../../../assets/images/review-n-submit.png'"
+        alt=""
+        width="200px"
+      />
+    </div>
+  </div>
+
+  <div class="self-onboarding-form-container">
+    <div class="form-header">
+      <div class="left-right-container p-mx-lg-6 p-mx-3 p-py-3 border-bottom hide-on-mobile">
+        <div class="left-container">
+          <div class="text-size-24 text-color-dark-shade-1 text-bold">
+            <app-icon
+              class="p-pr-2"
+              styleClasses="text-size-20 pointer"
+              icon="fa-arrow-left"
+              rtlIcon="fa-arrow-right"
+              *ngIf="demoVideo"
+              (click)="demoVideo = false; step = lastStep"
+            ></app-icon>
+            {{ reviewSubmit ? 'Review & Submit' : demoVideo ? 'Demo Videos' : steps[step].heading }}
+          </div>
+        </div>
+
+        <div class="right-container" *ngIf="!demoVideo && !reviewSubmit">
+          <div class="actions">
+            <div class="action">
+              <div class="icon">
+                <app-icon icon="fa-headset"></app-icon>
+              </div>
+            </div>
+
+            <div class="action" (click)="howToUseThis = true">
+              <div class="icon">
+                <app-icon icon="fa-play-circle"></app-icon>
+              </div>
+              <div class="label">How to fill this</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mobile-steps-container active-step show-on-mobile">
+        <div class="left-right-container p-pt-3 p-px-3 p-pb-5">
+          <div class="left-container">
+            <div class="left-container text-color-primary text-bold">
+              <div class="step-header text-size-18">
+                <app-icon
+                  class="p-pr-2"
+                  styleClasses="text-size-14 pointer"
+                  icon="fa-arrow-left"
+                  rtlIcon="fa-arrow-right"
+                  *ngIf="demoVideo"
+                  (click)="demoVideo = false; step = lastStep"
+                ></app-icon>
+                {{
+                  reviewSubmit ? 'Review & Submit' : demoVideo ? 'Demo Videos' : steps[step].heading
+                }}
+              </div>
+            </div>
+
+            <div
+              class="step-sub-header text-color-dark-shade-2 text-size-12 p-py-2"
+              *ngIf="!reviewSubmit && !demoVideo"
+            >
+              {{ steps[step].subHeading }}
+            </div>
+            <div
+              class="text-color-primary"
+              (click)="reviewSubmit = false; demoVideo = true; lastStep = step; step = null"
+              *ngIf="!reviewSubmit && !demoVideo"
+            >
+              <app-icon class="p-mr-2" icon="fa-play-circle" styleClasses="text-size-12"></app-icon>
+              <span class="inline-blick text-size-11 pointer">Demo Video</span>
+            </div>
+          </div>
+
+          <div class="right-container">
+            <div class="actions" *ngIf="!reviewSubmit && !demoVideo">
+              <div class="action">
+                <div class="icon">
+                  <app-icon icon="fa-headset"></app-icon>
+                </div>
+              </div>
+
+              <div class="action" (click)="howToUseThis = true">
+                <div class="icon">
+                  <app-icon icon="fa-play-circle"></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="steps" *ngIf="!demoVideo">
+          <div class="step">
+            <div class="step-knob p-shadow-2" *ngFor="let curStep of steps">
+              <p-knob
+                [ngModel]="curStep.completed"
+                [valueTemplate]="curStep.completed !== 100 ? curStep.label : '&#10003;'"
+                [strokeWidth]="5"
+                [size]="40"
+                [min]="0"
+                [max]="100"
+                [readonly]="true"
+                [disabled]="curStep.disabled"
+              ></p-knob>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-body p-m-3 p-pb-4 p-mx-lg-6">
+      <ng-container *ngIf="!demoVideo && !reviewSubmit">
+        <app-company-information
+          #companyInformation
+          class="fade-in-animation"
+          *ngIf="step === 0"
+        ></app-company-information>
+
+        <app-user-details
+          #userDetails
+          class="fade-in-animation"
+          *ngIf="step === 1"
+        ></app-user-details>
+
+        <app-product-details
+          #productDetails
+          class="fade-in-animation"
+          *ngIf="step === 2"
+        ></app-product-details>
+
+        <app-document-upload class="fade-in-animation" *ngIf="step === 3"></app-document-upload>
+      </ng-container>
+
+      <app-so-demo-video class="fade-in-animation" *ngIf="demoVideo"></app-so-demo-video>
+
+      <app-review-n-submit class="fade-in-animation" *ngIf="reviewSubmit"></app-review-n-submit>
+    </div>
+    <div class="form-footer p-py-2 p-px-3 p-px-lg-6 background-color p-shadow-2" *ngIf="!demoVideo">
+      <div class="left-right-container">
+        <div class="left-container">
+          <button class="btn btn-md btn-tertiary p-mr-3" routerLink="/self-onboarding">
+            CANCEL
+          </button>
+          <button class="btn btn-md btn-tertiary" (click)="saveAsDraft()">SAVE AS DRAFT</button>
+        </div>
+        <div class="right-container">
+          <div class="show-on-mobile">
+            <button
+              type="button"
+              class="btn btn-md btn-secondaty p-mr-3"
+              (click)="previous()"
+              [disabled]="step === 0"
+            >
+              <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right"></app-icon>
+            </button>
+
+            <button class="btn btn-md btn-primary" (click)="next()">
+              <app-icon icon="fa-chevron-right" rtlIcon="fa-chevron-left"></app-icon>
+            </button>
+          </div>
+
+          <div class="hide-on-mobile">
+            <button
+              type="button"
+              class="btn btn-md btn-secondaty p-ml-3 p-mr-3"
+              (click)="previous()"
+              [disabled]="step === 0"
+            >
+              <app-icon
+                [icon]="isMobile() ? 'fa-chevron-left' : ''"
+                [rtlIcon]="isMobile() ? 'fa-chevron-right' : ''"
+              ></app-icon>
+              PREVIOUS
+            </button>
+
+            <button type="button" class="btn btn-md btn-primary" (click)="next()">
+              {{ reviewSubmit ? 'SUBMIT' : 'NEXT' }}
+              <app-icon
+                [icon]="isMobile() ? 'fa-chevron-right' : ''"
+                [rtlIcon]="isMobile() ? 'fa-chevron-left' : ''"
+              ></app-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #successTemplate>
+  <app-successful-registration
+    [applicationNumber]="applicationNumber"
+  ></app-successful-registration>
+</ng-template>

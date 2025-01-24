@@ -1,0 +1,249 @@
+<div class="document-upload-container p-shadow-2 p-mb-4 hide-on-mobile">
+  <div class="document-list-container text-color-dark-shade-2 text-size-14">
+    <div
+      class="list-item pointer"
+      *ngFor="let d of documentTypes"
+      (click)="activeDocumentType = d"
+      [ngClass]="{ 'list-item-active text-color-inverted': d === activeDocumentType }"
+    >
+      <div class="">{{ d }}</div>
+    </div>
+  </div>
+
+  <div class="upload-container">
+    <div class="upload-header">
+      <div class="text-size-14 text-color-dark-shade-2 text-bold">
+        Upload Document &nbsp;<span class="text-size-12 text-color-normal text-light">
+          Max 10MB each
+        </span>
+      </div>
+    </div>
+
+    <div class="aps-p-12" *ngIf="activeDocumentType === documentTypes[0]">
+      <upload-form-control
+        [files]="documents[0].companyTradeLicense"
+        (onUploaded)="uploadCompanyTradeLicense($event)"
+      ></upload-form-control>
+    </div>
+
+    <div class="aps-p-12" *ngIf="activeDocumentType === documentTypes[1]">
+      <upload-form-control
+        [files]="documents[0].memorandumOfAssociation"
+        (onUploaded)="uploadMemorandumOfAssociation($event)"
+      ></upload-form-control>
+    </div>
+
+    <div class="aps-p-12" *ngIf="activeDocumentType === documentTypes[2]">
+      <upload-form-control
+        [files]="documents[0].shareCertificates"
+        (onUploaded)="uploadShareCertificates($event)"
+      ></upload-form-control>
+    </div>
+
+    <div class="aps-p-12" *ngIf="activeDocumentType === documentTypes[3]">
+      <upload-form-control
+        [files]="documents[0].boardOfDirectors"
+        (onUploaded)="uploadBoardOfDirectors($event)"
+      ></upload-form-control>
+    </div>
+
+    <div class="aps-p-12" *ngIf="activeDocumentType === documentTypes[4]">
+      <upload-form-control
+        [files]="documents[0].otherDocuments"
+        (onUploaded)="uploadOtherDocuments($event)"
+      ></upload-form-control>
+    </div>
+  </div>
+</div>
+
+<div class="p-grid p-mb-4 show-on-mobile">
+  <div class="p-col-12">
+    <div class="aps-card text-color-dark-shade-2">
+      <div
+        class="left-right-container p-p-2"
+        (click)="
+          activeDocumentType = activeDocumentType === documentTypes[0] ? '' : documentTypes[0]
+        "
+      >
+        <div class="left-container text-size-16 text-semi-bold">
+          {{ documentTypes[0] }}
+        </div>
+        <div class="right-container">
+          <app-icon
+            [icon]="activeDocumentType === documentTypes[0] ? 'fa-chevron-up' : 'fa-chevron-down'"
+            styleClasses="pointer"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="upload-container border-top" *ngIf="activeDocumentType === documentTypes[0]">
+        <div class="upload-header p-p-2">
+          <div class="text-size-14 text-color-dark-shade-2 text-bold">
+            Upload Document &nbsp;<span class="text-size-12 text-color-normal text-light">
+              Max 10MB each
+            </span>
+          </div>
+        </div>
+
+        <div class="aps-p-12">
+          <upload-form-control
+            [files]="documents[0].companyTradeLicense"
+            (onUploaded)="uploadCompanyTradeLicense($event)"
+          ></upload-form-control>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12">
+    <div class="aps-card text-color-dark-shade-2">
+      <div
+        class="left-right-container p-p-2"
+        (click)="
+          activeDocumentType = activeDocumentType === documentTypes[1] ? '' : documentTypes[1]
+        "
+      >
+        <div class="left-container text-size-16 text-semi-bold">
+          {{ documentTypes[1] }}
+        </div>
+        <div class="right-container">
+          <app-icon
+            [icon]="activeDocumentType === documentTypes[1] ? 'fa-chevron-up' : 'fa-chevron-down'"
+            styleClasses="pointer"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="upload-container border-top" *ngIf="activeDocumentType === documentTypes[1]">
+        <div class="upload-header p-p-2">
+          <div class="text-size-14 text-color-dark-shade-2 text-bold">
+            Upload Document &nbsp;<span class="text-size-12 text-color-normal text-light">
+              Max 10MB each
+            </span>
+          </div>
+        </div>
+
+        <div class="aps-p-12">
+          <upload-form-control
+            [files]="documents[0].memorandumOfAssociation"
+            (onUploaded)="uploadMemorandumOfAssociation($event)"
+          ></upload-form-control>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12">
+    <div class="aps-card text-color-dark-shade-2">
+      <div
+        class="left-right-container p-p-2"
+        (click)="
+          activeDocumentType = activeDocumentType === documentTypes[2] ? '' : documentTypes[2]
+        "
+      >
+        <div class="left-container text-size-16 text-semi-bold">
+          {{ documentTypes[2] }}
+        </div>
+        <div class="right-container">
+          <app-icon
+            [icon]="activeDocumentType === documentTypes[2] ? 'fa-chevron-up' : 'fa-chevron-down'"
+            styleClasses="pointer"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="upload-container border-top" *ngIf="activeDocumentType === documentTypes[2]">
+        <div class="upload-header p-p-2">
+          <div class="text-size-14 text-color-dark-shade-2 text-bold">
+            Upload Document &nbsp;<span class="text-size-12 text-color-normal text-light">
+              Max 10MB each
+            </span>
+          </div>
+        </div>
+
+        <div class="aps-p-12">
+          <upload-form-control
+            [files]="documents[0].shareCertificates"
+            (onUploaded)="uploadShareCertificates($event)"
+          ></upload-form-control>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12">
+    <div class="aps-card text-color-dark-shade-2">
+      <div
+        class="left-right-container p-p-2"
+        (click)="
+          activeDocumentType = activeDocumentType === documentTypes[3] ? '' : documentTypes[3]
+        "
+      >
+        <div class="left-container text-size-16 text-semi-bold">
+          {{ documentTypes[3] }}
+        </div>
+        <div class="right-container">
+          <app-icon
+            [icon]="activeDocumentType === documentTypes[3] ? 'fa-chevron-up' : 'fa-chevron-down'"
+            styleClasses="pointer"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="upload-container border-top" *ngIf="activeDocumentType === documentTypes[3]">
+        <div class="upload-header p-p-2">
+          <div class="text-size-14 text-color-dark-shade-2 text-bold">
+            Upload Document &nbsp;<span class="text-size-12 text-color-normal text-light">
+              Max 10MB each
+            </span>
+          </div>
+        </div>
+
+        <div class="aps-p-12">
+          <upload-form-control
+            [files]="documents[0].boardOfDirectors"
+            (onUploaded)="uploadBoardOfDirectors($event)"
+          ></upload-form-control>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12">
+    <div class="aps-card text-color-dark-shade-2">
+      <div
+        class="left-right-container p-p-2"
+        (click)="
+          activeDocumentType = activeDocumentType === documentTypes[4] ? '' : documentTypes[4]
+        "
+      >
+        <div class="left-container text-size-16 text-semi-bold">
+          {{ documentTypes[4] }}
+        </div>
+        <div class="right-container">
+          <app-icon
+            [icon]="activeDocumentType === documentTypes[4] ? 'fa-chevron-up' : 'fa-chevron-down'"
+            styleClasses="pointer"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="upload-container border-top" *ngIf="activeDocumentType === documentTypes[4]">
+        <div class="upload-header p-p-2">
+          <div class="text-size-14 text-color-dark-shade-2 text-bold">
+            Upload Document &nbsp;<span class="text-size-12 text-color-normal text-light">
+              Max 10MB each
+            </span>
+          </div>
+        </div>
+
+        <div class="aps-p-12">
+          <upload-form-control
+            [files]="documents[0].otherDocuments"
+            (onUploaded)="uploadOtherDocuments($event)"
+          ></upload-form-control>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

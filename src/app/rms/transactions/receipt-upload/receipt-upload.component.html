@@ -1,0 +1,407 @@
+<div class="container">
+  <div class="text-size-16 text-color-dark-shade-1 text-bold">
+    {{ 'Receipt Details - Upload' | apsTranslate }}
+  </div>
+  <div class="text-size-14 text-color-dark-shade-1 text-bold p-pt-3">
+    {{ 'Receipt Details - Workflow' | apsTranslate }}
+  </div>
+  <app-org-tree [treeData]="orgTreeData"></app-org-tree>
+  <form name="receiptUploadForm" #receiptUploadForm="ngForm">
+    <div class="p-grid g-margin-x" *ngIf="stepperDetails.currentStep == 1">
+      <div class="p-col-12 p-col-7 p-col-12 p-lg-7">
+        <div class="aps-card p-mb-2">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-6 p-sm-12 p-lg-6 p-p-3">
+              <app-aps-calender
+                [label]="'Transaction Date' | apsTranslate"
+                name="transactionDate"
+                id="transactionDate"
+                showIcon="true"
+                #transactionDate="ngModel"
+                [(ngModel)]="formData.transactionDate"
+                required="true"
+              >
+              </app-aps-calender>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+              {{ 'Enter Upload File Details' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-px-3">
+                <aps-custom-select
+                  [label]="'Program' | apsTranslate"
+                  name="programId"
+                  id="programId"
+                  [(ngModel)]="formData.programId"
+                  [data]="programList"
+                  required="true"
+                  (change)="setProgramNameById(formData.programId)"
+                >
+                </aps-custom-select>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-px-3">
+                <div class="text-size-14 text-semi-bold text-color-dark-shade-2 p-p-1">
+                  {{ 'Upload File' | apsTranslate }}
+                </div>
+                <upload-form-control
+                  [files]="formData.uploadDocuments"
+                  [hideDragDropContainerOnFIleUpload]="true"
+                  (onUploaded)="onFileUploaded($event)"
+                >
+                </upload-form-control>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-col-5 p-col-12 p-lg-5">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+              {{ 'Recent Uploaded Receipt File' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid border-bottom">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                <div class="p-grid p-px-2">
+                  <div class="p-col-12 p-p-0">
+                    <div class="text-size-12 text-semi-bold inline-block">
+                      {{ 'Batch ID' | apsTranslate }} :
+                    </div>
+                    <div class="text-size-12 inline-block">1234</div>
+                  </div>
+                  <div class="p-col-12 p-p-0">
+                    <div class="text-size-12 text-semi-bold inline-block">
+                      {{ 'Uploaded Date' | apsTranslate }} :
+                    </div>
+                    <div class="text-size-12 inline-block">27-Jan-2022</div>
+                  </div>
+                  <div class="p-col-12 p-p-0">
+                    <div class="text-size-12 text-semi-bold inline-block">
+                      {{ 'No of Records' | apsTranslate }} :
+                    </div>
+                    <div class="text-size-12 inline-block">1</div>
+                  </div>
+                  <div class="p-col-12 p-p-0">
+                    <div class="text-size-12 text-semi-bold inline-block">
+                      {{ 'Status' | apsTranslate }} :
+                    </div>
+                    <div class="text-size-12 inline-block">Success</div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 text-right p-py-4">
+                <div class="inline-items">
+                  <div class="item p-p-1 pointer">
+                    <app-icon icon="fa-paperclip"></app-icon>
+                  </div>
+                  <div class="item p-p-1 pointer">
+                    <app-icon icon="fa-eye" class="text-color-primary"></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="p-grid g-margin-x"
+      *ngIf="stepperDetails.currentStep == stepperDetails.headings.length"
+    >
+      <div class="p-col-12 p-col-7 p-col-12 p-lg-7">
+        <div class="aps-card p-mb-2">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-6 p-sm-12 p-lg-6 p-p-3">
+              <div class="p-p-2">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Transaction Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.transactionDate }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+              {{ 'Enter Upload File Details' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-px-3">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Program' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.programName }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div
+                class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-px-3"
+                *ngFor="let file of formData.uploadDocuments"
+              >
+                <div class="text-size-14 text-semi-bold text-color-dark-shade-2 p-mb-1">
+                  {{ 'Uploaded Document' | apsTranslate }}
+                </div>
+                <div class="aps-card">
+                  <div class="p-grid">
+                    <div class="p-col-2">
+                      <app-icon icon="fa-file" class="p-mt-2"></app-icon>
+                    </div>
+                    <div class="p-col-10">
+                      <div class="text-size-12 review-file-name">
+                        {{ file.fileName ? file.fileName : formData.fileName }}
+                      </div>
+                      <div class="text-size-10 text-color-light-shade-1">
+                        {{ (file.size ? file.size : formData.fileSize / 1024 / 1024).toFixed(2) }}Mb
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-col-5 p-col-12 p-lg-5">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+              {{ 'Recent Uploaded Receipt File' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid border-bottom">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                <div class="p-grid p-px-2">
+                  <div class="p-col-12 p-p-0">
+                    <div class="text-size-12 text-semi-bold inline-block">
+                      {{ 'Batch ID' | apsTranslate }} :
+                    </div>
+                    <div class="text-size-12 inline-block">1234</div>
+                  </div>
+                  <div class="p-col-12 p-p-0">
+                    <div class="text-size-12 text-semi-bold inline-block">
+                      {{ 'Uploaded Date' | apsTranslate }} :
+                    </div>
+                    <div class="text-size-12 inline-block">27-Jan-2022</div>
+                  </div>
+                  <div class="p-col-12 p-p-0">
+                    <div class="text-size-12 text-semi-bold inline-block">
+                      {{ 'No of Records' | apsTranslate }} :
+                    </div>
+                    <div class="text-size-12 inline-block">1</div>
+                  </div>
+                  <div class="p-col-12 p-p-0">
+                    <div class="text-size-12 text-semi-bold inline-block">
+                      {{ 'Status' | apsTranslate }} :
+                    </div>
+                    <div class="text-size-12 inline-block">Success</div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 text-right p-py-4">
+                <div class="inline-items">
+                  <div class="item p-p-1 pointer">
+                    <app-icon icon="fa-paperclip"></app-icon>
+                  </div>
+                  <div class="item p-p-1 pointer">
+                    <app-icon icon="fa-eye" class="text-color-primary"></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12" *ngIf="mode === 'VIEW'">
+        <div class="aps-card aps-h-450">
+          <div class="aps-card-header p-px-3 overflow-visible">
+            <div class="left-right-container">
+              <div class="left-container p-py-2">
+                <div class="text-size-14">
+                  {{ 'Uploaded Records' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container aps-py-12">
+                <app-grid-listing-tools
+                  (changeFloatingFilter)="
+                    edrDataListingGrid ? edrDataListingGrid.changeFloatFilter($event) : null
+                  "
+                  (filterRecords)="edrDataListingGrid ? edrDataListingGrid.onFilter($event) : null"
+                  (applyColDefs)="
+                    edrDataListingGrid ? edrDataListingGrid.onApplyConfig($event) : null
+                  "
+                  [colDefs]="edrDataListingGrid ? edrDataListingGrid.columnDefs : []"
+                  [columnConfig]="!!edrDataListingGrid"
+                  [moreOptions]="false"
+                  [showFloatingFilter]="!!edrDataListingGrid"
+                  [columnConfig]="!!edrDataListingGrid"
+                  [showSearch]="!!edrDataListingGrid"
+                  [listingTypes]="true"
+                  [listingType]="listingType"
+                  (changeListingType)="listingType = $event"
+                ></app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body" *ngIf="!loadingList; else loadingTemplate">
+            <app-ag-grid-listing
+              #edrDataListingGrid
+              [colDefUrl]="edrDataColDefsUrl"
+              [rowData]="formData.uploadedFilesList"
+              [gridOptions]="{ rowModelType: 'clientSide' }"
+              [apsHide]="listingType == 'card'"
+              [supressAutoFit]="false"
+            >
+            </app-ag-grid-listing>
+
+            <ng-container>
+              <div class="card-list border-top" *ngIf="listingType == 'card'">
+                <div
+                  class="p-grid p-p-2"
+                  *ngIf="
+                    edrDataListingGrid && edrDataListingGrid.columnDefs.length > 0;
+                    else loadingTemplate
+                  "
+                >
+                  <div
+                    class="p-col-12"
+                    *ngFor="let data of edrDataListingGrid.rowData; let i = index"
+                  >
+                    <div class="aps-card text-size-12">
+                      <div class="card-header">
+                        <div class="p-grid">
+                          <div class="p-col-11 p-p-0">
+                            <div class="p-grid">
+                              <div class="p-md-2 p-sm-12 p-col-12">
+                                <div class="text-bold">
+                                  {{ edrDataListingGrid.columnDefs[0].headerName }}
+                                </div>
+                                <div class="">
+                                  {{ data[edrDataListingGrid.columnDefs[0].field] }}
+                                </div>
+                              </div>
+                              <div class="p-md-2 p-sm-12 p-col-12">
+                                <div class="text-bold">
+                                  {{ edrDataListingGrid.columnDefs[1].headerName }}
+                                </div>
+                                <div class="">
+                                  {{ data[edrDataListingGrid.columnDefs[1].field] }}
+                                </div>
+                              </div>
+                              <div class="p-md-2 p-sm-12 p-col-12">
+                                <div class="text-bold">
+                                  {{ edrDataListingGrid.columnDefs[2].headerName }}
+                                </div>
+                                <div class="">
+                                  {{ data[edrDataListingGrid.columnDefs[2].field] }}
+                                </div>
+                              </div>
+                              <div class="p-md-2 p-sm-12 p-col-12">
+                                <div class="text-bold">
+                                  {{ edrDataListingGrid.columnDefs[3].headerName }}
+                                </div>
+                                <div class="">
+                                  {{ data[edrDataListingGrid.columnDefs[3].field] }}
+                                </div>
+                              </div>
+                              <div class="p-md-2 p-sm-12 p-col-12">
+                                <div class="text-bold">
+                                  {{ edrDataListingGrid.columnDefs[4].headerName }}
+                                </div>
+                                <div class="">
+                                  {{ data[edrDataListingGrid.columnDefs[4].field] }}
+                                </div>
+                              </div>
+                              <div class="p-md-2 p-sm-12 p-col-12">
+                                <div class="text-bold">
+                                  {{ edrDataListingGrid.columnDefs[5].headerName }}
+                                </div>
+                                <div class="">
+                                  {{ data[edrDataListingGrid.columnDefs[5].field] }}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="p-col-1 p-p-3 text-right">
+                            <app-icon
+                              [icon]="data.isShow ? 'fa-chevron-up' : 'fa-chevron-down'"
+                              styleClasses="text-size-14 pointer"
+                              (click)="data.isShow = !data.isShow"
+                            ></app-icon>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card-body border-top" *ngIf="data.isShow">
+                        <div class="p-grid">
+                          <ng-container
+                            *ngFor="let field of edrDataListingGrid.columnDefs; let i = index"
+                          >
+                            <div
+                              class="p-md-2 p-sm-12 p-col-12 p-p-0"
+                              *ngIf="edrDataListingGrid.columnDefs[i].field != 'actions'"
+                            >
+                              <div class="p-p-2" *ngIf="i >= 6">
+                                <div class="text-bold">
+                                  {{ edrDataListingGrid.columnDefs[i].headerName }}
+                                </div>
+                                <div class="">
+                                  {{
+                                    data[edrDataListingGrid.columnDefs[i].field]
+                                      ? data[edrDataListingGrid.columnDefs[i].field]
+                                      : '-'
+                                  }}
+                                </div>
+                              </div>
+                            </div>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="left-right-container p-py-2 p-px-3" *ngIf="listType === 'card'">
+                <div class="left-container"></div>
+                <div class="right-container">
+                  <button class="btn btn-sm btn-tertiary p-mr-3">
+                    <app-icon
+                      icon="fa-chevron-left"
+                      (click)="previous()"
+                      [disabled]="this.currentPage <= 1"
+                    ></app-icon>
+                  </button>
+                  <button class="btn btn-sm btn-tertiary">
+                    <app-icon
+                      icon="fa-chevron-right"
+                      (click)="next()"
+                      [disabled]="this.currentPage >= this.numberOfPages"
+                    ></app-icon>
+                  </button>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!--Actions Footer-->
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

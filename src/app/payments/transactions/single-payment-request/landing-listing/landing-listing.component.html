@@ -1,0 +1,141 @@
+<!-- listing buttons and list-card toggle -->
+<div class="p-grid g-margin-x p-mt-3">
+  <app-modal *ngIf="viewport === 'mobile'" [(isShow)]="showSelectedTab" [headerText]="selectedList.label">
+    <div class="aps-h-400 overflow-x-hidden overflow-y-scroll">
+      <ng-container *ngTemplateOutlet="selectedListing"></ng-container>
+    </div>
+  </app-modal>
+
+  <div class="p-col-12 p-px-0" *ngIf="viewport === 'web'">
+    <div [ngClass]="{ 'left-right-container': viewport === 'web' }">
+      <div class="left-container">
+        <div class="inline-items" [ngClass]="{ 'overflow-x-scroll': viewport !== 'web' }">
+          <div class="item p-mx-2" *ngFor="let list of transactionsListTypes">
+            <div class="aps-card p-p-2 text-size-14 text-color-normal text-semi-bold pointer border"
+              [ngClass]="{ 'aps-card-primary': list == selectedList }" (click)="selectListing(list)">
+              {{ list.label }}&nbsp;({{ list.count }})
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-container" [ngClass]="{ 'float-right': viewport !== 'web' }">
+        <button *ngIf="selectedList.label === 'Template'" class="btn btn-md btn-tertiary"
+          [ngClass]="{ 'p-m-2': viewport !== 'web', 'p-m-1': viewport == 'web' }">
+          <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+          <span class="inline-block" (click)="navigateInitiate()">{{ 'Create a Template'
+            | apsTranslate }}</span>
+        </button>
+        <div class="toggle-select-container inline-block p-m-2">
+          <div class="action pointer text-color-dark-shade-1" (click)="onListTypeChange('grid')"
+            [ngClass]="{ active: listType === 'grid' }">
+            <app-icon icon="fa-list" class="app-icon"></app-icon>
+          </div>
+          <div class="action pointer text-color-dark-shade-1" (click)="onListTypeChange('card')"
+            [ngClass]="{ active: listType === 'card' }">
+            <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12" *ngIf="viewport === 'mobile'">
+    <div class="p-grid g-margin-x">
+      <div class="p-col-6" *ngFor="let list of transactionsListTypes">
+        <div
+          class="aps-card border-primary p-px-2 p-py-3 text-center text-size-14 text-color-normal text-semi-bold pointer border"
+          (click)="selectListing(list); showSelectedTab = true">
+          <span class="p-py-1 inline-block">{{ list.label }}&nbsp;</span>
+          <span class="p-py-1 inline-block">({{ list.count }})</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="viewport === 'web'">
+  <ng-container *ngTemplateOutlet="selectedListing"></ng-container>
+</ng-container>
+
+<!-- selected Listing -->
+<ng-template #selectedListing>
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12">
+      <div class="aps-card p-p-1" *ngIf="listType === 'grid'">
+        <div class="aps-search-container-1">
+          <input type="text" class="aps-search-input" [(ngModel)]="searchText" (input)="listing.onFilter(searchText)"
+            placeholder="{{ 'Enter keyword to Search' | apsTranslate }}" />
+          <div class="search-icon">
+            <app-icon icon="fa-search" class="app-icon"></app-icon>
+          </div>
+        </div>
+        <div class="p-mt-1 aps-h-300">
+          <app-ag-grid-listing #listing [id]="selectedList.label" [colDefUrl]="selectedList.colDefUrl"
+            [rowDefUrl]="selectedList.rowDataUrl" [context]="listingContext"></app-ag-grid-listing>
+        </div>
+      </div>
+      <div class="aps-card p-p-1" *ngIf="listType === 'card'">
+        <div class="aps-search-container-1">
+          <input type="text" class="aps-search-input" [(ngModel)]="searchText" (change)="listing.onFilter(searchText)"
+            placeholder="{{ 'Enter keyword to Search' | apsTranslate }}" />
+          <div class="search-icon">
+            <app-icon icon="fa-search" class="app-icon"></app-icon>
+          </div>
+        </div>
+        <div class="p-grid p-mt-2 aps-min-h-310">
+          <div class="p-col-12 aps-min-h-270 p-p-md-2 p-p-sm-0 p-p-0">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-3 p-col-lg-3 p-p-md-2 p-p-sm-0 p-p-0" *ngFor="let card of cardListData">
+                <div class="aps-card p-p-3">
+                  <div class="left-right-container">
+                    <div class="left-container">
+                      <div class="text-bold text-size-14 p-p-1">{{ card.accountTitle }}</div>
+                      <div class="text-size-12 p-p-1">{{ card.id }}</div>
+                      <div class="text-size-12 p-p-1">{{ card.paymentMethodName }}</div>
+                    </div>
+                    <div class="right-container">
+                      <div *ngFor="let action of card.actions" class="inline-block float-right">
+                        <app-icon class="p-m-1 pointer" *ngIf="action.type === 'ICON'" [icon]="action.icon"
+                          (click)="performGridOperation(action.displayName, card.id)"></app-icon>
+                      </div>
+                      <div class="p-mt-5">
+                        <div *ngFor="let action of card.actions" class="p-px-2 p-py-1">
+                          <button *ngIf="action.type === 'BUTTON'" class="btn btn-sm btn-primary"
+                            (click)="action.methodName">{{action.displayName}}</button>
+                          <!-- <button pButton type="button" class="background-color-primary-light-shade-2"
+                            *ngIf="action.type === 'BUTTON'" [label]="action.displayName" [ngClass]="action.class"
+                            (click)="intiateRecentPayment(card.id, card.initiateMode)"></button> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-p-0" *ngIf="allCardListData.length > 8">
+            <app-pagination [numberOfRecords]="allCardListData.length" type="CARD" (doPagination)="onPageChange($event)"
+              [_pageSize]="8">
+            </app-pagination>
+            <!--<div class="p-grid">
+            <div class="p-col-9 p-md-11 p-lg-11 p-p-0"></div>
+            <div class="p-col-3 p-md-1 p-lg-1 p-p-0">
+              <div class="p-grid">
+                <div class="p-col-1 p-md-4 p-lg-4 p-p-0"></div>
+                <div class="p-col-11 p-md-8 p-lg-8 p-p-0">
+                  <i class="pi pi-chevron-left p-mr-2 border-primary text-color-primary p-p-1 border-radius-4 pointer"
+                    (click)="changeCardPage(currentCardPage - 1)">
+                  </i>
+                  <i class="pi pi-chevron-right border-primary text-color-primary p-p-1 border-radius-4 pointer"
+                    (click)="changeCardPage(currentCardPage + 1)">
+                  </i>
+                </div>
+              </div>
+            </div>
+          </div>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

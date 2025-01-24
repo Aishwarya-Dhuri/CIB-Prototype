@@ -1,0 +1,273 @@
+<div class="container" *ngIf="!isReview">
+  <!-- Search Filters -->
+  <div class="p-grid g-margin-x" *ngIf="isSearchBy">
+    <div class="p-md-7 p-lg-7 p-sm-12 p-col-12">
+      <div class="aps-card p-mb-1">
+        <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+          {{ 'Search By' | apsTranslate }}
+        </div>
+      </div>
+      <app-dynamic-search
+        #dynamicSearchBy
+        [isShowSaveSearchCriteria]="false"
+        [isDisplayPrefillCriteriaModal]="false"
+        [isShowPrefillCriteria]="false"
+        [isShowSearchByHeader]="false"
+        entityName="RMS_UNDO_RECONCILIATION_SEARCHBY"
+        [isOptionalParameterHidden]="true"
+        [isHideActionFooter]="true"
+        (onSearch)="getSearchByResults($event)"
+        [cardHeight]="200"
+        (isFormValid)="onSearchByChange($event)"
+      >
+      </app-dynamic-search>
+      <div class="p-grid g-margin-x">
+        <div class="p-col-12 p-md-6 p-sm-12 p-lg-6">
+          <div class="aps-card p-mb-1">
+            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+              {{ 'Invoice Filter' | apsTranslate }}
+            </div>
+          </div>
+          <app-dynamic-search
+            #dynamicSearchBy
+            [isShowSaveSearchCriteria]="false"
+            [isDisplayPrefillCriteriaModal]="false"
+            [isShowPrefillCriteria]="false"
+            [isShowSearchByHeader]="false"
+            [optionalParametersColSize]="12"
+            entityName="RMS_RECONCILIATION_INVOICE_FILTER"
+            [isOptionalParameterHidden]="true"
+            [isHideActionFooter]="true"
+            [cardHeight]="340"
+            (onSearch)="getInvoiceFilterResults($event)"
+            (isFormValid)="onInvoiceFilterChange($event)"
+          >
+          </app-dynamic-search>
+        </div>
+        <div class="p-col-12 p-md-6 p-sm-12 p-lg-6">
+          <div class="aps-card p-mb-1">
+            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+              {{ 'Payment Filter' | apsTranslate }}
+            </div>
+          </div>
+          <app-dynamic-search
+            #dynamicSearchBy
+            [isShowSaveSearchCriteria]="false"
+            [isDisplayPrefillCriteriaModal]="false"
+            [isShowPrefillCriteria]="false"
+            [isShowSearchByHeader]="false"
+            entityName="RMS_RECONCILIATION_PAYMENT_FILTER"
+            [isOptionalParameterHidden]="true"
+            [optionalParametersColSize]="12"
+            [isHideActionFooter]="true"
+            [cardHeight]="340"
+            (onSearch)="getPaymentFilterResults($event)"
+            (isFormValid)="onPaymentFilterChange($event)"
+          >
+          </app-dynamic-search>
+        </div>
+      </div>
+      <div class="fixed-bottom-container">
+        <div class="aps-card p-px-3 p-py-2">
+          <div class="left-right-container">
+            <div class="left-container">
+              <button class="btn btn-md btn-tertiary p-mr-3">
+                {{ 'CANCEL' | apsTranslate }}
+              </button>
+            </div>
+            <div class="right-container">
+              <button
+                [disabled]="!isSearchValid()"
+                class="btn btn-md btn-primary"
+                (click)="isSearchResult = true; isSearchBy = false"
+              >
+                {{ 'SEARCH' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-5 p-lg-5 p-sm-12 p-col-12">
+      <div class="aps-card p-px-3 aps-h-100p">
+        <p-tabView>
+          <p-tabPanel header="{{ 'Recent Reconciliation' | apsTranslate }}">
+            <div class="p-grid border-bottom">
+              <div class="p-col-12 p-md-6 p-sm-12">
+                <div class="p-py-2">
+                  <div class="text-size-12 text-semi-bold">
+                    {{ 'Match Id' | apsTranslate }}: MAT142
+                  </div>
+                  <div class="text-size-12 text-semi-bold">
+                    {{ 'Invoice No.' | apsTranslate }}: INV14566
+                  </div>
+                  <div class="text-size-12 text-semi-bold">
+                    {{ 'Payment' | apsTranslate }}: PAT678,PAT1233,...
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-6 p-sm-12 text-right p-py-4">
+                <div class="inline-items">
+                  <div class="item p-p-1 pointer">
+                    <app-icon icon="fa-paperclip"></app-icon>
+                  </div>
+                  <div class="item p-p-1 pointer">
+                    <app-icon icon="fa-eye" class="text-color-primary"></app-icon>
+                  </div>
+                  <div class="item p-p-1 pointer">
+                    <div class="text-size-14 text-semi-bold text-color-primary">
+                      {{ 'UNDO RECON' | apsTranslate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+  </div>
+  <!-- Search Result -->
+  <div class="p-grid g-margin-x" *ngIf="isSearchResult">
+    <div class="p-col-12">
+      <div class="aps-card p-p-3">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="inline-items">
+              <div class="item p-mr-4">
+                <div class="text-size-16 text-bold">{{ 'Searched By' | apsTranslate }}</div>
+              </div>
+              <!-- <div class="item text-size-12 p-mr-3">
+                                <div class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2">
+                                    <span class="text-color-normal">Corporate Client Name</span>
+                                    &nbsp;
+                                    <span class="text-color-dark-shade-1 text-semi-bold">{{
+                                        searchFilters[0].value
+                                        }}</span>
+                                </div>
+                            </div>
+                            <div class="item text-size-12 p-mr-3">
+                                <div class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2">
+                                    <span class="text-color-normal">Program</span>
+                                    &nbsp;
+                                    <span class="text-color-dark-shade-1 text-semi-bold">{{ searchFilters[1].value }}</span>
+                                </div>
+                            </div> -->
+              <div class="item text-size-12 p-mr-3" *ngFor="let filter of searchFilters">
+                <div class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2">
+                  <div class="inline-items">
+                    <div class="item">
+                      <span class="text-color-normal">{{ filter.displayName }}</span>
+                      &nbsp;
+                    </div>
+                    <div class="item">
+                      <div class="label-with-icon-container">
+                        <div class="icon" *ngIf="filter.displayName == 'Account Number'">
+                          <img
+                            src="assets/images/flag/us-flag.png"
+                            alt="USD"
+                            width="16px"
+                            height="12px"
+                          />
+                        </div>
+                        <div class="label">
+                          <span class="text-color-dark-shade-1 text-semi-bold">
+                            {{ filter.displayValue }}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-container">
+            <div class="inline-items">
+              <div class="item p-mr-3">
+                <button class="btn btn-xsm btn-tertiary" (click)="modify()">
+                  {{ 'MODIFY' | apsTranslate }}
+                </button>
+              </div>
+              <div class="item p-mr-3">
+                <button class="btn btn-xsm btn-tertiary" (click)="clearAll()">
+                  {{ 'CLEAR ALL' | apsTranslate }}
+                </button>
+              </div>
+              <div class="item pointer">
+                <i
+                  class="pi text-size-12 pointer"
+                  [ngClass]="showFilters ? 'pi-chevron-up' : 'pi-chevron-down'"
+                  (click)="showFilters = !showFilters"
+                ></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="showFilters">
+          <div class="p-grid text-size-14 p-pt-3">
+            <ng-container *ngFor="let filter of invoiceFilters">
+              <div class="p-col-3 p-p-0">
+                <div class="text-color-light-shade-1">{{ filter.displayName }}</div>
+                <div class="text-color-dark-shade-1">{{ filter.value }}</div>
+              </div>
+            </ng-container>
+          </div>
+
+          <div class="p-grid text-size-14 p-pt-3">
+            <ng-container *ngFor="let filter of paymentFilters">
+              <div class="p-col-3 p-p-0">
+                <div class="text-color-light-shade-1">{{ filter.displayName }}</div>
+                <div class="text-color-dark-shade-1">{{ filter.value }}</div>
+              </div>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="p-col-12">
+      <div class="aps-card aps-h-400">
+        <div class="card-header overflow-visible">
+          <div class="p-px-3" [ngClass]="{ 'left-right-container': viewPort === 'web' }">
+            <div class="left-container">
+              <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                {{ 'Search Result' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container aps-py-12">
+              <app-grid-listing-tools
+                (changeFloatingFilter)="undoReconciliationGrid.changeFloatFilter($event)"
+                (filterRecords)="undoReconciliationGrid.onFilter($event)"
+                (applyColDefs)="undoReconciliationGrid.onApplyConfig($event)"
+                [colDefs]="undoReconciliationGrid.columnDefs"
+                [columnConfig]="true"
+                [moreOptions]="true"
+                [showMail]="true"
+                [showDownload]="true"
+                [showPrint]="true"
+                [showRefresh]="true"
+                [showPrint]="false"
+              >
+              </app-grid-listing-tools>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <app-ag-grid-listing
+            id="undoReconciliationGrid"
+            #undoReconciliationGrid
+            [colDefUrl]="colDefUrl"
+            [rowData]="rowListData"
+            [gridOptions]="gridOptions"
+          >
+          </app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Manual Reconciliation Review -->
+<div *ngIf="isReview">
+  <app-search-result [isMatched]="true" [selectedData]="selectedData"></app-search-result>
+</div>

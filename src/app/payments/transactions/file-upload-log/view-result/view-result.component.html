@@ -1,0 +1,73 @@
+<div class="container">
+  <div class="p-grid">
+    <div class="p-col-12 p-px-0">
+      <div class="aps-card p-p-3">
+        <div class="p-grid">
+          <div class="p-col-12 p-p-0">
+            <div class="left-right-container p-pb-2">
+              <div class="left-container">
+                <div class="text-size-16px text-semi-bold">Searched By</div>
+              </div>
+              <div class="right-container">
+                <button class="btn btn-md btn-tertiary p-py-0" (click)="onClearSearchClick()">
+                  CLEAR SEARCH
+                </button>
+                <button class="btn btn-md btn-tertiary p-mr-1 p-py-0" (click)="onModifyClick()">
+                  MODIFY
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-3 p-lg-3" *ngFor="let filter of filters">
+            <div class="text-size-14 text-color-light-shade-1">{{ filter.displayName }}</div>
+            <div class="text-size-16">
+              {{ filter.displayName === 'Uploaded Date' ? filter.value : filter.displayValue }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-px-0">
+      <div class="aps-card aps-h-400 overflow-hidden">
+        <div class="card-header overflow-visible">
+          <div class="p-px-3" [ngClass]="{ 'left-right-container': viewPort === 'web' }">
+            <div class="left-container">
+              <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                File Uploaded List
+              </div>
+            </div>
+            <div class="right-container aps-py-12">
+              <app-grid-listing-tools
+                (changeFloatingFilter)="fileUploadLogGrid.changeFloatFilter($event)"
+                (filterRecords)="fileUploadLogGrid.onFilter($event)"
+                (applyColDefs)="fileUploadLogGrid.onApplyConfig($event)"
+                [colDefs]="fileUploadLogGrid.columnDefs"
+                [columnConfig]="true"
+                [moreOptions]="true"
+                [showMail]="true"
+                [showDownload]="true"
+                [showPrint]="true"
+                [showRefresh]="true"
+                [showPrint]="false"
+              >
+              </app-grid-listing-tools>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <app-ag-grid-listing
+            id="fileUploadLogGrid"
+            #fileUploadLogGrid
+            [colDefUrl]="colDefUrl"
+            [rowDefUrl]="dataUrl"
+            [rowDefReq]="filters"
+            [gridOptions]="gridOptions"
+            [frameworkComponents]="frameworkComponents"
+          >
+          </app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

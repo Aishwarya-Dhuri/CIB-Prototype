@@ -1,0 +1,286 @@
+<div class="container">
+  <div class="text-color-dark-shade-1" *ngIf="!loading; else loadingData">
+    <div class="aps-card">
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+          <div class="aps-card aps-filled-card-white aps-p-12 aps-h-100p border-primary">
+            <div class="left-right-container">
+              <div class="left-container">
+                <img
+                  src="assets/images/{{ summariesData.image }}"
+                  [alt]="summariesData.name"
+                  class="corporate-logo"
+                />
+              </div>
+
+              <div class="right-container">
+                <span
+                  class="inline-block background-color-primary-light-shade-2 p-py-1 p-px-2 border-radius-4 text-size-12"
+                >
+                  {{ summariesData.totalAccounts }} Accounts
+                </span>
+              </div>
+            </div>
+
+            <div class="text-size-14 text-semi-bold aps-pb-12">
+              {{ summariesData.name }}
+            </div>
+
+            <div class="border-primary"></div>
+
+            <div class="p-grid">
+              <div class="p-col-6">
+                <div class="text-size-14 text-bold">
+                  <app-base-currency
+                    [amount]="summariesData.overallBalance"
+                    [currency]="currency.currency"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-12">Available Balance</div>
+              </div>
+              <div class="p-col-6">
+                <div class="text-size-14 text-bold">
+                  <app-base-currency
+                    [amount]="summariesData.overallLimit"
+                    [currency]="currency.currency"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-12">Available Limit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-5 p-sm-12 p-col-12">
+          <div class="p-grid p-my-2 border-right">
+            <div class="p-md-6 p-sm-12 p-col-12 p-py-5">
+              <div class="text-size-24 text-bold">
+                <app-base-currency
+                  [amount]="selectedSummary.creditAmount"
+                  [currency]="currency.currency"
+                ></app-base-currency>
+              </div>
+
+              <div class="text-size-16 p-mt-1">
+                Total Credit {{ selectedSummary.limitOrBalance }}
+              </div>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12 p-py-5">
+              <div class="text-size-24 text-bold">
+                <app-base-currency
+                  [amount]="selectedSummary.debitAmount"
+                  [currency]="currency.currency"
+                ></app-base-currency>
+              </div>
+
+              <div class="text-size-16 p-mt-1">
+                Total Debit {{ selectedSummary.limitOrBalance }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+          <app-pie-chart [options]="options" webHeight="140" mobileHeight="250"></app-pie-chart>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-py-3" routerLink="account-services/services/account-summary">
+      <div class="p-col-12 p-p-0">
+        <div class="inline-items">
+          <div class="item p-pr-2" style="width: calc(100% - 60px)">
+            <div #summaryListContainer class="aps-w-100p overflow-scroll hide-scroll">
+              <div class="inline-items">
+                <div class="item p-mr-3">
+                  <div class="background-color border border-radius-4 p-py-2 p-px-2">
+                    <app-icon
+                      icon="fa-bars"
+                      styleClasses="text-color-normal text-size-14"
+                    ></app-icon>
+                  </div>
+                </div>
+
+                <div class="item p-pr-3" *ngFor="let summary of summaryList">
+                  <div
+                    class="background-color text-color-normal border border-radius-4 text-size-14 p-py-2 p-px-2 pointer"
+                    [ngClass]="{
+                      'background-color-primary text-color-inverted border-primary':
+                        summary.displayName === selectedSummary.displayName
+                    }"
+                    (click)="changeSummary(summary)"
+                  >
+                    {{ summary.displayName }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item p-pt-2" style="width: 60px">
+            <div class="left-right-container">
+              <div class="left-container"></div>
+              <div class="right-container">
+                <div class="inline-items">
+                  <div class="item p-pr-2">
+                    <div class="scroll-btn" (click)="summaryListScrollLeft()">
+                      <app-icon
+                        icon="fa-chevron-left"
+                        class="app-icon"
+                        rtlIcon="fa-chevron-right"
+                      ></app-icon>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="scroll-btn" (click)="summaryListScrollRight()">
+                      <app-icon
+                        icon="fa-chevron-right"
+                        class="app-icon"
+                        rtlIcon="fa-chevron-left"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0">
+        <app-account-summary-listing
+          [summaryList]="summaryList"
+          [summary]="selectedSummary"
+          [corporate]="selectedCorporate"
+          (changeSummery)="changeSummary($event)"
+        ></app-account-summary-listing>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingData>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>
+
+<div class="view-country-summary-container p-p-2 p-px-lg-3 p-py-lg-1 p-mb-lg-3" *ngIf="!loading">
+  <div class="corporate-summary-list-container">
+    <div class="aps-card overall-account-balance-container text-color-dark-shade-1 p-mb-3">
+      <ng-container>
+        <div class="aps-card aps-filled-card-white overall-account-balance-1">
+          <div class="left-right-container">
+            <div class="left-container">
+              <img src="assets/images/{{ summariesData.image }}" alt="Corporate" class="logo" />
+            </div>
+
+            <div class="right-container">
+              <span
+                class="inline-block background-color-primary-light-shade-2 p-py-1 p-px-2 border-radius-4 text-size-12"
+              >
+                {{ summariesData.totalAccounts }} Accounts
+              </span>
+            </div>
+          </div>
+
+          <div class="text-size-14 text-semi-bold aps-pb-12">
+            {{ summariesData.name }}
+          </div>
+
+          <div class="border-primary"></div>
+
+          <div class="p-grid">
+            <div class="p-col-6">
+              <div class="text-size-14 text-bold">
+                <app-base-currency
+                  [amount]="summariesData.overallBalance"
+                  [currency]="currency.currency"
+                ></app-base-currency>
+              </div>
+              <div class="text-size-12">Available Balance</div>
+            </div>
+            <div class="p-col-6">
+              <div class="text-size-14 text-bold">
+                <app-base-currency
+                  [amount]="summariesData.overallLimit"
+                  [currency]="currency.currency"
+                ></app-base-currency>
+              </div>
+              <div class="text-size-12">Available Limit</div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="other-balances-container text-color-dark-shade-1">
+        <div class="other-balance">
+          <div class="text-size-24 text-bold">
+            <app-base-currency
+              [amount]="summariesData.creditBalance"
+              [currency]="currency.currency"
+            ></app-base-currency>
+          </div>
+          <div class="text-size-16 p-mt-1">Total Credit {{ selectedSummary.limitOrBalance }}</div>
+        </div>
+        <div class="other-balance">
+          <div class="text-size-24 text-bold">
+            <app-base-currency
+              [amount]="summariesData.debitBalance"
+              [currency]="currency.currency"
+            ></app-base-currency>
+          </div>
+          <div class="text-size-16 p-mt-1">Total Debit {{ selectedSummary.limitOrBalance }}</div>
+        </div>
+      </div>
+
+      <div class="divider-v"></div>
+
+      <div class="chart-container">
+        <app-pie-chart [options]="options" webHeight="140" mobileHeight="200"></app-pie-chart>
+      </div>
+    </div>
+
+    <div #summaryListContainer class="summary-list">
+      <div class="more-options">
+        <app-icon icon="fa-bars" styleClasses="text-size-14"></app-icon>
+      </div>
+      <div
+        class="list-item pointer text-color-normal text-size-14"
+        *ngFor="let summary of summaryList"
+        [ngClass]="{ 'list-item-active': summary.displayName === selectedSummary.displayName }"
+        (click)="selectedSummary = summary"
+      >
+        {{ summary.displayName }}
+      </div>
+    </div>
+    <div class="scroll-container">
+      <div class="scroll-actions text-color -primary text-center">
+        <div class="aps-card action" (click)="summaryListScrollLeft()">
+          <app-icon
+            icon="fa-chevron-left"
+            styleClasses="text-size-12"
+            rtlIcon="fa-chevron-right"
+          ></app-icon>
+        </div>
+        <div class="aps-card action" (click)="summaryListScrollRight()">
+          <app-icon
+            icon="fa-chevron-right"
+            styleClasses="text-size-12"
+            rtlIcon="fa-chevron-left"
+          ></app-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="account-summary-list-container">
+    <app-account-summary-listing
+      [summaryList]="summaryList"
+      [summary]="selectedSummary"
+      listType="card"
+      (changeSummery)="selectedSummary = $event"
+    ></app-account-summary-listing>
+  </div>
+</div>

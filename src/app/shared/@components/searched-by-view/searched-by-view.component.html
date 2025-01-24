@@ -1,0 +1,35 @@
+<div class="p-grid">
+  <div class="p-col-12 p-p-0">
+    <div class="aps-card p-p-3">
+      <div class="p-grid">
+        <div class="p-col-12 p-p-0">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16px text-semi-bold">Searched By</div>
+            </div>
+            <div class="right-container">
+              <button class="btn btn-md btn-tertiary p-py-0" (click)="onClearClick()">
+                CLEAR SEARCH
+              </button>
+              <button class="btn btn-md btn-tertiary p-mr-1 p-py-0" (click)="onModifyClick()">
+                MODIFY
+              </button>
+              <span class="text-size-16 pointer">
+                <app-icon *ngIf="!isCollape" icon="fa-chevron-down" (click)="isCollape = true"></app-icon>
+                <app-icon *ngIf="isCollape" icon="fa-chevron-up" (click)="isCollape = false"></app-icon>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="isCollape">
+          <div class="p-md-3 p-sm-6 p-col-6" *ngFor="let filter of filters">
+            <div class="text-size-14 text-color-light-shade-1">{{ filter.displayName }}</div>
+            <div *ngIf="filter.type != 'Amount'" class="text-size-16">{{ filter.displayValue }}</div>
+            <div *ngIf="filter.type == 'Amount'" class="text-size-16"><app-base-currency [amount]="filter.displayValue"></app-base-currency></div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

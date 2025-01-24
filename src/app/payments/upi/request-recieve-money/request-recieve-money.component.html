@@ -1,0 +1,131 @@
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+        <form #apsform="ngForm" name="apsform">
+            <div class="aps-card">
+                <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Payment Details</div>
+                </div>
+
+                <div class="aps-card-body p-p-3 p-mb-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                            <app-aps-calender [label]="'Value Date' | apsTranslate" name="valueDate" id="valueDate"
+                                showIcon="true" #valueDate="ngModel" [(ngModel)]="formData.valueDate" required="true">
+                            </app-aps-calender>
+                        </div>
+
+                        <div class="p-md-9 p-sm-12 p-col-12"></div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                            <aps-custom-select name="corporateVpaId" id="corporateVpaId" label="Corporate VPA ID"
+                                dataUrl="payments/upi/sendMoney/private/dropdown/debitVpaId"
+                                [value]="formData.accountNo" [(ngModel)]="formData.corporateVpaId" [required]="true">
+                            </aps-custom-select>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0" *ngIf="formData.corporateVpaId">
+                            <app-review-form-field label="Account Number"
+                                [value]="formData.accountNo"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0" *ngIf="formData.corporateVpaId">
+                            <app-review-form-field label="Account Name"
+                                [value]="formData.accountName"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0" *ngIf="formData.corporateVpaId">
+                            <app-review-form-field label="Account Balance"
+                                [value]="formData.accountBalance"></app-review-form-field>
+                        </div>
+
+                        <!-- <div class="p-md-12 p-sm-12 p-col-12"> -->
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input [label]="'Payer VPA Id' | apsTranslate" name="vpaId" id="vpaId"
+                                [(ngModel)]="formData.payerVpaId" required="true">
+                            </aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                            <button type="button" class="btn btn-md btn-primary" (click)="validateOTP()"
+                                [disabled]="!formData.payerVpaId">
+                                VALIDATE
+                            </button>
+                        </div>
+                        <!-- </div> -->
+                        <div class="p-md-12 p-sm-12 p-col-12">
+                            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                                <aps-form-input [label]="'Amount' | apsTranslate" id="amount" name="amount"
+                                    inputType="currencyFormatNotZero" [(ngModel)]="formData.amount" required="true">
+                                </aps-form-input>
+                            </div>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                            <app-aps-calender [label]="'Expiry Date' | apsTranslate" name="valueDate" id="valueDate"
+                                showIcon="true" #valueDate="ngModel" [(ngModel)]="formData.expiryDate" required="true">
+                            </app-aps-calender>
+                        </div>
+                        <div class="p-md-12 p-sm-12 p-col-12">
+                            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                                <aps-form-input [label]="'Payment Remarks' | apsTranslate" id="remarks" name="remarks"
+                                    [(ngModel)]="formData.remarks">
+                                </aps-form-input>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Payment Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3 p-mb-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Value date" [value]="formData.valueDate"></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Corporate VPA Id"
+                            [value]="formData.corporateVpaId"></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Account Number"
+                            [value]="formData.accountNo"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Account Name"
+                            [value]="formData.accountName"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Payer VPA Id"
+                            [value]="formData.payerVpaId"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Amount" [value]="formData.amount"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Expiry Date"
+                            [value]="formData.expiryDate"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Payment Remarks"
+                            [value]="formData.remarks"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6"></div>
+
+                    <!-- <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="UPI ID" [value]="formData.upiId"></app-review-form-field>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

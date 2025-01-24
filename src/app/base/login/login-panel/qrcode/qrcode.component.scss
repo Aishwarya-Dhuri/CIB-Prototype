@@ -1,0 +1,39 @@
+.qrcode-container {
+  display: block;
+  padding: 14px 0 8px 0;
+
+  .main-heading {
+    font-size: 1rem;
+    color: var(--text-color-dark-shade-1);
+    font-family: 'CIB Bold';
+  }
+
+  .sub-heading {
+    margin: 8px 0;
+    font-size: 0.875rem;
+    color: var(--text-color-dark-shade-1);
+  }
+
+  .qr-code {
+    position: relative;
+    /*   height: 15rem;*/
+    width: 100%;
+
+    .image {
+      margin: 24px calc(50% - 4.25rem) 10px calc(50% - 4.25rem);
+      width: 8rem;
+      height: 8rem;
+      border-radius: 10px;
+
+      .qrCode {
+        border-radius: 10px !important;
+      }
+    }
+
+    .text {
+      padding-top: 0.5rem;
+      text-align: center;
+      font-size: 0.875rem;
+    }
+  }
+}

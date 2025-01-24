@@ -1,0 +1,420 @@
+<div class="container text-color-dark-shade-1">
+  <div class="p-grid g-margin-x" *ngIf="!loading; else loadingTemplate">
+    <app-modal [(isShow)]="showInvestmentsOverview" size="md">
+      <ng-container [ngTemplateOutlet]="investmentsOverview"></ng-container>
+    </app-modal>
+
+    <app-modal [(isShow)]="showInvestmentsDistribution" size="md">
+      <ng-container [ngTemplateOutlet]="investmentsDistribution"></ng-container>
+    </app-modal>
+
+    <div class="p-md-10 p-sm-12 p-col-12">
+      <div class="aps-card">
+        <div class="p-grid p-p-2">
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <div class="group-dropdown p-input-icon-left" *ngIf="isGroupUser">
+              <i class="fal fa-user"></i>
+              <p-dropdown
+                appendTo="body"
+                class="custom-dropdown"
+                [(ngModel)]="corporate"
+                [options]="corporates"
+                optionLabel="displayName"
+                placeholder="{{ 'Select a Corporate' | apsTranslate }}"
+                (onChange)="(null)"
+                [showClear]="false"
+                (onChange)="getCorporateWealthData($event.value.id)"
+              >
+              </p-dropdown>
+            </div>
+            <div
+              class="background-color-primary p-p-2 border-radius-4 text-color-inverted"
+              *ngIf="!isGroupUser"
+            >
+              {{ corporate.displayName }}
+            </div>
+          </div>
+          <div class="p-md-1 p-sm-12 p-col-12 p-pt-3">
+            <app-currency-select-dropdown
+              selectStyleClass="select"
+              (currencyChanged)="onChangeCurrency($event.displayName)"
+            ></app-currency-select-dropdown>
+          </div>
+          <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+            <div class="p-grid p-px-2 border-radius-4 text-size-14 background-color-dark-3">
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-color-normal">{{ 'Net Worth' | apsTranslate }}</div>
+                <div class="text-bold">
+                  <app-base-currency
+                    [amount]="corporateWealthManagementData.netWorth"
+                    [currency]="currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <div class="text-color-normal">{{ 'Total Assets' | apsTranslate }}</div>
+                <div class="text-bold">
+                  <app-base-currency
+                    [amount]="corporateWealthManagementData.totalAssets"
+                    [currency]="currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-6 p-col-6">
+                <div class="text-color-normal">{{ 'Total Liabilities' | apsTranslate }}</div>
+                <div class="text-bold">
+                  <app-base-currency
+                    [amount]="corporateWealthManagementData.totalLiabilities"
+                    [currency]="currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-2 p-sm-12 p-col-12 text-right">
+            <button class="btn btn-md btn-primary mt-2" routerLink="holdings">
+              {{ 'VIEW HOLDINGS' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-2 p-sm-12 p-col-12">
+      <div class="aps-card p-px-3 aps-pt-12 p-pb-2">
+        <div class="text-size-8 text-light p-mb-1">10:00 AM 21 OCT 21</div>
+        <div class="left-right-container text-size-12 text-bold">
+          <div class="left-container">
+            <span>{{ 'NSE' | apsTranslate }}</span>
+            &nbsp;
+            <span class="text-color-success">{{ corporateWealthManagementData.nse }}</span>
+          </div>
+          <div class="right-container">
+            <app-icon icon="fa-caret-up" styleClasses="text-size-16 text-color-success"></app-icon>
+            &nbsp;
+            <span class="text-color-success"
+              >{{ corporateWealthManagementData.nsePercentage }}%</span
+            >
+          </div>
+        </div>
+        <div class="left-right-container text-size-12 text-bold">
+          <div class="left-container">
+            <span>BSE</span>
+            &nbsp;
+            <span class="text-color-success">{{ corporateWealthManagementData.bse }}</span>
+          </div>
+          <div class="right-container">
+            <app-icon icon="fa-caret-up" styleClasses="text-size-16 text-color-success"></app-icon>
+            &nbsp;
+            <span class="text-color-success"
+              >{{ corporateWealthManagementData.bsePercentage }}%</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-6 p-sm-12 p-col-12">
+      <div class="aps-card p-p-2">
+        <div class="p-grid">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-16 text-bold">{{ 'Total Assets' | apsTranslate }}</div>
+            <div class="p-grid">
+              <div class="p-md-12 p-sm-6 p-col-6 p-p-0">
+                <div class="text-size-14 p-py-md-3 p-py-sm-0 p-py-0">
+                  <div class="text-color-normal">{{ 'Investment Value' | apsTranslate }}</div>
+                  <div class="text-bold">
+                    <app-base-currency
+                      [amount]="corporateWealthManagementData.investmentValue"
+                      [currency]="currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                </div>
+              </div>
+              <div class="p-md-12 p-sm-6 p-col-6 p-p-0">
+                <div class="text-size-14">
+                  <div class="text-color-normal">{{ 'Market Value' | apsTranslate }}</div>
+                  <div class="text-bold">
+                    <app-base-currency
+                      [amount]="corporateWealthManagementData.marketValue"
+                      [currency]="currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="p-md-4 p-sm-12 p-col-12 p-py-0 p-my-2 border-left border-right no-border-on-mobile"
+          >
+            <div class="text-size-16 text-bold">{{ 'Unrealised Gain/Loss' | apsTranslate }}</div>
+            <div class="p-grid">
+              <div class="p-md-12 p-sm-6 p-col-6 p-p-0">
+                <div class="text-size-14 p-py-md-3 p-py-sm-0 p-py-0">
+                  <div class="text-color-normal">{{ 'Overall Gain/Loss' | apsTranslate }}</div>
+                  <div class="text-color-success">
+                    <app-icon
+                      icon="fa-caret-up"
+                      styleClasses="text-size-16 text-color-success"
+                    ></app-icon>
+                    &nbsp;
+
+                    <app-base-currency
+                      [amount]="corporateWealthManagementData.overallGainLoss"
+                      [currency]="currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+
+                    &nbsp;({{ corporateWealthManagementData.overallGainLossPercentage }}%)
+                  </div>
+                </div>
+              </div>
+              <div class="p-md-12 p-sm-6 p-col-6 p-p-0">
+                <div class="text-size-14">
+                  <div class="text-color-normal">{{ 'Today’s Gain/Loss' | apsTranslate }}</div>
+                  <div class="text-color-success">
+                    <app-icon
+                      icon="fa-caret-up"
+                      styleClasses="text-size-16 text-color-success"
+                    ></app-icon>
+                    &nbsp;
+                    <app-base-currency
+                      [amount]="corporateWealthManagementData.TodaysGainLoss"
+                      [currency]="currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                    &nbsp;({{ corporateWealthManagementData.TodaysGainLossPercentage }}%)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-16 text-bold">{{ 'Realised Gain/Loss' | apsTranslate }}</div>
+            <div class="p-grid">
+              <div class="p-md-12 p-sm-6 p-col-6 p-p-0">
+                <div class="text-size-14 p-py-md-3 p-py-sm-0 p-py-0">
+                  <div class="text-color-normal">{{ 'Realised Gain/Loss' | apsTranslate }}</div>
+                  <div class="text-color-success">
+                    <app-icon
+                      icon="fa-caret-up"
+                      styleClasses="text-size-16 text-color-success"
+                    ></app-icon>
+                    &nbsp;
+                    <app-base-currency
+                      [amount]="corporateWealthManagementData.realizedGainLoss"
+                      [currency]="currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                    &nbsp;({{ corporateWealthManagementData.realizedGainLossPercentage }}%)
+                  </div>
+                </div>
+              </div>
+              <div class="p-md-12 p-sm-6 p-col-6 p-p-0">
+                <div class="text-size-14">
+                  <div class="text-color-normal">{{ 'Other Gain/Loss' | apsTranslate }}</div>
+                  <div class="text-color-success">
+                    <app-icon
+                      icon="fa-caret-up"
+                      styleClasses="text-size-16 text-color-success"
+                    ></app-icon>
+                    &nbsp;
+                    <app-base-currency
+                      [amount]="corporateWealthManagementData.OtherGainLoss"
+                      [currency]="currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                    &nbsp;({{ corporateWealthManagementData.OtherGainLossPercentage }}%)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-6 p-sm-12 p-col-12">
+      <div class="aps-card aps-h-100p p-p-3">
+        <app-insights
+          insightsUrl="dummyServer/json/commons/private/insights/wealthManagement"
+          height="110"
+          [isTransparentBackground]="true"
+          outerPadding="0"
+        ></app-insights>
+      </div>
+    </div>
+
+    <div
+      [ngClass]="!expandInvestmentsOverview ? 'p-md-6' : ''"
+      class="p-sm-12 p-col-12"
+      *ngIf="!expandInvestmentsDistribution"
+    >
+      <ng-container [ngTemplateOutlet]="investmentsOverview"></ng-container>
+    </div>
+
+    <div
+      [ngClass]="!expandInvestmentsDistribution ? 'p-md-6' : ''"
+      class="p-sm-12 p-col-12"
+      *ngIf="!expandInvestmentsOverview"
+    >
+      <ng-container [ngTemplateOutlet]="investmentsDistribution"></ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #investmentsOverview>
+  <div class="aps-card p-p-3">
+    <div class="left-right-container p-pb-2 border-bottom-primary">
+      <div class="left-container">
+        <div class="text-size-16 text-bold">{{ 'Investments Overview' | apsTranslate }}</div>
+      </div>
+      <div class="right-container">
+        <div class="inline-items">
+          <div class="item p-px-2">
+            <app-icon icon="fa-sync-alt" styleClasses="text-size-16"></app-icon>
+          </div>
+          <div class="item p-px-2">
+            <app-icon
+              icon="fa-eye"
+              styleClasses="text-size-16"
+              (click)="showInvestmentsOverview = !showInvestmentsOverview"
+            ></app-icon>
+          </div>
+          <div class="item p-px-2">
+            <app-icon
+              icon="fa-expand"
+              styleClasses="text-size-16"
+              (click)="expandInvestmentsOverview = !expandInvestmentsOverview"
+            ></app-icon>
+          </div>
+          <div class="item p-px-2">
+            <app-icon icon="fa-ellipsis-v" styleClasses="text-size-16"></app-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="left-right-container p-py-2">
+      <div class="left-container"></div>
+      <div class="right-container">
+        <div class="inline-items text-size-12 border-radius-4 border border-primary">
+          <div
+            class="item p-px-2 p-py-1 pointer"
+            *ngFor="let d of investmentsOverviewDuration"
+            [ngClass]="{
+              'background-color-primary text-color-inverted':
+                selectedInvestmentsOverviewDuration == d
+            }"
+            (click)="selectedInvestmentsOverviewDuration = d"
+          >
+            {{ d }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-grid g-margin-x">
+      <div class="p-md-9 p-pb-0 p-sm-12 p-col-12">
+        <div class="" style="height: 225px">
+          <ag-charts-angular [options]="areaOptions"></ag-charts-angular>
+        </div>
+      </div>
+      <div class="p-md-3 p-sm-12 p-col-12">
+        <div class="background-color-dark-3 borer-radius-4 p-p-2">
+          <div class="p-grid">
+            <div class="p-md-12 p-sm-4 p-col-4 p-p-0">
+              <div class="text-size-14">
+                <div class="text-color-normal">{{ 'Yearly Growth' | apsTranslate }}</div>
+
+                <div class="text-color-success">
+                  <app-icon
+                    icon="fa-caret-up"
+                    styleClasses="text-size-16 text-color-success"
+                  ></app-icon>
+                  &nbsp;
+                  <app-base-currency
+                    [amount]="corporateWealthManagementData.yearlyGrowth"
+                    [currency]="currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-12 p-sm-4 p-col-4 p-p-0">
+              <div class="text-size-14 p-py-md-3 p-py-sm-0 p-py-0">
+                <div class="text-color-normal">{{ 'Monthly Growth' | apsTranslate }}</div>
+
+                <div class="text-color-success">
+                  <app-icon
+                    icon="fa-caret-up"
+                    styleClasses="text-size-16 text-color-success"
+                  ></app-icon>
+                  &nbsp;
+                  <app-base-currency
+                    [amount]="corporateWealthManagementData.monthlyGrowth"
+                    [currency]="currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-12 p-sm-4 p-col-4 p-p-0">
+              <div class="text-size-14">
+                <div class="text-color-normal">{{ 'Average Growth' | apsTranslate }}</div>
+
+                <div class="text-color-success">
+                  <app-icon
+                    icon="fa-caret-up"
+                    styleClasses="text-size-16 text-color-success"
+                  ></app-icon>
+                  &nbsp;{{ corporateWealthManagementData.averageGrowth }}%
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #investmentsDistribution>
+  <div class="aps-card p-p-3">
+    <div class="left-right-container p-pb-2 border-bottom-primary">
+      <div class="left-container">
+        <div class="text-size-16 text-bold">
+          {{ 'Investments Distribution' | apsTranslate }}
+        </div>
+      </div>
+      <div class="right-container">
+        <div class="inline-items">
+          <div class="item p-px-2">
+            <app-icon icon="fa-sync-alt" styleClasses="text-size-16"></app-icon>
+          </div>
+          <div class="item p-px-2">
+            <app-icon
+              icon="fa-eye"
+              styleClasses="text-size-16"
+              (click)="showInvestmentsDistribution = !showInvestmentsDistribution"
+            ></app-icon>
+          </div>
+          <div class="item p-px-2">
+            <app-icon
+              icon="fa-expand"
+              styleClasses="text-size-16"
+              (click)="expandInvestmentsDistribution = !expandInvestmentsDistribution"
+            ></app-icon>
+          </div>
+          <div class="item p-px-2">
+            <app-icon icon="fa-ellipsis-v" styleClasses="text-size-16"></app-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+    <app-pie-chart [options]="options" webHeight="275" mobileHeight="350"></app-pie-chart>
+  </div>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

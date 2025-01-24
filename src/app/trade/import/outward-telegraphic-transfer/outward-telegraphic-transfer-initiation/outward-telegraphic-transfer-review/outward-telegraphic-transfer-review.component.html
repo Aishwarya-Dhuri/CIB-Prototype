@@ -1,0 +1,619 @@
+<div class="container">
+    <app-modal [(isShow)]="submit">
+        <div body>
+            <div class="text-size-16 text-bold text-color-dark-shade-1">
+                {{ 'Successfully Submitted' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+                {{ 'Letter of Credit Repair record has been successfully submitted' | apsTranslate }}.
+            </div>
+        </div>
+        <div footer>
+            <div class="left-right-container p-mt-3">
+                <div class="left-container"></div>
+                <div class="right-container">
+                    <button class="btn btn-md btn-primary p-px-3" (click)="cancel()">
+                        {{ 'OKAY' | apsTranslate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </app-modal>
+
+    <div class="p-grid p-pb-3" *ngIf="parentRef.formData">
+        <div class="p-col-12 p-px-0">
+            <div class="aps-card p-my-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                                {{ 'Applicant Details' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                                (click)="onEdit(0)"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-p-2 overflow-scroll">
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                                <div class="text-color-normal">{{ 'Name' | apsTranslate }}</div>
+                                <div class="text-color-dark-shade-1">
+                                    {{ parentRef.formData.applicantDetails[0].applicantName }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                            <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                                <div class="text-color-normal">{{ 'Email' | apsTranslate }}</div>
+                                <div class="text-color-dark-shade-1">
+                                    {{ parentRef.formData.applicantDetails[0].applicantEmail }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12 p-p-0"></div>
+
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                                <div class="text-color-normal">{{ 'Mobile Number' | apsTranslate }}</div>
+                                <div class="text-color-dark-shade-1">
+                                    {{ parentRef.formData.applicantDetails[0].applicantMobileNo }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                            <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                                <div class="text-color-normal">{{ 'Address' | apsTranslate }}</div>
+                                <div class="text-color-dark-shade-1">
+                                    {{ parentRef.formData.applicantDetails[0].applicantAddress }}
+                                </div>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="parentRef.formData.applicantDetails[0].onBehalfOf">
+                            <div class="p-col-12">
+                                <p-checkbox name="onBehalfOf" id="onBehalfOf"
+                                    label="{{ 'On behalf of' | apsTranslate }}" [binary]="true" [disabled]="true"
+                                    [(ngModel)]="parentRef.formData.applicantDetails[0].onBehalfOf">
+                                </p-checkbox>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <div class="text-size-12 text-color-light-shade-1">{{ 'Name' | apsTranslate }}</div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ parentRef.formData.applicantDetails[0].name }}
+                                </div>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Email' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ parentRef.formData.applicantDetails[0].email }}
+                                </div>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Mobile Number' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ parentRef.formData.applicantDetails[0].mobileNumber }}
+                                </div>
+                            </div>
+
+                            <div class="p-col-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Address' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ parentRef.formData.applicantDetails[0].address1[0].address }}
+                                    <span *ngIf="parentRef.formData.applicantDetails[0].address2[0].show">, {{
+                                        parentRef.formData.applicantDetails[0].address2[0].address }}</span>
+                                    <span *ngIf="parentRef.formData.applicantDetails[0].address3[0].show">, {{
+                                        parentRef.formData.applicantDetails[0].address3[0].address }}</span>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-my-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                                {{ 'Payment Details' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                                (click)="onEdit(1)"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-p-2 overflow-scroll">
+                    <div class="p-grid">
+                        <div class="p-md-1 p-sm-12 p-col-12">
+                            <app-review-form-field label="CCY"
+                                [value]="parentRef.formData.paymentDetails[0].selectedPayableCurrency"></app-review-form-field>
+                        </div>
+                        <div class="p-md-2 p-sm-12 p-col-12">
+                            <app-review-form-field label="Payable Amount"
+                                [value]="parentRef.formData.paymentDetails[0].payableAmount"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Payment Option"
+                                [value]="parentRef.formData.paymentDetails[0].draftAt"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Corporate Ref No"
+                                [value]="parentRef.formData.paymentDetails[0].corpRefNo"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Payment Terms"
+                                [value]="parentRef.formData.paymentDetails[0].paymentTerms"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Debit Account No"
+                                [value]="parentRef.formData.paymentDetails[0].selectedDebitAccountNo"></app-review-form-field>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Effective Date"
+                                [value]="parentRef.formData.paymentDetails[0].effectiveDate"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-12 aps-h-250">
+                            <app-ag-grid-listing #paymentDetailsGridReview id="paymentDetailsGridReview"
+                                [gridOptions]="paymentDetailsGridOptions" [rowData]="parentRef.formData.transaction"
+                                colDefUrl="trade/importTransactions/outwardTelegraphTransfer/private/debitAmtPaymentDetailsReviewColDefs">
+                            </app-ag-grid-listing>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-my-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                                {{ 'Beneficiary Details' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                                (click)="onEdit(2)"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-p-2 overflow-scroll">
+                    <div class="p-grid">
+                        <div class="p-md-12 p-sm-12 p-col-12">
+                            <p-radioButton class="p-mr-6" id="frequencyOfExecution" name="frequencyOfExecution"
+                                value="Search Using Beneficiary Code" disabled
+                                label="{{ 'Search Using Beneficiary Code' | apsTranslate }}"
+                                [(ngModel)]="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution"
+                                (click)="resetBeneficiaryDetails('Search Using Beneficiary Code')" [required]="true">
+                            </p-radioButton>
+
+                            <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                                value="Add New Beneficiary" label="{{ 'Add New Beneficiary' | apsTranslate }}" disabled
+                                [(ngModel)]="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution"
+                                (click)="resetBeneficiaryDetails('Add New Beneficiary')"
+                                [required]="true"></p-radioButton>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12"
+                            *ngIf="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution === 'Search Using Beneficiary Code'">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Beneficiary Code' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryCode }}
+                            </div>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Beneficiary Name' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryName }}
+                            </div>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Email' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].email }}
+                            </div>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Bank Swift Code' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].bankSwiftCode }}
+                            </div>
+                        </div>
+
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Beneficiary Address' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryAddress1[0].address }}
+                                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show">,
+                                    {{
+                                    parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].address
+                                    }}</span>
+                                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show">,
+                                    {{
+                                    parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].address
+                                    }}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Country' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].country }}
+                            </div>
+                        </div>
+
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Beneficiary Account Number' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryAccountNumber }}
+                            </div>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Beneficiary Bank Name' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryBankName }}
+                            </div>
+                        </div>
+
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Beneficiary Bank Address' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress1[0].address }}
+                                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show">,
+                                    {{
+                                    parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].address
+                                    }}</span>
+                                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show">,
+                                    {{
+                                    parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].address
+                                    }}</span>
+                            </div>
+                        </div>
+
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Intermediary Swift Code' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].intermediarySwiftCode }}
+                            </div>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Intermediary Bank Name' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].intermediaryBankName }}
+                            </div>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Intermediary Bank Address' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress1[0].address }}
+                                <span
+                                    *ngIf="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress2[0].show">,
+                                    {{
+                                    parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress2[0].address
+                                    }}</span>
+                                <span
+                                    *ngIf="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress3[0].show">,
+                                    {{
+                                    parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress3[0].address
+                                    }}</span>
+                            </div>
+                        </div>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-my-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                                {{ 'Finance Details' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                                (click)="onEdit(3)"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-p-2 overflow-scroll">
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Delivery Term"
+                                [value]="parentRef.formData.financeDetails[0].creditAccNo"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Interest Rate"
+                                [value]="parentRef.formData.financeDetails[0].interestRate"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Tenor in Days"
+                                [value]="parentRef.formData.financeDetails[0].tenorInDays"></app-review-form-field>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <p-checkbox name="tc" [binary]="true" id="restByLoan" label="Rest by Loan"
+                                [(ngModel)]="parentRef.formData.financeDetails[0].restByLoan" disabled>
+                            </p-checkbox>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Remarks"
+                                [value]="parentRef.formData.financeDetails[0].remarks"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-my-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                                {{ 'Bill Details' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                                (click)="onEdit(4)"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-p-2 overflow-scroll">
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Proforma Invoice No"
+                                [value]="parentRef.formData.billDetails[0].proformaInvoiceNo"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="HS Code"
+                                [value]="parentRef.formData.billDetails[0].hsCode"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Delivery Term"
+                                [value]="parentRef.formData.billDetails[0].deliveryTerm"></app-review-form-field>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Shipment From"
+                                [value]="parentRef.formData.billDetails[0].shipmentFrom"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Shipment To"
+                                [value]="parentRef.formData.billDetails[0].shipmentTo"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Foreign Bank Charges"
+                                [value]="parentRef.formData.billDetails[0].foreignBankCharges"></app-review-form-field>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Description of Goods"
+                                [value]="parentRef.formData.billDetails[0].descriptionofGoods"></app-review-form-field>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Bill of Lading / AWB Number"
+                                [value]="parentRef.formData.billDetails[0].billOfLadingAwbNo"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="BL / AWB Date"
+                                [value]="parentRef.formData.billDetails[0].blAwbDate"></app-review-form-field>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Invoice Date"
+                                [value]="parentRef.formData.billDetails[0].invoiceDate"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="Invoice Due Date"
+                                [value]="parentRef.formData.billDetails[0].invoiceDueDate"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-my-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                                {{ 'FX Rate' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                                (click)="onEdit(5)"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-p-2 overflow-scroll">
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="FX Deal Number 1"
+                                [value]="parentRef.formData.fxRate[0].fxDealNumber1"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="FX Rate 1"
+                                [value]="parentRef.formData.fxRate[0].fxRate1"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="FX Deal Number 2"
+                                [value]="parentRef.formData.fxRate[0].fxDealNumber2"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="FX Rate 2"
+                                [value]="parentRef.formData.fxRate[0].fxRate2"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="FX Deal Number 3"
+                                [value]="parentRef.formData.fxRate[0].fxDealNumber3"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <app-review-form-field label="FX Rate 3"
+                                [value]="parentRef.formData.fxRate[0].fxRate3"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-my-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                                {{ 'Supporting Documents' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                                (click)="onEdit(6)"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-p-2 overflow-scroll">
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-12 p-col-12">
+                            <div class="aps-card p-p-2">
+                                <div class="inline-items">
+                                    <div class="item">
+                                        <app-icon icon="fa-file"></app-icon>
+                                    </div>
+                                    <div class="item text-color-normal p-px-2"
+                                        *ngIf="parentRef.formData.supportingDocuments[0].suppDocuments.length > 0">
+                                        <div class="text-size-12">
+                                            {{parentRef.formData.supportingDocuments[0].suppDocuments[0].fileName}}
+                                        </div>
+                                        <div class="text-size-10">
+                                            {{(+parentRef.formData.supportingDocuments[0].suppDocuments[0].fileSize
+                                            / 1024 / 1024).toFixed(2)}}Mb
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-my-3" *ngIf="!parentRef.isViewMode">
+                <div class="aps-card-header">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                                {{ 'Terms and condition' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                                (click)="onEdit(7)"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-p-2 overflow-scroll">
+                    <div class="p-grid">
+                        <div class="p-col-12">
+                            <div
+                                class="background-color-dark-3 text-color-dark-shade-1 text-size-14 border-radius-4 p-p-3 aps-h-250 overflow-scroll">
+                                <div
+                                    [innerHtml]="(termsAndCondition && termsAndCondition[0] ? termsAndCondition[0].description : '') | safeHtml">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-col-12">
+                            <p-checkbox name="agreeToTermsAndCondition" id="agreeToTermsAndCondition"
+                                label="{{ 'I agree to terms and conditions' | apsTranslate }}" [binary]="true"
+                                [disabled]="true"
+                                [(ngModel)]="parentRef.formData.termsAndCondition[0].agreeToTermsAndCondition"></p-checkbox>
+                        </div>
+                        <div class="p-col-12" *ngIf="parentRef.formData.termsAndCondition[0].additionalCondition">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Additional condition' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.termsAndCondition[0].additionalCondition }}
+                            </div>
+                        </div>
+                        <div class="p-col-12" *ngIf="parentRef.formData.termsAndCondition[0].specialCondition">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Special instruction' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                                {{ parentRef.formData.termsAndCondition[0].specialCondition }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

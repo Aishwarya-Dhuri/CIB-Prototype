@@ -1,0 +1,41 @@
+.image-card {
+  display: block;
+  border-radius: 8px;
+
+  .image-text-wrapper {
+    display: block;
+    margin-bottom: 4px;
+
+    .image {
+      display: inline-block;
+      width: 8rem;
+      height: 4rem;
+      border-radius: 5px;
+    }
+
+    .text {
+      display: inline-block;
+      width: calc(100% - 8rem);
+      padding: 0 10px;
+      font-size: 1rem;
+      vertical-align: top;
+      font-family: CIB Bold;
+    }
+
+    @media screen and (max-width: 600px) {
+      .image {
+        display: block;
+      }
+      .text {
+        display: block;
+        width: 100%;
+        padding: 4px 0;
+      }
+    }
+  }
+
+  .secure-image-checkbox {
+    font-size: var(--font-size-12);
+    color: var(--text-color-dark-shade-1);
+  }
+}

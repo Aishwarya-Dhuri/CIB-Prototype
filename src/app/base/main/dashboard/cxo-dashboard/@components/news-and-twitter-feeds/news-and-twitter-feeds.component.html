@@ -1,0 +1,42 @@
+<div class="p-p-3">
+  <div class="left-right-container">
+    <div class="left-container">
+      <app-icon icon="fa-newspaper"></app-icon>
+      &nbsp; News & Twitter Feeds
+    </div>
+    <div class="right-container">
+      <div class="pointer" (click)="closeSidebar()">
+        <app-icon icon="fa-times"></app-icon>
+      </div>
+    </div>
+  </div>
+
+  <p-tabView orientation="middle">
+    <p-tabPanel header="News Feed" headerStyleClass="text-size-14">
+      <div
+        class="aps-h-250 p-pb-2 onverflow-x-hidden overflow-y-scroll"
+        *ngIf="newsFeed.length > 0; else nothingHereYetTemplate"
+      >
+        <div class="p-py-2 border-bottom" *ngFor="let news of newsFeed">
+          <div class="text-size-13 text-bold">{{ news.title }}</div>
+          <div class="text-size-12 news-body">{{ news.body }}</div>
+          <div class="text-size-10 text-right">{{ news.dateTime | amCalendar }}</div>
+        </div>
+      </div>
+    </p-tabPanel>
+    <p-tabPanel header="Twitter" headerStyleClass="text-size-14">
+      <div class="">
+        <a
+          class="twitter-timeline"
+          [attr.data-height]="getFeedHeight()"
+          href="https://twitter.com/aurionpro"
+          >Tweets by aurionpro</a
+        >
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+
+  <ng-template #nothingHereYetTemplate>
+    <app-nothing-here colSize="11"></app-nothing-here>
+  </ng-template>
+</div>

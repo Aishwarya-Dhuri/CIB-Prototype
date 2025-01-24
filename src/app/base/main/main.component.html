@@ -1,0 +1,70 @@
+<p-scrollTop [threshold]="200"></p-scrollTop>
+
+<app-toaster></app-toaster>
+
+<app-last-activities *ngIf="lastActivities"></app-last-activities>
+
+<div class="dummy-container"></div>
+
+<div
+  class="dashboard-layout"
+  [ngClass]="{
+    'dashboard-layout-static-overlay-mobile':
+      menuType === 'overlay' ||
+      menuType === 'static' ||
+      menuType === 'mobile' ||
+      menuType === 'horizontal',
+    'dashboard-layout-pinned': this.menuType === 'sidebar' && pinnedMenu,
+    'dashboard-layout-static-pinned': menuType === 'static'
+  }"
+  *ngIf="!loading; else loadingTemplate"
+>
+  <div class="app-menu-container" *ngIf="menuType !== 'horizontal'">
+    <app-menu></app-menu>
+  </div>
+
+  <div class="app-dashboard-container">
+    <div class="header-container tour-dashboard-step1">
+      <app-main-header></app-main-header>
+    </div>
+
+    <div
+      class="horizontal-menu-container"
+      [ngClass]="{ 'header-container-expand': isHeaderExpanded }"
+      *ngIf="menuType === 'horizontal'"
+    >
+      <app-topbar-menus></app-topbar-menus>
+    </div>
+
+    <div
+      class="breadcrumb-container tour-dashboard-step3"
+      [ngClass]="{
+        'p-mt-0': menuType === 'horizontal',
+        'header-container-expand': isHeaderExpanded && menuType !== 'horizontal'
+      }"
+    >
+      <!-- <div class="left-right-container p-mb-3">
+        <div class="left-container"> -->
+      <app-breadcrumb></app-breadcrumb>
+      <!-- </div>
+        <div class="right-container"></div>
+      </div> -->
+    </div>
+
+    <div class="action-container tour-dashboard-step4">
+      <app-action></app-action>
+    </div>
+
+    <router-outlet></router-outlet>
+  </div>
+
+  <div class="app-footer-container" *ngIf="viewport != 'mobile'">
+    <app-footer></app-footer>
+  </div>
+
+  <app-right-sidebar class="fade-in-animation"></app-right-sidebar>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

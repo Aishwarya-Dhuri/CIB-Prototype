@@ -1,0 +1,503 @@
+<!-- Deal No Modal Start-->
+<app-search-modal
+  header="Deal No"
+  [(isShow)]="isDealNoModalShow"
+  [isMultiSelect]="true"
+  [preSelectedData]="formData[0].exchangeDetails[0].selectedDealData"
+  colDefUrl="trade/importTransactions/requestFinance/private/exchangeDetailsColDefs"
+  rowDefUrl="trade/importTransactions/requestFinance/private/getDealNoDataList"
+  (onSelection)="setDealNoData($event)"
+>
+</app-search-modal>
+<!-- Deal No Modal End-->
+
+<!-- Forward No Modal Start-->
+<app-search-modal
+  header="Forward No"
+  [(isShow)]="isForwardNoModalShow"
+  [isMultiSelect]="true"
+  [preSelectedData]="formData[0].exchangeDetails[0].selectedForwardData"
+  colDefUrl="trade/importTransactions/requestFinance/private/exchangeDetailsColDefs"
+  rowDefUrl="trade/importTransactions/requestFinance/private/getForwardNoDataList"
+  (onSelection)="setForwardNoData($event)"
+></app-search-modal>
+<!--Forward No Modal End-->
+
+<div class="container">
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <div *ngIf="stepperDetails.currentStep === 1">
+    <ng-container *ngTemplateOutlet="billDetailsTemplate"></ng-container>
+  </div>
+
+  <div *ngIf="stepperDetails.currentStep === 2">
+    <ng-container *ngTemplateOutlet="paymentDetailsTemplate"></ng-container>
+  </div>
+
+  <div *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+    <div class="p-py-3 text-size-16 text-bold">
+      {{ 'Review Details & Confirm' | apsTranslate }}
+    </div>
+    <div class="aps-card p-px-3">
+      <ng-container *ngTemplateOutlet="billDetailsTemplate"></ng-container>
+    </div>
+
+    <div class="aps-card p-my-3 p-px-3">
+      <ng-container *ngTemplateOutlet="paymentReviewTemplate"></ng-container>
+    </div>
+  </div>
+
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>
+
+<ng-template #billDetailsTemplate>
+  <div class="aps-card p-p-3 p-my-3" *ngIf="billAcceptanceService.billId">
+    <div class="p-py-3 text-size-16 text-bold">
+      {{ 'Bill Details' | apsTranslate }}
+    </div>
+    <div class="p-grid">
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Transaction Date' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.transactionDate }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Trade Bill No.' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.tradeBillNumber }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Trade Bill Date' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.tradeBillDate }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Trade Bill Due Date' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.tradeBillDueDate }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Bill Amount' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          <app-base-currency [amount]="billDetails.billAmount"></app-base-currency>
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Exporter / Beneficiary Name' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.beneficiaryName }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Importer / Applicant Name' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.applicantName }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'DA / DP' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.daDp }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'LC Number' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.lcNumber }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'LC Issue Date' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.lcExpiryDate }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'LC Expiry Date' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.lcExpiryDate }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Usance / Sight' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.usanceSight }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Bill Status' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.billStatus }}
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'Discrepant' | apsTranslate }}
+        </div>
+        <div class="text-size-14 text-color-dark-shade-1">
+          {{ billDetails.discrepant }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="p-grid" *ngIf="billAcceptanceService.billIds">
+    <div class="p-col-12">
+      <div class="aps-card p-my-2" *ngFor="let mbd of multipleBillDetails; let i = index">
+        <div class="p-grid">
+          <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-2': viewport !== 'web' }">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Bill No' | apsTranslate }}
+            </div>
+            <div class="text-size-14">
+              {{ mbd.tradeBillNumber }}
+            </div>
+          </div>
+          <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-3': viewport !== 'web' }">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Bill Amount' | apsTranslate }}
+            </div>
+            <div class="text-size-14">
+              {{ mbd.billAmount }}
+            </div>
+          </div>
+          <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-3': viewport !== 'web' }">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'LC No' | apsTranslate }}
+            </div>
+            <div class="text-size-14">
+              {{ mbd.lcNumber }}
+            </div>
+          </div>
+          <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-1': viewport !== 'web' }">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Discrepancy' | apsTranslate }}
+            </div>
+            <div class="text-size-14">
+              {{ mbd.discrepant }}
+            </div>
+          </div>
+          <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-3': viewport !== 'web' }">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Payment Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14">
+              {{ mbd.tradeBillDueDate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #paymentDetailsTemplate>
+  <div class="aps-card p-p-3 p-my-3">
+    <div class="p-py-3 text-size-16 text-bold">
+      {{ 'Payment Details' | apsTranslate }}
+    </div>
+    <form #paymentDetails="ngForm">
+      <div class="p-grid" *ngFor="let pd of formData; let i = index">
+        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+          <aps-custom-select
+            id="accountNumber-{{ i }}"
+            name="accountNumber"
+            [label]="'Account Number' | apsTranslate"
+            [(ngModel)]="pd.accountNumber"
+            [data]="accountList"
+          >
+          </aps-custom-select>
+        </div>
+        <div class="p-col-1 p-md-1 p-lg-1">
+          <aps-custom-select
+            id="currencyId-{{ i }}"
+            name="currencyId"
+            label="CCY"
+            [(ngModel)]="pd.currencyId"
+            [data]="currencyList"
+          >
+          </aps-custom-select>
+        </div>
+        <div class="p-col-2 p-md-2 p-lg-2">
+          <aps-form-input
+            id="amount-{{ i }}"
+            name="amount"
+            label="{{ 'Amount' | apsTranslate }}"
+            minLength="1"
+            maxLength="16"
+            placeholder="{{ 'lbl_enter_amount' | translate }}"
+            inputType="currencyFormatNotZero"
+            [(ngModel)]="pd.amount"
+          >
+          </aps-form-input>
+          <p-checkbox
+            name="isSelected"
+            id="isSelected"
+            [binary]="true"
+            [label]="i != 1 ? 'For the bill value' : 'For the remaining bill value'"
+          >
+          </p-checkbox>
+        </div>
+        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+          <app-aps-calender
+            [label]="'Payment Date' | apsTranslate"
+            id="paymentDate-{{ i }}"
+            name="paymentDate"
+            [(ngModel)]="pd.paymentDate"
+          >
+          </app-aps-calender>
+        </div>
+        <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+          <aps-form-input
+            id="remarks-{{ i }}"
+            name="remarks"
+            label="{{ 'Remarks' | apsTranslate }}"
+            [(ngModel)]="pd.remarks"
+          >
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 text-right">
+          <button
+            class="btn btn-sm btn-tertiary"
+            *ngIf="i == formData.length - 1"
+            (click)="addPaymentDetails()"
+          >
+            {{ '+ Add Account' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+      <div class="p-grid">
+        <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+          <div class="p-py-3 text-size-16 text-bold">
+            {{ 'Exchange Details' | apsTranslate }}
+          </div>
+          <div class="inline-items">
+            <div class="item p-p-3">
+              <p-checkbox
+                name="isCard"
+                [label]="'Card' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="formData[0].exchangeDetails[0].isCard"
+              >
+              </p-checkbox>
+            </div>
+            <div
+              *ngIf="formData[0].exchangeDetails[0].isCard"
+              class="item p-pr-2"
+              style="width: 56px"
+            >
+              <aps-custom-select
+                name="exchangeCurrency"
+                id="exchangeCurrency"
+                label="CCY"
+                dataUrl="setup/generalMasters/currency/private/currencyList"
+                [value]="formData[0].exchangeDetails[0].exchangeCurrency"
+                [(ngModel)]="formData[0].exchangeDetails[0].exchangeCurrency"
+              >
+              </aps-custom-select>
+            </div>
+            <div
+              *ngIf="formData[0].exchangeDetails[0].isCard"
+              class="item"
+              style="width: calc(100% - 160px)"
+            >
+              <aps-form-input
+                name="exchangeAmount"
+                id="exchangeAmount"
+                label="{{ 'Exchange Amount' | apsTranslate }}"
+                inputType="currencyFormatNotZero"
+                [required]="true"
+                [(ngModel)]="formData[0].exchangeDetails[0].exchangeAmount"
+              >
+              </aps-form-input>
+            </div>
+          </div>
+          <div class="inline-items">
+            <div class="item p-p-3">
+              <p-checkbox
+                name="isDealNo"
+                [label]="'Deal No' | apsTranslate"
+                [(ngModel)]="formData[0].exchangeDetails[0].isDealNo"
+                [binary]="true"
+                (onChange)="onDealSelected()"
+              >
+              </p-checkbox>
+            </div>
+            <div class="item p-p-3" *ngIf="formData[0].exchangeDetails[0].isDealNo">
+              <div
+                (click)="isDealNoModalShow = true"
+                class="text-size-14 text-color-primary p-pt-2 text-semi-bold pointer"
+              >
+                {{ formData[0].exchangeDetails[0].selectedDealNoRows }} Deals Selected
+              </div>
+            </div>
+          </div>
+          <div class="inline-items">
+            <div class="item p-p-3">
+              <p-checkbox
+                name="isForward"
+                [label]="'Forward' | apsTranslate"
+                [(ngModel)]="formData[0].exchangeDetails[0].isForward"
+                [binary]="true"
+                (onChange)="onForwardSelected()"
+              >
+              </p-checkbox>
+            </div>
+            <div class="item p-p-3" *ngIf="formData[0].exchangeDetails[0].isForward">
+              <div
+                (click)="isForwardNoModalShow = true"
+                class="text-size-14 text-color-primary p-pt-2 text-semi-bold pointer"
+              >
+                {{ formData[0].exchangeDetails[0].selectedForwardNoRows }}
+                Forward Selected
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #paymentReviewTemplate>
+  <div class="p-py-3 text-size-16 text-bold">
+    {{ 'Payment Details' | apsTranslate }}
+  </div>
+  <div class="p-grid p-pb-2" *ngFor="let pd of formData; let i = index">
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-3': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">{{ 'Account Number' | apsTranslate }}</div>
+      <div class="text-size-14">{{ pd.accountNumber }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-3': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'Amount' | apsTranslate }}
+      </div>
+      <div class="text-size-14">{{ pd.currencyId }} {{ pd.amount }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-3': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">{{ 'Payment Date' | apsTranslate }}</div>
+      <div class="text-size-14">{{ pd.paymentDate }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-3': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">{{ 'Remarks' | apsTranslate }}</div>
+      <div class="text-size-14">{{ pd.remarks }}</div>
+    </div>
+    <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+      <div class="p-py-3 text-size-16 text-bold">
+        {{ 'Exchange Details' | apsTranslate }}
+      </div>
+      <div class="inline-items">
+        <div class="item p-p-3">
+          <p-checkbox
+            name="isCard"
+            [label]="'Card' | apsTranslate"
+            [binary]="true"
+            [(ngModel)]="formData[0].exchangeDetails[0].isCard"
+            [disabled]="true"
+          >
+          </p-checkbox>
+        </div>
+        <div *ngIf="formData[0].exchangeDetails[0].isCard" class="item p-pr-2" style="width: 56px">
+          <aps-custom-select
+            name="exchangeCurrency"
+            id="exchangeCurrency"
+            label="CCY"
+            dataUrl="setup/generalMasters/currency/private/currencyList"
+            [value]="formData[0].exchangeDetails[0].exchangeCurrency"
+            [(ngModel)]="formData[0].exchangeDetails[0].exchangeCurrency"
+            [disabled]="true"
+          >
+          </aps-custom-select>
+        </div>
+        <div
+          *ngIf="formData[0].exchangeDetails[0].isCard"
+          class="item"
+          style="width: calc(100% - 160px)"
+        >
+          <aps-form-input
+            name="exchangeAmount"
+            id="exchangeAmount"
+            label="{{ 'Exchange Amount' | apsTranslate }}"
+            inputType="currencyFormatNotZero"
+            [required]="true"
+            [(ngModel)]="formData[0].exchangeDetails[0].exchangeAmount"
+            [disabled]="true"
+          >
+          </aps-form-input>
+        </div>
+      </div>
+      <div class="inline-items">
+        <div class="item p-p-3">
+          <p-checkbox
+            name="isDealNo"
+            [label]="'Deal No' | apsTranslate"
+            [(ngModel)]="formData[0].exchangeDetails[0].isDealNo"
+            [binary]="true"
+            (onChange)="onDealSelected()"
+            [disabled]="true"
+          >
+          </p-checkbox>
+        </div>
+        <div class="item p-p-3" *ngIf="formData[0].exchangeDetails[0].isDealNo">
+          <div
+            (click)="isDealNoModalShow = true"
+            class="text-size-14 text-color-primary p-pt-2 text-semi-bold pointer"
+          >
+            {{ formData[0].exchangeDetails[0].selectedDealNoRows }} Deals Selected
+          </div>
+        </div>
+      </div>
+      <div class="inline-items">
+        <div class="item p-p-3">
+          <p-checkbox
+            name="isForward"
+            [label]="'Forward' | apsTranslate"
+            [(ngModel)]="formData[0].exchangeDetails[0].isForward"
+            [binary]="true"
+            (onChange)="onForwardSelected()"
+            [disabled]="true"
+          >
+          </p-checkbox>
+        </div>
+        <div class="item p-p-3" *ngIf="formData[0].exchangeDetails[0].isForward">
+          <div
+            (click)="isForwardNoModalShow = true"
+            class="text-size-14 text-color-primary p-pt-2 text-semi-bold pointer"
+          >
+            {{ formData[0].exchangeDetails[0].selectedForwardNoRows }}
+            Forward Selected
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,285 @@
+<div class="container p-py-2">
+  <div class="aps-card">
+    <!--aps-h-200-->
+    <div class="p-grid">
+      <div class="p-col-12 p-md-3 p-lg-3 p-p-0">
+        <div class="aps-card aps-h-200 aps-filled-card p-p-3">
+          <div class="p-grid">
+            <div class="p-col-12 p-mb-3 p-p-0" *ngIf="groupData && groupData.corporateList.length">
+              <select
+                (change)="onChangeCorporate(selectedCorporate)"
+                [(ngModel)]="selectedCorporate"
+                class="select"
+                id="corporate"
+                name="corporate"
+              >
+                <option [ngValue]="corporate" *ngFor="let corporate of groupData.corporateList">
+                  {{ corporate.corporateName }}
+                </option>
+              </select>
+            </div>
+            <div class="p-col-12 p-mb-3 p-p-0" *ngIf="!groupData">
+              <!-- -->
+              {{ selectedCorporate?.id }}
+            </div>
+          </div>
+
+          <div *ngIf="vaIssuanceData" class="p-grid">
+            <div class="p-col-4 p-p-0 text-color-inverted">
+              <div class="text-size-12">{{ 'Customer ID' | apsTranslate }}</div>
+              <div class="text-size-14 text-bold">
+                {{ corporateId }}
+              </div>
+            </div>
+            <div class="p-col-8 p-p-0">
+              <div class="left-right-container">
+                <div class="left-container text-color-primary-light-shade-2">
+                  <div class="text-size-12">{{ 'No of Accounts' | apsTranslate }}</div>
+                  <div class="text-size-14 text-bold">
+                    {{ vaIssuanceData.length }}
+                  </div>
+                </div>
+                <div class="right-container">
+                  <app-currency-select-dropdown
+                    selectStyleClass="select-primary"
+                  ></app-currency-select-dropdown>
+                  <!-- <div class="label-with-icon-container">
+                    <div class="icon">
+                      <img
+                        class="country-flag-icon p-mt-1"
+                        src="assets/images/flag/us-flag.png"
+                        alt=""
+                      />
+                    </div>
+                    <div class="label">
+                      <select class="select-primary" name="currency" id="currency" value="USD">
+                        <option value="USD">USD</option>
+                      </select>
+                    </div>
+                  </div> -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="p-my-2 background-color-dark-9" />
+
+          <div class="p-grid text-color-primary-light-shade-2">
+            <div class="p-col-5 p-p-0">
+              <div class="text-size-12 text-semi-bold">
+                {{ 'Total Allocated Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-bold p-mt-1">
+                <app-base-currency [amount]="corporateAllocatedLimit"></app-base-currency>
+                <!-- {{ corporate.totalAllocatedLimit | currency: 'INR':'code' }} -->
+              </div>
+            </div>
+            <div class="p-col-3 p-py-0 p-pr-0">
+              <div class="inline-items">
+                <div class="item p-mr-1">
+                  <div class="ellipse ellipse-utilized"></div>
+                </div>
+                <div class="item">
+                  <div class="text-size-10">{{ 'Utilized' | apsTranslate }}</div>
+                </div>
+              </div>
+              <div class="inline-items">
+                <div class="item p-mr-1">
+                  <div class="ellipse ellipse-available"></div>
+                </div>
+                <div class="item">
+                  <div class="text-size-10">{{ 'Available' | apsTranslate }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-4 p-p-0 text-right">
+              <div class="text-size-10 text-semi-bold">
+                <app-base-currency [amount]="corporateUtilizedLimit"></app-base-currency>
+
+                <!-- {{ corporate.utilized | currency: 'INR':'code' }} -->
+              </div>
+              <div class="text-size-10 text-semi-bold p-mt-2">
+                <app-base-currency [amount]="corporateAllocatedLimit"></app-base-currency>
+
+                <!-- {{ corporate.available | currency: 'INR':'code' }} -->
+              </div>
+            </div>
+          </div>
+          <div *ngIf="corporateUtilizedLimit && corporateAllocatedLimit" class="p-mt-2">
+            <app-limit-bar
+              [available]="corporateAllocatedLimit"
+              [showLegend]="false"
+              [utilized]="corporateUtilizedLimit"
+            ></app-limit-bar>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-9 p-lg-9 p-p-3">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-5 p-lg-5 p-px-3 p-py-0 border-right border-left">
+            <div class="text-color-dark-shade-1 text-size-14 text-semi-bold">
+              {{ 'Account Wise Allocation' | apsTranslate }}
+            </div>
+            <ng-container *ngIf="accountWiseAllocationChartOptions">
+              <app-pie-chart
+                [options]="accountWiseAllocationChartOptions"
+                mobileHeight="400"
+                webHeight="150"
+              ></app-pie-chart>
+            </ng-container>
+          </div>
+
+          <div class="p-col-12 p-md-7 p-lg-7 p-pl-3 p-pr-0 p-py-0">
+            <app-insights [insights]="insightsData?.corporates_insights"></app-insights>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-size-16 text-bold text-color-dark-shade-1 p-mt-3 p-mb-2">
+    {{ 'Account Number' | apsTranslate }} ({{ vaIssuanceData?.length }})
+  </div>
+
+  <div *ngIf="vaIssuanceData" class="p-grid">
+    <div class="p-col-12 p-md-3 p-lg-3 p-py-0 p-pl-0">
+      <app-side-selection-panel
+        (onCardSelected)="onCardSelect($event)"
+        [dataList]="vaIssuanceData"
+      ></app-side-selection-panel>
+    </div>
+
+    <div class="p-col-12 p-md-9 p-lg-9 p-py-0 p-pr-0">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-16 text-color-dark-shade-1 text-bold">
+            {{ 'Account No' | apsTranslate }}. {{ selectedAccount?.account }}
+          </div>
+        </div>
+        <div class="right-container p-text-center">
+          <button
+            (click)="this.accountMoreData = !this.accountMoreData; showAccountMoreData()"
+            class="btn btn-md btn-tertiary"
+          >
+            <!-- <i class="pi pi-briefcase p-mr-2"></i> -->
+            <app-icon icon="fa-eye" styleClasses="p-mr-2"></app-icon>
+          </button>
+
+          <button (click)="goToInitiate()" class="btn btn-md btn-tertiary">
+            <!-- <i class="pi pi-briefcase p-mr-2"></i> -->
+            <app-icon icon="fa-briefcase" styleClasses="p-mr-2"></app-icon>
+            {{ 'INITIATE VA ISSUANCE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+
+      <ng-container *ngIf="accountMoreData">
+        <div class="aps-card">
+          <!--aps-h-200-->
+          <div class="p-grid">
+            <div class="p-col-12 p-md-3 p-lg-3 p-p-0">
+              <div class="p-pl-3 p-pr-0 p-py-3">
+                <div class="aps-h-100p background-color-dark-4 border-radius-6 p-p-3">
+                  <div class="text-size-14 text-semi-bold">
+                    {{ 'Total Allocated Limit' | apsTranslate }}
+                  </div>
+                  <div class="text-size-20 text-bold p-mt-2">
+                    <app-base-currency
+                      [amount]="selectedAccount.totalAllocatedLimit"
+                    ></app-base-currency>
+
+                    <!-- {{ selectedCreditLine.totalAllocatedLimit | currency: 'INR':'code' }} -->
+                  </div>
+                  <div class="p-mt-2">
+                    <app-limit-bar
+                      [available]="selectedAccount.totalAllocatedLimit"
+                      [utilized]="selectedAccount.totalUtilizedLimit"
+                    ></app-limit-bar>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-9 p-lg-9 p-p-3">
+              <div class="p-grid">
+                <div class="p-col-12 p-md-8 p-lg-8 p-px-3 p-py-0 border-right border-left">
+                  <div class="text-color-dark-shade-1 text-size-14 text-semi-bold">
+                    {{ 'Sub Entity Wise Allocation' | apsTranslate }}
+                  </div>
+                  <ng-container *ngIf="subEntityWiseAllocationChartOptions">
+                    <app-pie-chart
+                      [options]="subEntityWiseAllocationChartOptions"
+                      mobileHeight="400"
+                      webHeight="150"
+                    ></app-pie-chart>
+                  </ng-container>
+                </div>
+
+                <div class="p-col-12 p-md-4 p-lg-4 p-pl-3 p-pr-0 p-py-0">
+                  <app-insights [insights]="insightsData?.accoount_insights"></app-insights>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="text-size-16 text-color-normal text-bold p-mt-3 p-mb-2">
+        {{ 'Sub Entity' | apsTranslate }} ({{ selectedAccount?.subEnitiesData?.length || '0' }})
+      </div>
+      <ng-container *ngIf="selectedAccount?.subEnitiesData">
+        <div
+          (click)="onSubEntityClick(subEntity)"
+          *ngFor="let subEntity of selectedAccount.subEnitiesData"
+          class="aps-card p-mb-3 text-color-dark-shade-1"
+        >
+          <div class="p-grid p-p-3">
+            <div class="p-col-2 p-p-0">
+              <div class="text-size-16 text-bold">{{ subEntity.subEntityName }}</div>
+            </div>
+            <div class="p-col-2 p-p-0">
+              <div class="text-size-10">{{ 'Total Virtual Accounts' | apsTranslate }}</div>
+              <div class="text-size-12 text-semi-bold p-mt-1">
+                <!--<app-base-currency [amount]="product.totalAllocatedLimit"></app-base-currency>-->
+                {{ subEntity.vAIssuanceAccountDetList.length }}
+              </div>
+            </div>
+            <div class="p-col-2 p-p-0">
+              <div class="text-size-10">{{ 'Total Allocated Limit' | apsTranslate }}</div>
+              <div class="text-size-12 text-semi-bold p-mt-1">
+                <app-base-currency [amount]="subEntity.subEntityAllocatedLimit"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-5 p-p-0">
+              <app-limit-bar
+                [available]="subEntity.subEntityAllocatedLimit"
+                [utilized]="subEntity.utilizedLimit"
+              ></app-limit-bar>
+            </div>
+            <div
+              (click)="moreOptions.toggle($event); showMoreOptions($event)"
+              class="p-col-1 p-p-0 text-right"
+            >
+              <app-icon icon="fa-ellipsis-v" styleClasses="text-size-16 pointer p-mt-2"></app-icon>
+            </div>
+            <p-overlayPanel #moreOptions [dismissable]="true">
+              <div class="aps-w-230">
+                <div class="p-grid">
+                  <div
+                    class="p-col-12 12 text-size-14 pointer border-bottom"
+                    (click)="limitEnhancement()"
+                  >
+                    {{ 'VA POBO Limit Enhancement' | apsTranslate }}
+                  </div>
+                  <div class="p-col-12 12 text-size-14 pointer" (click)="viewVAIssuance(subEntity)">
+                    {{ 'View Details' | apsTranslate }}
+                  </div>
+                </div>
+              </div>
+            </p-overlayPanel>
+          </div>
+        </div>
+      </ng-container>
+      <app-nothing-here *ngIf="!selectedAccount" class="aps-card" colSize="3"></app-nothing-here>
+    </div>
+  </div>
+</div>

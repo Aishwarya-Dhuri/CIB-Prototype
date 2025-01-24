@@ -1,0 +1,46 @@
+<div class="org-tree-container">
+  <ng-container *ngFor="let data of treeData">
+    <div
+      class="org-tree-wrapper"
+      *ngIf="data.type === 'single'"
+      [ngStyle]="{ width: 100 / treeData.length + '%' }"
+    >
+      <div class="tree-node" style="height: 100%" *ngFor="let node of data.nodes; let i = index">
+        <div class="node-branch">
+          <svg height="100%" width="100%">
+            <line
+              x1="0"
+              y1="16"
+              x2="100%"
+              y2="16"
+              class="line"
+              [ngClass]="{
+                'line-deactivated': node.partiallyActive || node.disabled
+              }"
+              *ngIf="!node.isLeafNode"
+            />
+            <circle
+              cx="7"
+              cy="16"
+              r="6"
+              class="circle"
+              [ngClass]="{
+                'circle-partially-activated': node.partiallyActive,
+                'circle-deactivated': node.disabled
+              }"
+            />
+          </svg>
+        </div>
+
+        <div
+          class="node-data"
+          [ngClass]="{ 'node-data-deactivated': node.disabled }"
+          style="top: 4px; left: 14px"
+        >
+          <div class="header">{{ node.header | apsTranslate }}</div>
+          <div class="sub-header">{{ node.subHeader | apsTranslate }}</div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

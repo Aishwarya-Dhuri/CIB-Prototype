@@ -1,0 +1,292 @@
+<div class="container text-color-dark-shade-1" *ngIf="!loading; else loadingTemplate">
+  <div class="p-grid g-margin-x">
+    <ng-container *ngIf="mode != 'VIEW'">
+      <app-modal [(isShow)]="isLayoutData" size="md" headerText="Data Layout Mapper">
+        <ng-container body>
+          <app-bill-payment-data-layout></app-bill-payment-data-layout>
+        </ng-container>
+      </app-modal>
+
+      <div class="p-md-7 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2 aps-h-500">
+          <div class="p-grid" *ngIf="stepperDetails.currentStep == 1">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Transaction Date' | apsTranslate }}</div>
+              <div class="text-size-14">{{ formData.transactionDate | date: 'd-MMM-y' }}</div>
+            </div>
+
+            <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+              <div class="p-grid">
+                <div class="p-col-10">
+                  <div class="text-size-13 text-bold">
+                    {{ 'Upload Document' | apsTranslate }}<span class="text-color-danger">*</span>
+                  </div>
+                  <upload-form-control
+                    [files]="formData.uploadDocument"
+                    [hideDragDropContainerOnFIleUpload]="true"
+                    (onUploaded)="onFileUploaded($event)"
+                  ></upload-form-control>
+                </div>
+                <div class="p-col-2 text-center p-pt-5">
+                  <app-icon
+                    class="pointer"
+                    icon="fa-info-circle"
+                    pTooltip="Not Allowed Characters for the file name are(){}[]!@#^&*"
+                  ></app-icon>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-5 p-sm-12 p-col-12 p-pt-md-5 p-pt-2">
+              <button class="btn btn-md btn-tertiary" (click)="isLayoutData = true">
+                {{ 'View Sample Data Layout' | apsTranslate }}
+              </button>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-13 text-bold">{{ 'Supporting Document' | apsTranslate }}</div>
+              <upload-form-control
+                [files]="formData.supportingDocument"
+                [hideDragDropContainerOnFIleUpload]="true"
+                (onUploaded)="onSupportingDocumentUploaded($event)"
+              ></upload-form-control>
+            </div>
+
+            <div class="p-col-12">
+              <div class="text-color-danger">
+                <div class="text-size-14 text-semi-bold">
+                  {{ 'Disclaimer' | uppercase | apsTranslate }}
+                </div>
+                <div class="text-size-12">
+                  {{
+                    'Maximum number of records allowed for upload in case of DEWA Biller is 10.'
+                      | apsTranslate
+                  }}
+                  <br />
+                  {{
+                    'DEWA non-recurring consumer numbers to be paid with full amount only.'
+                      | apsTranslate
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-5 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-500">
+          <div class="aps-card-header border-bottom aps-py-12 p-px-3">
+            <div class="text-size-16 text-bold">
+              <app-icon class="p-mr-3" icon="fa-project-diagram"></app-icon
+              >{{ 'Bill Payment Workflow' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body p-p-3 overflow-scroll">
+            <div class="p-pl-6">
+              <ng-container *ngTemplateOutlet="workflowTemplate"></ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="mode == 'VIEW'">
+      <app-modal
+        *ngIf="billDetails"
+        [(isShow)]="!!billDetails"
+        (onClose)="billDetails = null"
+        size="md"
+        headerText="Bill Details"
+      >
+        <div class="p-grid g-margin-x" body>
+          <div class="p-md-4 p-sm-6 p-col-6" *ngIf="isGroupUser">
+            <app-review-form-field
+              label="Corporate Name"
+              [value]="billDetails.corporateName"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Transaction Reference No"
+              [value]="billDetails.id"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Biller Name"
+              [value]="formData.billerName"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Product Name"
+              [value]="formData.product"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Consumer Name"
+              [value]="billDetails.consumerName"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Bill Account"
+              [value]="billDetails.billAmount"
+              type="baseCurrency"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Payment Amount"
+              [value]="billDetails.paymentAmount"
+              type="baseCurrency"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Due Date"
+              [value]="billDetails.dueDate"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Account No. / IBAN / Credit Card No"
+              [value]="billDetails.accountNo"
+            ></app-review-form-field>
+          </div>
+        </div>
+
+        <div class="p-grid g-margin-x" footer>
+          <div class="p-col-12">
+            <div class="text-right">
+              <button class="btn btn-md btn-primary" (click)="billDetails = null">
+                {{ 'CANCEL' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </app-modal>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-6 p-col-6">
+              <app-review-form-field label="Batch No" [value]="formData.id"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-6">
+              <app-review-form-field
+                label="transaction Date"
+                [value]="formData.transactionDate | date: 'd-MMM-yyyy'"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-6">
+              <app-review-form-field
+                label="No. of Bills"
+                [value]="formData.noOfBills"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-6">
+              <app-review-form-field
+                label="Corporate Ref No"
+                [value]="formData.corporateReference"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-6">
+              <app-review-form-field
+                label="Total Bill Amount"
+                [value]="formData.totalBillAmount"
+                type="baseCurrency"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-6">
+              <app-review-form-field
+                label="File Name"
+                [value]="formData.fileName"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-500">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-semi-bold aps-py-12 p-px-3">
+              {{ 'Consumer Details' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing
+              colDefUrl="payments/billPayments/billPaymentUpload/private/{{
+                isGroupUser ? 'billsGroupColDefs' : 'billsColDefs'
+              }}"
+              [rowData]="formData.bills"
+              [gridOptions]="{ rowModelType: 'clientSide' }"
+              [context]="{ componentParent: this }"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>
+
+<ng-template #workflowTemplate>
+  <div class="org-tree-container">
+    <ng-container *ngFor="let data of treeData">
+      <div class="org-tree-wrapper" *ngIf="data.type === 'single'">
+        <div class="tree-node" style="height: 100%" *ngFor="let node of data.nodes; let i = index">
+          <div class="node-branch">
+            <svg height="100%" width="100%">
+              <line
+                x1="16"
+                y1="0"
+                x2="16"
+                y2="95%"
+                class="line"
+                [ngClass]="{
+                  'line-deactivated': node.partiallyActive || node.disabled
+                }"
+                *ngIf="!node.isLeafNode"
+              />
+              <circle
+                cx="16"
+                cy="7"
+                r="6"
+                class="circle"
+                [ngClass]="{
+                  'circle-partially-activated': node.partiallyActive,
+                  'circle-deactivated': node.disabled
+                }"
+              />
+            </svg>
+          </div>
+
+          <div
+            class="node-data"
+            [ngClass]="{ 'node-data-deactivated': node.disabled }"
+            style="top: 0px; left: 32px"
+          >
+            <div class=".text-size-16 text-color-dark-shade-1 text-bold">{{ node.header }}</div>
+            <div class="p-pl-5">
+              <div class="text-size-14 text-color-normal">{{ node.subHeader }}</div>
+              <div class="text-size-12 text-color-light-shade-1" *ngFor="let d of node.data">
+                {{ d }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

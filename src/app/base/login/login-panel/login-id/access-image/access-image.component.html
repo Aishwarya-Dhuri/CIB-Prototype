@@ -1,0 +1,18 @@
+<div class="image-card p-p-3 p-shadow-8">
+  <div class="image-text-wrapper">
+    <img class="image" [src]="image" alt="" />
+    <span class="text">{{ message }}</span>
+  </div>
+
+  <div class="p-field-checkbox secure-image-checkbox">
+    <p-checkbox
+      name="c"
+      value="c"
+      id="c"
+      [binary]="true"
+      styleClass="text-size-12"
+      label="{{ 'msg_confirm_secure_access_image' | translate }}"
+      (click)="checked()"
+    ></p-checkbox>
+  </div>
+</div>

@@ -1,0 +1,257 @@
+<div class="view-transactions p-px-3 p-py-2">
+  <span class="p-p-1 p-mx-1 border-primary border-radius-4 pointer" (click)="backToSearch()">
+    <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right" class="app-icon"></app-icon>
+  </span>
+  <div class="text-size-16 text-color-dark-shade-1 text-bold inline-block">
+    Payment Request Workflow
+  </div>
+
+  <app-org-tree [treeData]="orgTreeData"></app-org-tree>
+
+  <br />
+
+  <div class="p-grid p-mt-3">
+    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0 p-py-0 p-mb-3">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-size-16 text-color-dark-shade-1 text-bold">Transaction Details</div>
+        </div>
+        <div class="aps-card-body">
+          <app-tree
+            [treeNode]="transactionDetails"
+            [showData]="false"
+            [selectedNode]="selectedTransactionDetails"
+            (leafNodeSelected)="onTransactionSelected($event)"
+          ></app-tree>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-9 p-lg-9 p-sm-12 p-col-12 p-pr-0 p-pl-0 p-py-0">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div
+                class="text-size-16 text-color-dark-shade-1 inline-block text-bold"
+                *ngIf="selectedTransactionDetails"
+              >
+                {{ selectedTransactionDetails.label }}
+              </div>
+            </div>
+            <div class="right-container">
+              <div class="actions">
+                <div class="action p-p-1 p-mx-1">
+                  <app-icon icon="fa-envelope" class="text-size-16"></app-icon>
+                </div>
+                <div class="action p-p-1">
+                  <app-icon icon="fa-print" class="text-size-16"></app-icon>
+                </div>
+                <div class="action p-p-1">
+                  <app-icon icon="fa-ellipsis-v" class="text-size-16"></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aps-card-body overflow-scroll p-p-2">
+          <ng-container *ngIf="selectedTransactionDetails">
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'paymentDetails'">
+              <ng-container *ngTemplateOutlet="paymentDetails"></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'routingDetails'">
+              <ng-container *ngTemplateOutlet="routingDetails"></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'beneficiaryDetails'">
+              <ng-container *ngTemplateOutlet="beneficiaryDetails"></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'enrichmentDetails'">
+              <ng-container *ngTemplateOutlet="enrichmentDetails"></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'supportingDocument'">
+              <ng-container *ngTemplateOutlet="supportingDocument"></ng-container>
+            </ng-container>
+
+            <app-maker-checker-detail
+              *ngIf="selectedTransactionDetails.data.key == 'makerCheckerDetails'"
+              [isShowOnlyValues]="true"
+              [formData]="formData"
+            ></app-maker-checker-detail>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-template #paymentDetails>
+    <div class="p-grid p-pb-2">
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_value_date' | translate }}</div>
+        <div class="text-size-14">{{ formData.valueDate }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_debit_from_account' | translate }}
+        </div>
+        <div class="text-size-14">{{ formData.debitAccountNo }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_account_title' | translate }}
+        </div>
+        <div class="text-size-14">{{ formData.accountTitle }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_account_balance' | translate }}
+        </div>
+        <div class="text-size-14">
+          {{ formData.debitAccountBalance | currency: currencyName:'code' }}
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_corporate_reference_no' | translate }}
+        </div>
+        <div class="text-size-14">{{ formData.corporateRefNo }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_payment_method' | translate }}
+        </div>
+        <div class="text-size-14">{{ formData.paymentMethodName }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_payable_amount' | translate }}
+        </div>
+        <div class="text-size-14">
+          {{ formData.debitCurrencyCode }} {{ formData.payableAmount | currency: '':'' }}
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_debit_amount' | translate }}
+        </div>
+        <div class="text-size-14">
+          {{ formData.debitCurrencyCode }} {{ formData.debitAmount | currency: '':'' }}
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_charges' | translate }}</div>
+        <div class="text-size-14" *ngIf="formData.paymentRequestDetails[0].amountType == 'PAYABLE'">
+          {{ formData.debitCurrencyCode }} {{ 10.5 }}
+        </div>
+        <div class="text-size-14" *ngIf="formData.paymentRequestDetails[0].amountType == 'DEBIT'">
+          {{ formData.debitCurrencyCode }} {{ 10.5 }}
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #routingDetails>
+    <div class="p-grid p-pb-2">
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">Beneficiary Bank</div>
+        <div class="text-size-14">ABC Bank</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">Routing Code</div>
+        <div class="text-size-14">CODE001</div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #beneficiaryDetails>
+    <div class="p-grid p-pb-2">
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_beneficiary_name' | translate }}
+        </div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].beneficiaryName }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_beneficiary_account' | translate }}
+        </div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].accountNo }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_remark' | translate }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].remarks }}</div>
+      </div>
+    </div>
+    <div class="p-py-3 text-size-14 text-semi-bold">
+      {{ 'lbl_beneficiary_address' | translate }}
+    </div>
+    <div class="p-grid p-pb-2">
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_zip_code' | translate }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].pinCode }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_contact_number' | translate }}
+        </div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].phoneNo }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_email_id' | translate }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].email }}</div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_address' | translate }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].beneficiaryAddress1 }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].beneficiaryAddress2 }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].beneficiaryAddress3 }}</div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #enrichmentDetails>
+    <app-dynamic-enrichment
+      mode="VIEW"
+      [isShowOnlyValues]="true"
+      [enrichmentModel]="formData.paymentRequestDetails[0].enrichments"
+    >
+    </app-dynamic-enrichment>
+    <div class="p-grid p-px-3">
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_payment_instruction' | translate }}
+        </div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].paymentDetails1 }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].paymentDetails2 }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].paymentDetails3 }}</div>
+        <div class="text-size-14">{{ formData.paymentRequestDetails[0].paymentDetails4 }}</div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #supportingDocument>
+    <div class="p-grid p-py-2">
+      <div
+        class="p-col-12 p-md-3 p-lg-3 p-pt-0"
+        *ngFor="let file of formData.paymentRequestDetails[0].supportingDocList"
+      >
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-2">
+              <app-icon icon="fa-file" class="p-mt-2"></app-icon>
+            </div>
+            <div class="p-col-10">
+              <div class="text-size-12 review-file-name">{{ file.originalFileName }}</div>
+              <div class="text-size-10 text-color-light-shade-1">
+                {{ (file.size / 1024 / 1024).toFixed(2) }}Mb
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

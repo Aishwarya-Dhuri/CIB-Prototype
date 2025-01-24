@@ -1,0 +1,16 @@
+<!-- <div class="floating-btn">
+  <p-button icon="pi pi-comment"></p-button>
+</div> -->
+
+<div class="login-wrapper-container" [ngClass]="{ 'login-wrapper-container-mobile': isMobileScreenLogin }">
+  <app-header></app-header>
+
+  <div class="info-panel">
+    <app-info-panel [screenDetails]="screenDetails" [(isMobileScreenLogin)]="isMobileScreenLogin"
+      [backgroundImageIndex]="backgroundImageIndex" (changeBackground)="setBackgroundImage($event)"></app-info-panel>
+  </div>
+
+  <div class="login-panel" [ngClass]="{ 'hide-on-mobile': !isMobileScreenLogin }">
+    <app-login-panel></app-login-panel>
+  </div>
+</div>

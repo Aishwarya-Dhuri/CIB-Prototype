@@ -1,0 +1,136 @@
+<div class="container">
+  <ng-container *ngIf="billPayment; else loadingTemplate">
+    <div class="aps-card p-p-3">
+      <div class="p-grid g-margin-x">
+        <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-0">
+          <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+            {{ 'Total Bills' | apsTranslate }} ({{ billPayment.totalBills }})
+          </div>
+          <div class="">
+            <app-pie-chart [options]="options" webHeight="100" mobileHeight="200"></app-pie-chart>
+          </div>
+        </div>
+
+        <div class="p-lg-9 p-md-9 p-sm-12 p-col-12 p-p-0">
+          <div class="p-grid">
+            <div
+              class="p-lg-7 p-md-7 p-sm-12 p-col-12 border-left border-right no-border-on-mobile p-py-0 p-px-md-2 p-px-sm-1 p-px-0"
+            >
+              <div class="p-grid">
+                <div
+                  class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-px-2 p-py-0"
+                  [ngClass]="{ 'p-my-2': viewport !== 'web' }"
+                >
+                  <div
+                    class="aps-card-primary pointer aps-h-120 overflow-hidden p-p-3"
+                    routerLink="/payments/billPayments/unregisteredBillPayment"
+                  >
+                    <div class="text-size-14 text-semi-bold p-pb-2 border-bottom">
+                      {{ 'Pay Unregistered Bills' | apsTranslate }}
+                    </div>
+                    <div class="text-color-inverted p-mt-2 text-size-12">
+                      {{
+                        'Please click this card to initiate bill payment of unregistered consumers.'
+                          | apsTranslate
+                      }}
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-px-2 p-py-0"
+                  [ngClass]="{ 'p-my-2': viewport !== 'web' }"
+                >
+                  <div
+                    class="aps-card-primary aps-h-120 overflow-hidden pointer p-p-3"
+                    routerLink="/payments/billPayments/billerRegistration"
+                  >
+                    <div class="text-size-14 text-semi-bold p-pb-2 border-bottom">
+                      {{ 'Register Biller' | apsTranslate }}
+                    </div>
+                    <div class="text-color-inverted p-mt-2 text-size-12">
+                      {{
+                        'Please click this card to register the unregistered consumers.'
+                          | apsTranslate
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-lg-5 p-md-5 p-sm-12 p-col-12 p-py-0 p-pl-md-3 p-pl-sm-2 p-pl-2">
+              <app-insights [insights]="billPayment.insights" [height]="68"></app-insights>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-my-2" [ngClass]="{ 'left-right-container ': viewport === 'web' }">
+      <div class="left-container p-my-2">
+        <div class="inline-items" [ngClass]="{ 'on-mobile': viewport !== 'web' }">
+          <div class="item p-mr-3" *ngFor="let b of billers">
+            <div
+              class="aps-card p-p-2 text-size-12 text-color-normal text-semi-bold pointer border"
+              [ngClass]="{ 'aps-card-primary': biller.id === b.id }"
+              (click)="getBillPayments(b)"
+            >
+              {{ b.displayName }}
+            </div>
+          </div>
+          <div class="item">
+            <button class="btn btn-md btn-tertiary" (click)="goToHistory()">
+              BILL PAYMENT HISTORY<app-icon class="p-ml-3" icon="fa-external-link"></app-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="right-container p-my-2">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="aps-search-container-3 p-mr-3">
+              <input type="text" class="aps-search-input" placeholder="Enter keyword to search" />
+              <div class="search-icon">
+                <app-icon icon="fa-search"></app-icon>
+              </div>
+            </div>
+          </div>
+
+          <div class="right-container">
+            <div class="toggle-select-container hide-on-mobile p-mt-2">
+              <div
+                class="action pointer text-color-dark-shade-1"
+                (click)="onListTypeChange('grid')"
+                [ngClass]="{ active: listType === 'grid' }"
+              >
+                <app-icon icon="fa-list"></app-icon>
+              </div>
+              <div
+                class="action pointer text-color-dark-shade-1"
+                (click)="onListTypeChange('card')"
+                [ngClass]="{ active: listType === 'card' }"
+              >
+                <app-icon icon="fa-th-large"></app-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-py-2" *ngFor="let bps of billPayments">
+      <app-bill-payment-details
+        *ngIf="!viewBills || viewBills === bps.category"
+        [billPayment]="bps"
+        [listType]="listType"
+        (viewAll)="viewBills = $event"
+        (viewLess)="viewBills = null"
+      ></app-bill-payment-details>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

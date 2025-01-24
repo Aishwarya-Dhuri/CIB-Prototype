@@ -1,0 +1,905 @@
+<app-modal
+  [(isShow)]="isLcDetailsShow"
+  size="lg"
+  headerText="{{ 'LC Details - View' | apsTranslate }}"
+>
+  <div class="aps-h-400" body *ngIf="isLcDetailsShow">
+    <app-letter-of-credit-initiation [isViewMode]="true"></app-letter-of-credit-initiation>
+  </div>
+
+  <div class="left-right-container" footer>
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="btn btn-md btn-primary" (click)="isLcDetailsShow = false">
+        {{ 'CLOSE' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<div class="p-grid g-margin-x" *ngIf="!isReview && billDetails">
+  <form name="form" #form="ngForm">
+    <div class="p-col-12">
+      <div class="text-size-16 text-color-dark-shade-1 text-bold p-py-2">
+        {{ ' Bill Payment And Apply Finance - Initiate' | apsTranslate }}
+      </div>
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-color-dark-shade-1 text-bold p-p-3">
+            {{ 'Bill Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Trade Bill No.' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.tradeBillNumber }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Trade Bill Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.tradeBillDate }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Trade Bill Due Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.tradeBillDueDate }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Transaction Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.transactionDate }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Number' | apsTranslate }}
+              </div>
+              <div
+                class="text-size-14 text-color-dark-shade-1 text-underline pointer"
+                (click)="onLcNumberClick(billDetails.lcNumber)"
+              >
+                {{ billDetails.lcNumber }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Issue Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.lcIssueDate }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Expiry Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.lcExpiryDate }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3"></div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Bill Amount' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <app-base-currency [amount]="billDetails.billAmount"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Outstanding Amount' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <app-base-currency [amount]="billDetails.billAmount"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+              <aps-custom-select
+                name="paymentOptions"
+                id="paymentOptions"
+                [label]="'Payment Options' | apsTranslate"
+                dataUrl="trade/importTransactions/billPaymentAndApplyFinance/private/dropdown/paymentOptionsList"
+                [(ngModel)]="formData.paymentOptions"
+                [value]="formData.paymentOptions"
+                [required]="true"
+              >
+              </aps-custom-select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="p-col-12"
+      *ngIf="
+        formData.paymentOptions == '100% By Debit Account' ||
+        formData.paymentOptions == 'Mixed Payment'
+      "
+    >
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-color-dark-shade-1 text-bold p-p-3">
+            {{ 'Payment Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <aps-custom-select
+                name="debitAccount"
+                id="debitAccount"
+                [label]="'Debit Account' | apsTranslate"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                [value]="paymentDetails.debitAccount"
+                [(ngModel)]="paymentDetails.debitAccount"
+              >
+              </aps-custom-select>
+            </div>
+            <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+              <aps-custom-select
+                [label]="'Currency' | apsTranslate"
+                class="p-py-1"
+                id="paymentCurrency"
+                name="paymentCurrency"
+                [(ngModel)]="paymentDetails.paymentCurrency"
+                [value]="paymentDetails.paymentCurrency"
+                dataUrl="setup/generalMasters/currency/private/currencyList"
+              >
+              </aps-custom-select>
+            </div>
+            <div class="p-col-8 p-md-2 p-lg-2 p-pr-3">
+              <aps-form-input
+                name="paymentAmount"
+                id="paymentAmount"
+                [label]="'Payment Amount' | apsTranslate"
+                [(ngModel)]="paymentDetails.paymentAmount"
+                inputType="currencyFormatNotZero"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <app-aps-calender
+                name="paymentDate"
+                id="paymentDate"
+                [label]="'Payment Date' | apsTranslate"
+                [(ngModel)]="paymentDetails.paymentDate"
+              >
+              </app-aps-calender>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                {{ 'Exchange Detail' | apsTranslate }}
+              </div>
+              <p-radioButton
+                class="p-mr-5"
+                name="card"
+                id="card"
+                value="Card"
+                [label]="'Card' | apsTranslate"
+                [required]="true"
+                [(ngModel)]="paymentDetails.exchangeDetail"
+              >
+              </p-radioButton>
+              <p-radioButton
+                name="dealNo"
+                id="dealNo"
+                value="Deal No"
+                [label]="'Deal No' | apsTranslate"
+                [required]="true"
+                [(ngModel)]="paymentDetails.exchangeDetail"
+              ></p-radioButton>
+            </div>
+            <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+              <aps-custom-select
+                [label]="'Currency' | apsTranslate"
+                class="p-py-1"
+                id="debitCurrency"
+                name="debitCurrency"
+                [(ngModel)]="paymentDetails.debitCurrency"
+                [value]="paymentDetails.debitCurrency"
+                dataUrl="setup/generalMasters/currency/private/currencyList"
+              >
+              </aps-custom-select>
+            </div>
+            <div
+              class="p-col-8 p-md-2 p-lg-2 p-pr-3"
+              *ngIf="paymentDetails.exchangeDetail === 'Card'"
+            >
+              <aps-form-input
+                name="debitAmount"
+                id="debitAmount"
+                [label]="'Debit Amount' | apsTranslate"
+                inputType="currencyFormatNotZero"
+                [(ngModel)]="paymentDetails.debitAmount"
+              >
+              </aps-form-input>
+              <div class="text-size-12 text-right" *ngIf="paymentDetails.exchangeDetail === 'Card'">
+                <span class="background-color-success-light p-p-1"
+                  >{{ 'FX Rate' | apsTranslate }} : 1.25</span
+                >
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3"
+              *ngIf="paymentDetails.exchangeDetail === 'Deal No'"
+            >
+              <aps-form-input
+                name="dealNo"
+                id="dealNo"
+                [label]="'Deal No.' | apsTranslate"
+                [(ngModel)]="paymentDetails.dealNo"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <aps-form-input
+                name="paymentDetailsRemarks"
+                id="paymentDetailsRemarks"
+                [label]="'Remarks' | apsTranslate"
+                [(ngModel)]="paymentDetails.remarks"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <button
+                type="button"
+                class="btn btn-md btn-tertiary"
+                (click)="rowIndex >= 0 ? saveEdit() : addAccounts()"
+              >
+                <app-icon icon="fa-plus"></app-icon>
+                {{ rowIndex >= 0 ? 'EDIT' : 'ADD' }} ACCOUNTS
+              </button>
+            </div>
+            <div class="p-col-12">
+              <div class="aps-h-200">
+                <app-ag-grid-listing
+                  id="paymentGrid"
+                  #paymentGrid
+                  [colDefUrl]="colDefsUrl"
+                  [rowData]="formData.paymentDetails"
+                  [gridOptions]="gridOptions"
+                  [context]="{ componentParent: this }"
+                >
+                </app-ag-grid-listing>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="p-col-12"
+      *ngIf="
+        formData.paymentOptions == '100% By Import Finance Loan' ||
+        formData.paymentOptions == 'Mixed Payment'
+      "
+    >
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-color-dark-shade-1 text-bold p-p-3">
+            {{ 'Finance Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <aps-custom-select
+                name="creditAccount"
+                id="creditAccount"
+                [label]="'Credit Account' | apsTranslate"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                [required]="true"
+                [(ngModel)]="formData.financeDetails[0].creditAccount"
+                [value]="formData.financeDetails[0].creditAccount"
+              >
+              </aps-custom-select>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3 p-py-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Loan Currency' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.financeDetails[0].loanCurrency }}
+              </div>
+            </div>
+            <div
+              class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3"
+              *ngIf="formData.paymentOptions === 'Mixed Payment'"
+            >
+              <p-checkbox
+                class="p-py-4"
+                name="restByLoan"
+                id="restByLoan"
+                [label]="'Rest By Loan' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="formData.financeDetails[0].restByLoan"
+              >
+              </p-checkbox>
+            </div>
+            <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+              <aps-custom-select
+                [label]="'Currency' | apsTranslate"
+                class="p-py-1"
+                id="financeCurrency"
+                name="financeCurrency"
+                [(ngModel)]="formData.financeDetails[0].financeCurrency"
+                [value]="formData.financeDetails[0].financeCurrency"
+                dataUrl="setup/generalMasters/currency/private/currencyList"
+              >
+              </aps-custom-select>
+            </div>
+            <div class="p-col-8 p-md-2 p-lg-2 p-pr-3">
+              <aps-form-input
+                name="financeAmount"
+                id="financeAmount"
+                [label]="'Finance Amount' | apsTranslate"
+                [required]="true"
+                [(ngModel)]="formData.financeDetails[0].financeAmount"
+                inputType="currencyFormatNotZero"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Interest Rate' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">As Per FRS</div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <aps-form-input
+                name="tenor"
+                id="tenor"
+                [label]="'Tenor (Days)' | apsTranslate"
+                [required]="true"
+                [(ngModel)]="formData.financeDetails[0].tenor"
+                inputType="alphaNumeric"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <aps-form-input
+                name="remarks"
+                id="remarks"
+                [label]="'Remarks' | apsTranslate"
+                [required]="true"
+                [(ngModel)]="formData.financeDetails[0].remarks"
+              >
+              </aps-form-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-color-dark-shade-1 text-bold p-p-3">
+            {{ 'Supporting Documents' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Document Type' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Reference Number' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ ' Upload Documents' | apsTranslate }}
+              </div>
+              <div class="text-size-12">Max Size 10MB</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <p-checkbox
+                class="p-py-4"
+                name="lcIrrevocable"
+                id="lcIrrevocable"
+                [label]="'LC Irrevocable' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="formData.supportingDocuments[0].lcIrrevocable"
+              >
+              </p-checkbox>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <aps-form-input
+                name="lcIrrevocableRefNo"
+                id="lcIrrevocableRefNo"
+                [label]="'Reference No.' | apsTranslate"
+                [required]="formData.supportingDocuments[0].lcIrrevocable"
+                [(ngModel)]="formData.supportingDocuments[0].lcIrrevocableRefNo"
+                [disabled]="!formData.supportingDocuments[0].lcIrrevocable"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <upload-form-control
+                [hideDragDropContainerOnFIleUpload]="true"
+                [files]="formData.supportingDocuments[0].lcIrrevocableDocument"
+                (onUploaded)="formData.supportingDocuments[0].lcIrrevocableDocument = $event"
+                [disabled]="!formData.supportingDocuments[0].lcIrrevocable"
+              >
+              </upload-form-control>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <p-checkbox
+                class="p-py-4"
+                name="proformaInvoice"
+                id="proformaInvoice"
+                [label]="'Proforma Invoice' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="formData.supportingDocuments[0].proformaInvoice"
+              >
+              </p-checkbox>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <aps-form-input
+                name="proformaInvoiceRefNo"
+                id="proformaInvoiceRefNo"
+                [label]="'Reference No.' | apsTranslate"
+                [required]="formData.supportingDocuments[0].proformaInvoice"
+                [(ngModel)]="formData.supportingDocuments[0].proformaInvoiceRefNo"
+                [disabled]="!formData.supportingDocuments[0].proformaInvoice"
+              >
+              </aps-form-input>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+              <upload-form-control
+                [hideDragDropContainerOnFIleUpload]="true"
+                [files]="formData.supportingDocuments[0].proformaInvoiceDocument"
+                (onUploaded)="formData.supportingDocuments[0].proformaInvoiceDocument = $event"
+                [disabled]="!formData.supportingDocuments[0].proformaInvoice"
+              >
+              </upload-form-control>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="p-grid g-margin-x" *ngIf="isReview && billDetails">
+  <div class="p-col-12">
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="text-size-14 text-color-dark-shade-1 text-bold p-p-3">
+          {{ 'Bill Details' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Trade Bill No.' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.tradeBillNumber }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Trade Bill Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.tradeBillDate }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Trade Bill Due Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.tradeBillDueDate }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Transaction Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.transactionDate }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'LC Number' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.lcNumber }}
+              <app-icon
+                icon="fa-file"
+                class="p-px-3 pointer"
+                (click)="onLcNumberClick(billDetails.lcNumber)"
+              >
+              </app-icon>
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'LC Issue Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.lcExpiryDate }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'LC Expiry Date' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.lcExpiryDate }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3"></div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Bill Amount' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.billAmount }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'LC Outstanding Amount' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ billDetails.billAmount }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Payment Options' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ formData.paymentOptions }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="p-col-12"
+    *ngIf="
+      formData.paymentOptions === '100% By Debit Account' ||
+      formData.paymentOptions === 'Mixed Payment'
+    "
+  >
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="text-size-14 text-color-dark-shade-1 text-bold p-p-3">
+          {{ 'Payment Details' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-col-12">
+            <div class="aps-h-200">
+              <app-ag-grid-listing
+                id="paymentGrid"
+                #paymentGrid
+                [colDefUrl]="colDefsUrl"
+                [rowData]="formData.paymentDetails"
+                [gridOptions]="gridOptions"
+                [context]="{ componentParent: this }"
+              >
+              </app-ag-grid-listing>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="p-col-12"
+    *ngIf="
+      formData.paymentOptions === '100% By Import Finance Loan' ||
+      formData.paymentOptions === 'Mixed Payment'
+    "
+  >
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="text-size-14 text-color-dark-shade-1 text-bold p-p-3">
+          {{ 'Finance Details' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Credit Account' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ formData.financeDetails[0].creditAccount }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3 p-py-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Loan Currency' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ formData.financeDetails[0].loanCurrency }}
+            </div>
+          </div>
+          <div
+            class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3"
+            *ngIf="formData.paymentOptions === 'Mixed Payment'"
+          >
+            <p-checkbox
+              class="p-py-4"
+              name="restByLoan"
+              id="restByLoan"
+              [label]="'Rest By Loan' | apsTranslate"
+              [binary]="true"
+              [(ngModel)]="formData.financeDetails[0].restByLoan"
+              [disabled]="true"
+            >
+            </p-checkbox>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Finance Amount' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ formData.financeDetails[0].financeCurrency
+              }}{{ formData.financeDetails[0].financeAmount }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Interest Rate' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">As Per FRS</div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Tenor (Days)' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ formData.financeDetails[0].tenor }}
+            </div>
+          </div>
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-3">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Remarks' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ formData.financeDetails[0].remarks }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="p-col-12">
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="text-size-14 text-color-dark-shade-1 text-bold p-p-3">
+          {{ 'Supporting Documents' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+              {{ 'Document Type' | apsTranslate }}
+            </div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+              {{ 'Reference Number' | apsTranslate }}
+            </div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+              {{ 'Upload Documents' | apsTranslate }}
+            </div>
+          </div>
+          <div
+            class="p-md-4 p-sm-12 p-col-12 p-px-3"
+            *ngIf="formData.supportingDocuments[0].lcIrrevocable"
+          >
+            <p-checkbox
+              class="p-py-3"
+              name="lcIrrevocable"
+              id="lcIrrevocable"
+              [label]="'LC Irrevocable' | apsTranslate"
+              [binary]="true"
+              [(ngModel)]="formData.supportingDocuments[0].lcIrrevocable"
+              [disabled]="true"
+            >
+            </p-checkbox>
+          </div>
+          <div
+            class="p-md-4 p-sm-12 p-col-12 p-px-3"
+            *ngIf="formData.supportingDocuments[0].lcIrrevocable"
+          >
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Reference No.' | apsTranslate }}
+            </div>
+            <div class="text-size-14 text-color-dark-shade-1">
+              {{ formData.supportingDocuments[0].lcIrrevocableRefNo }}
+            </div>
+          </div>
+          <div
+            class="p-md-4 p-sm-12 p-col-12 p-px-3"
+            *ngIf="formData.supportingDocuments[0].lcIrrevocable"
+          >
+            <div class="aps-card p-p-2">
+              <div class="inline-items">
+                <div class="item">
+                  <app-icon icon="fa-file"></app-icon>
+                </div>
+                <div
+                  class="item text-color-normal p-px-2"
+                  *ngIf="formData.supportingDocuments[0].lcIrrevocableDocument.length > 0"
+                >
+                  <div class="text-size-12">
+                    {{ formData.supportingDocuments[0].lcIrrevocableDocument[0].fileName }}
+                  </div>
+                  <div class="text-size-10">
+                    {{
+                      (
+                        +formData.supportingDocuments[0].lcIrrevocableDocument[0].fileSize /
+                        1024 /
+                        1024
+                      ).toFixed(2)
+                    }}Mb
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div
+            class="p-md-4 p-sm-12 p-col-12 p-px-3"
+            *ngIf="formData.supportingDocuments[0].proformaInvoice"
+          >
+            <p-checkbox
+              class="p-py-3"
+              name="proformaInvoice"
+              id="proformaInvoice"
+              [label]="'Proforma Invoice' | apsTranslate"
+              [binary]="true"
+              [(ngModel)]="formData.supportingDocuments[0].proformaInvoice"
+              [disabled]="true"
+            >
+            </p-checkbox>
+          </div>
+          <div
+            class="p-md-4 p-sm-12 p-col-12 p-px-3"
+            *ngIf="formData.supportingDocuments[0].proformaInvoice"
+          >
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-px-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Reference No.' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.supportingDocuments[0].proformaInvoiceRefNo }}
+              </div>
+            </div>
+          </div>
+          <div
+            class="p-md-4 p-sm-12 p-col-12 p-px-3"
+            *ngIf="formData.supportingDocuments[0].proformaInvoice"
+          >
+            <div class="aps-card p-p-2">
+              <div class="inline-items">
+                <div class="item">
+                  <app-icon icon="fa-file"></app-icon>
+                </div>
+                <div
+                  class="item text-color-normal p-px-2"
+                  *ngIf="formData.supportingDocuments[0].proformaInvoiceDocument.length > 0"
+                >
+                  <div class="text-size-12">
+                    {{ formData.supportingDocuments[0].proformaInvoiceDocument[0].fileName }}
+                  </div>
+                  <div class="text-size-10">
+                    {{
+                      (
+                        +formData.supportingDocuments[0].proformaInvoiceDocument[0].fileSize /
+                        1024 /
+                        1024
+                      ).toFixed(2)
+                    }}Mb
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="p-grid g-margin-x">
+  <div class="p-col-12">
+    <div class="aps-card">
+      <div class="left-right-container p-p-2">
+        <div class="left-container">
+          <button class="btn btn-md btn-tertiary" (click)="cancel()">
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+        </div>
+        <div class="inline-items">
+          <div class="item" *ngIf="getTotalPaymentAmount()">
+            <div class="text-size-12 p-p-2">
+              <span class="background-color-success-light p-p-1"
+                >{{ 'Total Payment Amount' | apsTranslate }} :
+                {{ formData.paymentDetails.paymentCurrency }} {{ getTotalPaymentAmount() }}</span
+              >
+            </div>
+          </div>
+          <div class="item" *ngIf="formData.financeDetails[0].financeAmount">
+            <div class="text-size-12 p-p-2">
+              <span class="background-color-success-light p-p-1"
+                >{{ 'Finance Amount' | apsTranslate }} :
+                {{ formData.financeDetails[0].financeCurrency }}
+                {{ formData.financeDetails[0].financeAmount }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="right-container">
+          <button
+            *ngIf="!isReview"
+            class="btn btn-md btn-primary"
+            (click)="isReview = true"
+            [disabled]="!!form && !form.valid"
+          >
+            {{ 'REVIEW' | apsTranslate }}
+          </button>
+          <button
+            *ngIf="isReview && mode != 'VIEW'"
+            class="btn btn-md btn-tertiary"
+            (click)="isReview = false"
+          >
+            {{ 'PREVIOUS' | apsTranslate }}
+          </button>
+          &nbsp;
+          <button
+            *ngIf="isReview && mode != 'VIEW'"
+            class="btn btn-md btn-primary"
+            (click)="onSubmit()"
+            [disabled]="!!form && !form.valid"
+          >
+            {{ 'SUBMIT' | apsTranslate }}
+          </button>
+          <button *ngIf="mode === 'VIEW'" class="btn btn-md btn-secondary" (click)="back()">
+            {{ 'BACK' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

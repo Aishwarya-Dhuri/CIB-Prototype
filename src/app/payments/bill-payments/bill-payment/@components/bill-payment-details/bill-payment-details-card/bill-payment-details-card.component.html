@@ -1,0 +1,69 @@
+<div
+  class="aps-card primary-border-on-hover text-color-dark-shade-1 p-p-3"
+  (click)="onBillerDetails()"
+>
+  <div class="left-right-container">
+    <div class="left-container pointer">
+      <div class="label-with-icon-container">
+        <div class="icon">
+          <div class="corporate-icon">
+            <img [src]="billPaymentDetails.billerIcon" alt="" />
+          </div>
+        </div>
+        <div class="label">
+          <div class="text-size-16 text-bold">
+            {{ billPaymentDetails.billerName }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="right-container">
+      <div
+        class="text-size-12 p-p-1 border-radius-4 background-color-primary-light-shade-2"
+        *ngIf="!billPaymentDetails.actions"
+      >
+        Total Bills {{ billPaymentDetails.totalBills }}
+      </div>
+      <button
+        class="btn btn-xsm btn-tertiary"
+        *ngIf="billPaymentDetails.actions"
+        (click)="fetchBills($event)"
+      >
+        FETCH BILLS
+      </button>
+    </div>
+  </div>
+  <div class="text-size-14 p-pt-1">{{ billPaymentDetails.product }}</div>
+
+  <div class="p-grid p-pt-md-5 p-pt-sm-3 p-pt-2">
+    <div class="p-col-6 p-p-0">
+      <div class="text-size-12 text-bold">
+        <app-base-currency
+          [amount]="billPaymentDetails.totalPayableAmount"
+          *ngIf="billPaymentDetails.totalPayableAmount"
+        ></app-base-currency>
+        <span *ngIf="!billPaymentDetails.totalPayableAmount">--</span>
+      </div>
+      <div class="text-size-10">Total Payable Amount</div>
+    </div>
+    <div class="p-col-3 p-p-0">
+      <div class="text-size-12 text-bold">
+        {{ billPaymentDetails.consumers ? billPaymentDetails.consumers : '--' }}
+      </div>
+      <div class="text-size-10">Consumers</div>
+    </div>
+    <div class="p-col-3 p-p-0">
+      <div class="text-size-12 text-bold">
+        {{ billPaymentDetails.overdueBills >= 0 ? billPaymentDetails.overdueBills : '--' }}
+      </div>
+      <div
+        class="text-size-10"
+        [ngClass]="{
+          'text-color-danger': billPaymentDetails.overdueBills > 0
+        }"
+      >
+        Overdue Bills
+      </div>
+    </div>
+  </div>
+</div>

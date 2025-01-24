@@ -1,0 +1,65 @@
+<div class="container">
+    <div class="p-grid p-my-0" *ngIf="!loading; else loadingSpinner">
+        <div class="p-col-12">
+            <div class="text-base text-bold">
+                {{ "FAQ's" | apsTranslate }}
+            </div>
+        </div>
+
+        <div class="p-grid" *ngIf="faqs">
+            <div *ngFor="let faq of faqs" class="p-col-12 p-p-0 p-my-2">
+                <div (click)="cardClick(faq)" class="aps-card primary-border-on-hover">
+                    <div class="p-grid">
+                        <div class="p-lg-12 p-md-12 p-sm-12 p-col-12 text-color-dark-shade-1 p-py-0">
+                            <div class="label-with-icon-container">
+                                <div class="left-right-container">
+                                    <div class="left-container aps-py-12 ">
+                                        <div class="text-size-16 text-semi-bold">
+                                            {{ faq.heading }}
+                                        </div>
+                                    </div>
+
+                                    <div class="right-container p-p-3">
+                                        <app-icon class="pointer"
+                                            [icon]="faq.isOpen ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                            styleClasses="text-size-14"></app-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="p-grid border-top" *ngIf="faq.isOpen">
+                        <div class="p-lg-12 p-md-12 p-sm-12 p-col-12 text-color-dark-shade-1">
+                            <div *ngIf="!faq.list" class="text-size-13 text-semi-bold">
+                                {{ faq.description }}
+                            </div>
+                            <ng-container *ngIf="faq.list">
+                                <div class="text-size-13">
+                                    <ul>
+                                        <li *ngFor="let list of faq.list">
+                                            {{ list.data }}
+
+                                            <ul *ngIf="list.subList">
+                                                <li *ngFor="let data of list.subList">
+                                                    {{ data }}
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </ng-container>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingSpinner>
+    <loading-spinner></loading-spinner>
+</ng-template>

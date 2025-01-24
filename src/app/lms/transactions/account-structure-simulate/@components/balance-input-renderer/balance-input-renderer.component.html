@@ -1,0 +1,9 @@
+<input
+  type="text"
+  (input)="onChangePercentage()"
+  id="percentage"
+  name="percentage"
+  numericInput
+  placeholder="{{ 'Percentage' | apsTranslate }}"
+  [(ngModel)]="cellValue"
+/>

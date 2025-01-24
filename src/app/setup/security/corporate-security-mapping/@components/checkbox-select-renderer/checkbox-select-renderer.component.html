@@ -1,0 +1,12 @@
+<div style="display: flex; padding: 0.5rem">
+  <p-checkbox
+    id="checkBox"
+    [(ngModel)]="isCheck"
+    [binary]="true"
+    (onChange)="onChange()"
+    [disabled]="
+      context?.componentParent?.stepperDetails?.currentStep ==
+      context?.componentParent?.stepperDetails?.headings?.length
+    "
+  ></p-checkbox>
+</div>

@@ -1,0 +1,280 @@
+<div class="container" *ngIf="!loading">
+  <app-modal [(isShow)]="isShowInputRemark"
+    headerText="{{ ('Enter ' + (isApprove ? 'Accept' : 'Reject') + ' Remark') | apsTranslate }}">
+    <div class="" body>
+      <aps-form-input name="remark" id="remark" label="{{ 'Reason' | apsTranslate }}" [(ngModel)]="remarkInput"
+        [required]="true"></aps-form-input>
+    </div>
+    <div class="left-right-container" footer>
+      <div class="left-container">
+        <button class="btn btn-md btn-tertiary" (click)="isShowInputRemark = false; singleDataForAction = []">
+          {{ 'CANCEL' | apsTranslate }}
+        </button>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="isApprove ? onAccept() : onReject()" [disabled]="!remarkInput">
+          {{ 'SUBMIT' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12">
+      <div class="aps-card">
+        <div class="p-px-3 aps-py-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="inline-items">
+                <div class="item">
+                  <div class="text-size-14 text-bold">
+                    {{ 'Search By' | apsTranslate }}
+                  </div>
+                </div>
+                <ng-container *ngIf="!isShowSearch">
+                  <div class="item p-ml-3" *ngFor="let filter of searchFilters; let i = index">
+                    <div class="p-py-1 p-px-2 background-color-primary-light-shade-2 border-radius-4 text-size-12"
+                      *ngIf="i < 3">
+                      <span class="inline-block p-mr-2 text-semi-bold">{{
+                        filter.displayName
+                        }}</span>
+                      <span class="inline-block">{{ filter.value }}</span>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon [icon]="isShowSearch ? 'fa-chevron-up' : 'fa-chevron-down'" class="pointer"
+                (click)="isShowSearch = !isShowSearch"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="" *ngIf="isShowSearch">
+          <app-dynamic-search #dynamicSearch [entityName]="entityName" (onSearch)="getRecords($event)"
+            [isShowSearchByHeader]="false" [isShowPrefillCriteria]="false" mandatoryParametersColSize="4"
+            optionalParametersColSize="4" [isDisplayPrefillCriteriaModal]="false" cardHeight="270"
+            (onFiltersReady)="onDynamicFiltersReady()" (onSaveCriteria)="getCriteriaList()"></app-dynamic-search>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="inline-items">
+            <div class="item" *ngFor="let tab of tabs; let i = index">
+              <div class="p-p-2 pointer border border-radius-4 text-size-12" [ngClass]="{
+                  'background-color-primary text-color-inverted':
+                    activeTab && tab.label == activeTab.label,
+                  'p-mr-3': i < tabs.length - 1
+                }" (click)="getData(tab)">
+                {{ tab.label | apsTranslate }} ({{ tab.count }})
+              </div>
+            </div>
+            <div class="item p-ml-3" *ngIf="searchFilters.length > 0">
+              <div class="p-p-2 pointer border border-radius-4 text-size-12" [ngClass]="{
+                  'background-color-primary text-color-inverted':
+                    'Search Results' == activeTab.label
+                }" (click)="getSearchResults()">
+                <div class="inline-items">
+                  <div class="item p-mr-2">{{ 'Search Results' | apsTranslate }} (10)</div>
+                  <div class="item">
+                    <app-icon icon="fa-times" class="pointer" (click)="clearSearch()"></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="right-container">
+          <app-grid-listing-tools (changeFloatingFilter)="listing ? listing.changeFloatFilter($event) : null"
+            (filterRecords)="listing ? listing.onFilter($event) : null"
+            (applyColDefs)="listing ? listing.onApplyConfig($event) : null"
+            [colDefs]="listing ? listing.columnDefs : []" [columnConfig]="true"
+            [moreOptions]="true"></app-grid-listing-tools>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <div class="aps-card aps-h-450">
+        <ng-container *ngIf="!loadingGrid">
+          <app-ag-grid-listing #listing [colDefUrl]="activeTab ? activeTab.colDefsUrl : []" [rowData]="rowData"
+            [gridOptions]="gridOptions" [frameworkComponents]="frameworkComponents" [context]="context"
+            (rowSelected)="onRowSelected($event)"></app-ag-grid-listing>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <div class="aps-card p-px-3 aps-py-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <button class="btn btn-md btn-tertiary">
+              {{ 'CANCEL' | apsTranslate }}
+            </button>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-secondary p-mr-3" (click)="isApprove = false; isShowInputRemark = true"
+              [disabled]="dataForAction.length == 0">
+              {{ 'REJECT' | apsTranslate }}
+            </button>
+            <button class="btn btn-md btn-primary" (click)="isApprove = true; isShowInputRemark = true"
+              [disabled]="dataForAction.length == 0">
+              {{ 'ACCEPT' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-modal [(isShow)]="isViewCreditDebitNote" headerText="{{ 'Credit/Debit Note Details' | apsTranslate }}" size="lg"
+    (onClose)="resetViewCreditDebitNote()">
+    <div class="p-col-12">
+      <div class="aps-card">
+        <div class="aps-card-header p-px-3 aps-py-12 text-size-14 text-semi-bold">
+          {{ 'Invoice Details' | apsTranslate }}
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Create Credit Note or Debit Note"
+                [value]="viewCreditDebitNoteData.creditNoteOrDebitNote"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Sponsor Code"
+                [value]="viewCreditDebitNoteData.sponsorCode"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Sponsor Name"
+                [value]="viewCreditDebitNoteData.sponsorName"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Buyer/Seller Code"
+                [value]="viewCreditDebitNoteData.sellerBuyerCode"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Buyer/Seller Name"
+                [value]="viewCreditDebitNoteData.sellerBuyerName"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Product Category"
+                [value]="viewCreditDebitNoteData.productCategory"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Product Reference Number - Name"
+                [value]="viewCreditDebitNoteData.programReferenceNumberName"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Entity Sub Code"
+                [value]="viewCreditDebitNoteData.entitySubCode"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Entity Sub Name"
+                [value]="viewCreditDebitNoteData.entitySubCodeDescription"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Invoice Number"
+                [value]="viewCreditDebitNoteData.invoiceNumber"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Invoice Amount" [value]="viewCreditDebitNoteData.invoiceAmount"
+                type="baseCurrency"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Invoice Due Date"
+                [value]="viewCreditDebitNoteData.invoiceDueDate"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Invoice Generation Date"
+                [value]="viewCreditDebitNoteData.invoiceGenerationDate"></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-mt-3" *ngIf="viewCreditDebitNoteData.creditNoteOrDebitNote == 'Credit Note'">
+        <div class="aps-card-header p-px-3 aps-py-12 text-size-14 text-semi-bold">
+          {{ 'Credit Note Details' | apsTranslate }}
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Credit Note Reference Number"
+                [value]="viewCreditDebitNoteData.creditNoteDetails[0].creditNoteReferenceNumber"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Credit Note Date"
+                [value]="viewCreditDebitNoteData.creditNoteDetails[0].creditNoteDate"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Allocation Number"
+                [value]="viewCreditDebitNoteData.creditNoteDetails[0].allocationNumber"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Document Type"
+                [value]="viewCreditDebitNoteData.creditNoteDetails[0].documentType"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Credit Note Amount"
+                [value]="viewCreditDebitNoteData.creditNoteDetails[0].creditNoteAmount"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Valid Till Date"
+                [value]="viewCreditDebitNoteData.creditNoteDetails[0].validTillDate"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Remarks"
+                [value]="viewCreditDebitNoteData.creditNoteDetails[0].remarks"></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-mt-3" *ngIf="viewCreditDebitNoteData.creditNoteOrDebitNote == 'Debit Note'">
+        <div class="aps-card-header p-px-3 aps-py-12 text-size-14 text-semi-bold">
+          {{ 'Debit Note Details' | apsTranslate }}
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Debit Note Reference Number"
+                [value]="viewCreditDebitNoteData.debitNoteDetails[0].debitNoteReferenceNumber"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Debit Note Date"
+                [value]="viewCreditDebitNoteData.debitNoteDetails[0].debitNoteDate"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Allocation Number"
+                [value]="viewCreditDebitNoteData.debitNoteDetails[0].allocationNumber"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Document Type"
+                [value]="viewCreditDebitNoteData.debitNoteDetails[0].documentType"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Debit Note Amount"
+                [value]="viewCreditDebitNoteData.debitNoteDetails[0].debitNoteAmount"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Valid Till Date"
+                [value]="viewCreditDebitNoteData.debitNoteDetails[0].validTillDate"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Remarks"
+                [value]="viewCreditDebitNoteData.debitNoteDetails[0].remarks"></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <app-dynamic-enrichment mode="VIEW" classes="p-mt-3" [showHeaderBorderBottom]="true"
+        [enrichmentModel]="viewCreditDebitNoteData.invoiceEnrich">
+      </app-dynamic-enrichment>
+    </div>
+  </app-modal>
+</div>

@@ -1,0 +1,21 @@
+<div class="footer-container" *ngIf="footerData">
+  <div class="social-icons-wrapper">
+    <div class="social-icon" *ngFor="let social of footerData.socialMedias">
+      <i class="fab" [class]="social.icon"></i>
+    </div>
+  </div>
+
+  <div class="copyright-wrapper">
+    <div class="copyright">
+      <span>{{ 'msg_copyright' | translate }}</span> &nbsp;<span>&copy;</span>&nbsp;
+      <!-- <span>{{ footerData.copyRight }}</span> -->
+      <span>2023 Aurionpro Solutions Limited</span>
+    </div>
+  </div>
+
+  <div class="links-wrapper">
+    <div class="link pointer" *ngFor="let link of footerData.links" (click)="onLinkClick(link)">
+      {{ link.displayName }}
+    </div>
+  </div>
+</div>

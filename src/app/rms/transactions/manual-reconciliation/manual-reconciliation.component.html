@@ -1,0 +1,138 @@
+<div class="container">
+  <div class="p-grid g-margin-x">
+    <div class="p-md-7 p-lg-7 p-sm-12 p-col-12">
+      <div class="aps-card p-mb-1">
+        <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+          {{ 'Search By' | apsTranslate }}
+        </div>
+      </div>
+      <app-dynamic-search
+        #dynamicSearchBy
+        [isShowSaveSearchCriteria]="false"
+        [isDisplayPrefillCriteriaModal]="false"
+        [isShowPrefillCriteria]="false"
+        [isShowSearchByHeader]="false"
+        entityName="RMS_RECONCILIATION_SEARCHBY"
+        [isOptionalParameterHidden]="true"
+        [isHideActionFooter]="true"
+        (onSearch)="getSearchByResults($event)"
+        [cardHeight]="200"
+        (isFormValid)="onSearchByChange($event)"
+      >
+      </app-dynamic-search>
+      <div class="p-grid g-margin-x">
+        <div class="p-col-12 p-md-6 p-sm-12 p-lg-6">
+          <div class="aps-card p-mb-1">
+            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+              {{ 'Invoice Filter' | apsTranslate }}
+            </div>
+          </div>
+          <app-dynamic-search
+            #dynamicSearchBy
+            [isShowSaveSearchCriteria]="false"
+            [isDisplayPrefillCriteriaModal]="false"
+            [isShowPrefillCriteria]="false"
+            [isShowSearchByHeader]="false"
+            [optionalParametersColSize]="12"
+            entityName="RMS_RECONCILIATION_INVOICE_FILTER"
+            [isOptionalParameterHidden]="true"
+            [isHideActionFooter]="true"
+            [cardHeight]="340"
+            (onSearch)="getInvoiceFilterResults($event)"
+            (isFormValid)="onInvoiceFilterChange($event)"
+          >
+          </app-dynamic-search>
+        </div>
+        <div class="p-col-12 p-md-6 p-sm-12 p-lg-6">
+          <div class="aps-card p-mb-1">
+            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+              {{ 'Payment Filter' | apsTranslate }}
+            </div>
+          </div>
+          <app-dynamic-search
+            #dynamicSearchBy
+            [isShowSaveSearchCriteria]="false"
+            [isDisplayPrefillCriteriaModal]="false"
+            [isShowPrefillCriteria]="false"
+            [isShowSearchByHeader]="false"
+            entityName="RMS_RECONCILIATION_PAYMENT_FILTER"
+            [isOptionalParameterHidden]="true"
+            [optionalParametersColSize]="12"
+            [isHideActionFooter]="true"
+            [cardHeight]="340"
+            (onSearch)="getPaymentFilterResults($event)"
+            (isFormValid)="onPaymentFilterChange($event)"
+          >
+          </app-dynamic-search>
+        </div>
+      </div>
+      <div class="fixed-bottom-container">
+        <div class="aps-card p-px-3 p-py-2">
+          <div class="left-right-container">
+            <div class="left-container">
+              <button class="btn btn-md btn-tertiary p-mr-3">
+                {{ 'CANCEL' | apsTranslate }}
+              </button>
+            </div>
+            <div class="right-container">
+              <button
+                [disabled]="!isSearchValid()"
+                class="btn btn-md btn-primary"
+                (click)="search()"
+              >
+                {{ 'SEARCH' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-5 p-lg-5 p-sm-12 p-col-12">
+      <div class="aps-card p-px-3 aps-h-100p">
+        <p-tabView>
+          <p-tabPanel header="{{ 'Saved Criterion' | apsTranslate }}">
+            <div class="p-py-3 border-bottom">
+              <div class="text-size-12 text-semi-bold">Receivable Criterion 1</div>
+              <div class="text-size-11 text-semi-bold p-py-2">TATA MOTORS</div>
+              <div class="text-size-10 text-semi-bold">PRG002</div>
+              <div class="text-size-12 p-pt-2">
+                <span class="text-semi-bold">4</span> Invoices Parameter |
+                <span class="text-semi-bold">4</span> Payments Parameter
+              </div>
+            </div>
+            <div class="p-py-3 border-bottom">
+              <div class="text-size-12 text-semi-bold">Receivable Criterion 2</div>
+              <div class="text-size-11 text-semi-bold p-py-2">TATA MOTORS</div>
+              <div class="text-size-10 text-semi-bold">PRG002</div>
+              <div class="text-size-12 p-pt-2">
+                <span class="text-semi-bold">4</span> Invoices Parameter |
+                <span class="text-semi-bold">4</span> Payments Parameter
+              </div>
+            </div>
+          </p-tabPanel>
+          <p-tabPanel header="{{ 'Recent' | apsTranslate }}">
+            <div class="p-py-3 border-bottom">
+              <div class="text-size-12 text-semi-bold">Receivable Criterion 1</div>
+              <div class="text-size-11 text-semi-bold p-py-2">TATA MOTORS</div>
+              <div class="text-size-10 text-semi-bold">PRG002</div>
+              <div class="text-size-12 p-pt-2">
+                <span class="text-semi-bold">4</span> Invoices Parameter |
+                <span class="text-semi-bold">4</span> Payments Parameter
+              </div>
+            </div>
+            <div class="p-py-3 border-bottom">
+              <div class="text-size-12 text-semi-bold">Receivable Criterion 2</div>
+              <div class="text-size-11 text-semi-bold p-py-2">TATA MOTORS</div>
+              <div class="text-size-10 text-semi-bold">PRG002</div>
+              <div class="text-size-12 p-pt-2">
+                <span class="text-semi-bold">4</span> Invoices Parameter |
+                <span class="text-semi-bold">4</span> Payments Parameter
+              </div>
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+  </div>
+</div>

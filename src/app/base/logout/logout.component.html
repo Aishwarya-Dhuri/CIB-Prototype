@@ -1,0 +1,111 @@
+<div class="logout-container">
+  <app-modal [(isShow)]="showFeedback" headerText="Customer Feedback" size="md">
+    <div class="" body>
+      <div class="text-center" *ngIf="!feedbackInitiate">
+        <div class="text-size-14">
+          <div class="p-pt-6 p-pb-4">Your opinion matters!</div>
+          <div class="p-pb-6">
+            Take a few minutes to fill out our survey to help us enhance your experience
+          </div>
+        </div>
+      </div>
+      <div class="p-grid" *ngIf="feedbackInitiate">
+        <div class="p-col-12">
+          <div class="text-size-14 text-bold">
+            1. Please rate your experience on a scale of 1 to 5, with 5 being the best experience
+          </div>
+        </div>
+        <div class="p-col-12">
+          <div
+            class="p-py-3 p-px-4 background-color-primary-light-shade-1 text-center border-radius-4"
+          >
+            <p-rating
+              [(ngModel)]="rating"
+              [cancel]="false"
+              [iconOffStyle]="{ color: '--var(--color-warning) !important' }"
+            ></p-rating>
+          </div>
+        </div>
+        <div class="p-col-12">
+          <div class="text-size-14 text-bold">
+            2. Thank you! What did you like the most about it?
+          </div>
+        </div>
+        <div class="p-col-12">
+          <div class="inline-items">
+            <div class="item" *ngFor="let feedbackOption of moreFeedbackOptions">
+              <div
+                class="p-px-3 p-py-2 border-radius-4 p-mr-3 pointer"
+                [ngClass]="
+                  feedbackOption.checked
+                    ? 'background-color-primary text-color-inverted'
+                    : 'background-color-dark-3 text-color-dark-shade-2'
+                "
+                (click)="feedbackOption.checked = !feedbackOption.checked"
+              >
+                {{ feedbackOption.displayName }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12">
+          <div class="text-size-14 text-bold">
+            3. Anything else that you would like to highlight?
+          </div>
+        </div>
+        <div class="p-col-12">
+          <textarea class="remark-input" [(ngModel)]="remark" placeholder="Enter Remark"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="left-right-container" footer>
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button
+          class="btn btn-md btn-tertiary p-mr-3"
+          (click)="showFeedback = false"
+          *ngIf="!feedbackInitiate"
+        >
+          May be Later
+        </button>
+        <button
+          class="btn btn-md btn-primary"
+          (click)="showFeedback = false"
+          *ngIf="feedbackInitiate"
+        >
+          SUBMIT
+        </button>
+        <button
+          class="btn btn-md btn-primary"
+          (click)="feedbackInitiate = true"
+          *ngIf="!feedbackInitiate"
+        >
+          START
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-header></app-header>
+
+  <div class="p-m-md-6 p-m-sm-4 p-m-3" style="z-index: 10">
+    <div class="p-grid">
+      <div class="p-md-8 p-sm-12 p-col-12"></div>
+      <div class="p-md-4 p-sm-12 p-col-12">
+        <div class="aps-card">
+          <div class="p-p-3">
+            <div class="text-size-20">You have successfully logged out!</div>
+            <button class="btn btn-md btn-primary p-my-3" routerLink="/login">RE-LOGIN</button>
+            <div class="text-size-12 text-bold">Thank you for using our banking system!</div>
+            <!-- <div class="text-size-12">(For session on , 10:55am to 11:25am)</div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-wrapper">
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -1,0 +1,105 @@
+<app-search-modal
+  [(isShow)]="isShowSearchModal"
+  [rowDefUrl]="dataUrl"
+  [colDefUrl]="colDefUrl"
+  (onSelection)="onOptionSelect($event)"
+  [header]="label"
+></app-search-modal>
+
+<div
+  [ngClass]="{
+    'select-control-rtl': direction === 'rtl',
+    'background-primary': backgroundStyle === 'primary'
+  }"
+>
+  <div
+    class="default-style"
+    [ngClass]="{
+      'bordered-style': style === 'style3' || style === 'style4',
+      'disable-floating-label': style === 'style2' || style === 'style4',
+      'no-label': !showLabel
+    }"
+  >
+    <div class="form-group">
+      <div class="input-group" [ngClass]="{ 'input-group-error': error }">
+        <div class="main-input-control">
+          <input class="" type="text" [(ngModel)]="value" />
+        </div>
+
+        <input
+          [id]="elementId"
+          [name]="name"
+          [class]="class"
+          [ngClass]="{
+            'select-control-with-icon': icon
+          }"
+          (blur)="touched()"
+          (input)="filterData($event)"
+          [(ngModel)]="displayName"
+          (click)="isDisabled ? null : onClickAutoComplete($event)"
+          (focus)="isDisabled ? null : showAutoComplete($event)"
+          (focusout)="hideAutoComplete($event)"
+          autocomplete="off"
+          type="text"
+          [disabled]="isDisabled"
+        />
+
+        <label
+          class="input-label"
+          [for]="id + label"
+          (click)="isDisabled ? null : onClickAutoComplete($event)"
+          [ngClass]="{
+            'input-label-floating': displayName,
+            'input-label-with-icon-container': icon
+          }"
+          *ngIf="showLabel"
+        >
+          <span class="label">
+            {{ label | apsTranslate }}<span class="required" *ngIf="required">*</span>
+          </span>
+        </label>
+
+        <div class="icon" *ngIf="icon" (click)="isDisabled ? null : toggleAutoComplete($event)">
+          <app-icon icon="{{ icon }}" class="app-icon"></app-icon>
+        </div>
+
+        <div class="actions-wrapper">
+          <div class="action">
+            <app-icon
+              icon="fa-search"
+              [class]="colorClass + ' app-icon'"
+              (click)="isDisabled ? null : (isShowSearchModal = true)"
+            ></app-icon>
+          </div>
+          <div class="action" *ngIf="showDelete" (click)="onDelete()">
+            <app-icon icon="fa-trash-alt" class="app-icon"></app-icon>
+          </div>
+        </div>
+      </div>
+
+      <span *ngIf="helpText && !error" class="input-help-text">{{ helpText }}</span>
+      <span *ngIf="error" class="input-error">This field is required</span>
+    </div>
+  </div>
+</div>
+
+<div class="dropdown-container">
+  <div class="dropdown">
+    <p-autoComplete
+      #autoComplete
+      [(ngModel)]="val"
+      [suggestions]="filteredData"
+      [field]="searchParameter"
+      [forceSelection]="forceSelection"
+      appendTo="body"
+      (completeMethod)="filterData($event)"
+      (onSelect)="onOptionSelect($event)"
+      [tabindex]="-1"
+      [disabled]="isDisabled"
+      [showEmptyMessage]="true"
+      [emptyMessage]="'No records found.'"
+      [readonly]="readonly"
+      panelStyleClass="text-size-14"
+    ></p-autoComplete>
+  </div>
+</div>

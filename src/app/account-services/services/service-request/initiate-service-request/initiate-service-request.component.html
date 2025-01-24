@@ -1,0 +1,442 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal [(isShow)]="isSubmit" size="md">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-20 text-bold">
+            {{ 'Request is successfully initiated' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container">
+          <app-icon
+            icon="fa-times"
+            styleClasses="pointer"
+            (click)="isSubmit = false; cancel()"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="p-grid border-bottom text-size-14 p-pt-3">
+        <div class="p-col-12 p-p-0 p-mb-3">
+          <div class="text-color-light-shade-1">{{ 'SR Number' | apsTranslate }}</div>
+          <div class="">{{ formData.id }}</div>
+        </div>
+        <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0 p-mb-3 p-l-0">
+          <div class="text-color-light-shade-1">{{ 'SR Class' | apsTranslate }}</div>
+          <div class="">{{ formData.srClass }}</div>
+        </div>
+        <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0 p-mb-3">
+          <div class="text-color-light-shade-1">{{ 'SR Type' | apsTranslate }}</div>
+          <div class="">{{ formData.srType }}</div>
+        </div>
+        <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0 p-mb-3">
+          <div class="text-color-light-shade-1">{{ 'SR Sub Type' | apsTranslate }}</div>
+          <div class="">{{ formData.srSubType }}</div>
+        </div>
+      </div>
+
+      <div class="left-right-container p-mt-3">
+        <div class="left-container">
+          <div class="inline-items p-pt-2">
+            <div class="item p-mr-3">
+              <app-icon icon="fa-arrow-to-bottom"></app-icon>
+            </div>
+            <div class="item p-mr-3">
+              <app-icon icon="fa-print"></app-icon>
+            </div>
+            <div class="item">
+              <app-icon icon="fa-envelope"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="isSubmit = false; cancel()">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12">
+        <ng-container *ngIf="stepperDetails.currentStep == 1">
+          <div class="aps-card text-color-dark-shade-1">
+            <div class="aps-card-header">
+              <div class="left-right-container p-px-3">
+                <div class="left-container aps-py-12">
+                  <div class="text-size-16 text-semi-bold">
+                    {{ 'Service Category' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="right-container p-py-2">
+                  <button class="btn btn-md btn-tertiary" (click)="onViewGuide()">
+                    <app-icon icon="fa-eye" styleClasses="p-mr-2"></app-icon>
+                    {{ 'VIEW GUIDE' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="aps-card-body p-p-3">
+              <div class="p-grid">
+                <div class="p-lg-5 p-md-5 p-sm-12 p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-pl-0 p-py-0">
+                      <aps-custom-select
+                        label="{{ 'SR Class' | apsTranslate }}"
+                        name="srClass"
+                        id="srClass"
+                        dataUrl="accountServices/services/serviceRequest/private/getSrClasses"
+                        [reqBody]="{}"
+                        [value]="formData.srClass"
+                        [(ngModel)]="formData.srClass"
+                        [required]="true"
+                      ></aps-custom-select>
+                    </div>
+                    <div class="p-md-6 p-lg-6 p-sm-12 p-col-12 p-py-0">
+                      <aps-custom-select
+                        label="{{ 'SR Type' | apsTranslate }}"
+                        name="srType"
+                        id="srType"
+                        dataUrl="accountServices/services/serviceRequest/private/getSrTypes"
+                        [reqBody]="{ srClass: this.formData.srClass }"
+                        [value]="formData.srType"
+                        [(ngModel)]="formData.srType"
+                        [required]="true"
+                      ></aps-custom-select>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-md-7 p-sm-12 p-col-12 p-py-0">
+                      <aps-custom-select
+                        label="{{ 'SR Sub Type' | apsTranslate }}"
+                        name="srSubType"
+                        id="srSubType"
+                        dataUrl="accountServices/services/serviceRequest/private/getSrSubTypes"
+                        [reqBody]="{ srClass: this.formData.srClass, srType: this.formData.srType }"
+                        [value]="formData.srSubType"
+                        [(ngModel)]="formData.srSubType"
+                        (change)="onChangeSrSubType($event)"
+                        [required]="true"
+                      ></aps-custom-select>
+                    </div>
+                    <div class="p-md-5 p-sm-12 p-col-12 p-pr-0 p-py-3">
+                      <button class="btn btn-md btn-tertiary" (click)="onDownloadDigitalForm()">
+                        <app-icon icon="fa-arrow-to-bottom" styleClasses="p-mr-2"></app-icon>
+                        {{ 'DOWNLOAD DIGITAL FORM' | apsTranslate }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid background-color-dark-5 border-radius-4">
+                <div class="p-md-5 p-sm-12 p-col-12 p-pt-2 p-pb-0 p-px-3">
+                  <div class="label-with-icon-container">
+                    <div class="icon text-size-14">
+                      <app-icon icon="fa-info-circle"></app-icon>
+                    </div>
+                    <div class="label text-size-14">
+                      {{ 'Service Request Workflow' | apsTranslate }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+                  <app-service-request-org-tree
+                    [treeData]="treeData"
+                  ></app-service-request-org-tree>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form #srForm="ngForm" class="" (ngSubmit)="onSubmitForm($event)">
+            <div class="aps-card p-mt-3">
+              <div class="aps-card-header">
+                <div class="text-size-16 text-semi-bold p-px-3 aps-py-12">
+                  {{ 'Service Details' | apsTranslate }}
+                </div>
+              </div>
+              <div class="aps-card-body p-px-3 p-pt-3 p-pb-0">
+                <div
+                  class="p-grid"
+                  *ngIf="fieldTypes && fieldTypes.fieldList.length > 0; else noFieldsAvailable"
+                >
+                  <div
+                    class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0 p-py-0 p-left-0"
+                    *ngFor="let field of fieldTypes.fieldList"
+                  >
+                    <!-- TEXT Input Field -->
+                    <div *ngIf="field.fieldType == 'TEXT'">
+                      <aps-form-input
+                        [id]="field.name"
+                        [label]="field.displayName | apsTranslate"
+                        [name]="field.name"
+                        [inputType]="field.inputType"
+                        [(ngModel)]="inputForm[field.name]"
+                        [required]="true"
+                      >
+                      </aps-form-input>
+                    </div>
+
+                    <!-- DATE Input Field -->
+                    <div *ngIf="field.fieldType == 'DATE'">
+                      <app-aps-calender
+                        [label]="field.displayName | apsTranslate"
+                        [id]="field.name"
+                        [name]="field.name"
+                        [(ngModel)]="inputForm[field.name]"
+                        [required]="true"
+                      >
+                      </app-aps-calender>
+                    </div>
+
+                    <!-- SELECT Input Field -->
+                    <div *ngIf="field.fieldType == 'SELECT'">
+                      <aps-custom-select
+                        [id]="field.name"
+                        [name]="field.name"
+                        [label]="field.displayName | apsTranslate"
+                        [dataUrl]="field.urlData"
+                        [value]="inputForm[field.name]"
+                        [(ngModel)]="inputForm[field.name]"
+                        [isDisabled]="field.disabled ? field.disabled : false"
+                        [required]="true"
+                      >
+                      </aps-custom-select>
+                    </div>
+                  </div>
+                </div>
+                <ng-template #noFieldsAvailable>
+                  <div class="text-size-14 text-color-dark-shade-1 text-center p-py-5">
+                    {{ 'Please Select Valid Service Category' | apsTranslate }}
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+
+            <div class="aps-card p-mt-3">
+              <div class="aps-card-header">
+                <div class="text-size-16 text-semi-bold p-px-3 aps-py-12">
+                  {{ 'Attach Documents' | apsTranslate }} (3)
+                </div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="p-grid p-pb-2">
+                  <div class="p-md-5 p-sm-12 p-col-12 p-p-0">
+                    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                      {{ 'Signature' | apsTranslate }}
+                    </div>
+                    <div class="text-size-12 text-color-normal p-mb-1">
+                      {{
+                        'Acceptable Formats: PDF, PNG, JPEG & Maximum size: 10MB each'
+                          | apsTranslate
+                      }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0">
+                    <upload-form-control
+                      [files]="formData.document1"
+                      [hideDragDropContainerOnFIleUpload]="true"
+                      (onUploaded)="formData.document1 = $event"
+                    ></upload-form-control>
+                  </div>
+                </div>
+                <div class="p-grid p-pb-2">
+                  <div class="p-md-5 p-sm-12 p-col-12 p-p-0">
+                    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                      {{ 'Driving License' | apsTranslate }}
+                    </div>
+                    <div class="text-size-12 text-color-normal p-mb-1">
+                      {{ 'Acceptable Formats: PNG, JPEG & Maximum size: 10MB each' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0">
+                    <upload-form-control
+                      [hideDragDropContainerOnFIleUpload]="true"
+                      [files]="formData.document2"
+                      (onUploaded)="formData.document2 = $event"
+                    ></upload-form-control>
+                  </div>
+                </div>
+                <div class="p-grid">
+                  <div class="p-md-5 p-sm-12 p-col-12 p-p-0">
+                    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                      {{ 'Signature' | apsTranslate }}
+                    </div>
+                    <div class="text-size-12 text-color-normal p-mb-1">
+                      {{ 'Acceptable Formats: JPEG & Maximum size: 10MB each' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0">
+                    <upload-form-control
+                      [hideDragDropContainerOnFIleUpload]="true"
+                      [files]="formData.document3"
+                      (onUploaded)="formData.document3 = $event"
+                    ></upload-form-control>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="aps-card p-mt-3 p-px-3 aps-py-12"
+              *ngIf="fieldTypes && fieldTypes.fieldList.length > 0"
+            >
+              <div class="left-right-container">
+                <div class="left-container"></div>
+                <div class="right-container">
+                  <button class="btn btn-md btn-tertiary p-mr-3" (click)="resetForm(form)">
+                    {{ 'RESET' | apsTranslate }}
+                  </button>
+                  <button
+                    class="btn btn-md btn-primary"
+                    [disabled]="srForm.invalid"
+                    (click)="editIndex > -1 ? saveEditedData() : addRequest()"
+                  >
+                    {{ (editIndex > -1 ? 'SAVE REQUEST' : 'ADD REQUEST') | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+
+          <div class="aps-card p-mt-3 aps-h-300" *ngIf="formData.srRowData.length > 0">
+            <div class="aps-card-header p-px-3 aps-py-12">
+              <div class="text-size-16 text-color-dark-shade-1 text-bold">
+                {{ 'Service Request Details List' | apsTranslate }}
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <app-ag-grid-listing
+                #usersListGrid
+                [columnDefs]="formData.srColDefs"
+                [context]="{ componentParent: this }"
+                [rowData]="formData.srRowData"
+                [gridOptions]="{
+                  rowModelType: 'clientSide',
+                  pagination: false
+                }"
+              ></app-ag-grid-listing>
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+          <div class="aps-card text-color-dark-shade-1 aps-h-450">
+            <div class="aps-card-header p-px-3 aps-py-12">
+              <div class="text-size-16 text-semi-bold">{{ 'Review' | apsTranslate }}</div>
+            </div>
+            <div class="aps-card-body overflow-scroll text-size-14 p-p-3">
+              <div class="text-bold p-mb-1">{{ 'Service Category' | apsTranslate }}</div>
+              <div class="p-grid">
+                <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-p-0">
+                  <div class="text-color-light-shade-1">{{ 'SR Class' | apsTranslate }}</div>
+                  <div class="">{{ formData.srClass }}</div>
+                </div>
+                <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-p-0">
+                  <div class="text-color-light-shade-1">{{ 'Service Type' | apsTranslate }}</div>
+                  <div class="">{{ formData.srType }}</div>
+                </div>
+                <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-p-0">
+                  <div class="text-color-light-shade-1">{{ 'SR Sub Type' | apsTranslate }}</div>
+                  <div class="">{{ formData.srSubType }}</div>
+                </div>
+              </div>
+
+              <div class="text-bold p-mt-5 p-mb-1">Attached Documents</div>
+              <div class="p-grid">
+                <div class="p-col-2 p-pl-0 p-py-0" *ngIf="formData.document1.length > 0">
+                  <div class="aps-card p-p-2">
+                    <div class="inline-items">
+                      <div class="item">
+                        <app-icon icon="fa-file"></app-icon>
+                      </div>
+                      <div class="item text-color-normal p-px-2">
+                        <div class="text-size-12">{{ formData.document1[0].fileName }}</div>
+                        <div class="text-size-10">
+                          {{ (+formData.document1[0].fileSize / 1024 / 1024).toFixed(2) }}Mb
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-2 p-pl-0 p-py-0" *ngIf="formData.document2.length > 0">
+                  <div class="aps-card p-p-2">
+                    <div class="inline-items">
+                      <div class="item">
+                        <app-icon icon="fa-file"></app-icon>
+                      </div>
+                      <div class="item text-color-normal p-px-2">
+                        <div class="text-size-12">{{ formData.document2[0].fileName }}</div>
+                        <div class="text-size-10">
+                          {{ (+formData.document2[0].fileSize / 1024 / 1024).toFixed(2) }}Mb
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-2 p-pl-0 p-py-0" *ngIf="formData.document3.length > 0">
+                  <div class="aps-card p-p-2">
+                    <div class="inline-items">
+                      <div class="item">
+                        <app-icon icon="fa-file"></app-icon>
+                      </div>
+                      <div class="item text-color-normal p-px-2">
+                        <div class="text-size-12">{{ formData.document3[0].fileName }}</div>
+                        <div class="text-size-10">
+                          {{ (+formData.document3[0].fileSize / 1024 / 1024).toFixed(2) }}Mb
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="formData.srRowData.length > 0">
+                <div class="text-bold p-mt-5 p-mb-1">{{ 'Users List' | apsTranslate }}</div>
+                <div class="p-grid">
+                  <div class="p-col-12 p-p-0 border border-radius-4 aps-h-300">
+                    <app-ag-grid-listing
+                      [columnDefs]="formData.srColDefs"
+                      [rowData]="formData.srRowData"
+                      [gridOptions]="{
+                        rowModelType: 'clientSide',
+                        pagination: false
+                      }"
+                    ></app-ag-grid-listing>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+
+          <p-checkbox
+            class="p-mt-3"
+            [binary]="true"
+            [(ngModel)]="formData.highPriority"
+            label="Set as High Priority"
+            [disabled]="mode == 'VIEW'"
+          ></p-checkbox>
+
+          <p-checkbox
+            *ngIf="mode != 'VIEW'"
+            class="p-my-3"
+            [binary]="true"
+            [(ngModel)]="acceptTermsAndConditions"
+            label="I/We hereby declare that the details furnished above are true & correct to the best of my/our knowledge & belief in case any of the above mentioned information is found to be false or untrue or misrepresenting"
+          ></p-checkbox>
+        </ng-container>
+      </div>
+
+      <div class="p-col-12">
+        <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

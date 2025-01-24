@@ -1,0 +1,184 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-searched-by-view
+      [filters]="filters"
+      (onClear)="onClear()"
+      (onModify)="onModify()"
+    ></app-searched-by-view>
+
+    <div class="aps-card p-mt-3 p-mb-1">
+      <div class="p-grid">
+        <div class="p-col-12 p-md-4 p-mt-3 p-py-0 p-px-3">
+          <aps-custom-select
+            [label]="'Accounts' | apsTranslate"
+            name="accounts"
+            id="accounts"
+            [(ngModel)]="accounts"
+            [value]="accounts"
+            [data]="accountsList"
+            (change)="setAmountsByAccount(accounts)"
+            required
+          >
+          </aps-custom-select>
+        </div>
+        <div class="p-col-12 p-md-4 p-mt-3 p-py-0 p-px-3">
+          <aps-custom-select
+            [label]="'Currency' | apsTranslate"
+            name="currency"
+            id="currency"
+            [(ngModel)]="currency"
+            [value]="currency"
+            (change)="onChangeCurrency($event)"
+            dataUrl="setup/generalMasters/currency/private/currencyList"
+            required
+          >
+          </aps-custom-select>
+        </div>
+        <div class="p-col-12 p-md-2 p-mt-4 p-py-0 p-px-3">
+          <div class="text-size-14 text-color-light-shade-1">{{ 'From Date' | apsTranslate }}</div>
+          <div class="text-size-16">01 Sept 2015</div>
+        </div>
+        <div class="p-col-12 p-md-2 p-mt-4 p-py-0 p-px-3">
+          <div class="text-size-14 text-color-light-shade-1">{{ 'To Date' | apsTranslate }}</div>
+          <div class="text-size-16">30 Sept 2015</div>
+        </div>
+      </div>
+    </div>
+    <div class="p-grid text-center">
+      <div class="p-col-12 p-md-4 p-sm-12 p-pl-0 p-pr-1 p-pb-1">
+        <div class="aps-card">
+          <div class="text-size-24 text-semi-bold p-px-3 p-py-1">
+            <app-base-currency
+              [amount]="amountList.openingBalance"
+              [currency]="currencyName"
+              digitsInfo="1.0-0"
+            >
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-semi-bold p-px-3 p-py-2">
+            {{ 'Opening Balance' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-sm-12 p-px-1 p-pb-1">
+        <div class="aps-card">
+          <div class="text-size-24 text-semi-bold p-px-3 p-py-1">
+            <app-base-currency
+              [amount]="amountList.closingBalance"
+              [currency]="currencyName"
+              digitsInfo="1.0-0"
+            >
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-semi-bold p-px-3 p-py-2">
+            {{ 'Closing Balance' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-sm-12 p-pl-1 p-pr-0 p-pb-1">
+        <div class="aps-card">
+          <div class="text-size-24 text-semi-bold p-px-3 p-py-1">
+            <app-base-currency
+              [amount]="amountList.odLimit"
+              [currency]="currencyName"
+              digitsInfo="1.0-0"
+            >
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-semi-bold p-px-3 p-py-2">
+            {{ 'OD Limit' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-sm-12 p-pl-0 p-pr-1 p-pt-1">
+        <div class="aps-card">
+          <div class="text-size-24 text-semi-bold p-px-3 p-py-1">
+            <app-base-currency
+              [amount]="amountList.holdBalance"
+              [currency]="currencyName"
+              digitsInfo="1.0-0"
+            >
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-semi-bold p-px-3 p-py-2">
+            {{ 'Hold Balance' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-sm-12 p-px-1 p-pt-1">
+        <div class="aps-card">
+          <div class="text-size-24 text-semi-bold p-px-3 p-py-1">
+            <app-base-currency
+              [amount]="amountList.ladgerBalance"
+              [currency]="currencyName"
+              digitsInfo="1.0-0"
+            >
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-semi-bold p-px-3 p-py-2">
+            {{ 'Ladger Balance' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-sm-12 p-pl-1 p-pr-0 p-pt-1">
+        <div class="aps-card">
+          <div class="text-size-24 text-semi-bold p-px-3 p-py-1">
+            <app-base-currency
+              [amount]="amountList.unclearBalance"
+              [currency]="currencyName"
+              digitsInfo="1.0-0"
+            >
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-semi-bold p-px-3 p-py-2">
+            {{ 'Unclear Balance' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-12 p-pl-0 p-pr-0">
+        <div class="aps-card aps-h-400 p-mb-3">
+          <div class="card-header overflow-visible">
+            <div class="p-px-3" [ngClass]="{ 'left-right-container': viewPort === 'web' }">
+              <div class="left-container">
+                <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                  {{ 'Transactions' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container aps-py-12">
+                <app-grid-listing-tools
+                  (changeFloatingFilter)="historicalAccountStatement.changeFloatFilter($event)"
+                  (filterRecords)="historicalAccountStatement.onFilter($event)"
+                  (applyColDefs)="historicalAccountStatement.onApplyConfig($event)"
+                  [colDefs]="historicalAccountStatement.columnDefs"
+                  [columnConfig]="true"
+                  [moreOptions]="true"
+                  [showMail]="true"
+                  [showDownload]="true"
+                  [showPrint]="false"
+                  [showRefresh]="false"
+                >
+                </app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing
+              id="historicalAccountStatement"
+              #historicalAccountStatement
+              [colDefUrl]="colDefUrl"
+              [rowData]="[]"
+              [gridOptions]="gridOptions"
+            >
+            </app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

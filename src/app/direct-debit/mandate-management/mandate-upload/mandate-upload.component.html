@@ -1,0 +1,175 @@
+<div class="container" *ngIf="!loading">
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <div class="text-size-16 text-bold">
+                {{ 'Mandate File - Upload Workflow' | apsTranslate }}
+            </div>
+        </div>
+
+        <div class="p-col-12">
+            <app-dds-file-upload-org-tree [treeData]="treeData"></app-dds-file-upload-org-tree>
+        </div>
+
+        <ng-container *ngIf="stepperDetails.currentStep == 1">
+            <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+                <div class="p-grid">
+                    <div class="p-col-12">
+                        <div class="aps-card p-p-2">
+                            <div class="p-grid">
+                                <div class="p-md-6 p-sm-12 p-col-12 p-pb-0">
+                                    <app-review-form-field label="Corporate Code" [value]="formData.corporateCode"></app-review-form-field>
+                                </div>
+                                <div class="p-md-6 p-sm-12 p-col-12 p-pb-0">
+                                    <app-review-form-field label="Corporate Name" [value]="formData.corporateName"></app-review-form-field>
+                                </div>
+                                <div class="p-md-6 p-sm-12 p-col-12 p-pb-0">
+                                    <aps-custom-select id="product" name="product"
+                                        label="{{ 'Product' | apsTranslate }}" [(ngModel)]="formData.product"
+                                        [data]="productData" [required]="true"
+                                        (change)="formData.productName = $event.displayName"></aps-custom-select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-12">
+                        <div class="aps-card">
+                            <div class="aps-card-header aps-py-12 p-px-3">
+                                <div class="text-size-14 text-bold">
+                                    {{ 'Enter Upload File Details' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="aps-card-body p-p-3">
+                                <div class="p-grid">
+                                    <div class="p-col-12">
+                                        <div class="text-size-14 text-semi-bold">Upload Documents</div>
+                                        <div class="text-size-10">Acceptable Formats: ZIP. &nbsp; Maximum size: 100KB
+                                            each</div>
+                                        <upload-form-control [files]="formData.file"
+                                            [isMultiple]="true"></upload-form-control>
+                                    </div>
+
+                                    <div class="p-col-12">
+                                        <div class="text-size-14 text-semi-bold">Supporting Documents</div>
+                                        <div class="text-size-10">Acceptable Formats: ZIP. &nbsp; Maximum size: 100KB
+                                            each</div>
+                                        <upload-form-control [files]="formData.suppDoc"
+                                            [isMultiple]="true"></upload-form-control>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-md-5 p-sm-12 p-col-12">
+                <div class="aps-card aps-h-100p">
+                    <div class="aps-card-header aps-py-12 p-px-3">
+                        <div class="text-size-14 text-bold">
+                            {{ 'Recent Uploaded Mandate File' | apsTranslate }}
+                        </div>
+                    </div>
+                    <div class="aps-card-body p-p-3">
+                        <div class="border-bottom p-py-2">
+                            <div class="left-right-container text-size-12">
+                                <div class="left-container">
+                                    <div class="">
+                                        <div class="inline-block text-semi-bold">{{ 'Batch ID' | apsTranslate }} :</div>
+                                        <div class="inline-block">123456</div>
+                                    </div>
+                                    <div class="">
+                                        <div class="inline-block text-semi-bold">
+                                            {{ 'Uploaded Date' | apsTranslate }} :
+                                        </div>
+                                        <div class="inline-block">22 Aug 2022</div>
+                                    </div>
+                                    <div class="">
+                                        <div class="inline-block text-semi-bold">
+                                            {{ 'No of Records' | apsTranslate }} :
+                                        </div>
+                                        <div class="inline-block">25</div>
+                                    </div>
+                                    <div class="">
+                                        <div class="inline-block text-semi-bold">{{ 'Status' | apsTranslate }} :</div>
+                                        <div class="inline-block">Approved</div>
+                                    </div>
+                                </div>
+                                <div class="right-container">
+                                    <app-icon icon="fa-eye" class="p-p-2 pointer"></app-icon>
+                                    <app-icon icon="fa-link" class="p-p-2 pointer"></app-icon>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+            <div class="p-col-12">
+                <div class="aps-card p-p-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-col-4">
+                            <app-review-form-field label="Corporate Code" [value]="formData.corporateCode"></app-review-form-field>
+                        </div>
+                        <div class="p-col-4">
+                            <app-review-form-field label="Corporate Name" [value]="formData.corporateName"></app-review-form-field>
+                        </div>
+                        <div class="p-col-12">
+                            <div class="text-size-12 text-color-normal">{{ 'Product' | apsTranslate }}</div>
+                            <div class="text-size-14 text-color-dark-shade-1">{{ formData.productName }}</div>
+                        </div>
+                        <div class="p-col-12">
+                            <div class="text-size-14 text-bold">{{ 'Uploaded File' | apsTranslate }}</div>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of formData.file">
+                            <div class="aps-card p-p-2">
+                                <div class="label-with-icon-container">
+                                    <div class="icon">
+                                        <app-icon icon="fa-file"></app-icon>
+                                    </div>
+                                    <div class="label">
+                                        <div class="text-size-12">
+                                            {{ document.fileName }}
+                                        </div>
+                                        <div class="text-size-10 text-color-normal">
+                                            {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-col-12">
+                            <div class="text-size-14 text-bold">{{ 'Supporting Documents' | apsTranslate }}</div>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of formData.suppDoc">
+                            <div class="aps-card p-p-2">
+                                <div class="label-with-icon-container">
+                                    <div class="icon">
+                                        <app-icon icon="fa-file"></app-icon>
+                                    </div>
+                                    <div class="label">
+                                        <div class="text-size-12">
+                                            {{ document.fileName }}
+                                        </div>
+                                        <div class="text-size-10 text-color-normal">
+                                            {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <div class="p-col-12">
+            <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+        </div>
+    </div>
+</div>

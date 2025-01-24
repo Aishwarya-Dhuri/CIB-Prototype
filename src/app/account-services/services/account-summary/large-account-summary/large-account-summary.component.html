@@ -1,0 +1,366 @@
+<div class="container">
+  <div class="text-color-dark-shade-1" *ngIf="!loading; else loadingData">
+    <div class="aps-card">
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+          <div class="aps-card aps-filled-card p-p-3 aps-h-100p">
+            <div class="left-right-container">
+              <div class="left-container">
+                <img src="assets/images/{{ summariesData.image }}" alt="" class="img-40-x-40" />
+              </div>
+              <div class="right-container">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <img
+                      src="assets/images/flag/{{ selectedCurrency.flag }}"
+                      alt=""
+                      class="country-flag-icon"
+                    />
+                  </div>
+                  <div class="label">
+                    <select
+                      class="select-primary text-size-14 text-color-inverted"
+                      name="currency"
+                      id="currency"
+                      (change)="changeCurrency($event.target.value)"
+                      [ngModel]="selectedCurrency.currency"
+                    >
+                      <option *ngFor="let currency of currencies" [value]="currency.currency">
+                        {{ currency.currency }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-color-inverted text-semi-bold text-size-16">
+              {{ summariesData.name }}
+            </div>
+            <div class="text-color-inverted text-size-12">
+              <!-- <span *ngIf="isMultiCountryUser"
+                >{{ countries.length }} {{ 'Countries' | apsTranslate }} |
+              </span> -->
+              <span>{{ summariesData.totalAccounts }} {{ 'Accounts' | apsTranslate }}</span>
+            </div>
+
+            <hr class="p-my-md-4 p-my-sm-2 p-my-2" />
+
+            <div
+              class="background-color-primary-light border-radius-4 text-center p-px-12 p-py-2"
+              *ngIf="country"
+            >
+              <div class="label-with-icon-container">
+                <div class="icon">
+                  <img
+                    src="assets/images/flag/{{ country.flag }}"
+                    alt=""
+                    class="country-flag-icon"
+                  />
+                </div>
+                <div class="label text-size-14 text-color-inverted">
+                  {{ country.country }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+          <div class="p-my-3 p-ml-3 p-pr-3 border-right">
+            <div class="background-color-dark-3 aps-p-12 p-mb-3">
+              <div class="text-size-20 text-bold p-mb-md-1 p-mb-sm-0 p-mb-0">
+                <app-base-currency
+                  [amount]="summariesData.overallBalance"
+                  [currency]="selectedCurrency.currency"
+                  digitsInfo="1.0-0"
+                ></app-base-currency>
+              </div>
+              <div class="text-size-16">
+                {{ 'Overall' | apsTranslate }}
+                <span *ngIf="isGroupUser">{{ 'Group' | apsTranslate }}</span>
+                {{ 'Balance' | apsTranslate }}
+              </div>
+            </div>
+            <div class="background-color-dark-3 aps-p-12">
+              <div class="text-size-20 text-bold p-mb-md-1 p-mb-sm-0 p-mb-0">
+                <app-base-currency
+                  [amount]="summariesData.overallLimit"
+                  [currency]="selectedCurrency.currency"
+                  digitsInfo="1.0-0"
+                ></app-base-currency>
+              </div>
+              <div class="text-size-16">{{ 'Available Limit' | apsTranslate }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+          <app-pie-chart [options]="options" webHeight="200" mobileHeight="300"></app-pie-chart>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-pt-4" *ngIf="isGroupUser">
+      <div class="p-col-12 p-p-0">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="text-size-16 text-bold text-color-dark-shade-1">
+              {{ 'Corporates' | apsTranslate }}
+            </div>
+          </div>
+          <div class="right-container">
+            <div class="inline-items">
+              <div class="item p-pr-3 p-pt-1">
+                <div class="text-size-12">
+                  {{ 'Showing' | apsTranslate }} {{ getNoOfCorporatesVisibleOnScreen() }}
+                  {{ 'of' | apsTranslate }} {{ corporates.length }}
+                </div>
+              </div>
+              <div class="item p-pr-2">
+                <div class="scroll-btn" (click)="corporatesContainerScrollLeft()">
+                  <app-icon
+                    icon="fa-chevron-left"
+                    class="app-icon"
+                    rtlIcon="fa-chevron-right"
+                  ></app-icon>
+                </div>
+              </div>
+              <div class="item">
+                <div class="scroll-btn" (click)="corporatesContainerScrollRight()">
+                  <app-icon
+                    icon="fa-chevron-right"
+                    class="app-icon"
+                    rtlIcon="fa-chevron-left"
+                  ></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          #corporatesContainer
+          class="inline-items p-mt-2 p-p-1 aps-w-100p overflow-scroll hide-scroll"
+        >
+          <div class="item" *ngFor="let corporate of corporates">
+            <div
+              class="aps-card aps-w-300 p-mr-3 p-p-3"
+              [ngClass]="{
+                'aps-filled-card-white border-primary': corporate === selectedCorporate
+              }"
+              (click)="changeCorporate(corporate)"
+            >
+              <div class="left-right-container">
+                <div class="left-container">
+                  <img [src]="corporate.logo" alt="" class="img-40-x-40" />
+                </div>
+                <div class="right-container">
+                  <div
+                    class="p-py-1 p-px-2 border-radius-4 background-color-primary-light-shade-2 text-size-12 text-color-dark-shade-1"
+                  >
+                    {{ corporate.accounts }} {{ 'Accounts' | apsTranslate }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="text-color-dark-shade-1 text-semi-bold text-size-16">
+                {{ corporate.name }}
+              </div>
+
+              <hr class="p-my-md-3 p-my-sm-2 p-my-2" />
+
+              <div class="p-grid">
+                <div class="p-col-6 p-p-0">
+                  <div class="text-size-14 text-bold">
+                    <app-base-currency
+                      [amount]="corporate.availableBalance"
+                      [currency]="selectedCurrency.currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                  <div class="text-size-12">{{ 'Available Balance' | apsTranslate }}</div>
+                </div>
+                <div class="p-col-6 p-p-0">
+                  <div class="text-size-14 text-bold">
+                    <app-base-currency
+                      [amount]="corporate.availableLimit"
+                      [currency]="selectedCurrency.currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                  <div class="text-size-12">{{ 'Available Limit' | apsTranslate }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-py-3">
+      <div class="p-col-12 p-p-0">
+        <div class="inline-items">
+          <div class="item p-pr-2" style="width: calc(100% - 60px)">
+            <div #summaryListContainer class="aps-w-100p overflow-scroll hide-scroll">
+              <div class="inline-items">
+                <div class="item p-mr-3 hide-on-mobile">
+                  <div class="background-color border border-radius-4 p-py-2 p-px-2">
+                    <app-icon
+                      icon="fa-bars"
+                      styleClasses="text-color-normal text-size-14"
+                    ></app-icon>
+                  </div>
+                </div>
+
+                <div class="item p-pr-3" *ngFor="let summary of summaryList">
+                  <div
+                    class="background-color text-color-normal border border-radius-4 text-size-14 p-py-2 p-px-2 pointer"
+                    [ngClass]="{
+                      'background-color-primary text-color-inverted border-primary':
+                        summary.displayName === selectedSummary.displayName
+                    }"
+                    (click)="changeSummary(summary)"
+                  >
+                    {{ summary.displayName | apsTranslate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="item p-pt-2" style="width: 60px">
+            <div class="left-right-container">
+              <div class="left-container"></div>
+              <div class="right-container">
+                <div class="inline-items">
+                  <div class="item p-pr-2">
+                    <div class="scroll-btn" (click)="summaryListScrollLeft()">
+                      <app-icon
+                        icon="fa-chevron-left"
+                        class="app-icon"
+                        rtlIcon="fa-chevron-right"
+                      ></app-icon>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="scroll-btn" (click)="summaryListScrollRight()">
+                      <app-icon
+                        icon="fa-chevron-right"
+                        class="app-icon"
+                        rtlIcon="fa-chevron-left"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card" *ngIf="selectedSummary.showLimitCard">
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-3">
+          <div class="text-size-14 p-mb-md-22 p-mb-sm-1 p-mb-1">
+            {{ selectedSummary.mainLabel | apsTranslate }}
+          </div>
+
+          <div class="inline-items">
+            <div class="item">
+              <div class="label-with-icon-container">
+                <div class="icon">
+                  <img [src]="selectedCurrency.flag" alt="" class="country-flag-icon" />
+                </div>
+                <div class="label">
+                  <select
+                    class="select text-size-14 text-color-dark-shade-1"
+                    name="currency"
+                    id="currency"
+                    (change)="changeCurrency($event.target.value)"
+                    [ngModel]="selectedCurrency.currency"
+                  >
+                    <option *ngFor="let currency of currencies" [value]="currency.currency">
+                      {{ currency.currency }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="item">
+              <div class="text-size-24 text-bold">
+                <app-base-currency
+                  [amount]="selectedSummary.totalAmount"
+                  [currency]="selectedCurrency.currency"
+                  digitsInfo="1.0-0"
+                ></app-base-currency>
+              </div>
+            </div>
+          </div>
+
+          <span
+            class="inline-block background-color-primary-light-shade-2 border-radius-4 p-px-1 p-mt-1"
+          >
+            <span class="text-size-12"
+              >{{ selectedSummary.totalAccounts }} {{ 'Accounts' | apsTranslate }}</span
+            >
+          </span>
+        </div>
+        <div class="p-md-6 p-sm-12 p-col-12 p-p-md-3 p-p-sm-2 p-p-1">
+          <div class="p-grid border-left border-right no-border-on-mobile aps-h-100p">
+            <div class="p-md-6 p-sm-6 p-col-6 p-px-3 p-pt-md-4 p-pt-sm-2 p-pt-2">
+              <div class="text-size-24 text-bold">
+                <app-base-currency
+                  [amount]="selectedSummary.creditAmount"
+                  [currency]="selectedCurrency.currency"
+                  digitsInfo="1.0-0"
+                ></app-base-currency>
+              </div>
+              <div class="text-size-16 p-mt-md-1 p-mt-sm-0 p-mt-0">
+                {{ selectedSummary.label1 | apsTranslate }}
+              </div>
+            </div>
+            <div
+              class="p-md-6 p-sm-6 p-col-6 p-px-3 p-pt-md-4 p-pt-sm-2 p-pt-2"
+              *ngIf="selectedSummary.label2"
+            >
+              <div class="text-size-24 text-bold">
+                <app-base-currency
+                  [amount]="selectedSummary.debitAmount"
+                  [currency]="selectedCurrency.currency"
+                  digitsInfo="1.0-0"
+                ></app-base-currency>
+              </div>
+              <div class="text-size-16 p-mt-md-1 p-mt-sm-0 p-mt-0">
+                {{ selectedSummary.label2 | apsTranslate }}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-md-3 p-sm-12 p-col-12 p-py-md-0 p-py-sm-2 p-py-2">
+          <app-pie-chart
+            [options]="currencyOptions"
+            webHeight="120"
+            mobileHeight="200"
+          ></app-pie-chart>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0">
+        <app-account-summary-listing
+          [summaryList]="summaryList"
+          [summary]="selectedSummary"
+          [corporate]="selectedCorporate"
+          (changeSummery)="changeSummary($event)"
+        ></app-account-summary-listing>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingData>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

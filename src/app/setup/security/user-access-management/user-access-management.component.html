@@ -1,0 +1,57 @@
+<div class="container">
+  <div class="aps-card p-mb-2 aps-h-100p">
+    <div class="aps-card-header">
+      <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+        {{ 'User Access Management' | apsTranslate }}
+      </div>
+    </div>
+    <div class="aps-card-body">
+      <div class="p-grid">
+        <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+          <aps-custom-select
+            [label]="'Access Type' | apsTranslate"
+            name="accessType"
+            id="accessType"
+            [(ngModel)]="userAccessManagement.accessType"
+            [data]="accessTypeList"
+            required="true"
+            (change)="onAccessTypeSelect(userAccessManagement.accessType)"
+          >
+          </aps-custom-select>
+        </div>
+      </div>
+      <div class="p-grid">
+        <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+          <aps-custom-select
+            [label]="'User Id' | apsTranslate"
+            name="userId"
+            id="userId"
+            [(ngModel)]="userAccessManagement.userId"
+            [data]="userList"
+            (click)="onUserClick(userAccessManagement.userId)"
+            required="true"
+          >
+          </aps-custom-select>
+        </div>
+        <div class="p-pl-3 p-col-12 p-md-4 p-sm-12" *ngIf="userAccessManagement.userId">
+          <div class="p-p-2 background-color-disabled">
+            <div class="text-size-12 text-color-light-shade-1 background-color-disabled">
+              {{ 'User Name' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ userName }}</div>
+          </div>
+        </div>
+        <div class="p-pl-3 p-col-12 p-md-4 p-sm-12" *ngIf="userAccessManagement.userId">
+          <div class="p-p-2 background-color-disabled">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Last Login Date Time' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ userLastLoginDateTime }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Form Actions -->
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

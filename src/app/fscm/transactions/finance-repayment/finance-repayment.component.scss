@@ -1,0 +1,17 @@
+.overdue-container {
+  height: 472px;
+  max-height: 580px;
+  overflow-y: scroll;
+}
+
+:host ::ng-deep {
+  .p-overlaypanel .p-overlaypanel-content {
+    padding: 0.5rem;
+  }
+
+  .flag {
+    width: 1rem;
+    height: 0.75rem;
+    margin-top: 0.2rem;
+  }
+}

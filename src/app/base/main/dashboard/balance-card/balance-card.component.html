@@ -1,0 +1,102 @@
+<div class="balance-card aps-shadow" *ngIf="balanceDetails">
+  <div class="overall-container">
+    <div class="balance-card-dropdown p-input-icon-left" *ngIf="loginType !== 'individual'">
+      <i class="fal fa-users"></i>
+      <p-dropdown appendTo="body" class="custom-dropdown" [(ngModel)]="group" [options]="groups"
+        optionLabel="displayName" placeholder="{{ 'Select a Group' | apsTranslate }}" (onChange)="changeGroup($event)"
+        [showClear]="false">
+      </p-dropdown>
+    </div>
+
+    <div class="text-size-14 text-color-inverted background-color-primary border-radius-4 p-py-2 p-px-3"
+      *ngIf="loginType === 'individual'">
+      <app-icon icon="fa-user" styleClasses="text-color-inverted"></app-icon>&nbsp;{{
+      userService.userDetails.corporateName
+      }}
+    </div>
+
+    <!-- //Change for SAIB Demo -->
+    <!-- <div
+      class="text-size-14 text-color-normal background-color-primary border-radius-4 p-py-2 p-px-3"
+      *ngIf="loginType === 'individual'"
+    >
+      <app-icon icon="fa-user" styleClasses="text-color-normal"></app-icon>&nbsp;{{
+        userService.userDetails.corporateName
+      }}
+    </div> -->
+
+    <div class="details-wrapper">
+      <div class="text-size-14 text-color-dark-shade-1">
+        &nbsp;{{ (loginType === 'individual' ? '' : 'Group ') + 'Balance' | apsTranslate }}
+      </div>
+
+      <div class="text-size-24 text-color-dark-shade-1 text-bold main-text">
+        <app-currency-select-dropdown [showFlag]="false" (currencyChanged)="onCurrencyChanged($event)"
+          [selectedCurrency]="currency" selectStyleClass="select"></app-currency-select-dropdown>
+
+        <app-base-currency [amount]="balanceDetails.totalBalance" [currency]="currency" display="symbol"
+          digitsInfo="1.0-0">
+        </app-base-currency>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider-v hide-on-mobile"></div>
+
+  <div class="detailed-container">
+    <div class="details-panel">
+      <div class="details-wrapper">
+        <div class="details">
+          <div class="text-size-24 text-color-dark-shade-1 text-bold main-text">
+            <app-base-currency [amount]="balanceDetails.totalBalance" [currency]="currency" display="symbol"
+              digitsInfo="1.0-0">
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1 sub-text-bold">
+            {{ 'Net Available Balance' | apsTranslate }}
+          </div>
+          <div class="text-size-12 text-color-normal text-light sub-text">{{ dateTime }}</div>
+        </div>
+      </div>
+      <div class="details-wrapper">
+        <div class="details">
+          <div class="text-size-24 text-color-dark-shade-1 text-bold main-text">
+            <app-base-currency [amount]="balanceDetails.totalLimit" [currency]="currency" display="symbol"
+              digitsInfo="1.0-0">
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1 sub-text-bold">
+            {{ 'Available Limit' | apsTranslate }}
+          </div>
+          <div class="text-size-12 text-color-normal text-light sub-text">{{ dateTime }}</div>
+        </div>
+      </div>
+      <div class="details-wrapper">
+        <div class="details">
+          <div class="text-size-24 text-color-dark-shade-1 text-bold main-text">
+            <app-base-currency [amount]="balanceDetails.totalPayables" [currency]="currency" display="symbol"
+              digitsInfo="1.0-0">
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1 sub-text-bold">
+            {{ 'All Payables' | apsTranslate }}
+          </div>
+          <div class="text-size-12 text-color-normal text-light sub-text">{{ dateTime }}</div>
+        </div>
+      </div>
+      <div class="details-wrapper">
+        <div class="details">
+          <div class="text-size-24 text-color-dark-shade-1 text-bold main-text">
+            <app-base-currency [amount]="balanceDetails.totalReceivables" [currency]="currency" display="symbol"
+              digitsInfo="1.0-0">
+            </app-base-currency>
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1 sub-text-bold">
+            {{ 'All Receivables' | apsTranslate }}
+          </div>
+          <div class="text-size-12 text-color-normal text-light sub-text">{{ dateTime }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

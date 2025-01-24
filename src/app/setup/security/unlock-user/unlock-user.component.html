@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <form name="unblockUserForm" #unblockUserForm="ngForm">
+                <div class="aps-card">
+                    <div class="aps-card-header">
+                        <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+                            {{ 'Unblock User' | apsTranslate }}
+                        </div>
+                    </div>
+                    <div class="aps-card-body">
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-col-4 p-lg-4 p-sm-12">
+                                <aps-custom-select label="User Id" name="userId" id="userId"
+                                    dataUrl="setup/security/unlockUser/private/getUserList" [(ngModel)]="formData.id"
+                                    [value]="formData.id" (change)="onUserChnage($event)" [required]="true">
+                                </aps-custom-select>
+                            </div>
+                            <div class="p-col-12 p-col-4 p-lg-4 p-sm-12">
+                                <app-review-form-field label="User Name" [value]="formData.displayName">
+                                </app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="p-col-12">
+            <div class="aps-card p-py-2 p-px-3">
+                <div class="left-right-container">
+                    <div class="left-container">
+                        <button class="btn btn-md btn-tertiary" (click)="cancel()">CANCEL</button>
+                    </div>
+                    <div class="right-container">
+                        <button class="btn btn-md btn-primary" (click)="unlock()"
+                            [disabled]="unblockUserForm.invalid">UNLOCK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

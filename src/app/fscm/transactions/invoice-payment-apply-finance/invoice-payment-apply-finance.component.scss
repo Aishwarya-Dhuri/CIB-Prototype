@@ -1,0 +1,29 @@
+.payable-amount-container {
+  display: block;
+
+  .input-container {
+    vertical-align: top;
+    display: inline-block;
+    width: calc(100% - 24px);
+  }
+
+  .icon-container {
+    display: inline-block;
+    vertical-align: top;
+    width: 24px;
+  }
+}
+
+.overdue-container {
+  height: 580px;
+  max-height: 580px;
+  overflow-y: scroll;
+}
+
+:host ::ng-deep {
+  .flag {
+    width: 1rem;
+    height: 0.75rem;
+    margin-top: 0.2rem;
+  }
+}

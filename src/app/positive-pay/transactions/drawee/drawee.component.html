@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12">
+      <div class="aps-card p-p-2">
+        <div class="p-grid">
+          <div class="p-col-12">
+            <div class="text-size-14 text-semi-bold">{{ 'Drawee Details' | apsTranslate }}</div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <aps-form-input
+              id="draweeName"
+              name="draweeName"
+              label="Drawee Name"
+              [(ngModel)]="formData.draweeName"
+              [required]="true"
+            ></aps-form-input>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>

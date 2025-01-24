@@ -1,0 +1,273 @@
+.document-tutorial-container {
+  display: block;
+
+  white-space: nowrap;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .video-player-container {
+    padding: 0.5rem;
+    display: inline-block;
+    vertical-align: top;
+    width: 75%;
+
+    .video {
+      width: 100%;
+      height: 100%;
+      border-radius: 5px;
+    }
+  }
+
+  .video-list-container {
+    display: inline-block;
+    vertical-align: top;
+    padding-left: 0.5rem;
+    width: 25%;
+
+    .video-list {
+      width: 100%;
+      display: flex;
+      flex-wrap: nowrap;
+      flex-direction: column;
+      vertical-align: top;
+      position: relative;
+      overflow: scroll;
+      max-height: 32.5vw;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .list-item {
+        display: block;
+        padding: 0.5rem 0;
+
+        img {
+          width: 100%;
+          border-radius: 5px;
+        }
+
+        .sub-heading {
+        }
+      }
+    }
+  }
+}
+
+.save-self-onboarding-container {
+  display: block;
+  white-space: nowrap;
+
+  .steps-container {
+    display: inline-block;
+    vertical-align: top;
+    width: 25rem;
+    height: 720px;
+    white-space: normal;
+    border-radius: 0 10px 10px 0;
+    background: url('./../../../assets/images/mask/mask-group-0.png'), var(--background-color);
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: calc(100vh - 3.5rem);
+    z-index: inherit;
+
+    .steps-container-header {
+      padding: 16px 40px;
+    }
+
+    .step {
+      position: relative;
+      display: block;
+      padding: 16px 40px;
+      height: 6rem;
+
+      .step-heading {
+        font-size: 1rem;
+        font-family: 'CIB Bold';
+        color: var(--primary-color);
+      }
+
+      .step-sub-heading {
+        font-size: 0.75rem;
+        font-family: 'CIB SemiBold';
+        color: var(--text-color-dark-shade-2);
+      }
+
+      .step-knob {
+        position: absolute;
+        background-color: #fff;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        top: 1.5rem;
+        right: -1.5rem;
+      }
+    }
+
+    .step:hover {
+      background-color: var(--background-color-dark-5);
+    }
+
+    .step-active {
+      background-color: var(--primary-color) !important;
+
+      .step-heading {
+        color: var(--inverted-text-color);
+      }
+      .step-sub-heading {
+        color: var(--primary-color-light-shade-1);
+      }
+    }
+  }
+
+  .self-onboarding-form-container {
+    display: inline-block;
+    vertical-align: top;
+    height: 720px;
+
+    width: calc(100% - 25rem);
+    white-space: normal;
+
+    .form-header {
+      // border-bottom: 1px solid var(--background-color-dark-6);
+
+      .actions {
+        .action {
+          display: inline-block;
+          padding: 2px 6px;
+          margin: 4px 0;
+          color: var(--text-color-light-shade-1);
+
+          &:first-child {
+            border-right: 1px solid var(--background-color-dark-7);
+          }
+
+          .icon {
+            display: inline-block;
+            font-size: 0.875rem;
+          }
+
+          .label {
+            display: inline-block;
+            font-size: 0.875rem;
+            padding: 0 8px;
+          }
+        }
+      }
+    }
+
+    .form-body {
+      // height: 100%;
+    }
+
+    .form-footer {
+      position: fixed;
+      white-space: nowrap;
+      bottom: 0;
+      left: 25rem;
+      width: inherit;
+    }
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .document-tutorial-container {
+    white-space: normal;
+
+    .video-player-container {
+      display: block;
+      width: 100%;
+    }
+
+    .video-list-container {
+      display: block;
+      padding-right: 0.5rem;
+      width: 100%;
+    }
+  }
+
+  .save-self-onboarding-container {
+    .steps-container {
+      display: none;
+    }
+
+    .self-onboarding-form-container {
+      display: block;
+      width: 100%;
+      height: auto;
+
+      .form-header {
+        background-color: var(--background-color);
+        padding: 0rem;
+        border-bottom: none;
+        box-shadow: 0 0 5px var(--background-color-dark-6);
+
+        .mobile-steps-container {
+          background: url('./../../../assets/images/mask/mask-group-0-mobile.png'),
+            var(--background-color);
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+
+        .actions {
+          white-space: nowrap;
+
+          .action {
+            display: inline-block;
+            padding: 0 6px;
+            color: var(--text-color-light-shade-3);
+          }
+        }
+
+        .active-step {
+          position: relative;
+          display: block;
+
+          .steps {
+            position: absolute;
+            width: 100%;
+            bottom: -20px;
+
+            .step {
+              position: relative;
+              display: flex;
+              justify-content: space-around;
+
+              .step-knob {
+                display: inline-block;
+                background-color: #fff;
+                border-radius: 50%;
+                width: 2.5rem;
+                height: 2.5rem;
+              }
+            }
+          }
+        }
+      }
+
+      .form-body {
+        // height: 100%;
+        padding-top: 1rem;
+      }
+
+      .form-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: inherit;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

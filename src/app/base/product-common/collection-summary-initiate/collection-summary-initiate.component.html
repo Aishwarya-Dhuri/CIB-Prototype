@@ -1,0 +1,627 @@
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Product Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <div class="text-size-12 text-color-light-shade-1">Request For <span
+                                class="text-color-danger">*</span></div>
+                        <p-radioButton class="p-mr-3" id="yes" name="requestFor" value="Y" label="Pickup"
+                            [(ngModel)]="formData.requestFor"></p-radioButton>
+                        <p-radioButton class="" id="no" name="requestFor" value="N" label="Delivery"
+                            [(ngModel)]="formData.requestFor"></p-radioButton>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select name="product" id="product" label="Product"
+                            dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                            (change)="getExistingSubscribers()" [value]="formData.product"
+                            [(ngModel)]="formData.product"></aps-custom-select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Pickup Point Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="location" id="location" label="Location"
+                            [(ngModel)]="formData.location"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="pickupCode" id="pickupCode" label="Pickup Point Code"
+                            [(ngModel)]="formData.pickupCode" [required]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="pickupName" id="pickupName" label="Pickup Point Name"
+                            [(ngModel)]="formData.pickupName"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="address1" id="address1" label="Address No.1"
+                            [(ngModel)]="formData.address1"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="address2" id="address2" label="Address No.2"
+                            [(ngModel)]="formData.address2"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="city" id="city" label="City" [(ngModel)]="formData.city"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="postalCode" id="postalCode" label="Postal Code/Zip"
+                            [(ngModel)]="formData.postalCode" [required]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="pickupInstruction" id="pickupInstruction" label="Pickup Instruction"
+                            [(ngModel)]="formData.pickupInstruction"></aps-form-input>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0"></div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select name="pickupType" id="pickupType" label="Pickup type"
+                            dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                            (change)="getExistingSubscribers()" [value]="formData.pickupType"
+                            [(ngModel)]="formData.pickupType"></aps-custom-select>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender [label]="'Effective Start Date' | apsTranslate" name="startDate"
+                            id="startDate" showIcon="true" #startDate="ngModel" selectionMode="range"
+                            [(ngModel)]="formData.startDate">
+                        </app-aps-calender>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender [label]="'Effective End Date' | apsTranslate" name="endDate" id="endDate"
+                            showIcon="true" #endDate="ngModel" selectionMode="range" [(ngModel)]="formData.endDate">
+                        </app-aps-calender>
+                    </div>
+                    <div class="p-grid">
+                        <div [ngClass]="selectedPattern.displayName == 'Daily' ? 'p-col-7' : 'p-col-12'" class="">
+                            <div class="p-grid">
+                                <div class="p-md-7 p-sm-12 p-col-12 p-py-0">
+                                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Recurrence Pattern</div>
+                                </div>
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0">
+                                    <div class="left-right-container">
+                                        <div class="left-container">
+                                            <div class="inline-items aps-w-100p overflow-scroll">
+                                                <div class="item p-mr-3" *ngFor="let pattern of patternList">
+                                                    <div class="aps-card p-p-2 text-size-12 text-color-normal text-semi-bold pointer border"
+                                                        [ngClass]="{ 'aps-card-primary': pattern.displayName === selectedPattern.displayName }"
+                                                        (click)="changePattern(pattern)">
+                                                        {{ pattern.displayName }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="right-container"></div>
+                                    </div>
+                                </div>
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0"
+                                    *ngIf="selectedPattern.displayName == 'Daily'">
+                                    <p-panel>
+                                        <div class="p-grid">
+                                            <div class="p-col-7">
+                                                <div class="p-grid">
+                                                    <div class="p-col-12">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-3">
+                                                                <p-radioButton name="option"
+                                                                    value="option1"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">Every</span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1"><input type="text"
+                                                                        id="option1" class="p-inputtext">
+                                                                </span>
+                                                            </div>
+                                                            <!-- <p-radioButton name="option" value="option1"></p-radioButton>
+                                                            <label class="p-m-3" for="option1">Every</label>
+                                                            <div class="p-col-2">
+                                                                <aps-form-input name="postalCode" id="postalCode"
+                                                                    label="Postal Code/Zip" [(ngModel)]="formData.postalCode"
+                                                                    [required]="true"></aps-form-input>
+                                                            </div> -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-col-7 p-py-0 p-mt-0">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-3">
+                                                                <p-radioButton name="option"
+                                                                    value="option1"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">Every Weekday</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <div class="p-col">
+                                                        <label for="option1">Every</label>
+                                                    </div>
+                                                    <div class="p-col">
+                                                        <input type="text" id="option1" class="p-inputtext">
+                                                    </div> -->
+                                                </div>
+                                            </div>
+
+                                            <!-- <div class="p-col-9">
+                                                <input type="text" id="option1" class="p-inputtext">
+                                            </div> -->
+                                        </div>
+                                    </p-panel>
+
+                                </div>
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0 p-mt-2 aps-card"
+                                    *ngIf="selectedPattern.displayName == 'Weekly'">
+                                    <p-panel>
+                                        <div class="p-grid">
+                                            <div class="p-col-12">
+                                                <div class="p-grid">
+                                                    <div class="p-col-12">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-3">
+                                                                <p-radioButton name="option"
+                                                                    value="option1"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">Every</span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1"><input type="text"
+                                                                        id="option1" class="p-inputtext">
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">Week on</span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="p-md-12 p-sm-12 p-col-12 p-py-2">
+                                                            <!-- <div class="p-col inline-items  overflow-scroll"
+                                                                *ngFor="let item of weekList"> -->
+                                                            <p-checkbox *ngFor="let item of weekList" class="p-mr-5"
+                                                                name="{{item.displayName}}" label="{{item.displayName}}"
+                                                                [binary]="true" [(ngModel)]="item.checked">
+                                                            </p-checkbox>
+                                                            <!-- </div> -->
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p-panel>
+                                </div>
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0 p-mt-2 aps-card"
+                                    *ngIf="selectedPattern.displayName == 'Monthly'">
+                                    <p-panel>
+                                        <div class="p-grid">
+                                            <div class="p-col-12">
+                                                <div class="p-grid">
+                                                    <div class="p-col-12 p-py-0">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-3">
+                                                                <p-radioButton name="option"
+                                                                    value="option1"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">Day</span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1"><input type="text"
+                                                                        id="option1" class="p-inputtext">
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">of every</span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1"><input type="text"
+                                                                        id="option1" class="p-inputtext">
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">month(s)</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-col-12 p-py-0">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-1 p-mt-2">
+                                                                <p-radioButton name="option"
+                                                                    value="option2"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-3">
+                                                                <span class="p-m-2" for="option1">The</span>
+                                                            </div>
+                                                            <div class="item p-m-0">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-p-0 p-ml-5">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-3">
+                                                                <span class="p-m-2" for="option1">
+                                                                    <span class="p-m-2" for="option1">of every</span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-p-0 p-ml-2">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-3">
+                                                                <span class="p-m-2" for="option1">month(s)</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p-panel>
+                                </div>
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0 p-mt-2 aps-card"
+                                    *ngIf="selectedPattern.displayName == 'Quarterly'">
+                                    <p-panel>
+                                        <div class="p-grid">
+                                            <div class="p-col-12">
+                                                <div class="p-grid">
+                                                    <div class="p-col-12 p-py-0">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-3">
+                                                                <p-radioButton name="option"
+                                                                    value="option1"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">Day</span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1"><input type="text"
+                                                                        id="option1" class="p-inputtext">
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">of every
+                                                                    quarter</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-col-12 p-py-0">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-1 p-mt-2">
+                                                                <p-radioButton name="option"
+                                                                    value="option2"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-3">
+                                                                <span class="p-m-2" for="option1">The</span>
+                                                            </div>
+                                                            <div class="item p-m-0">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-p-0 p-ml-5">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-3">
+                                                                <span class="p-m-2" for="option1">
+                                                                    <span class="p-m-2" for="option1">of every
+                                                                        quarter</span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p-panel>
+                                </div>
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0 p-mt-2 aps-card"
+                                    *ngIf="selectedPattern.displayName == 'Yearly'">
+                                    <p-panel>
+                                        <div class="p-grid">
+                                            <div class="p-col-12">
+                                                <div class="p-grid">
+                                                    <div class="p-col-12 p-py-0">
+                                                        <div class="p-col inline-items  overflow-scroll">
+
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">Recur every</span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1"><input type="text"
+                                                                        id="option1" class="p-inputtext">
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">year(s)</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-col-12 p-py-0">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-3">
+                                                                <p-radioButton name="option"
+                                                                    value="option1"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1">On</span>
+                                                            </div>
+                                                            <div class="item p-m-0">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-1">
+                                                                <span class="p-m-2" for="option1"><input type="text"
+                                                                        id="option1" class="p-inputtext">
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="p-col-12 p-py-0">
+                                                        <div class="p-col inline-items  overflow-scroll">
+                                                            <div class="item p-mr-1 p-mt-2">
+                                                                <p-radioButton name="option"
+                                                                    value="option2"></p-radioButton>
+                                                            </div>
+                                                            <div class="item p-m-3">
+                                                                <span class="p-m-2" for="option1">On the</span>
+                                                            </div>
+                                                            <div class="item p-m-0">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-p-0 p-ml-5">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-m-3">
+                                                                <span class="p-m-2" for="option1">
+                                                                    <span class="p-m-2" for="option1">of </span>
+                                                                </span>
+                                                            </div>
+                                                            <div class="item p-p-0 p-ml-5">
+                                                                <span class="p-m-0" for="option1">
+                                                                    <aps-custom-select name="pickupType" id="pickupType"
+                                                                        dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+                                                                        (change)="getExistingSubscribers()"
+                                                                        [value]="formData.pickupType"
+                                                                        [(ngModel)]="formData.pickupType"></aps-custom-select>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </p-panel>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="selectedPattern.displayName == 'Daily'" class="p-col-5">
+                            <div class="p-grid">
+                                <div class="p-md-7 p-sm-12 p-col-12 p-py-0">
+                                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Pickup Time</div>
+                                </div>
+                                <div class="p-md-7 p-sm-12 p-col-12 p-py-0 p-px-4">
+                                    <app-aps-calender name="time" id="time" label="Time" [timeOnly]="true"
+                                        [(ngModel)]="formData.time" [required]="true"></app-aps-calender>
+                                </div>
+                                <div class="p-md-7 p-sm-12 p-col-12 p-py-0 p-px-4" *ngIf="noOfTime >= 2">
+                                    <app-aps-calender name="time" id="time" label="Time" [timeOnly]="true"
+                                        [(ngModel)]="formData.time" [required]="true"></app-aps-calender>
+                                </div>
+                                <div class="p-md-7 p-sm-12 p-col-12 p-py-0 p-px-4" *ngIf="noOfTime === 3">
+                                    <app-aps-calender name="time" id="time" label="Time" [timeOnly]="true"
+                                        [(ngModel)]="formData.time" [required]="true"></app-aps-calender>
+                                </div>
+                                <div class="p-md-3 p-sm-12 p-col-12">
+                                    <button class="btn btn-md btn-tertiary" (click)="addTime()"
+                                        [disabled]="noOfTime === 3">
+                                        <app-icon icon="fa-plus p-mr-2"></app-icon>ADD MORE
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Contact Person Details</div>
+            </div>
+            <div class="aps-card-body">
+                <div class="p-col-12">
+                    <table class="card-table" style="width: calc(100% - 24px)">
+                        <thead class="table-head">
+                            <tr>
+                                <th class="p-p-2">Sr No.</th>
+                                <th class="p-p-2">Primary/Secondary</th>
+                                <th class="p-p-2">Name</th>
+                                <th class="p-p-2">Telephone Number</th>
+                                <th class="p-p-2">Mobile Number</th>
+                                <th class="p-p-2">Email ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <ng-container>
+                                <tr class="text-center">
+                                    <td>1</td>
+                                    <td>Primary</td>
+                                    <td>
+                                        <div class="p-col-10 text-center">
+                                            <aps-form-input name="primaryName" id="primaryName"
+                                                [(ngModel)]="formData.primaryName"></aps-form-input>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="p-col-10 text-center">
+                                            <aps-form-input name="primaryTelephone" id="primaryTelephone"
+                                                [(ngModel)]="formData.primaryTelephone"></aps-form-input>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="p-col-10 text-center">
+                                            <aps-form-input name="primaryMob" id="primaryMob"
+                                                [(ngModel)]="formData.primaryMob"></aps-form-input>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="p-col-10 text-center">
+                                            <aps-form-input name="primaryEmail" id="primaryEmail"
+                                                [(ngModel)]="formData.primaryEmail"></aps-form-input>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="text-center">
+                                    <td>2</td>
+                                    <td>Secondary</td>
+                                    <td>
+                                        <div class="p-col-10 text-center">
+                                            <aps-form-input name="secondaryName" id="secondaryName"
+                                                [(ngModel)]="formData.secondaryName"></aps-form-input>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="p-col-10 text-center">
+                                            <aps-form-input name="secondaryTelephone" id="secondaryTelephone"
+                                                [(ngModel)]="formData.secondaryTelephone"></aps-form-input>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="p-col-10 text-center">
+                                            <aps-form-input name="secondaryMob" id="secondaryMob"
+                                                [(ngModel)]="formData.secondaryMob"></aps-form-input>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="p-col-10 text-center">
+                                            <aps-form-input name="secondaryEmail" id="secondaryEmail"
+                                                [(ngModel)]="formData.secondaryEmail"></aps-form-input>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Agency Details</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="agencyCode" id="agencyCode" label="Agency Code"
+                            [(ngModel)]="formData.agencyCode"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="agencyName" id="agencyName" label="Agency Name" rightIcon="fa-search"
+                            [(ngModel)]="formData.agencyName" [required]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="frequency" id="frequency" label="Frequency"
+                            [(ngModel)]="formData.frequency"></aps-form-input>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <div class="p-px-3 aps-py-12 tet-size-16">Preferred Collection/Dilevery Time</div>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender name="timeSlot" id="timeSlot" label="Time Slot" [timeOnly]="true"
+                            [(ngModel)]="formData.timeSlot"></app-aps-calender>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0"> </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0"> </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender [label]="'Effective Start Date' | apsTranslate" name="startDate"
+                            id="startDate" showIcon="true" #startDate="ngModel" selectionMode="range"
+                            [(ngModel)]="formData.startDate">
+                        </app-aps-calender>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender [label]="'Effective End Date' | apsTranslate" name="endDate" id="endDate"
+                            showIcon="true" #endDate="ngModel" selectionMode="range" [(ngModel)]="formData.endDate">
+                        </app-aps-calender>
+                    </div>
+                    <div class="p-md-2 p-sm-12 p-col-12 p-py-0">
+                        <div class="p-px-6 aps-py-12 tet-size-16">Select the days</div>
+                    </div>
+                    <div class="p-md-9 p-sm-12 p-col-12 p-py-2">
+                        <p-radioButton *ngFor="let item of weekList" class="p-mr-5" id="yes" name="requestFor"
+                            value="{{item.displayName}}" label="{{item.displayName}}"
+                            [(ngModel)]="formData.requestFor"></p-radioButton>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

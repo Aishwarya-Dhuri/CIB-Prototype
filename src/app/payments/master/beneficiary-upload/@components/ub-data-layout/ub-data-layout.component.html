@@ -1,0 +1,117 @@
+<div class="p-col-12 p-px-3 p-py-3 p-pt-4 border-bottom text-size-14 text-semi-bold">
+  Data Layout Details
+</div>
+<div class="p-grid">
+  <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Data Layout Code</div>
+      <div class="text-size-14">1</div>
+    </div>
+  </div>
+  <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Data Layout Name</div>
+      <div class="text-size-14">AUTOMATIONPAYREQ</div>
+    </div>
+  </div>
+</div>
+<div class="p-grid">
+  <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Format Type</div>
+      <div class="text-size-14">Upload</div>
+    </div>
+  </div>
+  <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Module Name</div>
+      <div class="text-size-14">Corporate User Upload</div>
+    </div>
+  </div>
+  <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Select File Type</div>
+      <div class="text-size-14">Xls</div>
+    </div>
+  </div>
+</div>
+<div class="p-grid">
+  <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Data Layout</div>
+      <div class="text-size-14">D</div>
+    </div>
+  </div>
+  <div class="p-pl-3 p-col-12 p-md-4 p-sm-12">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Select Default Date Format</div>
+      <div class="text-size-14">dd-MMM-yyyy</div>
+    </div>
+  </div>
+</div>
+
+<div class="p-grid">
+  <div class="p-col-12 p-px-3 p-py-3 border-bottom text-size-14 text-semi-bold">
+    Data Mapping Details
+  </div>
+  <div class="p-md-3 p-sm-12 p-col-12 p-py-3">
+    <div class="aps-card text-color-dark-shade-1 aps-h-300 overflow-scroll p-mb-3">
+      <div class="border-bottom" *ngFor="let step of steps; let i = index">
+        <div
+          class=""
+          [ngClass]="{
+            active: step.displayLabel === activeStep.displayLabel
+          }"
+          (click)="changeStep(i)"
+        >
+          <div class="p-px-3 p-pb-3 p-pt-2">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-semi-bold">{{ i + 1 }}. {{ step.displayLabel }}</div>
+              </div>
+              <div class="right-container"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="p-md-9 p-sm-12 p-col-12 p-py-3">
+    <div class="aps-h-300" *ngIf="activeStep.displayLabel === steps[0].displayLabel">
+      <app-ag-grid-listing
+        [id]="layout"
+        #layout
+        [gridOptions]="gridOptions"
+        [colDefUrl]="colDefUrl"
+        [rowData]="dataMapping[0].header"
+      ></app-ag-grid-listing>
+    </div>
+    <div class="aps-h-300" *ngIf="activeStep && activeStep.displayLabel === steps[1].displayLabel">
+      <app-ag-grid-listing
+        [id]="header"
+        #header
+        [gridOptions]="gridOptions"
+        [colDefUrl]="colDefUrl"
+        [rowData]="dataMapping[0].detail"
+      ></app-ag-grid-listing>
+    </div>
+    <div class="aps-h-300" *ngIf="activeStep && activeStep.displayLabel === steps[2].displayLabel">
+      <app-ag-grid-listing
+        [id]="detail"
+        #detail
+        [gridOptions]="gridOptions"
+        [colDefUrl]="colDefUrl"
+        [rowData]="dataMapping[0].footer"
+      ></app-ag-grid-listing>
+    </div>
+    <div class="aps-h-300" *ngIf="activeStep && activeStep.displayLabel === steps[3].displayLabel">
+      <app-ag-grid-listing
+        [id]="footer"
+        #footer
+        [gridOptions]="gridOptions"
+        [colDefUrl]="colDefUrl"
+        [rowData]="dataMapping[0].enrichmentFields"
+      ></app-ag-grid-listing>
+    </div>
+  </div>
+</div>

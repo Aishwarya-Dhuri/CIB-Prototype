@@ -1,0 +1,11 @@
+<div>
+  <app-credit-card-controls-init
+    *ngIf="!review"
+    (onReview)="review = true"
+  ></app-credit-card-controls-init>
+
+  <app-credit-card-controls-review
+    *ngIf="review"
+    (onPrevious)="review = false"
+  ></app-credit-card-controls-review>
+</div>

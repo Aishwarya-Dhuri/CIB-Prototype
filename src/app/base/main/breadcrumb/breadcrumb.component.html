@@ -1,0 +1,51 @@
+<div class="breadcrumb-container">
+  <div class="breadcrumb-wrapper" *ngFor="let item of model; let i = index">
+    <div class="breadcrumb">
+      <div class="icon pointer" (click)="goToDefaultDashboard()">
+        <app-icon [icon]="item.icon" *ngIf="item.icon"></app-icon>
+      </div>
+
+      <div class="label" *ngIf="item.label">
+        {{ item.label | apsTranslate }}
+      </div>
+    </div>
+
+    <div class="next">
+      <!-- <i class="pi pi-chevron-right text-size-10"></i> -->
+      <app-icon icon="fa-chevron-right" styleClasses="text-size-10" rtlIcon="fa-chevron-left"></app-icon>
+    </div>
+  </div>
+
+  <div class="breadcrumb-wrapper" *ngIf="menu">
+    <div class="breadcrumb">
+      <!-- <div class="label">
+        <select class="text-bold text-size-14" name="selectLink" id="selectLink" [(ngModel)]="selectedLink"
+          (change)="changeMenuLink($event.target.value)">
+          <option *ngFor="let link of menu.menuLinksDetail.link" [value]="link.id">
+            {{ link.displayName }}
+          </option>
+        </select>
+      </div> -->
+
+
+      <div class="select-dropdown" *ngIf="isLengthGreaterThenTwo">
+        <div class="dropdown">
+          <input type="checkbox" id="selectLink" value="" name="selectLink" [(ngModel)]="dropdown" />
+          <label class="p-px-1 text-semi-bold" for="selectLink" data-toggle="dropdown" (click)="dropdown = !dropdown">
+            <!-- {{ selectedLink?.displayName }} -->
+            {{selectedLink}}
+          </label>
+          <ul class="">
+            <li *ngFor="let link of menu.menuLinksDetail.link" (click)="changeMenuLink(link.id)">
+              <span [ngClass]="{
+                  'background-color-primary text-color-inverted': link.id == selectedLink?.id
+                }">{{ link.displayName }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="text-semi-bold p-px-1" *ngIf="isLengthGreaterThenOne">{{selectedLink}}</div>
+    </div>
+  </div>
+</div>

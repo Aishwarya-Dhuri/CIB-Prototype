@@ -1,0 +1,518 @@
+<div class="p-grid g-margin-x">
+  <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+    <div class="aps-card p-p-3 aps-h-100p">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-14 text-color-dark-shade-1 text-bold">
+            {{ 'Structure Details' | apsTranslate }} <span class="text-color-danger">*</span>
+          </div>
+        </div>
+        <div class="right-container">
+          <app-icon
+            icon="fa-pencil"
+            styleClasses="text-size-14 pointer"
+            (click)="parentRef.editAccountDetails(0)"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="p-grid g-margin-x">
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Structure Type' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.structureType }}
+          </div>
+        </div>
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Structure Name' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.structureName }}
+          </div>
+        </div>
+
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Main Account' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.mainAccount }}
+          </div>
+        </div>
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+          <div class="text-size-12 text-color-light-shade-1">{{ 'Sweep Type' | apsTranslate }}</div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.sweepType }}
+          </div>
+        </div>
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Execution Sequence' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.executionSequence }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+    <div class="aps-card p-p-3 aps-h-100p">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-14 text-color-dark-shade-1 text-bold">
+            {{ 'Frequency Details' | apsTranslate }} <span class="text-color-danger">*</span>
+          </div>
+        </div>
+        <div class="right-container">
+          <app-icon
+            icon="fa-pencil"
+            class="text-size-14 pointer"
+            (click)="parentRef.editAccountDetails(1)"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="p-grid g-margin-x">
+        <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Frequency of execution' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.frequencyOfExecution }}
+          </div>
+        </div>
+
+        <ng-container *ngIf="parentRef.mainAccountDetails.frequencyOfExecution === 'pre-defined'">
+          <div
+            class="p-lg-4 p-md-4 p-sm-12 p-col-12"
+            *ngFor="let d of parentRef.mainAccountDetails.dates; let i = index"
+          >
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Date' | apsTranslate }} {{ i + 1 }}
+            </div>
+            <div class="text-size-16 text-color-dark-shade-1">
+              {{ d | date }}
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="parentRef.mainAccountDetails.frequencyOfExecution !== 'pre-defined'">
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Recurrence Frequency' | apsTranslate }}
+            </div>
+            <div class="text-size-16 text-color-dark-shade-1">
+              {{ parentRef.mainAccountDetails.recurrenceFrequency }}
+            </div>
+          </div>
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Number of Occurrence' | apsTranslate }}
+            </div>
+            <div class="text-size-16 text-color-dark-shade-1">
+              {{ parentRef.mainAccountDetails.numberOfOccurrence }}
+            </div>
+          </div>
+
+          <ng-container *ngIf="parentRef.mainAccountDetails.frequencyOfExecution === 'intraday'">
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Start Date & Time' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.startDateTime | date }}
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'End Date & Time' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.endDateTime | date }}
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="parentRef.mainAccountDetails.frequencyOfExecution === 'custom'">
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Start Date' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.startDate | date }}
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'End Date' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.endDate | date }}
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+          </ng-container>
+
+          <div class="p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">
+              {{ 'Recurrence Days' | apsTranslate }}
+            </div>
+            <div class="p-mt-0">
+              <p-checkbox
+                class="p-mr-2"
+                value="Sunday"
+                label="{{ 'Sunday' | apsTranslate }}"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+                [disabled]="true"
+              ></p-checkbox>
+              <p-checkbox
+                class="p-mr-2"
+                value="Monday"
+                label="{{ 'Monday' | apsTranslate }}"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+                [disabled]="true"
+              ></p-checkbox>
+              <p-checkbox
+                class="p-mr-2"
+                value="Tuesday"
+                label="{{ 'Tuesday' | apsTranslate }}"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+                [disabled]="true"
+              ></p-checkbox>
+              <p-checkbox
+                class="p-mr-2"
+                value="Wednesday"
+                label="{{ 'Wednesday' | apsTranslate }}"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+                [disabled]="true"
+              ></p-checkbox>
+              <p-checkbox
+                class="p-mr-2"
+                value="Thursday"
+                label="{{ 'Thursday' | apsTranslate }}"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+                [disabled]="true"
+              ></p-checkbox>
+              <p-checkbox
+                class="p-mr-2"
+                value="Friday"
+                label="{{ 'Friday' | apsTranslate }}"
+                name="recurrenceDays"
+                [disabled]="true"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+              <p-checkbox
+                class="p-mr-2"
+                value="Saturday"
+                label="{{ 'Saturday' | apsTranslate }}"
+                name="recurrenceDays"
+                [disabled]="true"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+    <div class="aps-card p-p-3 aps-h-100p">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-14 text-color-dark-shade-1 text-bold">
+            {{ 'Interest Setup' | apsTranslate }} <span class="text-color-danger">*</span>
+          </div>
+        </div>
+        <div class="right-container">
+          <app-icon
+            icon="fa-pencil"
+            styleClasses="text-size-14 pointer"
+            (click)="parentRef.editAccountDetails(2)"
+          ></app-icon>
+        </div>
+      </div>
+
+      <div class="p-grid g-margin-x">
+        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Positive Rate' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.positiveRate }}
+          </div>
+        </div>
+        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Overdraft Rate' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.overdraftRate }}
+          </div>
+        </div>
+        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Lending Rate' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.lendingRate }}
+          </div>
+        </div>
+        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Borrowing Rate' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.borrowingRate }}
+          </div>
+        </div>
+        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Apply to Sub-Account' | apsTranslate }}
+          </div>
+          <div>
+            <p-radioButton
+              class="p-mr-4"
+              name="apply-to-sub-account"
+              value="Yes"
+              label="{{ 'Yes' | apsTranslate }}"
+              [(ngModel)]="parentRef.mainAccountDetails.applyToSubAccount"
+            ></p-radioButton>
+
+            <p-radioButton
+              class="p-mr-4"
+              name="apply-to-sub-account"
+              value="No"
+              label="{{ 'No' | apsTranslate }}"
+              [(ngModel)]="parentRef.mainAccountDetails.applyToSubAccount"
+            ></p-radioButton>
+          </div>
+        </div>
+        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Selected By' | apsTranslate }}
+          </div>
+          <div>
+            <p-radioButton
+              class="p-mr-4"
+              name="selected-by"
+              value="System"
+              label="{{ 'System' | apsTranslate }}"
+              [(ngModel)]="parentRef.mainAccountDetails.selectedBy"
+            ></p-radioButton>
+
+            <p-radioButton
+              class="p-mr-4"
+              name="selected-by"
+              value="Manual"
+              label="{{ 'Manual' | apsTranslate }}"
+              [(ngModel)]="parentRef.mainAccountDetails.selectedBy"
+            ></p-radioButton>
+          </div>
+        </div>
+        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Pin Generation Frequency' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.PNGenerationFrequency }}
+          </div>
+        </div>
+        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Pin Generation Month' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.PNGenerationMonth }}
+          </div>
+        </div>
+        <div class="p-md-6 p-col-12 p-sm-12">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'PN Generation Day' | apsTranslate }}
+          </div>
+          <div class="text-size-16 text-color-dark-shade-1">
+            {{ parentRef.mainAccountDetails.PNGenerationDay }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0">
+        <div class="aps-card p-p-3 aps-h-100p">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-14 text-color-dark-shade-1 text-bold">
+                {{ 'Cluster Details' | apsTranslate }} <span class="text-color-danger">*</span>
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                icon="fa-pencil"
+                styleClasses="text-size-14 pointer"
+                (click)="parentRef.editAccountDetails(3)"
+              ></app-icon>
+            </div>
+          </div>
+
+          <div class="p-grid">
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Belongs to Cluster Code' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.belongsToClusterCode }}
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Belongs to Cluster Name' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.belongsToClusterName }}
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Lead for Cluster Code' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.leadForClusterCode }}
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Lead for Cluster Name' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.leadForClusterName }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12 p-px-0">
+        <div class="aps-card p-p-3 aps-h-100p">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-14 text-color-dark-shade-1 text-bold">
+                {{ 'Exception Handling' | apsTranslate }} <span class="text-color-danger">*</span>
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon
+                icon="fa-pencil"
+                styleClasses="text-size-14 pointer"
+                (click)="parentRef.editAccountDetails(4)"
+              ></app-icon>
+            </div>
+          </div>
+
+          <div class="p-grid g-margin-x p-pb-6">
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Funding Account' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.fundingAccountName }}
+              </div>
+            </div>
+            <div class="p-col-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'On Holiday' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.onHoliday }}
+              </div>
+            </div>
+            <div class="p-col-3">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Failure Rule' | apsTranslate }}
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.failureRule }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="aps-card aps-h-500 p-mb-3">
+  <div class="aps-card-header background-color-primary aps-py-12 p-px-3">
+    <div class="left-right-container">
+      <div class="left-container"></div>
+      <div class="right-container">
+        <div class="toggle-select-container">
+          <div
+            class="action pointer text-color-dark-shade-1"
+            [ngClass]="{ active: treeType === 'grid' }"
+            (click)="treeType = 'grid'"
+          >
+            <app-icon icon="fa-list" class="app-icon"></app-icon>
+          </div>
+          <div
+            class="action pointer text-color-dark-shade-1"
+            [ngClass]="{ active: treeType === 'tree' }"
+            (click)="treeType = 'tree'"
+          >
+            <app-icon icon="fa-sitemap" class="app-icon"></app-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="aps-card-body position-relative">
+    <app-ag-grid-listing
+      *ngIf="treeType === 'grid'"
+      id="structure-hirarchy"
+      #structureHierarchy
+      [columnDefs]="colDefs"
+      [rowData]="parentRef.rowData"
+      [gridOptions]="gridOptions"
+      [context]="parentRef.context"
+    ></app-ag-grid-listing>
+
+    <div class="tree-account-details-container" *ngIf="treeType === 'tree' && treeNode">
+      <div class="aps-card account-container">
+        <div class="account-header background-color-dark-9 text-color-inverted p-py-2 p-px-3">
+          <div class="left-right-container">
+            <div class="left-container">{{ 'Account Details' | apsTranslate }}</div>
+            <div class="right-container pointer" (click)="treeNode = null">
+              <app-icon icon="fa-times"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="account-body">
+          <div
+            class="account-details background-color-dark-5 text-color-dark-shade-1 p-py-2 p-px-3"
+          >
+            <div class="text-size-14">Internal - Current Account</div>
+            <div class="text-size-12 text-color-normal p-mt-1">ZBA | Priority-1</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-tree-structure-hierarchy
+      [treeStructureHierarchy]="parentRef.accountStructureHierarchyTreeData"
+      *ngIf="treeType === 'tree'"
+      (nodeSelected)="selectedTreeNode($event)"
+    ></app-tree-structure-hierarchy>
+  </div>
+</div>

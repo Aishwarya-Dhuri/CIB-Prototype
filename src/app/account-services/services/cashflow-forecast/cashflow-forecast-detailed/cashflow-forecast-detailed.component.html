@@ -1,0 +1,563 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal
+      [(isShow)]="showMonthlyCashflowGrid"
+      headerText="Cashflow Forecast Overview"
+      (onClose)="monthlyCashflowGridData = []"
+      *ngIf="showMonthlyCashflowGrid"
+    >
+      <div body class="aps-h-300">
+        <app-ag-grid-listing
+          [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+          colDefUrl="accountServices/services/cashFlowForcast/private/cashflowForecastMonthlyOverviewColDefs"
+          [rowData]="monthlyCashflowGridData"
+        ></app-ag-grid-listing>
+      </div>
+    </app-modal>
+
+    <app-modal [(isShow)]="isShowMoreOptions" hideBackdrop="true" [customStyles]="moreActionsStyle">
+      <div class="text-size-12 white-space-nowrap">
+        <div
+          class="p-mb-1 pointer"
+          (click)="addToTransactionList()"
+          *ngIf="selectedList === 'ignored'"
+        >
+          {{ 'Revert to main transaction list' | apsTranslate }}
+        </div>
+        <ng-container *ngIf="selectedList !== 'ignored'">
+          <div
+            class="p-mb-1 pointer"
+            (click)="isShowEditOccurrence = true; isShowMoreOptions = false"
+          >
+            {{ 'Edit this occurrence' | apsTranslate }}
+          </div>
+          <div class="p-mb-1 pointer" (click)="isShowMoreOptions = false">
+            {{ 'Modify an occurrences' | apsTranslate }}
+          </div>
+          <div class="p-mb-1 pointer" (click)="deletePermanently()">
+            {{ 'Delete Permanently' | apsTranslate }}
+          </div>
+          <div class="pointer" (click)="addToIgnoreList()">
+            {{ 'Ignore this occurrence for now' | apsTranslate }}
+          </div>
+        </ng-container>
+      </div>
+    </app-modal>
+
+    <app-modal [(isShow)]="isShowEditOccurrence" headerText="Edit" size="sm">
+      <div body *ngIf="moreActionsRowData">
+        <div class="p-grid g-margin-x text-size-12">
+          <div class="p-md-8 p-sm-12 p-col-12">
+            <div class="text-color-normal">{{ 'Source' | apsTranslate }}</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">
+              {{ moreActionsRowData.source.join(' ') }}
+            </div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-color-normal">{{ 'Date' | apsTranslate }}</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">
+              {{ moreActionsRowData.valueDate }}
+            </div>
+          </div>
+          <div class="p-md-8 p-sm-12 p-col-12">
+            <div class="text-color-normal">{{ 'Transaction Narration' | apsTranslate }}</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">
+              {{ moreActionsRowData.transactionNarration }}
+            </div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-color-normal">{{ 'Beneficiary/Payers' | apsTranslate }}</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">
+              {{ moreActionsRowData.beneficiaryPayers }}
+            </div>
+          </div>
+          <div class="p-md-8 p-sm-12 p-col-12">
+            <aps-form-input
+              label="Withdrawal"
+              [(ngModel)]="moreActionsRowData.withdrawals"
+            ></aps-form-input>
+          </div>
+        </div>
+      </div>
+      <div class="text-right" footer>
+        <button class="btn btn-md btn-primary" (click)="isShowEditOccurrence = false">
+          {{ 'SUBMIT' | apsTranslate }}
+        </button>
+      </div>
+    </app-modal>
+
+    <app-modal [(isShow)]="isShowCashFlowForecastOverview" size="lg">
+      <div class="" body>
+        <div class="left-right-container p-pb-3">
+          <div class="left-container">
+            <div class="inline-item">
+              <div class="inline-block text-size-16 p-mr-3 text-semi">
+                {{ 'Cash Flow Forecast Overview' | apsTranslate }}
+              </div>
+              <div class="item inline-block p-mr-3 mt--2">
+                <p-radioButton
+                  label="Cash Flow"
+                  value="Cash Flow"
+                  labelStyleClass="text-size-16"
+                  [(ngModel)]="accountData.cashFlowForecastOverview"
+                ></p-radioButton>
+              </div>
+              <div class="item inline-block mt--2">
+                <p-radioButton
+                  label="Inflow/Outflow Distribution"
+                  value="Inflow/Outflow Distribution"
+                  labelStyleClass="text-size-16"
+                  [(ngModel)]="accountData.cashFlowForecastOverview"
+                ></p-radioButton>
+              </div>
+            </div>
+          </div>
+          <div class="right-container">
+            <div class="background-color-primary-light-shade-2 p-px-1 pointer">
+              <app-icon
+                icon="fa-compress"
+                styleClasses="text-color-primary pointer"
+                (click)="isShowCashFlowForecastOverview = false"
+              ></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="p-grid border-top p-p-2">
+          <ng-container *ngIf="accountData.cashFlowForecastOverview === 'Cash Flow'">
+            <div class="p-md-5 p-sm-12 p-col-12">
+              <div class="aps-h-272 border border-radius-4">
+                <app-ag-grid-listing
+                  [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+                  [colDefUrl]="cashFlowForecastOverviewColDefUrl"
+                  [frameworkComponents]="frameworkComponents"
+                  [rowData]="accountData.cashflowGridData"
+                ></app-ag-grid-listing>
+              </div>
+            </div>
+            <div class="p-md-7 p-sm-12 p-col-12">
+              <div class="border border-radius-4">
+                <div class="left-right-container p-px-2 p-pt-2">
+                  <div class="left-container"></div>
+                  <div class="right-container">
+                    <div
+                      class="inline-items text-size-12 background-color-dark-3 border-radius-4 overflow-hidden"
+                    >
+                      <div
+                        class="item p-px-2 p-py-1 pointer"
+                        [ngClass]="{
+                          'background-color-primary text-color-inverted':
+                            accountData.optionType == 'Monthly'
+                        }"
+                        (click)="accountData.optionType = 'Monthly'"
+                      >
+                        {{ 'Monthly' | apsTranslate }}
+                      </div>
+                      <div
+                        class="item p-px-2 p-py-1 pointer"
+                        [ngClass]="{
+                          'background-color-primary text-color-inverted':
+                            accountData.optionType == 'Quarterly'
+                        }"
+                        (click)="accountData.optionType = 'Quarterly'"
+                      >
+                        {{ 'Quarterly' | apsTranslate }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="" style="height: 240px">
+                  <ag-charts-angular
+                    [options]="accountData.cashflowChartOptions"
+                  ></ag-charts-angular>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container
+            *ngIf="accountData.cashFlowForecastOverview === 'Inflow/Outflow Distribution'"
+          >
+            <div class="p-md-6 p-sm-12 p-col-12 p-py-0 p-my-2 border-right">
+              <div class="text-size-14 text-semi-bold p-px-2">
+                {{ 'Cash Inflow Distribution' | apsTranslate }}
+              </div>
+              <app-pie-chart
+                [options]="accountData.cashInFlowDistributionChartOptions"
+                webHeight="250"
+                mobileHeight="400"
+              ></app-pie-chart>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12 p-py-0 p-my-2 border-left">
+              <div class="text-size-14 text-semi-bold p-px-2">
+                {{ 'Cash Outflow Distribution' | apsTranslate }}
+              </div>
+              <app-pie-chart
+                [options]="accountData.cashOutFlowDistributionChartOptions"
+                webHeight="250"
+                mobileHeight="400"
+              ></app-pie-chart>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </app-modal>
+
+    <div class="text-color-dark-shade-1">
+      <div class="aps-card">
+        <div class="p-grid">
+          <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+            <div class="aps-filled-card-white border-radius-4 border-2 p-p-3">
+              <div class="background-color-primary p-px-2 p-pt-2 border-radius-6">
+                <aps-custom-select
+                  label="Account No"
+                  backgroundStyle="primary"
+                  [data]="accountsDataList"
+                  [value]="selectedAccount"
+                  [(ngModel)]="selectedAccount"
+                  (change)="changeAccount($event)"
+                ></aps-custom-select>
+              </div>
+
+              <div class="p-my-3 border-bottom-primary"></div>
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="inline-items">
+                    <div class="item text-size-12 text-bold p-py-1 p-pr-1">
+                      {{ accountData.accountDesc }}
+                    </div>
+                    <!-- <div class="item text-size-10 p-py-1 p-pr-1">
+                      {{ 'Showing forecast for' | apsTranslate }}
+                    </div>
+                    <div
+                      class="item background-color-primary-light-shade-2 border-radius-4 p-p-1 text-size-10"
+                    >
+                      6 {{ 'Months' | apsTranslate }}
+                    </div> -->
+                  </div>
+                </div>
+                <div class="right-container">
+                  <app-currency-select-dropdown
+                    selectStyleClass="select"
+                    (currencyChanged)="onChangeCurrency($event)"
+                    [selectedCurrency]="currency"
+                  ></app-currency-select-dropdown>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-9 p-sm-12 p-col-12">
+            <div class="p-grid aps-h-100p">
+              <div class="p-md-7 p-sm-12 p-col-12 p-py-0 p-my-2 p-pr-3 border-right">
+                <div class="background-color-dark-3 border-radius-4 p-p-3 aps-h-100p">
+                  <div class="text-size-14 text-simi-bold p-pb-1">
+                    {{ 'Insights' | apsTranslate }}
+                  </div>
+                  <div class="aps-h-80 overflow-y-scroll overflow-x-hidden">
+                    <div class="p-grid g-margin-x">
+                      <div
+                        class="p-md-6 p-sm-12 p-col-12 p-py-1 p-px-2"
+                        *ngFor="let insight of insights"
+                      >
+                        <div class="label-with-icon-container">
+                          <div class="icon">
+                            <app-icon
+                              styleClasses="text-size-10 {{ insight.class }}"
+                              [icon]="insight.icon"
+                            ></app-icon>
+                          </div>
+                          <div class="label text-size-10 white-space-normal p-pt-1">
+                            {{ insight.label }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-md-5 p-sm-12 p-col-12 p-pl-3">
+                <div class="background-color-dark-3 border-radius-4 p-p-3 aps-h-100p">
+                  <div class="left-right-container">
+                    <div class="left-container">
+                      <div class="text-size-14 text-semi-bold">
+                        {{ 'Cash Flow Forecast Overview' | apsTranslate }}
+                      </div>
+                      <div class="text-size-10">
+                        {{ 'Cash Flow & Inflow/Outflow Distribution' | apsTranslate }}
+                      </div>
+                    </div>
+                    <div class="right-container">
+                      <app-icon
+                        icon="fa-expand"
+                        styleClasses="text-size-16 text-color-primary pointer"
+                        (click)="isShowCashFlowForecastOverview = true"
+                      ></app-icon>
+                    </div>
+                  </div>
+                  <div class="" style="height: 72px">
+                    <ag-charts-angular
+                      [options]="accountData.cashflowSmallChartOptions"
+                    ></ag-charts-angular>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-p-2 p-my-3">
+        <div class="p-grid">
+          <div class="p-md-3 p-sm-12 p-col-12 p-pr-3">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-16 text-semi-bold">
+                  {{ 'Forecast Period' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container">
+                <aps-custom-select
+                  [showLabel]="false"
+                  [data]="forecastPeriodOptions"
+                  [(ngModal)]="selectedForecastPeriodOptions"
+                  [value]="selectedForecastPeriodOptions"
+                  (change)="onChangeForecastPeriodOption($event.id, forecastPeriodCalender)"
+                ></aps-custom-select>
+              </div>
+            </div>
+            <!-- <div class="inline-items">
+              <div class="item p-mr-2" *ngFor="let fp of forecastPeriodOptions">
+                <button
+                  class="btn btn-sm btn-primary"
+                  [ngClass]="{ 'btn-primary': selectedForecastPeriodOptions == fp.id }"
+                  (click)="onChangeForecastPeriodOption(fp.id)"
+                >
+                  {{ fp.displayName }}
+                </button>
+              </div>
+            </div> -->
+            <div class="p-pt-2">
+              <app-aps-calender
+                label="Select Period"
+                showIcon="true"
+                selectionMode="range"
+                numberOfMonths="2"
+                [(ngModel)]="forecastPeriod"
+              ></app-aps-calender>
+            </div>
+            <div class="inline-items">
+              <div class="item text-size-10 p-py-1 p-pr-1">
+                {{ 'Showing forecast for' | apsTranslate }}
+              </div>
+              <div
+                class="item background-color-primary-light-shade-2 border-radius-4 p-p-1 text-size-10"
+              >
+                <span *ngIf="selectedForecastPeriodOptions != forecastPeriodOptions[2].id">
+                  {{ selectedForecastPeriodOptions | apsTranslate }}
+                </span>
+                <span *ngIf="selectedForecastPeriodOptions == forecastPeriodOptions[2].id">
+                  {{ '6 Months' | apsTranslate }}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-9 p-sm-12 p-col-12 p-p-0">
+            <div class="p-grid">
+              <div
+                class="p-md-9 p-sm-12 p-col-12 p-py-0 p-my-2 p-px-3 border-left border-right no-border-on-mobile"
+              >
+                <div class="background-color-dark-3 border-radius-4 p-p-3">
+                  <div class="text-size-14 text-semi-bold p-pb-2">
+                    {{ 'Cashflow Overview' | apsTranslate }}
+                  </div>
+                  <div class="p-grid g-margin-x">
+                    <div class="p-md-8 p-sm-12 p-py-0 p-col-12">
+                      <div class="p-grid">
+                        <div class="p-md-4 p-sm-6 p-col-6 p-pb-0 border-right no-border-on-mobile">
+                          <div class="text-size-14 text-bold">
+                            <app-base-currency
+                              [amount]="accountData.totalCashInFlow"
+                              [currency]="currency"
+                            ></app-base-currency>
+                          </div>
+                          <div class="text-size-10">{{ 'Total Cash Inflow' | apsTranslate }}</div>
+                          <div class="label-with-icon-container p-pt-1">
+                            <div class="icon">
+                              <app-icon
+                                class="inline-block"
+                                style="margin-top: -5px"
+                                icon="fa-chart-line"
+                                styleClasses="text-size-10 text-color-success"
+                              ></app-icon>
+                            </div>
+                            <div class="label text-size-10 text-light">
+                              {{ '1% v/s Last year' | apsTranslate }}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="p-md-4 p-sm-6 p-col-6 p-pb-0 border-right no-border-on-mobile">
+                          <div class="text-size-14 text-bold">
+                            <app-base-currency
+                              [amount]="accountData.totalCashOutFlow"
+                              [currency]="currency"
+                            ></app-base-currency>
+                          </div>
+                          <div class="text-size-10">{{ 'Total Cash Inflow' | apsTranslate }}</div>
+                          <div class="label-with-icon-container">
+                            <div class="icon">
+                              <app-icon
+                                class="inline-block"
+                                style="margin-top: -5px"
+                                icon="fa-chart-line-down"
+                                styleClasses="text-size-10 text-color-danger"
+                              ></app-icon>
+                            </div>
+                            <div class="label text-size-10 text-light">
+                              {{ '1% v/s Last year' | apsTranslate }}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-pb-0 border-right">
+                          <div class="text-size-14 text-bold">
+                            <app-base-currency
+                              [amount]="accountData.totalNetInFlow"
+                              [currency]="currency"
+                            ></app-base-currency>
+                          </div>
+                          <div class="text-size-10">{{ 'Total Cash Inflow' | apsTranslate }}</div>
+                          <div class="label-with-icon-container p-pt-1">
+                            <div class="icon">
+                              <app-icon
+                                class="inline-block"
+                                style="margin-top: -5px"
+                                icon="fa-chart-line"
+                                styleClasses="text-size-10 text-color-success"
+                              ></app-icon>
+                            </div>
+                            <div class="label text-size-10 text-light">
+                              {{ '1% v/s Last year' | apsTranslate }}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-pb-0">
+                      <div class="left-right-container text-size-12">
+                        <div class="left-container text-semi-bold">
+                          {{ 'Opening Balance' | apsTranslate }}
+                        </div>
+                        <div class="right-container text-bold">
+                          <app-base-currency
+                            [amount]="accountData.openingBalance"
+                            [currency]="currency"
+                          ></app-base-currency>
+                        </div>
+                      </div>
+                      <div class="left-right-container text-size-12 p-pt-1">
+                        <div class="left-container text-semi-bold">
+                          {{ 'Closing Balance' | apsTranslate }}
+                        </div>
+                        <div class="right-container text-bold">
+                          <app-base-currency
+                            [amount]="accountData.closingBalance"
+                            [currency]="currency"
+                          ></app-base-currency>
+                        </div>
+                      </div>
+                      <div class="left-right-container text-size-12 p-pt-1">
+                        <div class="left-container text-semi-bold">
+                          {{ 'OD Limit' | apsTranslate }}
+                        </div>
+                        <div class="right-container text-bold">
+                          <app-base-currency
+                            [amount]="+accountData.openingBalance * 0.54"
+                            [currency]="currency"
+                          ></app-base-currency>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12 p-pl-3">
+                <div class="background-color-dark-3 border-radius-4 p-p-3">
+                  <div class="text-size-14 text-semi-bold">
+                    {{ 'Quick Actions' | apsTranslate }}
+                  </div>
+                  <div class="p-mt-1 text-size-12 text-color-primary text-underline">
+                    <div class="p-py-1">{{ 'Book Forward Contract' | apsTranslate }}</div>
+                    <div class="p-py-1">{{ 'Start SIP Book' | apsTranslate }}</div>
+                    <div class="p-py-1">{{ 'Recurring Deposits' | apsTranslate }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-mb-3">
+        <div class="left-right-container no-left-right-container p-px-3">
+          <div class="left-container aps-py-12">
+            <div class="inline-items">
+              <div
+                class="item border background-color border border-radius-4 p-p-2 text-size-12 text-semi-bold p-mr-2 pointer"
+                [ngClass]="{
+                  'background-color-primary text-color-inverted': selectedList === 'transactions'
+                }"
+                (click)="changeListing('transactions')"
+              >
+                {{ 'All Transactions' | apsTranslate }} ({{ cashflowTransactionsRowData.length }})
+              </div>
+              <div
+                class="item background-color border border-radius-4 p-p-2 text-size-12 text-semi-bold pointer"
+                [ngClass]="{
+                  'background-color-primary text-color-inverted': selectedList === 'ignored'
+                }"
+                (click)="changeListing('ignored')"
+              >
+                {{ 'Ignored' | apsTranslate }} ({{ cashflowIgnoredTransactionsRowData.length }})
+              </div>
+            </div>
+          </div>
+          <div class="right-container p-py-md-3 p-py-sm-2 p-py-1 text-right">
+            <app-grid-listing-tools
+              *ngIf="transactionsGrid"
+              (changeFloatingFilter)="
+                transactionsGrid ? transactionsGrid.changeFloatFilter($event) : null
+              "
+              (filterRecords)="transactionsGrid ? transactionsGrid.onFilter($event) : null"
+              (applyColDefs)="transactionsGrid ? transactionsGrid.onApplyConfig($event) : null"
+              [colDefs]="transactionsGrid ? transactionsGrid.columnDefs : []"
+              [columnConfig]="viewport == 'web'"
+              [showSearch]="viewport == 'web'"
+              [showFloatingFilter]="viewport == 'web'"
+              [moreOptions]="true"
+              [showPrint]="true"
+            ></app-grid-listing-tools>
+          </div>
+        </div>
+        <div class="aps-h-500">
+          <ng-container *ngIf="!loadingGrid; else loadingTemplate">
+            <app-ag-grid-listing
+              [id]="'transaction-details'"
+              #transactionsGrid
+              [gridOptions]="gridOptions"
+              [colDefUrl]="cashflowTransactionsColDefs"
+              [rowData]="rowData"
+              [frameworkComponents]="frameworkComponents"
+              [context]="{ componentParent: this }"
+            ></app-ag-grid-listing>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

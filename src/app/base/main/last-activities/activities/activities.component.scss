@@ -1,0 +1,22 @@
+.activities {
+  display: block;
+  color: var(--text-color-dark-shade-1);
+
+  .activity {
+    display: block;
+    font-size: 0.75rem;
+    padding: 0.5rem;
+    cursor: pointer;
+
+    .icon {
+      width: 2rem;
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .text {
+      width: calc(100% - 2rem);
+      display: inline-block;
+    }
+  }
+}

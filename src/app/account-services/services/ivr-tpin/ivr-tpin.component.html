@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <form name="resetUserForm" #resetUserForm="ngForm">
+                <div class="aps-card">
+                    <div class="aps-card-header">
+                        <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+                            {{ 'Reset IVR TPIN' | apsTranslate }}
+                        </div>
+                    </div>
+                    <div class="aps-card-body">
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-col-4 p-lg-4 p-sm-12">
+                                <app-review-form-field label="Corporate Name" [value]="formData.displayName">
+                                </app-review-form-field>
+                            </div>
+                        </div>
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-4 p-lg-4">
+                                <aps-form-input [type]="isCurrentTpinVisible ? 'text' : 'password'"
+                                    [label]="'Current TPIN' | apsTranslate" name="currentTpin" id="currentTpin"
+                                    [(ngModel)]="formData.currentTpin"
+                                    [rightIcon]="isCurrentTpinVisible ? 'fa-eye-slash' : 'fa-eye'"
+                                    (onRightIcon)="isCurrentTpinVisible = !isCurrentTpinVisible">
+                                </aps-form-input>
+                            </div>
+                            <div class="p-col-12 p-md-4 p-lg-4">
+                                <aps-form-input [type]="isNewTpinVisible ? 'text' : 'password'"
+                                    [label]="'New TPIN' | apsTranslate" name="newTpin" id="newTpin"
+                                    [(ngModel)]="formData.newTpin"
+                                    [rightIcon]="isNewTpinVisible ? 'fa-eye-slash' : 'fa-eye'"
+                                    (onRightIcon)="isNewTpinVisible = !isNewTpinVisible">
+                                </aps-form-input>
+                            </div>
+                        </div>
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-4 p-lg-4">
+                                <aps-form-input [type]="isConfirmNewTpinVisible ? 'text' : 'password'"
+                                    [label]="'Confirm New TPIN' | apsTranslate" name="confirmNewTpin"
+                                    id="confirmNewTpin" [(ngModel)]="formData.confirmNewTpin"
+                                    [rightIcon]="isConfirmNewTpinVisible ? 'fa-eye-slash' : 'fa-eye'"
+                                    (onRightIcon)="isConfirmNewTpinVisible = !isConfirmNewTpinVisible">
+                                </aps-form-input>
+                            </div>
+                            <div class="p-col-12 p-md-4 p-lg-4">
+                                <aps-form-input [type]="isOneTimePasswordVisible ? 'text' : 'password'"
+                                    [label]="'One Time Password' | apsTranslate" name="oneTimePassword"
+                                    id="oneTimePassword" [(ngModel)]="formData.oneTimePassword"
+                                    [rightIcon]="isOneTimePasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                                    (onRightIcon)="isOneTimePasswordVisible = !isOneTimePasswordVisible">
+                                </aps-form-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="p-col-12">
+            <div class="aps-card p-py-2 p-px-3">
+                <div class="left-right-container">
+                    <div class="left-container">
+                        <button class="btn btn-md btn-tertiary" (click)="cancel()">CANCEL</button>
+                    </div>
+                    <div class="right-container">
+                        <button class="btn btn-md btn-primary" (click)="reset()">RESET</button>
+                        <!-- [disabled]="resetUserForm.invalid" -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

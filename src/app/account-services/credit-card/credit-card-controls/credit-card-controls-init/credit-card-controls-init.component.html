@@ -1,0 +1,545 @@
+<div class="container">
+  <div class="p-grid g-margin-x p-pb-3" *ngIf="!loading; else loadingTemplate">
+    <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-1">
+      <div class="aps-card text-color-dark-shade-1 aps-h-600 overflow-scroll p-mb-3">
+        <div *ngFor="let step of steps; let i = index" class="border-bottom">
+          <div
+            (click)="changeStep(i)"
+            [ngClass]="{
+              active: step.displayLabel === activeStep.displayLabel && !showBankRemarks
+            }"
+            class=""
+          >
+            <div
+              *ngIf="step.completeStatus && step.completeStatus !== 'success'"
+              class="progress-bar p-m-1"
+            >
+              <div
+                *ngIf="step.completeStatus === 'error'"
+                [ngStyle]="{ width: step.completePercentage + '%' }"
+                class="error"
+              ></div>
+              <div
+                *ngIf="step.completeStatus === 'inProgress'"
+                [ngStyle]="{ width: step.completePercentage + '%' }"
+                class="progress"
+              ></div>
+            </div>
+            <div
+              [ngClass]="step.completeStatus !== 'success' ? 'p-pt-2' : 'p-pt-3'"
+              class="p-px-3 p-pb-3"
+            >
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="text-size-14 text-semi-bold">
+                    {{ i + 1 }}. {{ step.displayLabel }}
+                  </div>
+                </div>
+                <div class="right-container">
+                  <app-icon
+                    *ngIf="step.completeStatus === 'error' || step.completeStatus === 'repair'"
+                    [styleClasses]="
+                      step.completeStatus === 'error'
+                        ? 'text-color-danger text-size-12'
+                        : 'text-color-warning text-size-12'
+                    "
+                    icon="fa-exclamation-triangle"
+                  ></app-icon>
+                  <app-icon
+                    *ngIf="step.completeStatus === 'success'"
+                    icon="fa-check-circle"
+                    styleClasses="text-color-success text-size-12"
+                  ></app-icon>
+                </div>
+              </div>
+
+              <div *ngIf="step.completePercentage > 0">
+                <ng-container *ngFor="let displayField of step.displayFields">
+                  <div
+                    class="inline-block p-m-1 text-size-10 text-color-dark-shade-1 background-color-primary-light-shade-2 borderr-radius-4 p-py-1 p-px-2"
+                    *ngIf="creditCardData[step.key][displayField.key]"
+                  >
+                    {{ displayField.displayName }}:&nbsp;<span
+                      *ngIf="
+                        creditCardData[step.key][displayField.key] === true ||
+                          creditCardData[step.key][displayField.key] === false;
+                        else notBool
+                      "
+                    >
+                      {{ creditCardData[step.key][displayField.key] ? 'ON' : 'OFF' }}</span
+                    >
+                    <ng-template #notBool>{{
+                      creditCardData[step.key][displayField.key]
+                    }}</ng-template>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-lg-9 p-md-9 p-sm-12 p-col-12 p-py-1">
+      <div class="aps-card aps-h-530">
+        <div class="aps-card-header">
+          <div class="left-right-container p-px-3">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 aps-py-12">
+                {{ showBankRemarks ? ('Bank Remarks' | apsTranslate) : activeStep.displayLabel }}
+              </div>
+            </div>
+            <div class="right-container p-py-2"></div>
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <!--Card Details Form Start -->
+          <form
+            #form="ngForm"
+            *ngIf="activeStep.displayLabel === steps[0].displayLabel"
+            class="letter-of-credit"
+            name="form"
+          >
+            <div class="p-grid">
+              <ng-container *ngIf="creditCardData?.cardData">
+                <div
+                  class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0"
+                  *ngIf="creditCardData?.cardData.isSupplementary === 'Primary'; else supplementary"
+                >
+                  <aps-form-input
+                    (focusout)="setStepCompleted()"
+                    [(ngModel)]="creditCardData.cardData.cardNo"
+                    [disabled]="true"
+                    id="cardNo"
+                    [label]="'Primary Card No.' | apsTranslate"
+                    name="cardNo"
+                  ></aps-form-input>
+                </div>
+              </ng-container>
+              <ng-template #supplementary>
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input
+                    (focusout)="setStepCompleted()"
+                    [(ngModel)]="creditCardData.cardData.supplementaryCardNo"
+                    [disabled]="true"
+                    id="SupplementaryCardNo"
+                    [label]="'Supplementary Card No.' | apsTranslate"
+                    name="cardNo"
+                  ></aps-form-input>
+                </div>
+              </ng-template>
+
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <aps-form-input
+                  (focusout)="setStepCompleted()"
+                  [(ngModel)]="creditCardData.cardData.cardType"
+                  [disabled]="true"
+                  id="cardType"
+                  [label]="'Card Type' | apsTranslate"
+                  name="cardType"
+                ></aps-form-input>
+              </div>
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <aps-form-input
+                  (focusout)="setStepCompleted()"
+                  [(ngModel)]="creditCardData.cardData.embossedName"
+                  [disabled]="true"
+                  id="embossedName"
+                  [label]="'Embossed Name' | apsTranslate"
+                  name="embossedName"
+                ></aps-form-input>
+              </div>
+
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0" *ngIf="creditCardData?.cardData">
+                <aps-form-input
+                  (focusout)="setStepCompleted()"
+                  [(ngModel)]="creditCardData.cardData.cardLimit"
+                  [disabled]="true"
+                  id="cardLimit"
+                  label="{{
+                    creditCardData.cardData.isSupplementary === 'Primary'
+                      ? ('Primary' | apsTranslate)
+                      : ('Supplementary' | apsTranslate)
+                  }} {{ 'Card Limit' | apsTranslate }}"
+                  name="cardLimit"
+                ></aps-form-input>
+              </div>
+
+              <div
+                class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0"
+                *ngIf="creditCardData?.cardData?.isSupplementary !== 'Primary'"
+              >
+                <aps-form-input
+                  (focusout)="setStepCompleted()"
+                  [(ngModel)]="creditCardData.cardData.cardNo"
+                  [disabled]="true"
+                  id="primaryCardNo"
+                  [label]="'Primary Card No.' | apsTranslate"
+                  name="primaryCardNo"
+                ></aps-form-input>
+              </div>
+            </div>
+          </form>
+          <!--Card Details Form End-->
+
+          <!--Domestic Usage Form Start-->
+          <form
+            #form="ngForm"
+            *ngIf="activeStep.displayLabel === steps[1].displayLabel"
+            class="applicant-details"
+            name="form"
+          >
+            <div class="p-grid p-p-3">
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label">{{ 'ATM Usage' | apsTranslate }}</span>
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    id="atmusage"
+                    name="atmusage"
+                    (onChange)="handleToggle($event, form, 'atmUsageLimit')"
+                    [(ngModel)]="creditCardData.domesticUsage.atmusage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <aps-form-input
+                  (focusout)="setStepCompleted(); removeDecimal($event, form, 'atmUsageLimit')"
+                  [(ngModel)]="creditCardData.domesticUsage.atmUsageLimit"
+                  [disabled]="!creditCardData.domesticUsage.atmusage"
+                  [required]="creditCardData.domesticUsage.atmusage"
+                  id="atmUsageLimit"
+                  [label]="'ATM Usage Limit' | apsTranslate"
+                  name="atmUsageLimit"
+                  inputType="currencyFormatNotZero"
+                  maxLength="16"
+                  minLength="1"
+                ></aps-form-input>
+                <span class="text-size-12">{{ 'Maximum allowed' | apsTranslate }}: INR 40,000</span>
+              </div>
+              <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-pb-5"></div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label">{{ 'Merchant Outlet Usage' | apsTranslate }}</span>
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    id="domesticMerchantOutletUsage"
+                    name="domesticMerchantOutletUsage"
+                    (onChange)="handleToggle($event, form, 'domesticMerchantOutletUsageLimit')"
+                    [(ngModel)]="creditCardData.domesticUsage.domesticMerchantOutletUsage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <aps-form-input
+                  (focusout)="
+                    setStepCompleted();
+                    removeDecimal($event, form, 'domesticMerchantOutletUsageLimit')
+                  "
+                  [(ngModel)]="creditCardData.domesticUsage.domesticMerchantOutletUsageLimit"
+                  [disabled]="!creditCardData.domesticUsage.domesticMerchantOutletUsage"
+                  [required]="creditCardData.domesticUsage.domesticMerchantOutletUsage"
+                  id="domesticMerchantOutletUsageLimit"
+                  [label]="'Merchant Outlet Usage Limit' | apsTranslate"
+                  name="domesticMerchantOutletUsageLimit"
+                  inputType="currencyFormatNotZero"
+                  maxLength="16"
+                  minLength="1"
+                ></aps-form-input>
+                <span class="text-size-12">{{ 'Maximum allowed' | apsTranslate }}: INR 40,000</span>
+              </div>
+            </div>
+            <div class="p-grid p-p-3">
+              <div class="p-lg-2 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label">{{ 'Online Usage' | apsTranslate }}</span>
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    id="onlineUsage"
+                    name="onlineUsage"
+                    (onChange)="handleToggle($event, form, 'onlineUsageLimit')"
+                    [(ngModel)]="creditCardData.domesticUsage.onlineUsage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <aps-form-input
+                  (focusout)="setStepCompleted(); removeDecimal($event, form, 'onlineUsageLimit')"
+                  [(ngModel)]="creditCardData.domesticUsage.onlineUsageLimit"
+                  [disabled]="!creditCardData.domesticUsage.onlineUsage"
+                  [required]="creditCardData.domesticUsage.onlineUsage"
+                  id="onlineUsageLimit"
+                  [label]="'Online Usage Limit' | apsTranslate"
+                  name="onlineUsageLimit"
+                  inputType="currencyFormatNotZero"
+                  maxLength="16"
+                  minLength="1"
+                ></aps-form-input>
+                <span class="text-size-12">{{ 'Maximum allowed' | apsTranslate }}: INR 40,000</span>
+              </div>
+              <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-pb-5"></div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label"
+                    >{{ 'Contactless Usage' | apsTranslate }}&nbsp;<span class="text-size-12"
+                      >({{ 'Tap and Pay' | apsTranslate }})</span
+                    ></span
+                  >
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    id="contactlessUsage"
+                    name="contactlessUsage"
+                    (onChange)="handleToggle($event, form, 'contactlessUsageLimit')"
+                    [(ngModel)]="creditCardData.domesticUsage.contactlessUsage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <aps-form-input
+                  (focusout)="
+                    setStepCompleted(); removeDecimal($event, form, 'contactlessUsageLimit')
+                  "
+                  [(ngModel)]="creditCardData.domesticUsage.contactlessUsageLimit"
+                  [disabled]="!creditCardData.domesticUsage.contactlessUsage"
+                  [required]="creditCardData.domesticUsage.contactlessUsage"
+                  id="contactlessUsageLimit"
+                  [label]="'Contactless Usage Limit' | apsTranslate"
+                  name="contactlessUsageLimit"
+                  inputType="currencyFormatNotZero"
+                  maxLength="16"
+                  minLength="1"
+                ></aps-form-input>
+                <span class="text-size-12">{{ 'Maximum allowed' | apsTranslate }}: INR 40,000</span>
+              </div>
+            </div>
+            <div class="text-size-12">
+              {{ 'Note' | apsTranslate }}:
+              {{ 'Limit maintained is the daily limit' | apsTranslate }}.
+            </div>
+          </form>
+          <!--Domestic Usage Form End-->
+
+          <!--International Usage Form Start-->
+          <form
+            #form="ngForm"
+            *ngIf="activeStep.displayLabel === steps[2].displayLabel"
+            class="applicant-details"
+            name="form"
+          >
+            <div class="p-grid p-p-3">
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label">{{ 'International Usage' | apsTranslate }}</span>
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    (onChange)="handleToggleForInterUsage($event, form)"
+                    [(ngModel)]="creditCardData.internationalUsage.allowInternationalUsage"
+                    id="allowInternationalUsage"
+                    name="allowInternationalUsage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+            </div>
+            <div class="p-grid p-p-3">
+              <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label">ATM Usage</span>
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    (onChange)="handleToggle($event, form, 'interAtmUsageLimit')"
+                    [(ngModel)]="creditCardData.internationalUsage.interAtmusage"
+                    id="interAtmusage"
+                    name="interAtmusage"
+                    [disabled]="!creditCardData.internationalUsage.allowInternationalUsage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <aps-form-input
+                  (focusout)="setStepCompleted(); removeDecimal($event, form, 'interAtmUsageLimit')"
+                  [(ngModel)]="creditCardData.internationalUsage.interAtmUsageLimit"
+                  [disabled]="!creditCardData.internationalUsage.interAtmusage"
+                  [required]="creditCardData.internationalUsage.interAtmusage"
+                  id="interAtmUsageLimit"
+                  [label]="'ATM Usage Limit' | apsTranslate"
+                  name="interAtmUsageLimit"
+                  inputType="currencyFormatNotZero"
+                  maxLength="16"
+                  minLength="1"
+                ></aps-form-input>
+                <span class="text-size-12">{{ 'Maximum allowed' | apsTranslate }}: INR 40,000</span>
+              </div>
+              <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-pb-5"></div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label">{{ 'Merchant Outlet Usage' | apsTranslate }}</span>
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    [(ngModel)]="creditCardData.internationalUsage.interMerchantOutletUsage"
+                    id="interMerchantOutletUsage"
+                    (onChange)="handleToggle($event, form, 'interMerchantOutletUsageLimit')"
+                    name="interMerchantOutletUsage"
+                    offIcon="pi pi-times"
+                    [disabled]="!creditCardData.internationalUsage.allowInternationalUsage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <aps-form-input
+                  (focusout)="
+                    setStepCompleted(); removeDecimal($event, form, 'interMerchantOutletUsageLimit')
+                  "
+                  [(ngModel)]="creditCardData.internationalUsage.interMerchantOutletUsageLimit"
+                  [disabled]="!creditCardData.internationalUsage.interMerchantOutletUsage"
+                  [required]="creditCardData.internationalUsage.interMerchantOutletUsage"
+                  id="interMerchantOutletUsageLimit"
+                  [label]="'Merchant Outlet Usage Limit' | apsTranslate"
+                  name="interMerchantOutletUsageLimit"
+                  inputType="currencyFormatNotZero"
+                  maxLength="16"
+                  minLength="1"
+                ></aps-form-input>
+                <span class="text-size-12">{{ 'Maximum allowed' | apsTranslate }}: INR 40,000</span>
+              </div>
+            </div>
+            <div class="p-grid p-p-3">
+              <div class="p-lg-2 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label">{{ 'Online Usage' | apsTranslate }}</span>
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    (onChange)="handleToggle($event, form, 'interOnlineUsageLimit')"
+                    [(ngModel)]="creditCardData.internationalUsage.interOnlineUsage"
+                    id="interOnlineUsage"
+                    name="interOnlineUsage"
+                    [disabled]="!creditCardData.internationalUsage.allowInternationalUsage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <aps-form-input
+                  (focusout)="
+                    setStepCompleted(); removeDecimal($event, form, 'interOnlineUsageLimit')
+                  "
+                  [(ngModel)]="creditCardData.internationalUsage.interOnlineUsageLimit"
+                  [disabled]="!creditCardData.internationalUsage.interOnlineUsage"
+                  [required]="creditCardData.internationalUsage.interOnlineUsage"
+                  id="interOnlineUsageLimit"
+                  [label]="'Online Usage Limit' | apsTranslate"
+                  name="interOnlineUsageLimit"
+                  inputType="currencyFormatNotZero"
+                  maxLength="16"
+                  minLength="1"
+                ></aps-form-input>
+                <span class="text-size-12">Maximum allowed: INR 40,000</span>
+              </div>
+              <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 p-pb-5"></div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <label class="input-label">
+                  <span class="label"
+                    >{{ 'Contactless Usage' | apsTranslate }}&nbsp;<span class="text-size-12"
+                      >({{ 'Tap and Pay' | apsTranslate }})</span
+                    ></span
+                  >
+                </label>
+                <div class="p-pt-2">
+                  <p-inputSwitch
+                    [(ngModel)]="creditCardData.internationalUsage.interContactlessUsage"
+                    (onChange)="handleToggle($event, form, 'interContactlessUsageLimit')"
+                    id="interContactlessUsage"
+                    name="contactlessUsage"
+                    [disabled]="!creditCardData.internationalUsage.allowInternationalUsage"
+                  >
+                  </p-inputSwitch>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-5">
+                <aps-form-input
+                  (focusout)="
+                    setStepCompleted(); removeDecimal($event, form, 'interContactlessUsageLimit')
+                  "
+                  [(ngModel)]="creditCardData.internationalUsage.interContactlessUsageLimit"
+                  [disabled]="!creditCardData.internationalUsage.interContactlessUsage"
+                  [required]="creditCardData.internationalUsage.interContactlessUsage"
+                  id="interContactlessUsageLimit"
+                  [label]="'Contactless Usage Limit' | apsTranslate"
+                  name="interContactlessUsageLimit"
+                  inputType="currencyFormatNotZero"
+                  maxLength="16"
+                  minLength="1"
+                ></aps-form-input>
+                <span class="text-size-12">{{ 'Maximum allowed' | apsTranslate }}: INR 40,000</span>
+              </div>
+            </div>
+
+            <div class="text-size-12">
+              {{ 'Note' | apsTranslate }}:
+              {{ 'Limit maintained is the daily limit' | apsTranslate }}.
+            </div>
+          </form>
+          <!--International Usage Form End-->
+        </div>
+      </div>
+
+      <div class="aps-card p-mt-3 p-px-3 aps-py-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <button
+              (click)="editMode ? onReview.emit() : cancel()"
+              class="btn btn-md btn-tertiary p-mr-3"
+            >
+              {{ 'CANCEL' | apsTranslate }}
+            </button>
+          </div>
+          <div class="right-container">
+            <ng-container *ngIf="!editMode">
+              <button
+                (click)="previous()"
+                *ngIf="activeStepIndex > 0"
+                class="btn btn-md btn-tertiary p-mr-3"
+              >
+                {{ 'PREVIOUS' | apsTranslate }}
+              </button>
+              <button
+                (click)="next()"
+                *ngIf="activeStepIndex < steps.length - 1"
+                class="btn btn-md btn-primary"
+              >
+                {{ 'NEXT' | apsTranslate }}
+              </button>
+            </ng-container>
+
+            <button
+              (click)="review()"
+              *ngIf="activeStepIndex === steps.length - 1 || editMode"
+              class="btn btn-md btn-primary"
+            >
+              {{ 'REVIEW' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

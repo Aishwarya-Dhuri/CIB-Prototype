@@ -1,0 +1,44 @@
+<ng-container *ngIf="isAgGridRenderer">
+  <span *ngFor="let action of actions | orderBy: 'index':false; let i = index">
+    <button
+      type="button"
+      *ngIf="action.type === 'BUTTON'"
+      class="btn btn-sm btn-tertiary p-ml-2 grid-row-text-size"
+      [ngClass]="action.class"
+      (click)="invokeParentMethod(action)"
+    >
+      <i class="mr-2" [ngClass]="action.icon" *ngIf="action.icon"></i>{{ action.displayName }}
+    </button>
+
+    <span class="p-ml-2 pointer" *ngIf="action.type === 'ICON'">
+      <i
+        [class]="action.icon ? action.icon : 'arrow-alt-to-bottom'"
+        (click)="invokeParentMethod(action)"
+      ></i>
+    </span>
+  </span>
+</ng-container>
+
+<ng-container *ngIf="!isAgGridRenderer">
+  <div class="flex-content-space-around-container">
+    <div class="item" *ngFor="let action of actions | orderBy: 'index':false; let i = index">
+      <span class="p-ml-2 pointer">
+        <button
+          type="button"
+          *ngIf="action.type === 'BUTTON'"
+          class="btn btn-sm btn-tertiary p-ml-2 grid-row-text-size"
+          [ngClass]="action.class"
+          (click)="invokeParentMethod(action)"
+        >
+          <i class="mr-2" [ngClass]="action.icon" *ngIf="action.icon"></i>{{ action.displayName }}
+        </button>
+
+        <app-icon
+          [icon]="action.icon ? action.icon : 'fa-times'"
+          *ngIf="action.type === 'ICON'"
+          (click)="invokeParentMethod(action, $event)"
+        ></app-icon>
+      </span>
+    </div>
+  </div>
+</ng-container>

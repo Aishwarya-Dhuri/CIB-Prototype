@@ -1,0 +1,58 @@
+<div class="container">
+  <div class="aps-card p-mb-2">
+    <div class="aps-card-header">
+      <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+        {{ 'Search By' | apsTranslate }}
+      </div>
+    </div>
+    <div class="aps-card-body">
+      <div class="p-col-12 p-px-3 p-py-3">
+        <p-radioButton
+          class="p-mr-3"
+          name="chequeIssued"
+          id="chequeIssued"
+          [label]="'Cheque Issued' | apsTranslate"
+          value="Cheque Issued"
+          [(ngModel)]="inquiryType"
+        ></p-radioButton>
+        <p-radioButton
+          name="chequeCollected"
+          id="chequeCollected"
+          [label]="'Cheque Collected' | apsTranslate"
+          value="Cheque Collected"
+          [(ngModel)]="inquiryType"
+        >
+        </p-radioButton>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="inquiryType == 'Cheque Collected'">
+    <app-dynamic-search
+      #dynamicSearch
+      [isShowSaveSearchCriteria]="false"
+      [isDisplayPrefillCriteriaModal]="false"
+      [isShowPrefillCriteria]="false"
+      [isShowSearchByHeader]="false"
+      entityName="CHEQUESTATUSENQUIRYCOLLECTED"
+      [isOptionalParameterHidden]="true"
+      (onSearch)="getSearchResults($event)"
+      [cardHeight]="165"
+      (onFiltersReady)="onDynamicFiltersReady()"
+    >
+    </app-dynamic-search>
+  </div>
+  <div *ngIf="inquiryType == 'Cheque Issued'">
+    <app-dynamic-search
+      #dynamicSearch
+      [isShowSaveSearchCriteria]="false"
+      [isDisplayPrefillCriteriaModal]="false"
+      [isShowPrefillCriteria]="false"
+      [isShowSearchByHeader]="false"
+      entityName="CHEQUESTATUSENQUIRYISSUED"
+      [isOptionalParameterHidden]="true"
+      (onSearch)="getSearchResults($event)"
+      (onFiltersReady)="onDynamicFiltersReady()"
+    >
+    </app-dynamic-search>
+  </div>
+</div>

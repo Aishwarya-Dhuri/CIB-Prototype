@@ -1,0 +1,166 @@
+.authentication-container {
+  display: block;
+  .data-wrapper {
+    display: block;
+    margin: 0.75rem 0;
+
+    .step {
+      width: 16px;
+      height: 16px;
+      margin-left: 13px;
+      font-size: 0.75rem;
+      padding: 3px 6px;
+      text-align: center;
+      background-color: var(--secondary-color-light-shade-1);
+      color: var(--text-color-dark-shade-1);
+
+      i,
+      .app-icon {
+        font-size: 0.625rem;
+        vertical-align: middle;
+      }
+    }
+
+    .active {
+      background-color: var(--primary-color-light-shade-1);
+      color: var(--primary-color);
+
+      i,
+      .app-icon {
+        color: var(--primary-color);
+      }
+    }
+
+    .heading {
+      font-size: 1rem;
+      font-family: 'CIB Bold';
+      color: var(--text-color-dark-shade-1);
+    }
+
+    .verification-mode-container {
+      display: block;
+
+      .verification-mode {
+        display: inline-block;
+        vertical-align: top;
+        cursor: pointer;
+        width: 3rem;
+        margin-right: 32px;
+
+        .verification-mode-icon {
+          padding-top: 12px;
+          display: inline-block;
+          width: 3rem;
+          height: 3rem;
+          text-align: center;
+          border-radius: 5px;
+          color: #666666;
+          background-color: #ebebeb;
+
+          i {
+            margin-top: 0.75rem;
+            font-size: 1.5rem;
+          }
+        }
+
+        .verification-mode-label {
+          display: block;
+          width: 100%;
+          font-size: 0.75rem;
+          color: var(--text-color-dark-shade-1);
+          text-align: center;
+        }
+
+        @media screen and (max-width: 600px) {
+          margin-right: 24px;
+        }
+      }
+
+      .verification-mode-active,
+      .verification-mode:hover {
+        .verification-mode-icon {
+          background-color: var(--primary-color-light-shade-1);
+          color: var(--primary-color);
+        }
+
+        .verification-mode-label {
+          color: var(--primary-color);
+        }
+      }
+    }
+
+    .data-label {
+      font-size: 0.875rem;
+      color: #666666;
+      /* margin: 0.5rem 0;*/
+    }
+
+    .error-message {
+      display: block;
+      color: var(--color-error);
+      font-size: 0.75rem;
+      padding-top: 4px;
+    }
+
+    .input-field {
+      display: block;
+      width: 100%;
+      font-size: 0.875rem;
+      color: var(--text-color);
+    }
+
+    .links {
+      margin-top: -4px;
+
+      .resend-code {
+        color: var(--text-color-dark-shade-1);
+        font-size: 0.875rem;
+        cursor: pointer;
+      }
+
+      .clock {
+        color: var(--text-color);
+        font-size: 0.875rem;
+
+        i,
+        .app-icon {
+          font-size: 0.875rem;
+        }
+      }
+
+      .keyboard {
+        display: inline-block;
+        color: var(--primary-color);
+        font-size: 0.875rem;
+        cursor: pointer;
+
+        .icon {
+          display: inline-block;
+          margin: 0 5px;
+          margin-top: 1px;
+
+          i,
+          .app-icon {
+            font-size: 1rem;
+          }
+        }
+
+        .label {
+          display: inline-block;
+          vertical-align: top;
+        }
+
+        @media screen and (max-width: 600px) {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .different-verification-mode {
+    font-size: 0.875rem;
+    color: var(--text-color-dark-shade-1);
+    text-align: center;
+    margin: 1rem 0;
+  }
+}

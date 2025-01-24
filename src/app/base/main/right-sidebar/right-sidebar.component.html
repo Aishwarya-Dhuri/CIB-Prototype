@@ -1,0 +1,11 @@
+<app-backdrop [background]="'rgba(0, 0, 0, 0)'" *ngIf="isSidebarOpen" [zIndex]="4"
+  (close)="closeSidebar()"></app-backdrop>
+
+<div class="app-sidebar-container" [ngClass]="{
+    'app-sidebar-container-toggle': isSidebarOpen
+  }">
+  <div class="sidebar-container p-shadow-10">
+    <ndc-dynamic class="" [ndcDynamicComponent]="component" [ndcDynamicOutputs]="outputs">
+    </ndc-dynamic>
+  </div>
+</div>

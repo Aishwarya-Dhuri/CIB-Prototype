@@ -1,0 +1,345 @@
+<div class="container">
+    <app-modal [(isShow)]="!!uploadedImageUrl" headerText="Cheque Image" (onClose)="uploadedImageUrl = ''" size="md">
+        <img class="aps-w-100p h-auto" [src]="uploadedImageUrl | safeResourceUrl" alt="Cheque Image" />
+    </app-modal>
+
+    <div class="p-grid g-margin-x" [apsHide]="stepperDetails.currentStep != 1">
+        <div class="p-md-9 p-sm-12 p-col-12 p-p-0">
+            <div class="p-grid">
+                <div class="p-col-12">
+                    <div class="aps-card p-p-2">
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <div class="left-right-container">
+                                    <div class="left-container">
+                                        <div class="text-size-16 text-semi-bold">
+                                            {{ 'Details' | apsTranslate }}
+                                        </div>
+                                    </div>
+                                    <div class="right-container">
+                                        <!-- <button class="btn btn-md btn-primary">
+                        <app-icon icon="fa-plus"></app-icon> &nbsp;{{ 'ADD DRAWEE' | apsTranslate }}
+                      </button> -->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-4 p-sm-6 p-col-12">
+                                <aps-autocomplete colDefUrl="positivePay/transactions/drawee/private/draweeColDefs"
+                                    dataUrl="positivePay/transactions/drawee/private/getDraweeList"
+                                    searchParameter="draweeName" name="draweeName" id="draweeName" label="Drawee Name"
+                                    [(ngModel)]="chequeData.draweeId" [value]="chequeData.draweeId"
+                                    (change)="onSelectDrawee($event)" [required]="true"></aps-autocomplete>
+                            </div>
+
+                            <div class="p-md-4 p-sm-6 p-col-12">
+                                <aps-custom-select name="debitAccountNumber" id="debitAccountNumber"
+                                    label="Debit Account Number"
+                                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                    [(ngModel)]="chequeData.accountId" [value]="chequeData.accountId"
+                                    (change)="onSelectAccount($event)">
+                                </aps-custom-select>
+                            </div>
+
+                            <div class="p-md-4 p-sm-6 p-col-12">
+                                <div class="background-color-dark-3 p-p-2">
+                                    <app-review-form-field label="Account Holder Name"
+                                        [value]="chequeData.accountHolderName">
+                                    </app-review-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12">
+                    <div class="aps-card p-p-2">
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <div class="left-right-container">
+                                    <div class="left-container">
+                                        <div class="text-size-16 text-semi-bold">
+                                            {{ 'Cheque Details' | apsTranslate }}
+                                        </div>
+                                    </div>
+                                    <div class="right-container">
+                                        <upload-form-control #chequeImageUpload [files]="chequeData.chequeImage"
+                                            [hideDragDropContainerOnFIleUpload]="true"
+                                            (onSelected)="onUploadChequeImage($event)" [apsHide]="true">
+                                        </upload-form-control>
+                                        <button class="btn btn-md btn-primary"
+                                            (click)="chequeImageUpload.openFileInput()"
+                                            *ngIf="chequeData.chequeImage.length == 0">
+                                            <app-icon icon="fa-file"></app-icon> &nbsp;{{
+                                            'UPLOAD CHEQUE IMAGE' | apsTranslate
+                                            }}
+                                        </button>
+
+                                        <div class="inline-items" *ngIf="chequeData.chequeImage.length > 0">
+                                            <div class="item">
+                                                <button class="btn btn-md btn-secondary"
+                                                    (click)="onShowCheckImage(chequeData.chequeImageUrl)">
+                                                    <app-icon icon="fa-eye"></app-icon> &nbsp;{{
+                                                    'VIEW CHEQUE IMAGE' | apsTranslate
+                                                    }}
+                                                </button>
+                                            </div>
+                                            <div class="item">
+                                                <button class="btn btn-md btn-tertiary" (click)="deleteUploadedImage()">
+                                                    <app-icon icon="fa-trash-alt"></app-icon>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-4 p-sm-6 p-col-12">
+                                <app-aps-calender name="chequeIssueDate" id="chequeIssueDate" label="Cheque Issue Date"
+                                    [(ngModel)]="chequeData.chequeIssueDate" [required]="true"></app-aps-calender>
+                            </div>
+
+                            <div class="p-md-4 p-sm-6 p-col-12 p-0">
+                                <div class="p-grid">
+                                    <div class="p-col-9">
+                                        <aps-form-input name="amount" id="amount" label="Amount"
+                                            inputType="currencyFormatNotZero" [(ngModel)]="chequeData.chequeAmount"
+                                            [required]="true" (input)="calculateCharges()">
+                                        </aps-form-input>
+                                    </div>
+                                    <div class="p-col-3 p-pl-0 p-pt-4">
+                                        {{ chequeData.accountCurrency }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-md-4 p-sm-6 p-col-12">
+                                <aps-form-input name="chequeNumber" id="chequeNumber" label="Cheque Number"
+                                    inputType="numeric" [(ngModel)]="chequeData.chequeNumber" [required]="true">
+                                </aps-form-input>
+                            </div>
+
+                            <div class="p-md-4 p-sm-6 p-col-12">
+                                <aps-form-input name="corporateReferenceNumber" id="corporateReferenceNumber"
+                                    label="Corporate Reference Number" [(ngModel)]="chequeData.corporateReferenceNumber"
+                                    [required]="true"></aps-form-input>
+                            </div>
+
+                            <div class="p-md-4 p-sm-6 p-col-12">
+                                <div class="background-color-dark-3 p-p-2">
+                                    <app-review-form-field label="Charges"
+                                        [value]="chequeData.charges + ' ' + chequeData.accountCurrency">
+                                    </app-review-form-field>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12">
+                    <div class="aps-card p-p-2">
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <div class="left-right-container">
+                                    <div class="left-container">
+                                        <div class="text-size-16 text-semi-bold">
+                                            {{ 'Remarks' | apsTranslate }}
+                                        </div>
+                                    </div>
+                                    <div class="right-container">
+                                        <button class="btn btn-md btn-primary" (click)="addRemark()">
+                                            <app-icon icon="fa-plus"></app-icon> &nbsp;{{ 'ADD MORE' | apsTranslate }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-md-4 p-sm-6 p-col-12">
+                                <aps-form-input name="remark1" id="remark1" label="Remark 1"
+                                    [(ngModel)]="chequeData.remark1">
+                                </aps-form-input>
+                            </div>
+                            <div class="p-md-4 p-sm-6 p-col-12" *ngIf="chequeData.remarkCount >= 2">
+                                <aps-form-input name="remark2" id="remark2" label="Remark 2" rightIcon="fa-trash-alt"
+                                    (onRightIcon)="deleteRemark(2)" [(ngModel)]="chequeData.remark2"></aps-form-input>
+                            </div>
+                            <div class="p-md-4 p-sm-6 p-col-12" *ngIf="chequeData.remarkCount >= 3">
+                                <aps-form-input name="remark3" id="remark3" label="Remark 3" rightIcon="fa-trash-alt"
+                                    (onRightIcon)="deleteRemark(3)" [(ngModel)]="chequeData.remark3"></aps-form-input>
+                            </div>
+                            <div class="p-md-4 p-sm-6 p-col-12" *ngIf="chequeData.remarkCount >= 4">
+                                <aps-form-input name="remark4" id="remark4" label="Remark 4" rightIcon="fa-trash-alt"
+                                    (onRightIcon)="deleteRemark(4)" [(ngModel)]="chequeData.remark4"></aps-form-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-col-12">
+                    <div class="aps-card p-px-3 aps-py-12">
+                        <div class="left-right-container">
+                            <div class="left-container"></div>
+                            <div class="right-container">
+                                <button class="btn btn-md btn-tertiary p-mr-3" (click)="clearChequeData()">
+                                    {{ 'CLEAR' | apsTranslate }}
+                                </button>
+                                <button class="btn btn-md btn-primary"
+                                    (click)="editIndex == -1 ? addChequeData() : onSaveCheque()">
+                                    {{ editIndex == -1 ? 'ADD' : ('SAVE' | apsTranslate) }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-md-3 p-sm-12 p-col-12">
+            <div class="aps-card aps-h-100p p-p-2">
+                <div class="p-grid">
+                    <div class="p-col-12">
+                        <div class="text-size-16 text-semi-bold">
+                            {{ 'Positive Pay' | apsTranslate }}
+                        </div>
+                        <div class="left-right-container text-size-14 p-py-2">
+                            <div class="left-container">
+                                {{ 'Total Cheque Issued' }}({{ formData.chequeData.length }})
+                            </div>
+                            <div class="right-container">
+                                <app-base-currency [amount]="formData.totalAmount"></app-base-currency>
+                            </div>
+                        </div>
+                        <div class="text-size-12 p-pb-2 border-bottom">
+                            {{ 'Total Amount' | apsTranslate }},&nbsp;{{
+                            formData.totalAmount | numberToWord
+                            }}&nbsp; {{ 'Only' | apsTranslate }}/-
+                        </div>
+                    </div>
+                    <div class="p-col-12 border-bottom" *ngFor="let cheque of formData.chequeData; let i = index">
+                        <div class="p-grid g-margin-x p-pb-2">
+                            <div class="p-md-6 p-col-12 p-py-1">
+                                <p-checkbox name="cheque-{{ i }}" id="cheque-{{ i }}" [label]="cheque.draweeName"
+                                    [(ngModel)]="cheque.isSelected" [binary]="true"
+                                    labelStyleClass="text-size-14 text-color-primary">
+                                </p-checkbox>
+                            </div>
+                            <div class="p-md-6 p-col-12 p-py-1">
+                                <div class="text-size-14 ext-right">
+                                    {{ cheque.accountName }}
+                                </div>
+                            </div>
+                            <div class="p-md-6 p-col-12 p-py-1">
+                                <div class="text-size-14">
+                                    {{ cheque.remark1 }}
+                                </div>
+                            </div>
+                            <div class="p-md-6 p-col-12 p-py-1">
+                                <div class="text-size-14 text-bold text-right">
+                                    <app-base-currency [amount]="cheque.chequeAmount"
+                                        [currency]="cheque.accountCurrency">
+                                    </app-base-currency>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-py-1">
+                                <div class="left-right-container">
+                                    <div class="left-container"></div>
+                                    <div class="right-container">
+                                        <div class="inline-items">
+                                            <div class="item">
+                                                <app-icon styleClasses="pointer" icon="fa-file"
+                                                    (click)="onShowCheckImage(cheque.chequeImageUrl)"></app-icon>
+                                            </div>
+                                            <div class="item p-mx-3" (click)="onEditCheque(i)">
+                                                <app-icon styleClasses="pointer" icon="fa-pencil"></app-icon>
+                                            </div>
+                                            <div class="item" (click)="onDeleteCheque(i)">
+                                                <app-icon styleClasses="pointer" icon="fa-trash-alt"></app-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-grid g-margin-x" [apsHide]="stepperDetails.currentStep != 2">
+        <div class="p-col-12 p-p-0">
+            <div class="aps-caed">
+                <div class="p-grid">
+                    <div class="p-col-12">
+                        <div class="text-size-16 text-bold">
+                            {{ 'Cheques added for lodgement under Positive Pay' | apsTranslate }} ({{
+                            formData.chequeData.length
+                            }})
+                        </div>
+                        <div class="text-size-14">
+                            <span class="text-semi-bold">
+                                {{ 'Total Amount' | apsTranslate }}
+                            </span>
+                            &nbsp;
+                            <app-base-currency [amount]="formData.totalAmount"></app-base-currency>
+                            &nbsp;({{ formData.totalAmount | numberToWord }}&nbsp; {{ 'Only' | apsTranslate }}/-)
+                        </div>
+                    </div>
+                    <div class="p-col-12" *ngIf="mode != 'VIEW'">
+                        <div class="aps-h-300">
+                            <app-ag-grid-listing
+                                colDefUrl="positivePay/transactions/chequeEntry/private/positivePayColDefs"
+                                [rowData]="formData.chequeData" [gridOptions]="{ rowModelType: 'clientSide' }">
+                            </app-ag-grid-listing>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-p-0" *ngIf="mode == 'VIEW'">
+                        <div class="aps-h-400">
+                            <div class="p-grid">
+                                <div class="p-col-12" *ngFor="let cheque of formData.chequeData">
+                                    <div class="aps-card">
+                                        <div class="p-grid p-p-2">
+                                            <div class="p-md-3 p-sm-6 p-col-6">
+                                                <app-review-form-field label="Drawee Name" [value]="cheque.draweeName">
+                                                </app-review-form-field>
+                                            </div>
+                                            <div class="p-md-3 p-sm-6 p-col-6">
+                                                <app-review-form-field label="Account to be Debited"
+                                                    [value]="cheque.accountName">
+                                                </app-review-form-field>
+                                            </div>
+                                            <div class="p-md-3 p-sm-6 p-col-6">
+                                                <app-review-form-field label="Cheque Number"
+                                                    [value]="cheque.chequeNumber">
+                                                </app-review-form-field>
+                                            </div>
+                                            <div class="p-md-3 p-sm-6 p-col-6">
+                                                <app-review-form-field label="Amount" [value]="cheque.chequeAmount"
+                                                    type="baseCurrency">
+                                                </app-review-form-field>
+                                            </div>
+                                            <div class="p-md-3 p-sm-6 p-col-6">
+                                                <app-review-form-field label="Remark" [value]="cheque.remark1">
+                                                </app-review-form-field>
+                                            </div>
+
+                                            <div class="p-md-3 p-sm-6 p-col-6" *ngIf="cheque.chequeImageUrl">
+                                                <app-review-form-field label="Cheque Image" type="file"
+                                                    [value]="cheque.chequeImage[0]"
+                                                    (onFileClick)="onShowCheckImage(cheque.chequeImageUrl)">
+                                                </app-review-form-field>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+        </div>
+    </div>
+</div>

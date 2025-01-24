@@ -1,0 +1,787 @@
+<div class="container">
+    <div *ngIf="currentScreen == 'FILTERS'">
+        <div class="p-grid g-margin-x">
+            <div class="p-col-12 p-lg-7 p-md-7 p-sm-12 p-p-0">
+                <div class="p-grid">
+                    <div class="p-col-12 p-lg-6 p-md-6 p-sm-12">
+                        <div class="aps-card aps-h-100p">
+                            <div class="left-right-container p-px-3 p-pt-2">
+                                <div class="left-container">
+                                    <div class="text-size-16 text-bold">{{'Unused Inventory' | apsTranslate}}</div>
+                                </div>
+                                <div class="right-container text-size-18">
+                                    <!-- <app-search-modal [(isShow)]="showUnusedInventoryDetails"
+                                        colDefUrl="payments/printing/chequePrintingReconcile/private/unusedInventoryColDefs"
+                                        rowDefUrl="payments/printing/chequePrintingReconcile/private/unusedInventoryData"
+                                        header="Unused Inventory Details">
+                                    </app-search-modal> -->
+                                    <div class="">
+                                        <button (click)="showUnusedInventoryDetails = true"
+                                            class="btn btn-tertiary">{{'View All' | apsTranslate}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-grid text-center">
+                                <div class="p-col-6">
+                                    <div class="text-size-13 text-semi-bold">Account Number</div>
+                                </div>
+                                <div class="p-col-6">
+                                    <div class="text-size-13 text-semi-bold">Unused Count</div>
+                                </div>
+                                <div class="p-col-6 p-py-1">
+                                    <div class="text-size-12">123456789-AED</div>
+                                </div>
+                                <div class="p-col-6 p-py-1">
+                                    <div class="text-size-12">23</div>
+                                </div>
+                                <div class="p-col-6 p-py-1">
+                                    <div class="text-size-12">123456789-AED</div>
+                                </div>
+                                <div class="p-col-6 p-py-1">
+                                    <div class="text-size-12">23</div>
+                                </div>
+                                <div class="p-col-6 p-py-1">
+                                    <div class="text-size-12">123456789-AED</div>
+                                </div>
+                                <div class="p-col-6 p-py-1">
+                                    <div class="text-size-12">23</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-col-12 p-lg-6 p-md-6 p-sm-12">
+                        <div class="aps-card aps-h-100p">
+                            <div class="left-right-container p-px-3 p-pt-2">
+                                <div class="left-container">
+                                    <div class="text-size-16 text-bold">{{'Reconciliation Activity' | apsTranslate}}
+                                    </div>
+                                </div>
+                                <div class="right-container aps-w-30p">
+                                    <!-- <aps-select [data]="reconciliationStatusPeriodList"
+                                    name="selectedReconciliationStatusPeriod"
+                                    [(ngModel)]="selectedReconciliationStatusPeriod"
+                                    [value]="selectedReconciliationStatusPeriod" [showLabel]="false">
+                                </aps-select> -->
+                                </div>
+                            </div>
+                            <div class="p-grid p-px-2">
+                                <div class="p-col-4">
+                                    <div class="background-color-disabled text-center p-p-2">
+                                        <div class="text-size-16 text-semi-bold">20</div>
+                                        <div class="text-size-12 text-semi-bold">Printed</div>
+                                    </div>
+                                </div>
+                                <div class="p-col-4">
+                                    <div class="background-color-disabled text-center p-p-2">
+                                        <div class="text-size-16 text-semi-bold">11</div>
+                                        <div class="text-size-12 text-semi-bold">Unused</div>
+                                    </div>
+                                </div>
+                                <div class="p-col-4">
+                                    <div class="background-color-disabled text-center p-p-2">
+                                        <div class="text-size-16 text-semi-bold">10</div>
+                                        <div class="text-size-12 text-semi-bold">Spoiled</div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 text-size-12">
+                                    <span class="text-color-danger text-bold">Note :</span> Status count will be
+                                    displayed
+                                    for last 30 days.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-lg-5 p-md-5 p-sm-12">
+                <div class="aps-card aps-h-100p">
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-6">
+                            <div class="text-size-16 text-bold">{{'Transaction Printing Status' | apsTranslate}}</div>
+                        </div>
+                        <div class="p-col-3">
+                            <!-- <aps-select [showLabel]="false" name="selectedTransactionPrintingStatusAccount"
+                            id="selectedTransactionPrintingStatusAccount"
+                            [(ngModel)]="selectedTransactionPrintingStatusAccount"
+                            [value]="selectedTransactionPrintingStatusAccount" [data]="accountList">
+                        </aps-select> -->
+                        </div>
+                        <div class="p-col-3">
+                            <!-- <aps-select [data]="transactionPrintingStatusPeriodList"
+                            name="selectedTransactionPrintingStatusPeriod"
+                            [(ngModel)]="selectedTransactionPrintingStatusPeriod"
+                            [value]="selectedTransactionPrintingStatusPeriod" [showLabel]="false">
+                        </aps-select> -->
+                        </div>
+                    </div>
+                    <div class="p-grid p-px-2">
+                        <div class="p-col-6">
+                            <div class="background-color-disabled text-center p-p-2">
+                                <div class="text-size-16 text-semi-bold">10</div>
+                                <div class="text-size-12 text-semi-bold">Pending Printing</div>
+                            </div>
+                        </div>
+                        <div class="p-col-6">
+                            <div class="background-color-disabled text-center p-p-2">
+                                <div class="text-size-16 text-semi-bold">20</div>
+                                <div class="text-size-12 text-semi-bold">Printed</div>
+                            </div>
+                        </div>
+                        <div class="p-col-12 text-size-12"><span class="text-color-danger text-bold">Note :</span> Count
+                            displayed in 'Pending Printing' is as on current system date.</div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="p-col-12 p-py-0">
+                <div class="p-grid">
+                    <div class="p-md-12 p-sm-12 p-col-12 p-px-0 p-pt-2">
+                        <div class="left-right-container">
+                            <div class="left-container">
+                                <div class="inline-items aps-w-100p overflow-scroll">
+                                    <div class="item p-mr-3" *ngFor="let pattern of patternList">
+                                        <div class="aps-card p-p-2 text-size-14 text-color-normal text-semi-bold pointer border"
+                                            [ngClass]="{ 'aps-card-primary': pattern.displayName === selectedPattern.displayName }"
+                                            (click)="changePattern(pattern)">
+                                            {{ pattern.displayName }} ({{pattern.count}})
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="right-container">
+                                <div class="inline-items">
+                                    <div class="item p-pt-1">
+                                        <div class="toggle-select-container">
+                                            <div class="action pointer text-color-dark-shade-1"
+                                                [ngClass]="{ active: listType === 'grid' }">
+                                                <app-icon icon="fa-list" class="app-icon"></app-icon>
+                                            </div>
+
+                                            <div class="action pointer text-color-dark-shade-1">
+                                                <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-grid" *ngIf="selectedPattern.id == 1">
+                    <div class="p-col-12 p-md-12 p-lg-12 p-my-2 p-p-0">
+                        <div class="aps-card p-px-2 aps-h-300">
+                            <div class="aps-card-header">
+                                <div class="left-right-container p-px-3">
+                                    <div class="left-container">
+                                        <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                            {{ 'Pending Printing' | apsTranslate }}
+                                        </div>
+                                    </div>
+                                    <div class="right-container aps-py-12">
+                                        <app-grid-listing-tools
+                                            (changeFloatingFilter)="pendingPrinting?.changeFloatFilter($event)"
+                                            (filterRecords)="pendingPrinting?.onFilter($event)"
+                                            (applyColDefs)="pendingPrinting?.onApplyConfig($event)"
+                                            [colDefs]="pendingPrinting?.columnDefs" [columnConfig]="true"
+                                            [showMail]="true" [showDownload]="true">
+                                        </app-grid-listing-tools>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="aps-card-body p-pt-2">
+                                <app-ag-grid-listing id="pendingPrinting" #pendingPrinting [gridOptions]="gridOptions"
+                                    [context]="{ componentParent: this }" [columnDefs]="colDefUrl"
+                                    [rowData]="pendingPrintingdataUrl"></app-ag-grid-listing>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-grid" *ngIf="selectedPattern.id == 2">
+                    <div class="p-col-12 p-md-12 p-lg-12 p-my-2 p-p-0">
+                        <div class="aps-card p-px-2 aps-h-300">
+                            <div class="aps-card-header">
+                                <div class="left-right-container p-px-3">
+                                    <div class="left-container">
+                                        <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                            {{ 'Reconcile' | apsTranslate }}
+                                        </div>
+                                    </div>
+                                    <div class="right-container aps-py-12">
+                                        <app-grid-listing-tools
+                                            (changeFloatingFilter)="reconcile?.changeFloatFilter($event)"
+                                            (filterRecords)="reconcile?.onFilter($event)"
+                                            (applyColDefs)="reconcile?.onApplyConfig($event)"
+                                            [colDefs]="reconcile?.columnDefs" [columnConfig]="true" [showMail]="true"
+                                            [showDownload]="true">
+                                        </app-grid-listing-tools>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="aps-card-body p-pt-2">
+                                <app-ag-grid-listing id="reconcile" #reconcile [gridOptions]="gridOptions"
+                                    [context]="{ componentParent: this }" [columnDefs]="colDefUrl"
+                                    [rowData]="reconcileDataUrl"></app-ag-grid-listing>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="currentScreen == 'PRINT_SELECTED'">
+        <ng-container *ngIf="printSelectedCurrentStep == 'INITIATE'">
+            <div class="back-btn" (click)="onBackClick()">
+                <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right" class="app-icon"></app-icon>
+            </div>
+            <div class="aps-card p-mb-3 p-mt-2">
+                <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Batch Details</div>
+                </div>
+
+                <div class="aps-card-body p-p-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Batch Number"
+                                [value]="formData.batchNumber"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Corporate Product"
+                                [value]="formData.corporateProduct"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Activation Date"
+                                [value]="formData.activationDate"></app-review-form-field>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Total Instrument"
+                                [value]="formData.totalInstrument"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Total Amount"
+                                [value]="formData.totalAmount"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-mb-3 aps-h-250">
+                <div class="aps-card-header">
+                    <div class="left-right-container p-px-3">
+                        <div class="left-container">
+                            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                {{ 'Transaction Details (1)' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container aps-py-12">
+                            <app-grid-listing-tools
+                                (changeFloatingFilter)="transactionDetails?.changeFloatFilter($event)"
+                                (filterRecords)="transactionDetails?.onFilter($event)"
+                                (applyColDefs)="transactionDetails?.onApplyConfig($event)"
+                                [colDefs]="transactionDetails?.columnDefs" [columnConfig]="true" [showMail]="true"
+                                [showDownload]="true">
+                            </app-grid-listing-tools>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aps-card-body p-p-3">
+                    <app-ag-grid-listing id="transactionDetails" #transactionDetails [gridOptions]="gridOptions"
+                        [context]="{ componentParent: this }" [columnDefs]="transactionDetailsColDefUrl"
+                        (firstDataRendered)="onFirstDataRendered($event)"
+                        [rowData]="transactionDetailsdataUrl"></app-ag-grid-listing>
+                </div>
+            </div>
+
+            <div class="aps-card p-mb-3 aps-h-400">
+                <div class="aps-card-header">
+                    <div class="left-right-container p-px-3">
+                        <div class="left-container">
+                            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                {{ 'Available Inventory Details (5)' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container aps-py-12">
+                            <app-grid-listing-tools (changeFloatingFilter)="inventoryDetails?.changeFloatFilter($event)"
+                                (filterRecords)="inventoryDetails?.onFilter($event)"
+                                (applyColDefs)="inventoryDetails?.onApplyConfig($event)"
+                                [colDefs]="inventoryDetails?.columnDefs" [columnConfig]="true" [showMail]="true"
+                                [showDownload]="true">
+                            </app-grid-listing-tools>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aps-card-body p-p-3">
+                    <app-ag-grid-listing id="inventoryDetails" #inventoryDetails [gridOptions]="gridOptions"
+                        [context]="{ componentParent: this }" [columnDefs]="inventoryDetailsColDefUrl"
+                        [rowData]="inventoryDetailsdataUrl"></app-ag-grid-listing>
+                </div>
+            </div>
+
+
+            <div class="aps-card p-mb-3">
+                <!-- <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Batch Details</div>
+                </div> -->
+
+                <div class="aps-card-body p-p-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="inventoryStartNo" id="inventoryStartNo" label="Inventory Start Number"
+                                [(ngModel)]="formData.inventoryStartNo"></aps-form-input>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="inventoryEndNo" id="inventoryEndNo" label="Inventory End Number"
+                                [(ngModel)]="formData.inventoryEndNo"></aps-form-input>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="totalInventory" id="totalInventory" label="Total Inventory"
+                                [(ngModel)]="formData.totalInventory"></aps-form-input>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <app-aps-calender name="instrumentDate" id="instrumentDate"
+                                label="{{ 'Instrument Date' | apsTranslate }}"
+                                [(ngModel)]="formData.instrumentDate"></app-aps-calender>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card steps-footer-container p-mb-3">
+                <div footer class="left-right-container">
+                    <div class="left-container">
+                        <button class="btn btn-md btn-tertiary p-mr-3">
+                            {{ 'CANCEL' | apsTranslate }}
+                        </button>
+                    </div>
+                    <div class="right-container">
+                        <button class="btn btn-md btn-primary" (click)="onPrintReview()">
+                            {{ 'REVIEW' | apsTranslate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="printSelectedCurrentStep == 'VIEW'">
+
+            <div class="aps-card p-mb-3">
+                <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Batch Details</div>
+                </div>
+
+                <div class="aps-card-body p-p-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Batch Number"
+                                [value]="formData.batchNumber"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Corporate Product"
+                                [value]="formData.corporateProduct"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Activation Date"
+                                [value]="formData.activationDate"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Total Instrument"
+                                [value]="formData.totalInstrument"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-mb-3 aps-h-250">
+                <div class="aps-card-header">
+                    <div class="left-right-container p-px-3">
+                        <div class="left-container">
+                            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                {{ 'Transaction Details (1)' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container aps-py-12">
+                            <app-grid-listing-tools
+                                (changeFloatingFilter)="transactionDetails?.changeFloatFilter($event)"
+                                (filterRecords)="transactionDetails?.onFilter($event)"
+                                (applyColDefs)="transactionDetails?.onApplyConfig($event)"
+                                [colDefs]="transactionDetails?.columnDefs" [columnConfig]="true" [showMail]="true"
+                                [showDownload]="true">
+                            </app-grid-listing-tools>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aps-card-body p-p-3">
+                    <app-ag-grid-listing id="transactionDetails" #transactionDetails [gridOptions]="gridOptions"
+                        [context]="{ componentParent: this }" [columnDefs]="transactionDetailsReviewColDefUrl"
+                        [rowData]="transactionDetailsdataUrl"></app-ag-grid-listing>
+                </div>
+            </div>
+
+            <div class="aps-card p-mb-3 aps-h-400">
+                <div class="aps-card-header">
+                    <div class="left-right-container p-px-3">
+                        <div class="left-container">
+                            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                {{ 'Inventory Details (5)' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container aps-py-12">
+                            <app-grid-listing-tools (changeFloatingFilter)="inventoryDetails?.changeFloatFilter($event)"
+                                (filterRecords)="inventoryDetails?.onFilter($event)"
+                                (applyColDefs)="inventoryDetails?.onApplyConfig($event)"
+                                [colDefs]="inventoryDetails?.columnDefs" [columnConfig]="true" [showMail]="true"
+                                [showDownload]="true">
+                            </app-grid-listing-tools>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aps-card-body p-p-3">
+                    <app-ag-grid-listing id="inventoryDetails" #inventoryDetails [gridOptions]="gridOptions"
+                        [context]="{ componentParent: this }" [columnDefs]="inventoryDetailsReviewColDefUrl"
+                        [rowData]="inventoryDetailsdataUrl"></app-ag-grid-listing>
+                </div>
+            </div>
+
+            <div class="aps-card p-mb-3">
+                <!-- <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Batch Details</div>
+                </div> -->
+
+                <div class="aps-card-body p-p-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Inventory Start Number"
+                                [value]="formData.inventoryStartNo"></app-review-form-field>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Inventory End Number"
+                                [value]="formData.inventoryEndNo"></app-review-form-field>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Total Inventory"
+                                [value]="formData.totalInventory"></app-review-form-field>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Instrument Date"
+                                [value]="formData.instrumentDate"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="aps-card steps-footer-container">
+                <div footer class="left-right-container">
+                    <div class="left-container">
+                        <button class="btn btn-md btn-tertiary p-mr-3">
+                            {{ 'CANCEL' | apsTranslate }}
+                        </button>
+                    </div>
+                    <div class="right-container">
+                        <button class="p-mr-3 btn btn-md btn-tertiary" (click)="onPrintPrevious()">
+                            {{ 'PREVIOUS' | apsTranslate }}
+                        </button>
+
+                        <button class="p-mr-3 btn btn-md btn-primary" (click)="onPrintSubmit()">
+                            {{ 'SUBMIT' | apsTranslate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+
+    <div *ngIf="currentScreen == 'RECONCILE_SELECTED'">
+        <ng-container *ngIf="reconcileSelectedCurrentStep == 'INITIATE'">
+            <div class="aps-card p-mb-3">
+                <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Batch Details</div>
+                </div>
+
+                <div class="aps-card-body p-p-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="batchNumber" id="batchNumber" label="Batch Number"
+                                [(ngModel)]="formData.batchNumber" [disabled]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="corporateProduct" id="corporateProduct" label="Corporate Product"
+                                [(ngModel)]="formData.corporateProduct" [disabled]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="activationDate" id="activationDate" label="Activation Date"
+                                [(ngModel)]="formData.activationDate" [disabled]="true"></aps-form-input>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="totalInstrument" id="totalInstrument" label="Total Instrument"
+                                [(ngModel)]="formData.totalInstrument" [disabled]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="totalAmount" id="totalAmount" label="Total Amount"
+                                [(ngModel)]="formData.totalAmount" [disabled]="true"></aps-form-input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card p-mb-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container p-px-3">
+                        <div class="left-container">
+                            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                {{ 'Reconcile Instruments' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container aps-py-12">
+                            <app-grid-listing-tools
+                                (changeFloatingFilter)="reconcileInstrument?.changeFloatFilter($event)"
+                                (filterRecords)="reconcileInstrument?.onFilter($event)"
+                                (applyColDefs)="reconcileInstrument?.onApplyConfig($event)"
+                                [colDefs]="reconcileInstrument?.columnDefs" [columnConfig]="true" [showMail]="true"
+                                [showDownload]="true">
+                            </app-grid-listing-tools>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aps-card-body p-px-3">
+                    <div class="p-grid g-margin-x aps-h-250">
+                        <div class="p-col-12 p-pr-0">
+                            <app-ag-grid-listing id="reconcileInstrument" #reconcileInstrument
+                                [gridOptions]="reconcileGridOptions" [columnDefs]="reconcileInstrumentColDefUrl"
+                                [rowData]="reconcileInstrumentdataUrl"></app-ag-grid-listing>
+                        </div>
+                    </div>
+
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="remarkForSpoilUnsed" id="remarkForSpoilUnsed"
+                                label="Remark For Spoil / Unused"
+                                [(ngModel)]="formData.remarkForSpoilUnsed"></aps-form-input>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="aps-card steps-footer-container p-mb-3">
+                <div footer class="left-right-container">
+                    <div class="left-container">
+                        <button class="btn btn-md btn-tertiary p-mr-3">
+                            {{ 'CANCEL' | apsTranslate }}
+                        </button>
+                    </div>
+                    <div class="right-container">
+                        <button class="btn btn-md btn-primary" (click)="onReconcileReview()">
+                            {{ 'REVIEW' | apsTranslate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+
+        <ng-container *ngIf="reconcileSelectedCurrentStep == 'VIEW'">
+            <div class="aps-card p-mb-3">
+                <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Batch Details</div>
+                </div>
+
+                <div class="aps-card-body p-p-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Batch Number"
+                                [value]="formData.batchNumber"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Corporate Product"
+                                [value]="formData.corporateProduct"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Activation Date"
+                                [value]="formData.activationDate"></app-review-form-field>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Total Instrument"
+                                [value]="formData.totalInstrument"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="aps-card p-mb-3">
+                <div class="aps-card-header">
+                    <div class="left-right-container p-px-3">
+                        <div class="left-container">
+                            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                {{ 'Reconcile Instruments' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container aps-py-12">
+                            <app-grid-listing-tools
+                                (changeFloatingFilter)="reconcileInstrument?.changeFloatFilter($event)"
+                                (filterRecords)="reconcileInstrument?.onFilter($event)"
+                                (applyColDefs)="reconcileInstrument?.onApplyConfig($event)"
+                                [colDefs]="reconcileInstrument?.columnDefs" [columnConfig]="true" [showMail]="true"
+                                [showDownload]="true">
+                            </app-grid-listing-tools>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="aps-card-body p-px-3">
+                    <div class="p-grid g-margin-x aps-h-250">
+                        <div class="p-col-12 p-pr-0">
+                            <app-ag-grid-listing id="reconcileInstrument" #reconcileInstrument
+                                [gridOptions]="reconcileGridOptions" [columnDefs]="reconcileInstrumentColDefUrl"
+                                [rowData]="reconcileInstrumentdataUrl"></app-ag-grid-listing>
+                        </div>
+                    </div>
+
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <app-review-form-field label="Remark For Spoil / Unused"
+                                [value]="formData.remarkForSpoilUnsed"></app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="aps-card steps-footer-container">
+                <div footer class="left-right-container">
+                    <div class="left-container">
+                        <button class="btn btn-md btn-tertiary p-mr-3">
+                            {{ 'CANCEL' | apsTranslate }}
+                        </button>
+                    </div>
+                    <div class="right-container">
+                        <button class="p-mr-3 btn btn-md btn-tertiary" (click)="onReconcilePrevious()">
+                            {{ 'PREVIOUS' | apsTranslate }}
+                        </button>
+
+                        <button class="p-mr-3 btn btn-md btn-primary" (click)="onReconcileSubmit()">
+                            {{ 'SUBMIT' | apsTranslate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </ng-container>
+    </div>
+</div>
+
+<app-modal [(isShow)]="showUnusedInventoryDetails" size="md">
+    <div class="p-grid g-margin-x" body>
+        <div class="p-col-12 p-md-12 p-lg-12 p-my-2 p-p-0">
+            <div class="aps-h-300">
+                <div class="aps-card-header">
+                    <div class="left-right-container p-px-3">
+                        <div class="left-container">
+                            <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                {{ 'Pending Printing' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container aps-py-12">
+                            <div>
+                                <app-grid-listing-tools
+                                    (changeFloatingFilter)="unUsedInventory?.changeFloatFilter($event)"
+                                    (filterRecords)="unUsedInventory?.onFilter($event)"
+                                    (applyColDefs)="unUsedInventory?.onApplyConfig($event)"
+                                    [colDefs]="unUsedInventory?.columnDefs" [columnConfig]="true" [showMail]="true"
+                                    [showDownload]="true">
+                                </app-grid-listing-tools>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body p-pt-2">
+                    <app-ag-grid-listing id="unUsedInventory" #unUsedInventory [context]="{ componentParent: this }"
+                        [columnDefs]="usedInventoryColDef" [rowData]="usedInventorydataUrl"></app-ag-grid-listing>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-grid" footer>
+        <div class="p-col-12 p-p-0 p-mt-3">
+            <div class="left-right-container">
+                <div class="left-container"></div>
+                <div class="right-container">
+                    <button class="btn btn-md btn-tertiary" (click)="showUnusedInventoryDetails = false">
+                        {{ 'CLOSE' | apsTranslate }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</app-modal>
+
+
+<app-modal [(isShow)]="viewTransactionDetails" size="md">
+    <div class="left-right-container">
+        <div class="left-container">
+            <div class="text-size-20 text-bold">
+                {{ 'Unused Inventory Details' | apsTranslate }}
+            </div>
+        </div>
+        <div class="right-container">
+            <app-icon icon="fa-times" styleClasses="pointer" (click)="viewTransactionDetails = false"></app-icon>
+        </div>
+    </div>
+
+    <div class="p-grid border-bottom text-size-14 p-pt-3">
+        <div class="p-col-12">
+            <div class="text-bold text-size-14">
+                Account Details
+            </div>
+        </div>
+        <div class="p-col-4">
+            <app-review-form-field label="Account Number" [value]="formData.accountNumber"></app-review-form-field>
+        </div>
+        <div class="p-col-4">
+            <app-review-form-field label="Routing Code" [value]="formData.routingCode"></app-review-form-field>
+        </div>
+        <div class="p-col-4">
+            <app-review-form-field label="Transaction Code" [value]="formData.transactionCode"></app-review-form-field>
+        </div>
+        <div class="p-col-4">
+            <app-review-form-field label="Branch" [value]="formData.branch"></app-review-form-field>
+        </div>
+        <div class="p-col-4">
+            <app-review-form-field label="Print Format" [value]="formData.printFormat"></app-review-form-field>
+        </div>
+    </div>
+
+
+    <div class="p-grid border-bottom text-size-14 p-pt-3">
+        <div class="p-col-12">
+            <div class="text-bold text-size-14">
+                Unused Inventory Summary
+            </div>
+        </div>
+        <div class="p-col-12 aps-h-100">
+            <app-ag-grid-listing id="unUsedInventory" #unUsedInventory [context]="{ componentParent: this }"
+                [columnDefs]="unusedInventoryColDef" [rowData]="unusedInventorydataUrl"
+                [gridOptions]="viewGridOptions"></app-ag-grid-listing>
+        </div>
+    </div>
+</app-modal>

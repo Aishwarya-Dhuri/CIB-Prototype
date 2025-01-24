@@ -1,0 +1,18 @@
+.scroll-btn {
+  display: inline-block;
+  vertical-align: top;
+  width: 24px;
+  height: 24px;
+  padding: 2px 6px;
+  background-color: var(--background-color);
+  border-radius: 4px;
+  box-shadow: 0 0 4px var(--background-color-dark-6);
+  margin-right: 4px;
+  cursor: pointer;
+
+  i,
+  .app-icon {
+    font-size: 0.75rem;
+    color: var(--primary-color);
+  }
+}

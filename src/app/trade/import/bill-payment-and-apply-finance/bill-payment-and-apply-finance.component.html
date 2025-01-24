@@ -1,0 +1,235 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <ng-container *ngIf="!isInitiate">
+      <app-modal
+        [(isShow)]="isShowView"
+        size="md"
+        headerText="{{ 'Bill Payment & Apply Finance - View' | apsTranslate }}"
+      >
+        <div header>
+          <div class="text-size-14 text-semi-bold p-py-3 p-px-2 border-bottom">
+            {{ 'Bill Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-h-200" body *ngIf="billDetails">
+          <div class="p-grid">
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Trade Bill No.' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.tradeBillNumber }}
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Trade Bill Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.tradeBillDate }}
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Trade Bill Due Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.tradeBillDueDate }}
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.lcNumber }}
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Issue Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.lcExpiryDate }}
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Expiry Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ billDetails.lcExpiryDate }}
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Bill Amount' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <app-base-currency [amount]="billDetails.billAmount"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'LC Outstanding Amount' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                <app-base-currency [amount]="billDetails.billAmount"></app-base-currency>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="left-right-container" footer>
+          <div class="left-container"></div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary" (click)="isShowView = false">
+              {{ 'CLOSE' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </app-modal>
+
+      <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+          <div class="aps-card">
+            <div class="p-px-3 aps-py-12">
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="inline-items">
+                    <div class="item">
+                      <div class="text-size-14 text-bold">
+                        {{ 'Search By' | apsTranslate }}
+                      </div>
+                    </div>
+                    <ng-container *ngIf="!isShowSearch">
+                      <div class="item p-ml-3" *ngFor="let filter of searchFilters">
+                        <div
+                          class="p-py-1 p-px-2 background-color-primary-light-shade-2 border-radius-4 text-size-12"
+                        >
+                          <span class="inline-block p-mr-2 text-semi-bold">{{
+                            filter.displayName
+                          }}</span>
+                          <span class="inline-block">{{ filter.value }}</span>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+                <div class="right-container">
+                  <app-icon
+                    [icon]="isShowSearch ? 'fa-chevron-up' : 'fa-chevron-down'"
+                    class="pointer"
+                    (click)="isShowSearch = !isShowSearch"
+                  ></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="isShowSearch">
+            <div class="aps-card p-p-3">
+              <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                {{ ' Search Based On' | apsTranslate }}
+              </div>
+              <p-radioButton
+                class="p-mr-2"
+                name="billsWithLc"
+                id="billsWithLc"
+                value="Bills With LC"
+                [label]="'Bills With LC' | apsTranslate"
+                [required]="true"
+                [(ngModel)]="billsCategory"
+                (onClick)="onBillCategorySelected(billsCategory)"
+              >
+              </p-radioButton>
+              <p-radioButton
+                name="billsWithoutLc"
+                id="billsWithoutLc"
+                value="Bills Without LC"
+                [label]="'Bills Without LC' | apsTranslate"
+                [required]="true"
+                [(ngModel)]="billsCategory"
+                (onClick)="onBillCategorySelected(billsCategory)"
+              >
+              </p-radioButton>
+            </div>
+            <app-dynamic-search
+              #dynamicSearch
+              [(entityName)]="entityName"
+              (onSearch)="search($event)"
+              [isDisplayPrefillCriteriaModal]="true"
+              [isShowSaveSearchCriteria]="true"
+              (onFiltersReady)="onDynamicFiltersReady()"
+            >
+            </app-dynamic-search>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="inline-items">
+                <div class="item p-mr-3" *ngFor="let tab of tabs">
+                  <div
+                    (click)="selectedTab = tab"
+                    class="p-p-2 pointer border border-radius-4 text-size-12"
+                    [ngClass]="{
+                      'background-color-primary text-color-inverted': selectedTab.id == tab.id
+                    }"
+                  >
+                    <div class="left-right-container">
+                      <div class="left-container">
+                        {{ tab.displayName | apsTranslate }} ({{ tab.count }})
+                      </div>
+                      <div class="right-container" *ngIf="tab.id == 'searchResults'">
+                        <app-icon
+                          class="p-ml-3"
+                          icon="fa-times"
+                          (click)="removeSearchFilter()"
+                        ></app-icon>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="right-container">
+              <app-grid-listing-tools
+                (changeFloatingFilter)="billPaymentApplyFinanceGrid.changeFloatFilter($event)"
+                (filterRecords)="billPaymentApplyFinanceGrid.onFilter($event)"
+                (applyColDefs)="billPaymentApplyFinanceGrid.onApplyConfig($event)"
+                [colDefs]="billPaymentApplyFinanceGrid.columnDefs"
+                [columnConfig]="true"
+                [moreOptions]="true"
+              >
+              </app-grid-listing-tools>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card aps-h-450">
+            <app-ag-grid-listing
+              id="billPaymentApplyFinanceGrid"
+              #billPaymentApplyFinanceGrid
+              [colDefUrl]="selectedTab.colDefUrl"
+              [rowDefUrl]="selectedTab.rowDataUrl"
+              [context]="{ componentParent: this }"
+              [frameworkComponents]="frameworkComponents"
+              [gridOptions]="gridOptions"
+            >
+            </app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isInitiate">
+      <app-bill-payment-and-apply-finance-initiate></app-bill-payment-and-apply-finance-initiate>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

@@ -1,0 +1,25 @@
+.draft-application-container {
+  border-radius: 5px;
+  background: url('./../../../../assets/images/mask/mask-group-3.png'), var(--background-color);
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 20rem;
+
+  .mt--3 {
+    margin-top: -16px !important;
+  }
+
+  img {
+    height: 5rem;
+    width: auto;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

@@ -1,0 +1,386 @@
+<div class="container">
+    <ng-container *ngIf="!loading; else loadingTemplate">
+
+        <app-modal [(isShow)]="isShowUploadedDocuments" headerText="{{ 'Uploaded Documents' | apsTranslate }}">
+            <div class="p-grid g-margin-x" body>
+                <div class="p-md-6 p-sm-12 p-col-12" *ngFor="let doc of formData.documents">
+                    <app-review-form-field label="" [value]="doc" type="file"></app-review-form-field>
+                </div>
+            </div>
+            <div class="p-grid" footer>
+                <div class="p-col-12 p-p-0 p-mt-3">
+                    <div class="left-right-container">
+                        <div class="left-container"></div>
+                        <div class="right-container">
+                            <button class="btn btn-md btn-primary" (click)="isShowUploadedDocuments = false">
+                                {{ 'CLOSE' | apsTranslate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </app-modal>
+
+        <app-modal [(isShow)]="isShowDocumentUpload" headerText="{{ 'Upload Documents' | apsTranslate }}">
+            <div class="p-grid" body>
+                <!-- <div class="p-col-12 p-p-0 p-my-3 text-size-16">
+        Upload the email with invoice or other invoice documents. Max.10Mb each
+      </div> -->
+                <div class="p-col-12 p-p-0">
+                    <upload-form-control isMultiple="true" [files]="formData.documents"
+                        (onUploaded)="onFileUploaded($event)" [disabled]="stepperDetails.currentStep == 2">
+                    </upload-form-control>
+                </div>
+            </div>
+            <div class="p-grid" footer>
+                <div class="p-col-12 p-p-0 p-mt-3">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <button class="btn btn-md btn-tertiary" [disabled]="formData.documents.length == 0"
+                                (click)="resetDocuments()">
+                                {{ 'CLEAR' | apsTranslate }}
+                            </button>
+                        </div>
+                        <div class="right-container">
+                            <button class="btn btn-md btn-primary" [disabled]="formData.documents.length == 0"
+                                (click)="isShowDocumentUpload = false">
+                                {{ 'UPLOAD FILE' | apsTranslate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </app-modal>
+
+        <div class="p-grid" *ngIf="stepperDetails.currentStep == 1">
+            <div class="p-col-12 p-md-4 p-sm-12 p-pl-0 p-pr-1">
+                <div class="aps-card aps-h-100p">
+                    <div class="aps-card-header p-p-3">
+                        <div class="text-size-14 text-bold">{{ 'Card Selection' | apsTranslate }}</div>
+                    </div>
+                    <div class="aps-card-body p-p-2">
+                        <form id="reIssueDebitCardForm" name="reIssueDebitCardForm" #reIssueDebitCardForm="ngForm"
+                            (ngSubmit)="fetchCardDetailsDetails(reIssueDebitCardForm)" class="aps-min-h-340">
+                            <div class="p-grid">
+                                <div class="p-col-12">
+                                    <aps-custom-select *ngIf="!isGroupUser" label="Account No" name="accountId"
+                                        id="accountId"
+                                        dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                        #accountId="ngModel" [(ngModel)]="formData.accountId"
+                                        (change)="onAccountNoSelection($event)" [value]="formData.accountId" required>
+                                    </aps-custom-select>
+
+                                    <aps-group-select label="Account No" id="accountId" name="accountId"
+                                        [(ngModel)]="formData.accountId" [value]="formData.accountId"
+                                        dataUrl="setup/corporateOnboarding/corporateMain/private/groupAccountList"
+                                        [required]="true" (change)="onAccountNoSelection($event)" *ngIf="isGroupUser">
+                                    </aps-group-select>
+                                </div>
+                                <div class="p-col-12">
+                                    <aps-custom-select label="Card No" name="cardNumber" id="cardNumber"
+                                        dataUrl="accountServices/debitCard/private/getCardListByAccount"
+                                        [reqBody]="{accountId : formData.accountId}" #cardNumber="ngModel"
+                                        [(ngModel)]="formData.cardNumber" [value]="formData.cardNumber" required>
+                                    </aps-custom-select>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="p-grid">
+                            <div class="p-col-12 p-p-1">
+                                <div class="text-right">
+                                    <button type="button" class="btn btn-md btn-tertiary p-mr-3"
+                                        (click)="resetReIssueDebitCardForm()">
+                                        {{ 'RESET' | apsTranslate }}
+                                    </button>
+
+                                    <button type="button" class="btn btn-md btn-primary"
+                                        [disabled]="reIssueDebitCardForm.invalid" (click)="fetchCardDetailsDetails()">
+                                        {{ 'FETCH' | apsTranslate }}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-8 p-sm-12 p-pl-1 p-pr-0">
+                <div class="aps-card aps-h-300">
+                    <div class="aps-card-header">
+                        <div class="left-right-container">
+                            <div class="left-container p-p-3">
+                                <div class="text-size-14 text-bold">{{ 'Card Details' | apsTranslate }}</div>
+                            </div>
+                            <div class="right-container p-px-3 p-py-2">
+                                <div class="inline-items">
+                                    <div class="item" (click)="isShowUploadedDocuments = true">
+                                        <div class="text-size-10 background-color-primary-light-shade-2 border-radius-4 pointer p-p-1 p-mt-1 p-mr-2"
+                                            (click)="viewDocuments = true" *ngIf="formData.documents.length > 0">
+                                            {{ this.formData.documents.length }} {{ 'Uploaded' | apsTranslate }}
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <button type="button" class="btn btn-md btn-tertiary"
+                                            (click)="isShowDocumentUpload = true">
+                                            <app-icon styleClasses="text-color-primary" class="text-color-primary"
+                                                icon="fa-upload" class="p-mr-2"></app-icon>
+                                            {{ 'UPLOAD DOCUMENT' | apsTranslate }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aps-card-body overflow-scroll p-p-2">
+                        <app-nothing-here colSize="3" *ngIf="cardDetailsList.length == 0"></app-nothing-here>
+
+                        <div class="p-grid">
+                            <div *ngFor="let debitCard of cardDetailsList ; let i = index"
+                                class="p-col-12 p-p-0 p-my-2">
+                                <div class="pointer border">
+                                    <div class="p-grid">
+                                        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-color-dark-shade-1">
+                                            <div class="label-with-icon-container">
+                                                <div class="icon">
+                                                    <div class="debit-card p-my-0">
+                                                        <img [src]="debitCard.cardImage" alt="card-logo" />
+                                                    </div>
+                                                </div>
+                                                <div class="label">
+                                                    <div class="text-size-12 text-semi-bold">
+                                                        {{ debitCard.cardType }}
+                                                        <div class="text-size-12"
+                                                            [ngClass]="debitCard.cardStatus === 'Inactive'? 'text-color-danger': 'text-color-success'">
+                                                            {{ debitCard.cardStatus }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 text-center">
+                                            <div class="text-size-12 text-semi-bold">
+                                                {{ debitCard.cardNumber }}
+                                            </div>
+                                            <div class="text-size-12">{{ debitCard.embossedName
+                                                }}
+                                            </div>
+                                        </div>
+                                        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-center">
+                                            <div class="text-size-12 ">Utilized Limit</div>
+                                            <app-base-currency class="text-size-12 text-semi-bold"
+                                                [amount]="debitCard.totalAmountDebited">
+                                            </app-base-currency>
+                                        </div>
+                                        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-center">
+                                            <div class="text-size-12 ">Availble Limit</div>
+                                            <app-base-currency class="text-size-12 text-semi-bold"
+                                                [amount]="debitCard.availableLimit">
+                                            </app-base-currency>
+                                        </div>
+                                        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-center">
+                                            <div class="text-size-12">Total Limit</div>
+                                            <app-base-currency class="text-size-12 text-semi-bold"
+                                                [amount]="debitCard.totalLimit">
+                                            </app-base-currency>
+                                        </div>
+                                        <div class="p-lg-1 p-md-1 p-sm-12 p-col-12 text-center p-py-3">
+                                            <app-icon icon="fa-trash-alt" (click)="deleteCard(i)"></app-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card p-p-3 p-mt-2">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-14 text-bold">{{ 'Reason of Re-issue / Replacement' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <div class="text-size-12">
+                                <span class="text-color-primary text-underline pointer">
+                                    {{'Click here' | apsTranslate}}</span>
+                                {{ 'to view fees' | apsTranslate }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <aps-custom-select label="Reason" name="reason" id="reason"
+                                dataUrl="accountServices/debitCard/reIssueDebitCard/private/dropdown/reasonList"
+                                [(ngModel)]="formData.reason" [value]="formData.reason" [required]="true">
+                            </aps-custom-select>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12" *ngIf="formData.reason === 'Other'">
+                            <aps-form-input label="Other Reason" name="otherReason" id="otherReason"
+                                [(ngModel)]="formData.otherReason" [required]="true"></aps-form-input>
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12" *ngIf="formData.reason === 'Change Emboss Name'">
+                            <aps-form-input label="Change Emboss Name" name="changeEmbossName" id="changeEmbossName"
+                                [(ngModel)]="formData.changeEmbossName" [required]="true"></aps-form-input>
+                        </div>
+
+                    </div>
+                    <p-checkbox name="tc" [binary]="true" id="tc" label="" [(ngModel)]="formData.termsAndConditions">
+                    </p-checkbox>
+                    <label class="text-size-12" for="tc">&nbsp;{{ 'I agree to all the' | apsTranslate }}
+                        <span class="text-color-primary text-underline pointer">{{
+                            'Terms And Conditions' | apsTranslate
+                            }}</span></label>
+                </div>
+            </div>
+        </div>
+        <div class="p-grid" *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+            <div class="p-col-12 p-md-4 p-sm-12 p-pl-0 p-pr-1">
+                <div class="aps-card aps-h-100p">
+                    <div class="aps-card-header p-p-3">
+                        <div class="text-size-14 text-bold">{{ 'Card Selection' | apsTranslate }}</div>
+                    </div>
+                    <div class="aps-card-body p-p-2">
+                        <div class="p-grid">
+                            <div class="p-col-12">
+                                <app-review-form-field label="Account No" [value]="formData.accountDisplayName">
+                                </app-review-form-field>
+                            </div>
+                            <div class="p-col-12">
+                                <app-review-form-field label="Card Number" [value]="formData.cardNumber">
+                                </app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-8 p-sm-12 p-pl-1 p-pr-0">
+                <div class="aps-card aps-h-300">
+                    <div class="aps-card-header">
+                        <div class="left-right-container">
+                            <div class="left-container p-p-3">
+                                <div class="text-size-14 text-bold">{{ 'Card Details' | apsTranslate }}</div>
+                            </div>
+                            <div class="right-container p-px-3 p-py-2">
+                                <div class="inline-items">
+                                    <div class="item" (click)="isShowUploadedDocuments = true">
+                                        <div class="text-size-10 background-color-primary-light-shade-2 border-radius-4 pointer p-p-1 p-mt-1 p-mr-2"
+                                            (click)="viewDocuments = true" *ngIf="formData.documents.length > 0">
+                                            {{ this.formData.documents.length }} {{ 'Uploaded' | apsTranslate }}
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                        <button type="button" class="btn btn-md btn-tertiary"
+                                            (click)="isShowDocumentUpload = true">
+                                            <app-icon styleClasses="text-color-primary" class="text-color-primary"
+                                                icon="fa-upload" class="p-mr-2"></app-icon>
+                                            {{ 'UPLOAD DOCUMENT' | apsTranslate }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aps-card-body overflow-scroll p-p-2">
+                        <app-nothing-here colSize="3" *ngIf="cardDetailsList.length == 0"></app-nothing-here>
+
+                        <div class="p-grid">
+                            <div *ngFor="let debitCard of cardDetailsList ; let i = index"
+                                class="p-col-12 p-p-0 p-my-2">
+                                <div class="pointer border">
+                                    <div class="p-grid">
+                                        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-color-dark-shade-1">
+                                            <div class="label-with-icon-container">
+                                                <div class="icon">
+                                                    <div class="debit-card p-my-0">
+                                                        <img [src]="debitCard.cardImage" alt="card-logo" />
+                                                    </div>
+                                                </div>
+                                                <div class="label">
+                                                    <div class="text-size-12 text-semi-bold">
+                                                        {{ debitCard.cardType }}
+                                                        <div class="text-size-12"
+                                                            [ngClass]="debitCard.cardStatus === 'Inactive'? 'text-color-danger': 'text-color-success'">
+                                                            {{ debitCard.cardStatus }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 text-center">
+                                            <div class="text-size-12 text-semi-bold">
+                                                {{ debitCard.cardNumber }}
+                                            </div>
+                                            <div class="text-size-12">{{ debitCard.embossedName
+                                                }}
+                                            </div>
+                                        </div>
+                                        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-center">
+                                            <div class="text-size-12 ">Utilized Limit</div>
+                                            <app-base-currency class="text-size-12 text-semi-bold"
+                                                [amount]="debitCard.totalAmountDebited">
+                                            </app-base-currency>
+                                        </div>
+                                        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-center">
+                                            <div class="text-size-12 ">Availble Limit</div>
+                                            <app-base-currency class="text-size-12 text-semi-bold"
+                                                [amount]="debitCard.availableLimit">
+                                            </app-base-currency>
+                                        </div>
+                                        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-center">
+                                            <div class="text-size-12">Total Limit</div>
+                                            <app-base-currency class="text-size-12 text-semi-bold"
+                                                [amount]="debitCard.totalLimit">
+                                            </app-base-currency>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card p-p-3 p-mt-2">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-14 text-bold">{{ 'Reason of Re-issue / Replacement' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <div class="text-size-12 text-color-primary">
+                                <span class="text-color-primary text-underline pointer">{{
+                                    'Click here' | apsTranslate
+                                    }}</span>
+                                {{ 'to view fees' | apsTranslate }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                            <app-review-form-field label="Reason" [value]="formData.reason"></app-review-form-field>
+
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12" *ngIf="formData.reason === 'Other'">
+                            <app-review-form-field label="Other Reason" [value]="formData.otherReason">
+                            </app-review-form-field>
+
+                        </div>
+                        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12" *ngIf="formData.reason === 'Change Emboss Name'">
+                            <app-review-form-field label="Change Emboss Name" [value]="formData.changeEmbossName">
+                            </app-review-form-field>
+
+                        </div>
+
+                    </div>
+                    <p-checkbox name="tc" [binary]="true" id="tc" label="" [(ngModel)]="formData.termsAndConditions"
+                        disabled="true">
+                    </p-checkbox>
+                    <label class="text-size-12" for="tc">&nbsp;{{ 'I agree to all the' | apsTranslate }}
+                        <span class="text-color-primary text-underline pointer">{{
+                            'Terms And Conditions' | apsTranslate
+                            }}</span></label>
+                </div>
+            </div>
+        </div>
+        <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </ng-container>
+</div>
+<ng-template #loadingTemplate>
+    <app-loading-spinner></app-loading-spinner>
+</ng-template>

@@ -1,0 +1,59 @@
+.more-options-wrapper {
+  display: block;
+  background-color: var(--background-color);
+  width: 15rem;
+  border-radius: 10px;
+  padding: 16px;
+
+  .options {
+    display: block;
+
+    .option {
+      display: inline-block;
+      width: 3.75rem;
+      color: var(--text-color);
+      cursor: pointer;
+      vertical-align: top;
+
+      .icon {
+        display: block;
+        border-radius: 5px;
+        width: 3.75rem;
+        height: 3.75rem;
+        background-color: var(--background-color-dark-5);
+        text-align: center;
+
+        i,
+        .app-icon {
+          margin-top: 22px !important;
+          font-size: var(--font-size-16);
+        }
+      }
+
+      .text {
+        display: block;
+        font-size: var(--font-size-12);
+        text-align: center;
+      }
+    }
+
+    .option:hover {
+      color: var(--primary-color);
+
+      .icon {
+        background-color: var(--primary-color-light-shade-1);
+      }
+    }
+
+    .option:not(:last-child) {
+      margin-right: 14px;
+    }
+  }
+
+  .divider-h {
+    width: 100%;
+    height: 0px;
+    border-top: 1px solid var(--background-color-dark-5);
+    margin: 1rem 0;
+  }
+}

@@ -1,0 +1,683 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <!-- Top Template  -->
+    <div [apsHide]="isShowAdvanceSearch">
+      <app-modal [(isShow)]="isShowViewManualSearchModal" size="md">
+        <div body>
+          <div class="text-size-16 text-bold">{{ 'Transaction - View' | apsTranslate }}</div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <app-review-form-field label="Batch No" [value]="viewData?.id">
+              </app-review-form-field>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <app-review-form-field label="Payer" [value]="viewData?.payer">
+              </app-review-form-field>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-normal">Transaction Amount</div>
+              <app-base-currency [amount]="viewData?.transactionAmount"></app-base-currency>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-normal">Charges Born By Payer</div>
+              <app-base-currency [amount]="viewData?.chargesBornByPayer"></app-base-currency>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-normal">Charges Born By Payee</div>
+              <app-base-currency [amount]="viewData?.chargesBornByPayee"></app-base-currency>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <app-review-form-field label="Total Duration" [value]="viewData?.totalDuration">
+              </app-review-form-field>
+            </div>
+          </div>
+        </div>
+        <div footer>
+          <div class="left-right-container p-mt-3">
+            <div class="left-container"></div>
+            <div class="right-container">
+              <button class="btn btn-md btn-tertiary" (click)="isShowViewManualSearchModal = false">
+                CANCEL
+              </button>
+            </div>
+          </div>
+        </div>
+      </app-modal>
+
+      <div [apsHide]="isShowUploadedSearchResult">
+        <app-modal [(isShow)]="isViewAllCurrencyWiseSwiftPaymentSummary" size="md">
+          <div body>
+            <div class="aps-card">
+              <div class="card-header overflow-visible left-right-container">
+                <div class="left-container">
+                  <div class="text-size-16 text-color-dark-shade-1 text-bold">
+                    {{ 'View All' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="right-container">
+                  <app-grid-listing-tools
+                    (changeFloatingFilter)="searchResult.changeFloatFilter($event)"
+                    (filterRecords)="searchResult.onFilter($event)"
+                    (applyColDefs)="searchResult.onApplyConfig($event)"
+                    [colDefs]="searchResult.columnDefs"
+                    [columnConfig]="true"
+                    [moreOptions]="true"
+                    [showMail]="true"
+                    [showDownload]="true"
+                    [showPrint]="true"
+                    [showRefresh]="true"
+                    [showPrint]="false"
+                  >
+                  </app-grid-listing-tools>
+                </div>
+              </div>
+              <div class="card-body aps-h-400">
+                <app-ag-grid-listing
+                  id="searchResult"
+                  #searchResult
+                  colDefUrl="accountServices/services/swiftGpi/private/currencyWiseSwiftSummaryColDefs"
+                  rowDefUrl="accountServices/services/swiftGpi/private/currencyWiseSwiftSummaryData"
+                  [gridOptions]="gridOptions"
+                >
+                </app-ag-grid-listing>
+              </div>
+            </div>
+          </div>
+          <div footer>
+            <div class="left-right-container p-mt-3">
+              <div class="left-container"></div>
+              <div class="right-container">
+                <button
+                  class="btn btn-md btn-tertiary"
+                  (click)="isViewAllCurrencyWiseSwiftPaymentSummary = false"
+                >
+                  CANCEL
+                </button>
+              </div>
+            </div>
+          </div>
+        </app-modal>
+
+        <!-- listing buttons and Initiate button -->
+        <div class="p-grid g-margin-x">
+          <div class="p-col-12 p-md-5 p-lg-5 p-sm-12">
+            <div class="aps-card aps-h-100p">
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="text-size-16 text-bold p-px-3 p-pt-3 p-pb-2">
+                    {{ 'Search By' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="right-container p-px-3 p-pt-3 p-pb-2">
+                  <div class="toggle-select-container inline-block">
+                    <div
+                      class="action pointer text-size-14 p-py-1 p-px-4"
+                      [ngClass]="selectedTab === 'Manual' ? 'active text-color-inverted' : ''"
+                      (click)="selectedTab = 'Manual'; setSearchList(0)"
+                    >
+                      {{ 'Manual' | apsTranslate }}
+                    </div>
+                    <div
+                      class="action pointer text-size-14 p-py-1 p-px-4 border-right"
+                      [ngClass]="selectedTab === 'Upload' ? 'active text-color-inverted' : ''"
+                      (click)="selectedTab = 'Upload'; setSearchList(1)"
+                    >
+                      {{ 'Upload' | apsTranslate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid p-px-2" *ngIf="selectedTab === 'Manual'">
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-py-0">
+                  <aps-form-input
+                    label="UETR"
+                    name="uetr"
+                    id="uetr"
+                    [(ngModel)]="searchBy.uetrNumber"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-py-0">
+                  <aps-custom-select
+                    label="Account Number"
+                    name="accountNumber"
+                    id="accountNumber"
+                    [(ngModel)]="searchBy.accountNumber"
+                    [value]="searchBy.accountNumber"
+                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-py-0">
+                  <app-range-input-field
+                    label="Amount"
+                    name="amount"
+                    id="amount"
+                    inputType="currencyFormatNotZero"
+                    [(ngModel)]="searchBy.amount"
+                  >
+                  </app-range-input-field>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-py-0">
+                  <app-aps-calender
+                    label="Date"
+                    name="date"
+                    id="date"
+                    showIcon="true"
+                    #date="ngModel"
+                    selectionMode="range"
+                    [numberOfMonths]="2"
+                    [(ngModel)]="searchBy.date"
+                  >
+                  </app-aps-calender>
+                </div>
+              </div>
+              <div class="p-grid p-px-2 p-py-1" *ngIf="selectedTab === 'Upload'">
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12 p-py-0">
+                  <upload-form-control
+                    isMultiple="true"
+                    [files]="uploadFormData.document"
+                    (onUploaded)="onFileUploaded($event)"
+                    [hideDragDropContainerOnFIleUpload]="true"
+                  >
+                  </upload-form-control>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                  <button class="btn btn-md btn-tertiary">VIEW SAMPLE DATA LAYOUT</button>
+                </div>
+                <div class="p-col-12 p-py-0">
+                  <div class="text-size-12 text-semi-bold">
+                    <span class="text-color-danger">Disclamier : </span>
+                    Please refer the uploaded Search List for Status. It will take considerable time
+                    to fetch the status. View, Download and Refresh icon will be available.
+                  </div>
+                </div>
+              </div>
+              <div class="left-right-container p-pb-3">
+                <div class="left-container p-px-2">
+                  <button
+                    class="btn btn-md btn-tertiary"
+                    *ngIf="selectedTab === 'Manual'"
+                    (click)="isShowAdvanceSearch = true"
+                  >
+                    <app-icon icon="fa-plus"></app-icon> ADVANCE SEARCH
+                  </button>
+                </div>
+                <div class="right-container p-px-3">
+                  <button class="btn btn-md btn-tertiary" (click)="reset()">RESET</button>
+                  &nbsp;
+                  <button
+                    class="btn btn-md btn-primary"
+                    *ngIf="selectedTab === 'Manual'"
+                    (click)="search()"
+                  >
+                    SEARCH
+                  </button>
+                  <button
+                    class="btn btn-md btn-primary"
+                    *ngIf="selectedTab === 'Upload'"
+                    (click)="upload()"
+                    [disabled]="uploadFormData.document.length == 0"
+                  >
+                    UPLOAD
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+            <div class="aps-card aps-h-100p">
+              <div class="text-size-16 text-bold p-mx-3 p-pt-3 p-pb-2 p-mb-2 border-bottom-primary">
+                {{ 'SWIFT Payment Summary' | apsTranslate }}
+              </div>
+              <div class="left-right-container">
+                <div class="left-container aps-w-40p p-pl-3">
+                  <aps-custom-select
+                    id="paymentSummaryDuration"
+                    name="paymentSummaryDuration"
+                    [showLabel]="false"
+                    [(ngModel)]="paymentSummaryDuration"
+                    [data]="[
+                      { id: 'This Week', displayName: 'This Week' },
+                      { id: 'Today', displayName: 'Today' },
+                      { id: 'This Month', displayName: 'This Month' }
+                    ]"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div class="right-container p-px-3 p-pt-1">
+                  <div class="toggle-select-container inline-block">
+                    <div
+                      class="action pointer text-size-12 p-py-1 p-px-2"
+                      [ngClass]="
+                        swiftPaymentSummaryTab === 'Incoming' ? 'active text-color-inverted' : ''
+                      "
+                      (click)="swiftPaymentSummaryTab = 'Incoming'"
+                    >
+                      {{ 'Incoming' | apsTranslate }}
+                    </div>
+                    <div
+                      class="action pointer text-size-12 p-py-1 p-px-2"
+                      [ngClass]="
+                        swiftPaymentSummaryTab === 'Outgoing' ? 'active text-color-inverted' : ''
+                      "
+                      (click)="swiftPaymentSummaryTab = 'Outgoing'"
+                    >
+                      {{ 'Outgoing' | apsTranslate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid p-px-2 p-py-3">
+                <div class="p-col-6 p-py-1">
+                  <div class="inline-items text-color-success">
+                    <div class="item text-size-16 text-semi-bold p-pt-1">
+                      <app-icon icon="fa-check-circle"></app-icon>
+                    </div>
+                    <div class="item text-size-12 text-semi-bold p-pt-2 p-mx-2">Completed</div>
+                    <div class="item text-size-20 text-semi-bold">
+                      {{ swiftPaymentSummaryCompleted }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-6 p-py-1">
+                  <div class="inline-items text-color-light-shade-2">
+                    <div class="item text-size-16 text-semi-bold p-pt-1">
+                      <app-icon icon="fa-exclamation-circle"></app-icon>
+                    </div>
+                    <div class="item text-size-12 text-semi-bold p-pt-2 p-mx-2">In Progress</div>
+                    <div class="item text-size-20 text-semi-bold">
+                      {{ swiftPaymentSummaryInProgress }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-6 p-py-1">
+                  <div class="inline-items text-color-warning">
+                    <div class="item text-size-16 text-semi-bold p-pt-1">
+                      <app-icon icon="fa-pause-circle"></app-icon>
+                    </div>
+                    <div class="item text-size-12 text-semi-bold p-pt-2 p-mx-2">On Hold</div>
+                    <div class="item text-size-20 text-semi-bold">
+                      {{ swiftPaymentSummaryOnHold }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-6 p-py-1">
+                  <div class="inline-items text-color-danger">
+                    <div class="item text-size-16 text-semi-bold p-pt-1">
+                      <app-icon icon="fa-exclamation-circle"></app-icon>
+                    </div>
+                    <div class="item text-size-12 text-semi-bold p-pt-2 p-mx-2">Rejected</div>
+                    <div class="item text-size-20 text-semi-bold">
+                      {{ swiftPaymentSummaryRejected }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+            <div class="aps-card aps-h-100p">
+              <div class="text-size-16 text-bold p-mx-3 p-pt-3 p-pb-2 p-mb-2 border-bottom-primary">
+                {{ 'Currency wise SWIFT Payment Summary' | apsTranslate }}
+              </div>
+              <div class="left-right-container">
+                <div class="left-container aps-w-40p p-pl-3">
+                  <aps-custom-select
+                    id="currencyPaymentSummaryDuration"
+                    name="currencyPaymentSummaryDuration"
+                    [(ngModel)]="currencyPaymentSummaryDuration"
+                    [showLabel]="false"
+                    [data]="[
+                      { id: 'This Week', displayName: 'This Week' },
+                      { id: 'Today', displayName: 'Today' },
+                      { id: 'This Month', displayName: 'This Month' }
+                    ]"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div class="right-container p-px-3 p-pt-1">
+                  <div class="toggle-select-container inline-block">
+                    <div
+                      class="action pointer text-size-12 p-py-1 p-px-2"
+                      [ngClass]="
+                        swiftCurrencyPaymentSummaryTab === 'Incoming'
+                          ? 'active text-color-inverted'
+                          : ''
+                      "
+                      (click)="swiftCurrencyPaymentSummaryTab = 'Incoming'"
+                    >
+                      {{ 'Incoming' | apsTranslate }}
+                    </div>
+                    <div
+                      class="action pointer text-size-12 p-py-1 p-px-2"
+                      [ngClass]="
+                        swiftCurrencyPaymentSummaryTab === 'Outgoing'
+                          ? 'active text-color-inverted'
+                          : ''
+                      "
+                      (click)="swiftCurrencyPaymentSummaryTab = 'Outgoing'"
+                    >
+                      {{ 'Outgoing' | apsTranslate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid p-px-2 text-center">
+                <div class="p-col-2 background-color-dark-4 p-py-1">
+                  <div class="text-size-12 text-semi-bold">Currency</div>
+                </div>
+                <div class="p-col-2 background-color-dark-4 p-py-1">
+                  <div class="text-size-12 text-semi-bold">Count</div>
+                </div>
+                <div class="p-col-4 background-color-dark-4 p-py-1">
+                  <div class="text-size-12 text-semi-bold">Amount</div>
+                </div>
+                <div class="p-col-4 background-color-dark-4 p-py-1">
+                  <div class="text-size-12 text-semi-bold">Charge Paid</div>
+                </div>
+              </div>
+              <div
+                class="p-grid p-px-2"
+                *ngFor="let item of currencyWiseSwiftPaymentSummary | slice : 0 : 4"
+              >
+                <div class="p-col-2 p-py-1">
+                  <div class="text-size-12 text-bold text-center">{{ item.currency }}</div>
+                </div>
+                <div class="p-col-2 p-py-1">
+                  <div class="text-size-12 text-semi-bold text-center">{{ item.count }}</div>
+                </div>
+                <div class="p-col-4 p-py-1">
+                  <div class="text-size-12 text-semi-bold text-right">
+                    <app-base-currency [amount]="item.amount"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-4 p-py-1">
+                  <div class="text-size-12 text-semi-bold text-right">
+                    <app-base-currency [amount]="item.chargePaid"></app-base-currency>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="text-size-12 text-color-primary pointer text-semi-bold text-right p-px-2 p-pb-2"
+                (click)="isViewAllCurrencyWiseSwiftPaymentSummary = true"
+              >
+                {{ 'View All' | apsTranslate }}
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="inline-items">
+                  <div class="item p-mr-3" *ngFor="let listType of listingTypes">
+                    <div
+                      class="aps-card p-p-2 text-size-14 text-semi-bold pointer border"
+                      [ngClass]="{
+                        'aps-card-primary': listType.displayName == selectedList.displayName
+                      }"
+                      (click)="onListTypeClick(listType)"
+                    >
+                      <span class="p-py-1"
+                        >{{ listType.displayName }}&nbsp;({{ listType.count }})
+                      </span>
+                      <app-icon
+                        class="pointer p-ml-2"
+                        *ngIf="listType?.isRemovable"
+                        icon="fa-times"
+                        (click)="clearSearch()"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="right-container">
+                <button class="btn btn-md btn-tertiary" (click)="onReportClick()">
+                  <span class="inline-block">{{ 'Report' | apsTranslate | uppercase }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Listing based on selected List -->
+        <div class="aps-card">
+          <div class="p-grid" *ngIf="selectedList">
+            <!-- Listing Heading and header actions -->
+            <div class="p-col-12 p-px-0">
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="heading text-size-16 text-bold p-px-3 p-pt-1">
+                    {{ selectedList.displayName }}
+                  </div>
+                </div>
+                <div class="right-container p-pr-3">
+                  <app-grid-listing-tools
+                    (changeFloatingFilter)="
+                      swiftGpiListingGrid ? swiftGpiListingGrid.changeFloatFilter($event) : null
+                    "
+                    (filterRecords)="
+                      swiftGpiListingGrid ? swiftGpiListingGrid.onFilter($event) : null
+                    "
+                    (applyColDefs)="
+                      swiftGpiListingGrid ? swiftGpiListingGrid.onApplyConfig($event) : null
+                    "
+                    [colDefs]="swiftGpiListingGrid ? swiftGpiListingGrid.columnDefs : []"
+                    [columnConfig]="true"
+                  ></app-grid-listing-tools>
+                </div>
+              </div>
+            </div>
+            <!-- listing -->
+            <div class="p-col-12 p-p-0">
+              <div class="aps-h-300">
+                <app-ag-grid-listing
+                  *ngIf="!loadingListing"
+                  [id]="'swiftGpiListing'"
+                  #swiftGpiListing
+                  [supressAutoFit]="false"
+                  [entityName]="entityName"
+                  [gridOptions]="gridOptions"
+                  [colDefUrl]="selectedList.colDefUrl"
+                  [colDefReq]="selectedList.colDefReq"
+                  [rowDefUrl]="selectedList.rowDataUrl"
+                ></app-ag-grid-listing>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div [apsHide]="!isShowUploadedSearchResult">
+        <div class="p-grid g-margin-x">
+          <div class="p-col-12">
+            <div class="aps-card">
+              <div class="p-grid">
+                <div class="p-col-12">
+                  <div class="left-right-container">
+                    <div class="left-container">
+                      <div class="text-size-16 text-bold p-px-2">
+                        {{ 'Search By Criteria' | apsTranslate }}
+                      </div>
+                    </div>
+                    <div class="right-container">
+                      <span class="text-size-14 text-semi-bold text-color-primary p-p-2">{{
+                        'Download Status' | apsTranslate
+                      }}</span>
+                      <span class="text-size-14 text-semi-bold text-color-primary p-p-2">{{
+                        'Email Status' | apsTranslate
+                      }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid p-px-2">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field
+                    label="Uploaded File Name"
+                    [value]="searchByCriteriaData?.uploadedFileName"
+                  >
+                  </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Batch No" [value]="searchByCriteriaData?.batchNo">
+                  </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field
+                    label="Upload Date"
+                    [value]="searchByCriteriaData?.uploadDate"
+                  >
+                  </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field label="Channel" [value]="searchByCriteriaData?.channel">
+                  </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <app-review-form-field
+                    label="Uploaded By"
+                    [value]="searchByCriteriaData?.uploadedBy"
+                  >
+                  </app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="aps-card">
+              <div class="p-grid">
+                <div class="p-col-12">
+                  <div class="card-header overflow-visible left-right-container p-p-2">
+                    <div class="left-container">
+                      <div class="text-size-16 text-color-dark-shade-1 text-bold">
+                        {{ 'View Result ' | apsTranslate }}
+                      </div>
+                    </div>
+                    <div class="right-container">
+                      <app-grid-listing-tools
+                        (changeFloatingFilter)="searchResult.changeFloatFilter($event)"
+                        (filterRecords)="searchResult.onFilter($event)"
+                        (applyColDefs)="searchResult.onApplyConfig($event)"
+                        [colDefs]="searchResult.columnDefs"
+                        [columnConfig]="true"
+                        [moreOptions]="true"
+                        [showMail]="true"
+                        [showDownload]="true"
+                        [showPrint]="true"
+                        [showRefresh]="true"
+                        [showPrint]="false"
+                      >
+                      </app-grid-listing-tools>
+                    </div>
+                  </div>
+                  <div class="card-body aps-h-400">
+                    <app-ag-grid-listing
+                      id="searchResult"
+                      #searchResult
+                      colDefUrl="accountServices/services/swiftGpi/private/uploadSearchResultColDefs"
+                      rowDefUrl="accountServices/services/swiftGpi/private/getUploadedSearchResult"
+                      [gridOptions]="gridOptions"
+                    >
+                    </app-ag-grid-listing>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card p-p-2" [apsHide]="!isShowAdvanceSearch">
+      <div class="p-grid">
+        <div class="p-col-12">
+          <div class="text-size-16 text-bold">Advance Search</div>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0">
+          <aps-form-input
+            label="Payer Name"
+            name="payerName"
+            id="payerName"
+            [(ngModel)]="searchBy.payerName"
+          >
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0">
+          <aps-form-input
+            label="Payee Name"
+            name="payeeName"
+            id="payeeName"
+            [(ngModel)]="searchBy.payeeName"
+          >
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0">
+          <aps-form-input
+            label="Swift Code"
+            name="swiftCode"
+            id="swiftCode"
+            [(ngModel)]="searchBy.swiftCode"
+          >
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0">
+          <aps-form-input
+            label="Bank Name"
+            name="bankName"
+            id="bankName"
+            [(ngModel)]="searchBy.bankName"
+          >
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0">
+          <aps-form-input label="City" name="city" id="city" [(ngModel)]="searchBy.city">
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0">
+          <aps-form-input
+            label="Credit Currency"
+            name="creditCurrency"
+            id="creditCurrency"
+            [(ngModel)]="searchBy.creditCurrency"
+          >
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0">
+          <aps-form-input
+            label="Bank Reference Number"
+            name="bankReferenceNumber"
+            id="bankReferenceNumber"
+            [(ngModel)]="searchBy.bankReferenceNumber"
+          >
+          </aps-form-input>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0">
+          <aps-form-input
+            label="Corporate Reference Number"
+            name="corporateReferenceNumber"
+            id="corporateReferenceNumber"
+            [(ngModel)]="searchBy.corporateReferenceNumber"
+          >
+          </aps-form-input>
+        </div>
+
+        <div class="p-col-12">
+          <div class="left-right-container">
+            <div class="left-container"></div>
+            <div class="right-container">
+              <button class="btn btn-md btn-tertiary" (click)="closeAdvanceSearch()">CANCEL</button>
+              &nbsp;
+              <button class="btn btn-md btn-primary" (click)="onAdvanceSearch()">APPLY</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

@@ -1,0 +1,1083 @@
+<div class="container">
+  <app-modal [(isShow)]="submit">
+    <div body>
+      <div class="text-size-16 text-bold text-color-dark-shade-1">
+        {{ 'Successfully Submitted' | apsTranslate }}
+      </div>
+      <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+        {{ 'Shipping Guarantee Repair record has been successfully submitted.' | apsTranslate }}
+      </div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-esm btn-primary p-px-3" (click)="cancel()">
+            {{ 'OKAY' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+  <app-modal [(isShow)]="isTermsAndCondition" size="md">
+    <div header>
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-16 text-semi-bold">{{ 'Terms And Conditions' | apsTranslate }}</div>
+        </div>
+      </div>
+    </div>
+    <div body>
+      <div [innerHtml]="
+          (termsAndCondition && termsAndCondition[0] ? termsAndCondition[0].description : '')
+            | safeHtml
+        "></div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary p-px-3" (click)="isTermsAndCondition = false">
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid" *ngIf="parentRef.formData">
+    <div class="p-col-12 p-p-0">
+      <!-- applicant-details -->
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Applicant details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Name' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].applicantName }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-8 p-md-8 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Address' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].applicantAddress }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Mobile Number' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].applicantMobileNo }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Email' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].applicantEmail }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Import Export (IE) Code' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].ieCode }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- shipping-guarantee-details -->
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ ' Shipping Guarantee Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(1)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Type of Guarantee' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].typeOfGuarantee }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-px-3">
+              <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                {{ 'Payment Type' | apsTranslate }}
+              </div>
+              <p-radioButton class="p-mr-5" name="lc" id="lc" value="LC" [label]="'LC' | apsTranslate" [required]="true"
+                [(ngModel)]="parentRef.formData.shippingGuaranteeDetails[0].paymentType" [disabled]="true">
+              </p-radioButton>
+              <p-radioButton name="collection" id="collection" value="Collection" [label]="'Collection' | apsTranslate"
+                [required]="true" [disabled]="true"
+                [(ngModel)]="parentRef.formData.shippingGuaranteeDetails[0].paymentType">
+              </p-radioButton>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="parentRef.formData.shippingGuaranteeDetails[0].paymentType === 'Collection'">
+              <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                {{ 'Payment Terms' | apsTranslate }}
+              </div>
+              <p-radioButton class="p-mr-5" name="da" id="da" value="DA" [label]="'DA' | apsTranslate" [required]="true"
+                [disabled]="true" [(ngModel)]="parentRef.formData.shippingGuaranteeDetails[0].paymentTerms">
+              </p-radioButton>
+              <p-radioButton name="dp" id="dp" value="DP" [label]="'DP' | apsTranslate" [required]="true"
+                [disabled]="true" [(ngModel)]="parentRef.formData.shippingGuaranteeDetails[0].paymentType">
+              </p-radioButton>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="parentRef.formData.shippingGuaranteeDetails[0].paymentType === 'LC'">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'LC Number' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].lcNumber }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Invoice Number' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].invoiceNumber }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Invoice Date' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].invoiceDate }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Currency' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].currency }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Amount' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].amount }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Account Number' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].accountNumber }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Description of Goods' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].descriptionOfGoods }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Transaction Date' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].transactionDate }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'SG Expiry Date' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].sgExpiryDate }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-14 p-px-2 p-py-1">
+                <div class="text-color-normal">{{ 'Effective Date' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingGuaranteeDetails[0].effectiveDate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- beneficiary-details -->
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Beneficiary Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(2)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryName }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">{{ 'Email' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].email }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Bank Swift Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].bankSwiftCode }}
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Address' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryAddress1[0].address }}
+                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show">,
+                  {{
+                  parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].address
+                  }}</span>
+                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show">,
+                  {{
+                  parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].address
+                  }}</span>
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Country' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].country }}
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryAccountNumber }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Bank Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryBankName }}
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Bank Address' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress1[0].address }}
+                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show">,
+                  {{
+                  parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].address
+                  }}</span>
+                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show">,
+                  {{
+                  parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].address
+                  }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- shipping-details -->
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ ' Shipping Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(3)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  {{ ' Mode of Shipment' | apsTranslate }}
+                </div>
+                <p-radioButton class="p-mr-5" name="air" id="air" value="Air" [label]="'Air' | apsTranslate"
+                  [required]="true" [disabled]="true"
+                  [(ngModel)]="parentRef.formData.shippingDetails[0].modeOfShipment"></p-radioButton>
+                <p-radioButton class="p-mr-5" name="road" id="road" value="Road" [label]="'Road' | apsTranslate"
+                  [required]="true" [disabled]="true"
+                  [(ngModel)]="parentRef.formData.shippingDetails[0].modeOfShipment"></p-radioButton>
+                <p-radioButton name="sea" id="sea" value="Sea" [label]="'Sea' | apsTranslate" [required]="true"
+                  [disabled]="true" [(ngModel)]="parentRef.formData.shippingDetails[0].modeOfShipment"></p-radioButton>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Date of Shipment' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].dateOfShipment }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Bill of Lading/Airway Bill No' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].billOfLadingOrAirwayBillNo }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Bill of Lading/Airway Bill Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].billOfLadingOrAirwayBillDate }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Containe Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].containerNumber }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Name of Vessel/Flight Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].nameOfVesselOrFlightName }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Voyage/Flight No' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].voyageOrFlightNo }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Place of Issue' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].placeOfIssue }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Port of Loading/Airport of Departure' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].portOfLoadingOrAirportOfDeparture }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Port of Discharge/Airport of Destination' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].portOfLoadingOrAirportOfDeparture }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Shipment Marks' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].shipmentMarks }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Shipment Agent' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].shipmentAgent }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Other Shipping Details' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].otherShippingDetails }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Shipping Disclaimers' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDetails[0].shippingDisclaimers }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- shipping-document-details -->
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ ' Shipping Documents Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(4)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-5 p-lg-5 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Shipping Company Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDocumentDetails[0].shippingCompanyCode }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].shippingCompany[0].shippingCompanyName
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Shipping Company Name' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].shippingCompany[0]
+                  .shippingCompanyName
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].shippingCompany[0]
+                  .shippingCompanyAddress1[0].address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">
+                  {{ 'Shipping Company Address1' | apsTranslate }}
+                </div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].shippingCompany[0]
+                  .shippingCompanyAddress1[0].address
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].shippingCompany[0]
+                  .shippingCompanyAddress2[0].address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">
+                  {{ 'Shipping Company Address2' | apsTranslate }}
+                </div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].shippingCompany[0]
+                  .shippingCompanyAddress2[0].address
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].shippingCompany[0]
+                  .shippingCompanyAddress3[0].address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">
+                  {{ 'Shipping Company Address3' | apsTranslate }}
+                </div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].shippingCompany[0]
+                  .shippingCompanyAddress3[0].address
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-5 p-lg-5 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Consignee Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDocumentDetails[0].consigneeCode }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+              *ngIf="parentRef.formData.shippingDocumentDetails[0].consignee[0].consigneeName">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Consignee Name' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDocumentDetails[0].consignee[0].consigneeName }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].consignee[0].consigneeAddress1[0]
+                  .address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Consignee Address1' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].consignee[0].consigneeAddress1[0]
+                  .address
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].consignee[0].consigneeAddress2[0]
+                  .address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Consignee Address2' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].consignee[0].consigneeAddress2[0]
+                  .address
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].consignee[0].consigneeAddress3[0]
+                  .address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Consignee Address3' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].consignee[0].consigneeAddress3[0]
+                  .address
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-5 p-lg-5 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Notify Party Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.shippingDocumentDetails[0].notifyPartyCode }}
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+              *ngIf="parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyName">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Notify Party Name' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyName }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress1[0]
+                  .address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Notify Party Address1' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].notifyParty[0]
+                  .notifyPartyAddress1[0].address
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress2[0]
+                  .address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Notify Party Address2' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].notifyParty[0]
+                  .notifyPartyAddress2[0].address
+                  }}
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12" *ngIf="
+                parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress3[0]
+                  .address
+              ">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Notify Party Address3' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{
+                  parentRef.formData.shippingDocumentDetails[0].notifyParty[0]
+                  .notifyPartyAddress3[0].address
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- supporting-documents -->
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Supporting Documents' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(5)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Document Type' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Reference Number' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Upload Documents' | apsTranslate }}
+              </div>
+            </div>
+            <ng-container *ngIf="parentRef.formData.supportingDocuments[0].billOfLading">
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <p-checkbox name="billOfLading" id="billOfLading" [label]="'Bill Of Lading' | apsTranslate"
+                  [binary]="true" [(ngModel)]="parentRef.formData.supportingDocuments[0].billOfLading"
+                  [disabled]="true"></p-checkbox>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Reference Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.supportingDocuments[0].billOfLadingRefNo }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="aps-card p-p-2">
+                  <div class="inline-items">
+                    <div class="item">
+                      <!-- <i class="pi pi-file"></i> -->
+                      <app-icon icon="fa-file"></app-icon>
+                    </div>
+                    <div class="item text-color-normal p-px-2" *ngIf="
+                        parentRef.formData.supportingDocuments[0].billOfLadingDocument.length > 0
+                      ">
+                      <div class="text-size-12">
+                        {{
+                        parentRef.formData.supportingDocuments[0].billOfLadingDocument[0].fileName
+                        }}
+                      </div>
+                      <div class="text-size-10">
+                        {{
+                        (
+                        +parentRef.formData.supportingDocuments[0].billOfLadingDocument[0]
+                        .fileSize /
+                        1024 /
+                        1024
+                        ).toFixed(2)
+                        }}Mb
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <ng-container *ngIf="parentRef.formData.supportingDocuments[0].undertaking">
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <p-checkbox name="undertaking" id="undertaking" [label]="'Undertaking' | apsTranslate" [binary]="true"
+                  [(ngModel)]="parentRef.formData.supportingDocuments[0].undertaking" [disabled]="true"></p-checkbox>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Reference Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.supportingDocuments[0].undertakingRefNo }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="aps-card p-p-2">
+                  <div class="inline-items">
+                    <div class="item">
+                      <!-- <i class="pi pi-file"></i> -->
+                      <app-icon icon="fa-file"></app-icon>
+                    </div>
+                    <div class="item text-color-normal p-px-2" *ngIf="
+                        parentRef.formData.supportingDocuments[0].billOfLadingDocument.length > 0
+                      ">
+                      <div class="text-size-12">
+                        {{
+                        parentRef.formData.supportingDocuments[0].undertakingDocument[0].fileName
+                        }}
+                      </div>
+                      <div class="text-size-10">
+                        {{
+                        (
+                        +parentRef.formData.supportingDocuments[0].undertakingDocument[0]
+                        .fileSize /
+                        1024 /
+                        1024
+                        ).toFixed(2)
+                        }}Mb
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <!-- clauses -->
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Clauses' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(6)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12 text-center">
+              <div class="text-size-16 text-bold">
+                {{ 'Indemnity cum Declaration' | apsTranslate }}:
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="text-size-14 text-color-dark-shade-1">
+                We place on record that at our request and for our sole benefit you have joined in
+                signing a letter of guarantee to M/s
+
+                <div style="width: 20rem" class="p-py-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Corporate Name' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].corporateName }}
+                  </div>
+                </div>
+                against their delivery to us, the under mentioned goods, without production of the
+                relative Bill of Lading or other documents of title.
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="inline-items">
+                <div class="item">
+                  <div class="text-size-14 text-color-dark-shade-1 p-py-4 p-pr-2">
+                    {{ 'Bill of Lading No' | apsTranslate }}:
+                  </div>
+                </div>
+                <div class="item p-py-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Bill of Lading No' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].billOfLadingNo }}
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="text-size-14 text-color-dark-shade-1 p-py-4 p-pr-2">
+                    {{ 'Marks & No’s' | apsTranslate }}:
+                  </div>
+                </div>
+                <div class="item p-py-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Marks And No' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].marksAndNo }}
+                  </div>
+                </div>
+              </div>
+              <div class="inline-items">
+                <div class="item">
+                  <div class="text-size-14 text-color-dark-shade-1 p-py-4 p-pr-2">
+                    {{ ' Packages No’s' | apsTranslate }}:
+                  </div>
+                </div>
+                <div class="item p-py-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Packages No' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].packagesNo }}
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="text-size-14 text-color-dark-shade-1 p-py-4 p-pr-2">
+                    {{ 'Vessel' | apsTranslate }}:
+                  </div>
+                </div>
+                <div class="item p-py-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Details of Vessel' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].detailsOfVessel }}
+                  </div>
+                </div>
+              </div>
+              <div class="inline-items">
+                <div class="item">
+                  <div class="text-size-14 text-color-dark-shade-1 p-py-4 p-pr-2">
+                    {{ 'Description of Goods' | apsTranslate }}:
+                  </div>
+                </div>
+                <div class="item p-py-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Description of Goods' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].descriptionOfGoods }}
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="text-size-14 text-color-dark-shade-1 p-py-4 p-pr-2">
+                    {{ 'Invoice Value' | apsTranslate }}:
+                  </div>
+                </div>
+                <div class="item p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'CCY' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].invoiceCcy }}
+                  </div>
+                </div>
+                <div class="item p-py-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Amount' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].invoiceAmount }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="text-size-14 text-color-dark-shade-1">
+                In consideration of your having complied with our request and having signed the
+                above said letter of guarantee we hereby unconditionally agree to indemnify you and
+                keep you indemnified against all consequences thereof and against all demands,
+                actions, proceedings, liabilities, claims, damages, losses, costs and expenses,
+                including any losses due to fluctuation in the exchange rate, which you may suffer
+                or incur by reason of your having signed the said letter of guarantee as aforesaid
+                or the delivery of the said goods to us or otherwise in connection therewith and to
+                pay to you immediately on demand losses costs and expenses made or suffered by you
+                in consequence thereof or arising there from and that we will on receipt of the said
+                Bill of Lading [or other documents of title] either deliver it to you duly endorsed
+                or procure the return or discharge of the said guarantee. In the event of holders of
+                the relative bills of lading demanding payments from you or through, the vessel
+                agents; you are hereby authorised to meet such payments up to the maximum amount for
+                which you have countersigned our guarantee, debiting such payments to our current
+                account or to any other account which we may have with you, notwithstanding the fact
+                that such debits create overdrafts. We hereby agree to pay off such overdrafts on
+                demand. We hereby authorise you to retire the bills on receipt of the relevant
+                original documents from your correspondent without further reference to us,
+                notwithstanding any discrepancies whatsoever that may appear therein. All such
+                discrepancies are hereby accepted. You may forward the original Bill of Lading to
+                the said vessel agent and obtain cancellation of the shipping guarantee. We hereby
+                authorise you to debit our current account or any other account maintained by us
+                with the bill value or shortfall that may arise at the time of retirement of the
+                said bills, notwithstanding the fact that such debits may create overdrafts. We
+                further confirm that the value of the goods in the original invoice will not be in
+                excess of the value of the goods as indicated in the guarantee bond. We undertake to
+                furnish to you on demand all Exchange Control and Import Control documents that you
+                may require in connection with the importation of the said goods and the payment
+                there of by us. As additional security we enclose our cheque for/enclose cash
+                for/authorise you to debit our account and credit yourselves with the sum of
+              </div>
+              <div class="inline-items">
+                <div class="item p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">CCY</div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].creditCcy }}
+                  </div>
+                </div>
+                <div class="item p-py-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Amount' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ parentRef.formData.clauses[0].creditAmount }}
+                  </div>
+                </div>
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                Such amount to be held by you as collateral security for the due discharge of our
+                liabilities under this indemnity and we hereby agree that you may at your sole
+                discretion and without prejudice to, or in any way limiting other rights which you
+                may have for recovery against us, apply without notice this deposit or any part of
+                it, in or towards redemption of our liability on any bill drawn in connection with
+                the above mentioned goods that may arrive through you or any other Bank or of any
+                liability of ours under this indemnity. We hereby further agree that until such time
+                as we meet our obligations hereunder, the goods cleared by us as aforesaid or the
+                sale proceeds thereof are to be held by us in trust for your Bank and such sale
+                proceeds are to be held available to you. We also confirm that until the goods
+                cleared by us as aforesaid are sold, they shall be properly insured against fire
+                ,theft and all other normal risks or such other causes and contingencies as you may
+                require and we agree to assign to you the policy of insurance if and when demanded
+                by you and that until performance of our obligations hereunder, the insurance money
+                payable under such policy is to be held as available to you and if received by us
+                shall be held by us in trust on your behalf until the same is paid to you. We
+                further authorise you to charge your guarantee commission and charges to our
+                account. The undertaking and authorities hereby given and conferred shall be
+                irrevocable and all such undertakings and authorities shall continue in force until
+                all moneys due by us to you at any time and from to time to time shall be paid in
+                full.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- terms-and-condition -->
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ ' Terms and condition' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(6)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <p-checkbox name="agreeToTermsAndCondition" id="agreeToTermsAndCondition"
+                [label]="'I agree to terms and conditions' | apsTranslate" [binary]="true" [disabled]="true"
+                [(ngModel)]="parentRef.formData.termsAndCondition[0].agreeToTermsAndCondition">
+              </p-checkbox>
+              <a class="text-size-14 text-bold pointer p-p-1" (click)="isTermsAndCondition = true">Click Here</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

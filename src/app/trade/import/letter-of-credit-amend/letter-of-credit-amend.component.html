@@ -1,0 +1,17 @@
+<div class="container">
+  <app-letter-of-credit-amend-search
+    [parentRef]="this"
+    *ngIf="currentScreen == 'FILTERS'"
+  ></app-letter-of-credit-amend-search>
+
+  <app-lc-amend-search-result
+    [parentRef]="this"
+    *ngIf="currentScreen == 'SEARCH_RESULTS'"
+  ></app-lc-amend-search-result>
+
+  <app-letter-of-credit-amend-initiate
+    [parentRef]="this"
+    #letterOfCreditAmendInitiate
+    *ngIf="currentScreen == 'AMEND' || currentScreen == 'AMENDVIEW'"
+  ></app-letter-of-credit-amend-initiate>
+</div>

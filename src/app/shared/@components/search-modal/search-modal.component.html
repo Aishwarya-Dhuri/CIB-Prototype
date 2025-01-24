@@ -1,0 +1,48 @@
+<app-modal *ngIf="isShow" [(isShow)]="isShow" size="md" (onClose)="onClose()">
+  <div class="p-grid" header>
+    <div class="p-col-12 p-p-0">
+      <app-header-with-search
+        class="p-p-0 p-mt-0"
+        [heading]="header"
+        (search)="searchModal ? searchModal.onFilter($event) : null"
+      ></app-header-with-search>
+    </div>
+  </div>
+  <div class="p-grid" body>
+    <div class="p-col-12 p-p-0 aps-h-390">
+      <app-ag-grid-listing
+        #searchModal
+        [id]="'searchModal'"
+        [colDefUrl]="colDefUrl"
+        [rowDefUrl]="rowDefUrl"
+        [rowData]="rowData"
+        [gridOptions]="gridOptions"
+        (rowSelected)="onRowSelected($event)"
+        (gridReady)="gridReady()"
+        (firstDataRendered)="onFirstDataRendered()"
+        *ngIf="!loading; else loadingTemplate"
+      >
+      </app-ag-grid-listing>
+    </div>
+  </div>
+  <div class="left-right-container" footer>
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="p-mx-3 btn btn-md btn-tertiary" (click)="onClose()">CANCEL</button>
+      <button class="p-mx-3 btn btn-md btn-secondary" (click)="onReset()" *ngIf="isShowReset">
+        {{ 'RESET' | apsTranslate }}
+      </button>
+      <button
+        class="btn btn-md btn-primary"
+        [disabled]="selectedRecord.length == 0"
+        (click)="onRecordSelection()"
+      >
+        {{ selectBtnCaption }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

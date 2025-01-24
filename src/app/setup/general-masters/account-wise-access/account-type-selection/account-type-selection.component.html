@@ -1,0 +1,89 @@
+<div class="p-grid g-margin-x">
+  <div class="p-col-12" *ngIf="selectedProducts.length > 0">
+    <div class="inline-items p-my-3">
+      <app-modal
+        [(isShow)]="showMoreProducts"
+        [customStyles]="customModalStyle"
+        [hideBackdrop]="true"
+        headerText="{{ 'Selected Products' | apsTranslate }}"
+      >
+        <div class="" body>
+          <div class="text-size-13 aps-py-12" *ngFor="let product of selectedProducts">
+            {{ product.label }}
+            ({{ product.selectedData ? product.selectedData.length : 0 }})
+          </div>
+        </div>
+      </app-modal>
+
+      <div class="item">
+        <div class="label-with-icon-container">
+          <div class="icon">
+            <app-icon icon="fa-briefcase"></app-icon>
+          </div>
+          <div class="label">
+            <ng-container *ngFor="let product of selectedProducts; let i = index">
+              <span class="inline-block" *ngIf="i < 3">
+                {{ product.label }}
+                ({{ product.selectedData ? product.selectedData.length : 0 }}),&nbsp;
+              </span>
+            </ng-container>
+            <span
+              class="inline-block"
+              *ngIf="selectedProducts.length > 3"
+              (click)="showMoreOptions($event)"
+            >
+              +{{ selectedProducts.length - 3 }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-6 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-450">
+      <div class="aps-card-header">
+        <app-header-with-search
+          heading="All {{ gridHeader }}"
+          (search)="allData.onFilter($event)"
+        ></app-header-with-search>
+      </div>
+
+      <div class="aps-card-body">
+        <app-ag-grid-listing
+          #allData
+          [id]="'allData'"
+          [colDefUrl]="allDataGridColumnDefsUrl"
+          [rowData]="allDataGridRowData"
+          [gridOptions]="allDataGridOptions"
+          (rowSelected)="rowSelected($event)"
+          (gridReady)="allDataGridReady()"
+          *ngIf="!loading"
+        ></app-ag-grid-listing>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-6 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-450">
+      <div class="aps-card-header">
+        <div class="text-size-16 text-bold">
+          <app-header-with-search
+            [heading]="'Selected ' + gridHeader + ' (' + selectedDataGridRowData.length + ')'"
+            [enableSearch]="false"
+          ></app-header-with-search>
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <app-ag-grid-listing
+          #selectedData
+          [id]="'selectedData'"
+          [colDefUrl]="selectedDataGridColumnDefsUrl"
+          [rowData]="selectedDataGridRowData"
+          [gridOptions]="selectedDataGridOptions"
+          *ngIf="!loading"
+        ></app-ag-grid-listing>
+      </div>
+    </div>
+  </div>
+</div>

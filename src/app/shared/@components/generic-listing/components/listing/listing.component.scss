@@ -1,0 +1,22 @@
+.generic-listing-container {
+  min-height: calc(100vh - 14.5rem);
+}
+
+.bulk-action-container {
+  position: fixed;
+  bottom: 2rem;
+  width: calc(100% - 106px);
+  z-index: 1;
+  padding: 0.75rem;
+  @media screen and (max-width: 991px) {
+    bottom: 1rem !important;
+    width: calc(100% - 26px);
+  }
+}
+
+.margin-for-bulk-action {
+  margin-bottom: 4rem;
+  @media screen and (max-width: 991px) {
+    // margin-bottom: 0rem;
+  }
+}

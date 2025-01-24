@@ -1,0 +1,162 @@
+<div class="p-grid">
+  <div class="p-lg-8 p-md-8 p-sm-12 p-col-12 p-p-0">
+    <div class="p-grid g-margin-x">
+      <ng-container *ngIf="selfOnboardingService.registrationType !== 'existing'">
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+          <aps-form-input
+            id="companyName"
+            label="Company Name"
+            icon="fal fa-briefcase"
+            [(ngModel)]="companyInfo[0].companyName"
+          ></aps-form-input>
+        </div>
+
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+          <aps-form-input
+            id="taxIdentificationNumber"
+            label="Tax Identification Number"
+            [(ngModel)]="companyInfo[0].taxIdentificationNumber"
+          ></aps-form-input>
+        </div>
+
+        <div class="p-col-12 p-py-0">
+          <aps-form-input
+            id="address"
+            label="Address"
+            [(ngModel)]="companyInfo[0].address"
+          ></aps-form-input>
+        </div>
+
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+          <aps-form-input
+            id="contactName"
+            label="Contact Name"
+            icon="fal fa-user"
+            [(ngModel)]="companyInfo[0].contactName"
+          ></aps-form-input>
+        </div>
+
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+          <aps-form-input
+            id="designation"
+            label="Designation"
+            [(ngModel)]="companyInfo[0].designation"
+          ></aps-form-input>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="selfOnboardingService.registrationType === 'existing'">
+        <div class="p-lg-5 p-md-5 p-sm-12 p-col-12 p-py-0">
+          <aps-form-input
+            id="customerId"
+            label="Enter Customer ID"
+            icon="fal fa-briefcase"
+            [(ngModel)]="companyInfo[0].customerId"
+          ></aps-form-input>
+        </div>
+
+        <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 p-py-md-3 p-py-2">
+          <div class="text-size-20 text-color-light-shade-1 text-center">or</div>
+        </div>
+
+        <div class="p-lg-5 p-md-5 p-sm-12 p-col-12 p-py-0">
+          <aps-form-input
+            id="accountNumber"
+            label="Account Number"
+            icon="fal fa-university"
+            [(ngModel)]="companyInfo[0].accountNumber"
+          ></aps-form-input>
+        </div>
+      </ng-container>
+
+      <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+        <aps-form-input
+          id="emailId"
+          label="Email ID"
+          icon="fal fa-envelope"
+          type="text"
+          [(ngModel)]="companyInfo[0].emailId"
+        ></aps-form-input>
+      </div>
+
+      <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+      <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+        <aps-form-input
+          id="mobileNumber"
+          label="Mobile Number"
+          icon="fal fa-phone"
+          [rightIcon]="
+            companyInfo[0].showOneTimePassword ? 'fal fa-check-circle text-color-success' : ''
+          "
+          inputType="numeric"
+          [(ngModel)]="companyInfo[0].mobileNumber"
+        ></aps-form-input>
+      </div>
+
+      <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+        <button
+          type="button"
+          class="btn btn-md btn-primary"
+          (click)="companyInfo[0].showOneTimePassword = true"
+          *ngIf="!companyInfo[0].showOneTimePassword"
+          [disabled]="!companyInfo[0].mobileNumber"
+        >
+          SEND OTP
+        </button>
+      </div>
+
+      <ng-container *ngIf="companyInfo[0].showOneTimePassword">
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+          <aps-form-input
+            id="oneTimePassword"
+            [type]="companyInfo[0].showOtp ? 'text' : 'password'"
+            label="One Time Password"
+            icon="fal fa-lock"
+            rightIcon="fal fa-eye"
+            (onRightIcon)="companyInfo[0].showOtp = !companyInfo[0].showOtp"
+            inputType="numeric"
+            [(ngModel)]="companyInfo[0].oneTimePassword"
+          ></aps-form-input>
+
+          <div class="left-right-container mt--3 text-color-light-shade-1 text-size-14">
+            <div class="left-container">Resend code</div>
+
+            <div class="left-container">
+              <div class="info-card">
+                <div class="icon">
+                  <i class="pi pi-clock text-size-14"></i>
+                </div>
+
+                <div class="label">00:40</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+          <button
+            type="button"
+            class="btn btn-md btn-primary"
+            (click)="
+              selfOnboardingService.registrationType === 'existing'
+                ? getApplicationInfo()
+                : (selfOnboardingService.selfOnboarding.companyInformation[0].otpVerified = true)
+            "
+            *ngIf="selfOnboardingService.selfOnboarding.companyInformation[0].otpVerified === false"
+            [disabled]="!companyInfo[0].oneTimePassword"
+          >
+            VERIFY
+          </button>
+          <app-icon
+            icon="fa-check-circle"
+            styleClasses="text-color-success"
+            *ngIf="selfOnboardingService.selfOnboarding.companyInformation[0].otpVerified === true"
+          ></app-icon>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="p-col-12 p-lg-3"></div>
+</div>

@@ -1,0 +1,854 @@
+<!-- Deal No Modal Start-->
+<app-modal [(isShow)]="isDealNoModalShow" size="md" headerText="Deal No">
+  <div body class="p-my-3 aps-h-300">
+    <app-ag-grid-listing
+      id="dealNoGrid"
+      #dealNoGrid
+      colDefUrl="trade/exportTransactions/requestFinance/private/exchangeDetailsReviewColDefs"
+      [rowData]="parentRef.formData.exchangeDetails[0].selectedDealData"
+      [gridOptions]="gridOptionsForExchangeDetails"
+    >
+    </app-ag-grid-listing>
+  </div>
+  <div footer class="left-right-container">
+    <div class="left-container"></div>
+    <div class="right-container p-pr-1">
+      <button class="btn btn-md btn-tertiary" (click)="isDealNoModalShow = false">
+        {{ 'CLOSE' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+<!--Deal No Modal End-->
+
+<!-- Forward No Modal Start-->
+<app-modal [(isShow)]="isForwardNoModalShow" size="md" headerText="Forward No">
+  <div body class="p-my-3 aps-h-300">
+    <app-ag-grid-listing
+      id="forwardNoGrid"
+      #forwardNoGrid
+      colDefUrl="trade/exportTransactions/requestFinance/private/exchangeDetailsReviewColDefs"
+      [rowData]="parentRef.formData.exchangeDetails[0].selectedForwardData"
+      [gridOptions]="gridOptionsForExchangeDetails"
+    >
+    </app-ag-grid-listing>
+  </div>
+  <div footer class="left-right-container">
+    <div class="left-container"></div>
+    <div class="right-container p-pr-1">
+      <button class="btn btn-md btn-tertiary" (click)="isForwardNoModalShow = false">
+        {{ 'CLOSE' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+<!--Forward No Modal End-->
+<div class="container">
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+            Exporter Details
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid p-px-3">
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Applicant Name"
+                [value]="parentRef.formData.applicantDetails[0].applicantName"
+              ></app-review-form-field>
+            </div>
+          </div>
+          <div class="p-grid p-px-2 p-pt-0 p-pb-2">
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-pb-0">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Name"
+                  [value]="parentRef.formData.applicantDetails[0].applicantName"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Mobile Number"
+                  [value]="parentRef.formData.applicantDetails[0].applicantMobileNo"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="IE Code"
+                  [value]="parentRef.formData.applicantDetails[0].ieCode"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-pb-0">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Address"
+                  [value]="parentRef.formData.applicantDetails[0].applicantAddress"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Email"
+                  [value]="parentRef.formData.applicantDetails[0].applicantEmail"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="CIF ID"
+                  [value]="parentRef.formData.applicantDetails[0].cifId"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                Limit Details
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                Exporter {{ parentRef.formData.applicantDetails[0].applicantName }}
+              </div>
+            </div>
+            <div class="right-container">
+              <div class="inline-items p-px-3">
+                <div class="item p-pr-1">
+                  <div class="text-size-12 text-semi-bold text-color-dark-shade-1 aps-py-12">
+                    Expires On :
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="text-size-12 text-semi-bold text-color-danger aps-py-12">
+                    25-Dec-2022
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid p-p-2">
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">Limit ID</div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">Sanctioned Limit</div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">Utilized Limit</div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">Available Limit</div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="parentRef.formData.applicantDetails[0].applicantName">
+            <div class="p-grid p-p-2" *ngFor="let item of limitDetails">
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-semi-bold text-color-dark-shade-1">
+                  {{ item.limitId }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-semi-bold text-color-dark-shade-1">
+                  <app-base-currency [amount]="item.sanctionedLimit"></app-base-currency>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-semi-bold text-color-dark-shade-1">
+                  <app-base-currency [amount]="item.utilizedLimit"></app-base-currency>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-semi-bold text-color-dark-shade-1">
+                  <app-base-currency [amount]="item.availableLimit"></app-base-currency>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12">
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                Packing Credit Details
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid p-px-2">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <app-review-form-field
+                label="Type Of Packing Credit"
+                [value]="parentRef.formData.packingCreditDetails[0].typeOfPackingCredit"
+              ></app-review-form-field>
+            </div>
+          </div>
+          <div
+            class="p-grid p-px-2"
+            *ngIf="
+              parentRef.formData.packingCreditDetails[0].typeOfPackingCredit ==
+              'Proforma Invoice / Purchase Order'
+            "
+          >
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <app-review-form-field
+                label="Export Transaction Type"
+                [value]="parentRef.formData.packingCreditDetails[0].exportTransactionType"
+              ></app-review-form-field>
+            </div>
+            <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+              <p-radioButton
+                class="p-mr-6 p-py-4"
+                id="radioBuyer"
+                name="radioBuyer"
+                value="Search Using Buyer Code"
+                label="{{ 'Search Using Buyer Code' | apsTranslate }}"
+                [(ngModel)]="parentRef.formData.packingCreditDetails[0].radioBuyer"
+                [required]="true"
+                [disabled]="true"
+              >
+              </p-radioButton>
+
+              <p-radioButton
+                class="p-mr-4 p-py-4"
+                id="radioBuyer"
+                name="radioBuyer"
+                value="Add New Buyer"
+                label="{{ 'Add New Buyer' | apsTranslate }}"
+                [(ngModel)]="parentRef.formData.packingCreditDetails[0].radioBuyer"
+                [required]="true"
+                [disabled]="true"
+              >
+              </p-radioButton>
+            </div>
+            <div
+              class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+              *ngIf="
+                parentRef.formData.packingCreditDetails[0].radioBuyer == 'Search Using Buyer Code'
+              "
+            >
+              <app-review-form-field
+                label="Buyer Code"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].buyerCode"
+              ></app-review-form-field>
+            </div>
+          </div>
+          <div
+            class="p-grid p-px-2"
+            *ngIf="
+              parentRef.formData.packingCreditDetails[0].typeOfPackingCredit ==
+              'Proforma Invoice / Purchase Order'
+            "
+          >
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Buyer Name"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerName"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Buyer Address"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerAddress"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Country"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].country"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Phone/Mobile"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].mobileNumber"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Email"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].email"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Bank Swift Code"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankSwiftCode"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Bank Name"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankName"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Bank Address"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankAddress"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Buyer Account No"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].buyerAccountNo"
+              ></app-review-form-field>
+            </div>
+          </div>
+          <div
+            class="p-grid p-px-2"
+            *ngIf="
+              parentRef.formData.packingCreditDetails[0].typeOfPackingCredit ==
+              'Proforma Invoice / Purchase Order'
+            "
+          >
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <app-review-form-field
+                label="Invoice / Order Currency"
+                [value]="parentRef.formData.packingCreditDetails[0].invoiceCurrencyCode"
+              ></app-review-form-field>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <app-review-form-field
+                label="Invoice / Order Amount"
+                [value]="parentRef.formData.packingCreditDetails[0].invoiceAmount"
+                type="baseCurrency"
+                [baseCurrency]="parentRef.formData.packingCreditDetails[0].invoiceCurrencyCode"
+              ></app-review-form-field>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <app-review-form-field
+                label="Invoice / Order Number"
+                [value]="parentRef.formData.packingCreditDetails[0].invoiceNumber"
+              ></app-review-form-field>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <app-review-form-field
+                label="Invoice / Order Date"
+                [value]="parentRef.formData.packingCreditDetails[0].invoiceDate"
+              ></app-review-form-field>
+            </div>
+          </div>
+          <div
+            class="p-grid p-px-2"
+            *ngIf="
+              parentRef.formData.packingCreditDetails[0].typeOfPackingCredit == 'Letter of Credit'
+            "
+          >
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <app-review-form-field
+                label="LC Number"
+                [value]="parentRef.formData.packingCreditDetails[0].lcNumber"
+              ></app-review-form-field>
+            </div>
+          </div>
+          <div class="p-grid p-px-2" *ngIf="parentRef.formData.packingCreditDetails[0].lcNumber">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="LC Issuance Date"
+                [value]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcIssuanceDate"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="LC Currency"
+                [value]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcCurrency"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="LC Amount"
+                [value]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcAmount"
+                type="baseCurrency"
+                [baseCurrency]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcCurrency"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="LC Issuing Bank"
+                [value]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcIssuingBank"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="LC Issuing Bank Address"
+                [value]="
+                  parentRef.formData.packingCreditDetails[0].lcDetails[0].lcIssuingBankAddress
+                "
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Buyer Name"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerName"
+              ></app-review-form-field>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Buyer Address"
+                [value]="parentRef.formData.packingCreditDetails[0].buyerAddress"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="p-col-12 p-sm-12"
+      [ngClass]="{ 'p-md-8 p-lg-8': parentRef.formData.isExchangeDetailsShow }"
+    >
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+            Finance Details
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid p-px-2">
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Transaction Date"
+                  [value]="parentRef.formData.financeDetails[0].transactionDate"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Purpose Code"
+                  [value]="parentRef.formData.financeDetails[0].purposeCode"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Corporate Reference No"
+                  [value]="parentRef.formData.financeDetails[0].corporateReferenceNo"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Loan Amount"
+                  [value]="parentRef.formData.financeDetails[0].loanAmount"
+                  type="baseCurrency"
+                  [baseCurrency]="parentRef.formData.financeDetails[0].loanCurrencyCode"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Account To Be Credited"
+                  [value]="parentRef.formData.financeDetails[0].accountToBeCredited"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid p-px-2">
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Loan Applied For"
+                  [value]="parentRef.formData.financeDetails[0].loanAppliedFor"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+              <div class="text-size-14 text-color-light-shade-1 p-pt-3">
+                days after Transaction Date
+              </div>
+            </div>
+            <div class="p-col-12 p-md-1 p-lg-1 p-sm-12">
+              <div class="text-size-16 text-color-dark-shade-1 p-pt-3">OR</div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Selected Due Date"
+                  [value]="parentRef.formData.financeDetails[0].selectedDueDate"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-4 p-lg-4 p-sm-12" *ngIf="parentRef.formData.isExchangeDetailsShow">
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+            Exchange Details
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="inline-items">
+            <div class="item p-p-3">
+              <p-checkbox
+                name="isCard"
+                [label]="'Card' | apsTranslate"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.exchangeDetails[0].isCard"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+
+            <div class="item p-p-2" *ngIf="parentRef.formData.exchangeDetails[0].isCard">
+              <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                <app-review-form-field
+                  label="Exchange Amount"
+                  [value]="parentRef.formData.exchangeDetails[0].exchangeAmount"
+                  type="baseCurrency"
+                  [baseCurrency]="parentRef.formData.exchangeDetails[0].exchangeCurrency"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+          <div class="inline-items">
+            <div class="item p-p-3">
+              <p-checkbox
+                name="isDealNo"
+                [label]="'Deal No' | apsTranslate"
+                [(ngModel)]="parentRef.formData.exchangeDetails[0].isDealNo"
+                [binary]="true"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div class="item p-p-3" *ngIf="parentRef.formData.exchangeDetails[0].isDealNo">
+              <div
+                (click)="isDealNoModalShow = true"
+                class="text-size-14 text-color-primary p-pt-2 text-semi-bold pointer"
+              >
+                {{ parentRef.formData.exchangeDetails[0].selectedDealNoRows }} Deals Selected
+              </div>
+            </div>
+          </div>
+          <div class="inline-items">
+            <div class="item p-p-3">
+              <p-checkbox
+                name="isForward"
+                [label]="'Forward' | apsTranslate"
+                [(ngModel)]="parentRef.formData.exchangeDetails[0].isForward"
+                [binary]="true"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div class="item p-p-3" *ngIf="parentRef.formData.exchangeDetails[0].isForward">
+              <div
+                (click)="isForwardNoModalShow = true"
+                class="text-size-14 text-color-primary p-pt-2 text-semi-bold pointer"
+              >
+                {{ parentRef.formData.exchangeDetails[0].selectedForwardNoRows }}
+                Forward Selected
+              </div>
+            </div>
+          </div>
+
+          <div class="inline-items p-px-3 p-pb-2">
+            <div class="text-size-12 p-px-2 p-py-1 border-radius-4">
+              <app-review-form-field
+                label="Remarks"
+                [value]="parentRef.formData.exchangeDetails[0].remarks"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+            Supporting Document
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid p-px-2">
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Document Type' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Reference Number' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Upload Documents' | apsTranslate }}
+                <span class="text-size-8 text-color-normal"
+                  >&nbsp;{{ 'Max 10MB each' | apsTranslate }}</span
+                >
+              </div>
+            </div>
+
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <p-checkbox
+                class="p-pt-2"
+                name="isOrderInvoiceContract"
+                id="isOrderInvoiceContract"
+                label="{{ 'Order / Invoice / Contract Details' | apsTranslate }}"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.supportingDocuments[0].isOrderInvoiceContract"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-color-dark-shade-1 p-pt-2">
+                {{
+                  parentRef.formData.supportingDocuments[0].orderInvoiceContractRefNo
+                    ? parentRef.formData.supportingDocuments[0].orderInvoiceContractRefNo
+                    : '--'
+                }}
+              </div>
+            </div>
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div
+                class="aps-card p-p-2"
+                *ngIf="
+                  parentRef.formData.supportingDocuments[0].orderInvoiceContractDocument.length > 0
+                "
+              >
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="item text-color-normal p-px-2">
+                    <div class="text-size-12">
+                      {{
+                        parentRef.formData.supportingDocuments[0].orderInvoiceContractDocument[0]
+                          .fileName
+                      }}
+                    </div>
+                    <div class="text-size-10">
+                      {{
+                        (
+                          +parentRef.formData.supportingDocuments[0].orderInvoiceContractDocument[0]
+                            .fileSize /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      }}Mb
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <p-checkbox
+                class="p-pt-2"
+                name="isInsurancePolicy"
+                id="isInsurancePolicy"
+                label="{{ 'Insurance Policy' | apsTranslate }}"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.supportingDocuments[0].isInsurancePolicy"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-color-dark-shade-1 p-pt-2">
+                {{
+                  parentRef.formData.supportingDocuments[0].insurancePolicyRefNo
+                    ? parentRef.formData.supportingDocuments[0].insurancePolicyRefNo
+                    : '--'
+                }}
+              </div>
+            </div>
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div
+                class="aps-card p-p-2"
+                *ngIf="parentRef.formData.supportingDocuments[0].insurancePolicyDocument.length > 0"
+              >
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="item text-color-normal p-px-2">
+                    <div class="text-size-12">
+                      {{
+                        parentRef.formData.supportingDocuments[0].insurancePolicyDocument[0]
+                          .fileName
+                      }}
+                    </div>
+                    <div class="text-size-10">
+                      {{
+                        (
+                          +parentRef.formData.supportingDocuments[0].insurancePolicyDocument[0]
+                            .fileSize /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      }}Mb
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <p-checkbox
+                class="p-pt-2"
+                name="isOther"
+                id="isOther"
+                label="{{ 'Proforma Invoice' | apsTranslate }}"
+                [binary]="true"
+                [(ngModel)]="parentRef.formData.supportingDocuments[0].isOther"
+                [disabled]="true"
+              >
+              </p-checkbox>
+            </div>
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-color-dark-shade-1 p-pt-2">
+                {{
+                  parentRef.formData.supportingDocuments[0].otherRefNo
+                    ? parentRef.formData.supportingDocuments[0].otherRefNo
+                    : '--'
+                }}
+              </div>
+            </div>
+            <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+              <div
+                class="aps-card p-p-2"
+                *ngIf="parentRef.formData.supportingDocuments[0].otherDocument.length > 0"
+              >
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="item text-color-normal p-px-2">
+                    <div class="text-size-12">
+                      {{ parentRef.formData.supportingDocuments[0].otherDocument[0].fileName }}
+                    </div>
+                    <div class="text-size-10">
+                      {{
+                        (
+                          +parentRef.formData.supportingDocuments[0].otherDocument[0].fileSize /
+                          1024 /
+                          1024
+                        ).toFixed(2)
+                      }}Mb
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header">
+          <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+            Finance Summary
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid p-px-2">
+            <div class="p-col-12 p-py-12">
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="text-size-14 text-color-light-shade-1">Loan Amount</div>
+                </div>
+                <div class="right-container">
+                  <div class="text-size-14 text-semi-bold">
+                    <app-base-currency
+                      [amount]="parentRef.formData.financeDetails[0].loanAmount"
+                      [currency]="this.parentRef.formData.financeDetails[0].loanCurrencyCode"
+                    ></app-base-currency>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-12">
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="text-size-14 text-color-light-shade-1">Interest Rate</div>
+                </div>
+                <div class="right-container">
+                  <div class="text-size-14 text-semi-bold">As Per ROI</div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-12">
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="text-size-14 text-color-light-shade-1">Processing Fees</div>
+                </div>
+                <div class="right-container">
+                  <div class="text-size-14 text-semi-bold">Banks SOC</div>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-py-12">
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="text-size-14 text-color-light-shade-1">Repayment Date</div>
+                </div>
+                <div class="right-container">
+                  <div class="text-size-14 text-semi-bold">
+                    {{
+                      parentRef.formData.financeDetails[0].selectedDueDate
+                        ? parentRef.formData.financeDetails[0].selectedDueDate
+                        : '-'
+                    }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12">
+      <div class="aps-card p-p-2">
+        <p-checkbox
+          [(ngModel)]="parentRef.formData.acceptTermsAndConditions"
+          [binary]="true"
+          label="Accept Terms and Conditions"
+          [required]="true"
+        >
+        </p-checkbox>
+      </div>
+    </div>
+  </div>
+</div>

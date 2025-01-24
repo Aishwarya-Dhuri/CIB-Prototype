@@ -1,0 +1,28 @@
+.quick-action-container {
+  display: block;
+  background-color: var(--primary-color-light);
+  padding: 1rem;
+  border-radius: 4px;
+
+  .quick-action-header {
+    font-size: var(--font-size-12);
+    color: var(--inverted-text-color);
+    // color: var(--text-color); //Change for SAIB Demo
+    display: block;
+  }
+
+  .quick-actions {
+    display: block;
+    font-size: var(--font-size-14);
+    color: var(--inverted-text-color);
+    // color: var(--text-color); //Change for SAIB Demo
+
+    .action {
+      display: inline-block;
+      width: 50%;
+      padding-top: 10px;
+      vertical-align: top;
+      cursor: pointer;
+    }
+  }
+}

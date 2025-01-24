@@ -1,0 +1,44 @@
+<div
+  [ngClass]="{
+    'aps-card': listType === 'grid',
+    'aps-h-300': listType === 'grid' && !isViewAll,
+    'aps-h-600': listType === 'grid' && isViewAll
+  }"
+>
+  <div class="" [ngClass]="{ 'aps-card-header p-px-3 p-py-2': listType === 'grid' }">
+    <div class="left-right-container">
+      <div class="left-container">
+        <div class="text-size-16 text-color-dark-shade-1 text-bold">
+          {{ billPayment.category }} ({{ billPayment.count }})
+        </div>
+      </div>
+      <div class="right-container">
+        <button
+          class="btn btn-md btn-tertiary"
+          (click)="isViewAll ? onViewLess() : onViewAll()"
+          [disabled]="billPayment.billers.length <= 4"
+        >
+          {{ isViewAll ? 'VIEW LESS' : 'VIEW ALL' }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <div [ngClass]="{ 'aps-card-body p-p-2': listType === 'grid' }">
+    <div class="p-grid g-margin-x" *ngIf="listType === 'card'">
+      <div class="p-md-3 p-lg-3 p-sm-12 p-col-12" *ngFor="let bpd of billersRowData">
+        <app-bill-payment-details-card [billPaymentDetails]="bpd"></app-bill-payment-details-card>
+      </div>
+    </div>
+
+    <ng-container *ngIf="listType === 'grid'">
+      <app-ag-grid-listing
+        #billPaymentGrid
+        [colDefUrl]="colDefUrl"
+        [rowData]="billersRowData"
+        [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+        [context]="{ componentParent: this }"
+        [frameworkComponents]="frameworkComponents"
+      ></app-ag-grid-listing>
+    </ng-container>
+  </div>
+</div>

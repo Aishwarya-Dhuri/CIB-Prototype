@@ -1,0 +1,24 @@
+.successful-registration-container {
+  padding: 7rem !important;
+
+  .image {
+    height: 136px;
+    img {
+      width: auto;
+      height: 100%;
+    }
+  }
+
+  @media screen and(max-width:991px) {
+    padding: 3rem 1rem !important;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

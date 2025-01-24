@@ -1,0 +1,354 @@
+<app-invoice-details
+  [invoiceDetails]="showInvoiceDetails"
+  [searchDetails]="searchDetails"
+  (close)="showInvoiceDetails = null"
+  *ngIf="showInvoiceDetails"
+></app-invoice-details>
+
+<app-payment-details
+  [paymentDetails]="showPaymentDetails"
+  [searchDetails]="searchDetails"
+  (close)="showPaymentDetails = null"
+  *ngIf="showPaymentDetails"
+></app-payment-details>
+
+<div class="search-results-container text-color-dark-shade-1 container">
+  <ng-container *ngIf="!isMatched">
+    <div class="aps-card p-p-3">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="inline-items">
+            <div class="item p-mr-4">
+              <div class="text-size-16 text-bold">{{ 'Searched By' | apsTranslate }}</div>
+            </div>
+            <!-- <div class="item text-size-12 p-mr-3">
+              <div class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2">
+                <span class="text-color-normal">{{searchFilters[0].displayName}}</span>
+                &nbsp;
+                <span class="text-color-dark-shade-1 text-semi-bold">{{
+                  searchFilters[0].displayValue
+                  }}</span>
+              </div>
+            </div>
+            <div class="item text-size-12 p-mr-3">
+              <div class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2">
+                <span class="text-color-normal">{{searchFilters[1].displayName}}</span>
+                &nbsp;
+                <span class="text-color-dark-shade-1 text-semi-bold">{{ searchFilters[1].displayValue }}</span>
+              </div>
+            </div> -->
+            <div class="item text-size-12 p-mr-3" *ngFor="let filter of searchFilters">
+              <div class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2">
+                <div class="inline-items">
+                  <div class="item">
+                    <span class="text-color-normal">{{ filter.displayName }}</span>
+                    &nbsp;
+                  </div>
+                  <div class="item">
+                    <div class="label-with-icon-container">
+                      <div class="icon" *ngIf="filter.displayName === 'Account Number'">
+                        <img
+                          src="assets/images/flag/in-flag.png"
+                          alt="IND"
+                          width="16px"
+                          height="12px"
+                        />
+                      </div>
+                      <div class="label">
+                        <span class="text-color-dark-shade-1 text-semi-bold">
+                          {{ filter.displayValue }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="right-container">
+          <div class="inline-items">
+            <div class="item p-mr-3">
+              <button class="btn btn-xsm btn-tertiary">
+                {{ 'MODIFY' | apsTranslate }}
+              </button>
+            </div>
+            <div class="item p-mr-3">
+              <button class="btn btn-xsm btn-tertiary" (click)="clearAll()">
+                {{ 'CLEAR ALL' | apsTranslate }}
+              </button>
+            </div>
+            <div class="item pointer">
+              <i
+                class="pi text-size-12 pointer"
+                [ngClass]="showFilters ? 'pi-chevron-up' : 'pi-chevron-down'"
+                (click)="showFilters = !showFilters"
+              ></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-container *ngIf="showFilters">
+        <div class="p-grid text-size-14 p-pt-3">
+          <ng-container *ngFor="let filter of invoiceFilters">
+            <div class="p-col-3 p-p-0">
+              <div class="text-color-light-shade-1">{{ filter.displayName }}</div>
+              <div class="text-color-dark-shade-1">{{ filter.value }}</div>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="p-grid text-size-14 p-pt-3">
+          <ng-container *ngFor="let filter of paymentFilters">
+            <div class="p-col-3 p-p-0">
+              <div class="text-color-light-shade-1">{{ filter.displayName }}</div>
+              <div class="text-color-dark-shade-1">{{ filter.value }}</div>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="p-grid p-py-3">
+      <div class="p-col-12 p-p-0">
+        <p-splitter
+          [style]="{ height: splitter === 'vertical' ? '850px' : '420px', border: 'none' }"
+          [layout]="splitter"
+          (onResizeEnd)="onResizeSplitter($event)"
+        >
+          <ng-template pTemplate>
+            <div
+              class="aps-card aps-w-100p"
+              [ngClass]="splitter === 'vertical' ? 'p-mr-0 p-mb-2' : 'p-mb-0 p-mr-2'"
+            >
+              <div class="aps-card-header overflow-visible p-py-2 p-px-3">
+                <div class="left-right-container p-mt-1">
+                  <div class="left-container">
+                    <div class="text-size-16 text-semi-bold">{{ 'Invoices' | apsTranslate }}</div>
+                  </div>
+                  <div class="right-container">
+                    <app-grid-listing-tools
+                      [col]
+                      [showMail]="false"
+                      [showDownload]="false"
+                      (changeFloatingFilter)="invoiceDetails.changeFloatFilter($event)"
+                      (filterRecords)="invoiceDetails.onFilter($event)"
+                      (applyColDefs)="invoiceDetails.onApplyConfig($event)"
+                      [colDefs]="invoiceDetails.columnDefs"
+                    >
+                    </app-grid-listing-tools>
+                  </div>
+                </div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="inline-items p-pb-3">
+                  <div class="item text-size-12 p-mr-3">
+                    <div
+                      class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2"
+                    >
+                      <span class="text-color-normal">{{ 'Selected Invoice' | apsTranslate }}</span>
+                      &nbsp;
+                      <span class="text-color-dark-shade-1 text-semi-bold">{{
+                        selectedInvoices.length
+                      }}</span>
+                    </div>
+                  </div>
+                  <div class="item text-size-12 p-mr-3">
+                    <div
+                      class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2"
+                    >
+                      <span class="text-color-normal">{{ 'Match Invoice' | apsTranslate }}</span>
+                      &nbsp;
+                      <span class="text-color-dark-shade-1 text-semi-bold">1</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="aps-h-300 border-bottom">
+                  <app-ag-grid-listing
+                    #invoiceDetails
+                    [colDefUrl]="invoiceColDefUrl"
+                    [frameworkComponents]="invoiceFrameworkComponents"
+                    [context]="context"
+                    [gridOptions]="{
+                      rowSelection: 'multiple',
+                      rowModelType: 'clientSide'
+                    }"
+                    (rowSelected)="onInvoiceSelected($event)"
+                    entityName="RMSINVOICEENTRY"
+                  ></app-ag-grid-listing>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate>
+            <div
+              class="aps-card aps-w-100p"
+              [ngClass]="splitter === 'vertical' ? 'p-ml-0 p-mt-2' : 'p-mt-0 p-ml-2'"
+            >
+              <div class="aps-card-header overflow-visible p-py-2 p-px-3">
+                <div class="left-right-container p-mt-1">
+                  <div class="left-container">
+                    <div class="text-size-16 text-semi-bold">{{ 'Payments' | apsTranslate }}</div>
+                  </div>
+                  <div class="right-container">
+                    <app-grid-listing-tools
+                      [showMail]="false"
+                      [showDownload]="false"
+                      (changeFloatingFilter)="paymentDetails.changeFloatFilter($event)"
+                      (filterRecords)="paymentDetails.onFilter($event)"
+                      (applyColDefs)="paymentDetails.onApplyConfig($event)"
+                      [colDefs]="paymentDetails.columnDefs"
+                    >
+                    </app-grid-listing-tools>
+                  </div>
+                </div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="left-right-container p-pb-3">
+                  <div class="left-container">
+                    <div class="inline-items">
+                      <div class="item text-size-12 p-mr-3">
+                        <div
+                          class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2"
+                        >
+                          <span class="text-color-normal">{{
+                            'Selected Payment' | apsTranslate
+                          }}</span>
+                          &nbsp;
+                          <span class="text-color-dark-shade-1 text-semi-bold">{{
+                            selectedPayments.length
+                          }}</span>
+                        </div>
+                      </div>
+                      <div class="item text-size-12 p-mr-3">
+                        <div
+                          class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2"
+                        >
+                          <span class="text-color-normal">{{
+                            'Match Payment' | apsTranslate
+                          }}</span>
+                          &nbsp;
+                          <span class="text-color-dark-shade-1 text-semi-bold">1</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="right-container"></div>
+                </div>
+
+                <div class="aps-h-300 border-bottom">
+                  <app-ag-grid-listing
+                    #paymentDetails
+                    [colDefUrl]="paymentColDefUrl"
+                    [frameworkComponents]="paymentFrameworkComponents"
+                    [context]="context"
+                    [gridOptions]="{
+                      rowSelection: 'multiple',
+                      rowModelType: 'clientSide'
+                    }"
+                    (rowSelected)="onPaymentSelected($event)"
+                  ></app-ag-grid-listing>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </p-splitter>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="aps-card p-p-3" *ngIf="isMatched">
+    <div class="left-right-container">
+      <div class="left-container">
+        <div class="text-size-16 text-bold">{{ 'Match Review' | apsTranslate }}</div>
+      </div>
+      <div class="right-container">
+        <div class="btn btn-xsm btn-tertiary">
+          {{ 'MODIFY' | apsTranslate }}
+        </div>
+      </div>
+    </div>
+    <div class="text-size-14 text-semi-bold p-pt-3 p-pb-2">{{ 'Invoice' | apsTranslate }}</div>
+    <div class="invoices-review-container aps-h-150">
+      <app-ag-grid-listing
+        [columnDefs]="selectedInvoicesColDefs"
+        [rowData]="selectedInvoices"
+        [gridOptions]="gridOptions"
+      ></app-ag-grid-listing>
+    </div>
+    <div class="text-size-14 text-semi-bold p-pt-4 p-pb-2">{{ 'Payment' | apsTranslate }}</div>
+    <div class="invoices-review-container aps-h-150">
+      <app-ag-grid-listing
+        [columnDefs]="selectedPaymentsColDefs"
+        [rowData]="selectedPayments"
+        [gridOptions]="gridOptions"
+      ></app-ag-grid-listing>
+    </div>
+  </div>
+
+  <div class="aps-card p-my-3 p-px-3">
+    <div class="left-right-container">
+      <div class="left-container aps-py-12">
+        <div class="inline-items">
+          <div class="item">
+            <div
+              class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2 text-size-12 p-mr-2"
+            >
+              <span class="text-color-normal p-mr-1"
+                >{{ 'Invoices' | apsTranslate }} ({{ selectedInvoices.length }})</span
+              >
+              <span class="text-color-dark-shade-1 text-semi-bold">{{
+                totalInvoiceAmount | currency : 'INR ' : 'code'
+              }}</span>
+            </div>
+          </div>
+          <div class="item">
+            <div
+              class="background-color-primary-light-shade-2 border-radius-4 p-py-1 p-px-2 text-size-12 p-mr-2"
+            >
+              <span class="text-color-normal p-mr-1"
+                >{{ 'Payments' | apsTranslate }} ({{ selectedPayments.length }})</span
+              >
+              <span class="text-color-dark-shade-1 text-semi-bold">{{
+                totalPaymentAmount | currency : 'INR ' : 'code'
+              }}</span>
+            </div>
+          </div>
+          <div class="item">
+            <div class="background-color p-py-1 p-px-2 text-size-14 p-mr-2">
+              <span class="text-color-normal p-mr-1">{{ 'Difference' | apsTranslate }}</span>
+              <span class="text-color-dark-shade-1 text-semi-bold">{{
+                difference | currency : 'INR ' : 'code'
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right-container p-py-2">
+        <ng-container *ngIf="isMatched">
+          <button class="btn btn-md btn-tertiary p-mr-2" (click)="isMatched = false">
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+          <button *ngIf="!mode" class="btn btn-md btn-primary" (click)="onSubmit()">
+            {{ 'SUBMIT' | apsTranslate }}
+          </button>
+          <button *ngIf="mode == 'EDIT'" class="btn btn-md btn-primary" (click)="onSubmit()">
+            {{ 'UPDATE' | apsTranslate }}
+          </button>
+        </ng-container>
+        <button
+          class="btn btn-md btn-primary"
+          [disabled]="
+            selectedInvoices.length === 0 || selectedPayments.length === 0 || difference !== 0
+          "
+          (click)="isMatched = true"
+          *ngIf="!isMatched"
+        >
+          {{ 'MATCH' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

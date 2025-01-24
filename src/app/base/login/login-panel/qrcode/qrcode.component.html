@@ -1,0 +1,37 @@
+<div class="qrcode-container">
+  <div class="main-heading">{{ 'msg_verify_qr_code' | translate }}</div>
+  <div class="sub-heading">
+    {{ 'msg_open_application_on_mobile' | translate }}
+  </div>
+
+  <div class="qr-code">
+    <div class="image">
+      <qrcode
+        cssClass="qrCode"
+        [qrdata]="qrdata"
+        [size]="128"
+        [level]="'M'"
+        [colorLight]="lightColor"
+        (click)="proceedLogin()"
+      ></qrcode>
+    </div>
+
+    <div class="text">
+      <app-icon icon="fa-clock"></app-icon>
+      &nbsp;00:{{ getTime() }}
+    </div>
+  </div>
+
+  <div class="p-field-checkbox aps-checkbox text-center aps-mt-17">
+    <p-checkbox
+      (onChange)="termsCondition($event)"
+      [(ngModel)]="acceptTermsConditions"
+      [binary]="acceptTermsConditions"
+      inputId="binary"
+      name="tc"
+      value="tc"
+      id="tc"
+    ></p-checkbox>
+    <label for="tc">&nbsp;{{ 'msg_terms_conditions' | translate }}</label>
+  </div>
+</div>

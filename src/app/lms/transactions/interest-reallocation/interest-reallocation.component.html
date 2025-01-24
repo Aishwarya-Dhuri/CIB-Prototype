@@ -1,0 +1,221 @@
+<div class="container" *ngIf="!loading">
+  <app-modal [(isShow)]="isMaximizeAccountHierarchy" size="md" headerText="{{ 'Account Hierarchy' | apsTranslate }}">
+    <div class="" body>
+      <div class="aps-h-400">
+        <app-tree-structure-hierarchy [treeStructureHierarchy]="accountStructureHierarchyTreeData"
+          [zoom]="100"></app-tree-structure-hierarchy>
+      </div>
+    </div>
+  </app-modal>
+  <app-modal [(isShow)]="showReviewPopupMessage">
+    <div class="text-size-16 text-semi-bold" body>
+      {{ 'Total of all percentage should be 100%' | apsTranslate }}
+    </div>
+    <div class="left-right-container" footer>
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="showReviewPopupMessage = false">
+          {{ 'OK' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid g-margin-x">
+    <ng-container *ngIf="stepperDetails.currentStep == 1">
+      <div class="p-md-4 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="aps-py-12 p-px-3">
+              <div class="text-bold">
+                {{ 'Reallocation Details' | apsTranslate }}
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body p-p-3">
+            <aps-custom-select id="accountStructure" name="accountStructure"
+              label="{{ 'Account Structure' | apsTranslate }}" [value]="formData.accountStructure"
+              [(ngModel)]="formData.accountStructure" [required]="true" (change)="onSelectStructure($event)"
+              dataUrl="lms/generalMaster/interestReallocation/private/getAccountStructureList"></aps-custom-select>
+
+            <aps-custom-select id="reallocationRule" name="reallocationRule"
+              label="{{ 'Reallocation Rule' | apsTranslate }}" [value]="formData.reallocationRule"
+              [(ngModel)]="formData.reallocationRule" (change)="onChangeReallocationRule($event)" [required]="true"
+              dataUrl="lms/generalMaster/interestReallocation/private/dropdown/reallocationRule"></aps-custom-select>
+
+            <aps-custom-select *ngIf="formData.accountStructure && formData.reallocationRule && formData.showSubRule"
+              id="subRule" name="subRule" label="{{ 'Sub Rule' | apsTranslate }}" [value]="formData.subRule"
+              [(ngModel)]="formData.subRule" [required]="true" [data]="subRuleData"></aps-custom-select>
+
+            <aps-custom-select *ngIf="formData.accountStructure && formData.reallocationRule == 'Other Account'"
+              id="accountNo" name="accountNo" label="{{ 'Account Number' | apsTranslate }}" [value]="formData.accountNo"
+              [(ngModel)]="formData.accountNo" [required]="true"
+              dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"></aps-custom-select>
+
+            <div class="left-right-container p-mt-5">
+              <div class="left-container"></div>
+              <div class="right-container">
+                <button class="btn btn-md btn-tertiary" (click)="reset()">
+                  {{ 'RESET' | apsTranslate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-8 p-sm-12 p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="left-right-container aps-py-12 p-px-3">
+              <div class="left-container">
+                <div class="text-bold">
+                  {{ 'Account Hierarchy' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container">
+                <app-icon icon="fa-expand" (click)="isMaximizeAccountHierarchy = true"></app-icon>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body aps-py-12 p-px-3">
+            <div class="aps-h-300">
+              <app-tree-structure-hierarchy [treeStructureHierarchy]="accountStructureHierarchyTreeData"
+                [zoom]="100"></app-tree-structure-hierarchy>
+            </div>
+          </div>
+        </div>
+
+        <div class="aps-card p-mt-3" *ngIf="formData.showAccountDetailsGrid">
+          <div class="aps-py-12 p-px-3 border-bottom">
+            <div class="text-bold">
+              {{ 'Account Details' | apsTranslate }}
+            </div>
+            <div class="text-size-14">
+              {{ 'Percentage Wise allocation Screen' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-h-300 p-px-3 aps-py-12">
+            <app-ag-grid-listing id="accountDetailsTreeGrid" #accountDetailsTreeGrid [columnDefs]="colDefs"
+              [rowData]="rowData" [gridOptions]="gridOptions" [context]="context"
+              [frameworkComponents]="frameworkComponents"></app-ag-grid-listing>
+          </div>
+          <div class="left-right-container aps-py-12 p-px-3">
+            <div class="left-container"></div>
+            <div class="right-container text-size-13">
+              <span class="inline-block text-bold">
+                {{ 'Total' | apsTranslate }}
+              </span>
+              <span class="inline-block"> : {{ formData.totalPercentage }}% </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="aps-py-12 p-px-3">
+              <div class="text-bold">
+                {{ 'Reallocation Details' | apsTranslate }}
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body aps-py-12 p-px-3">
+            <div class="p-grid g-margin-x">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Account Structure' | apsTranslate }}
+                </div>
+
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.accountStructure }}
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Reallocation Rule' | apsTranslate }}
+                </div>
+
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.reallocationRule }}
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="
+                  formData.accountStructure && formData.reallocationRule && formData.showSubRule
+                ">
+                <div class="text-size-12 text-color-normal">{{ 'Sub Rule' | apsTranslate }}</div>
+
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.subRule }}</div>
+              </div>
+
+
+              <div class="p-md-3 p-sm-12 p-col-12"
+                *ngIf="formData.accountStructure && formData.reallocationRule == 'Other Account'">
+                <div class="text-size-12 text-color-normal">{{ 'Account Number' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.accountNo }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="left-right-container aps-py-12 p-px-3">
+              <div class="left-container">
+                <div class="text-bold">
+                  {{ 'Account Hierarchy' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container">
+                <app-icon icon="fa-expand" (click)="isMaximizeAccountHierarchy = true"></app-icon>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body aps-py-12 p-px-3">
+            <div class="aps-h-300">
+              <app-tree-structure-hierarchy [treeStructureHierarchy]="accountStructureHierarchyTreeData"
+                [zoom]="100"></app-tree-structure-hierarchy>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-mt-3" *ngIf="formData.showAccountDetailsGrid">
+          <div class="aps-py-12 p-px-3 border-bottom">
+            <div class="text-bold">
+              {{ 'Account Details' | apsTranslate }}
+            </div>
+            <div class="text-size-14">
+              {{ 'Percentage Wise allocation Screen' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-h-300 p-px-3 aps-py-12">
+            <app-ag-grid-listing id="accountDetailsTreeGrid" #accountDetailsTreeGrid [columnDefs]="reviewColDefs"
+              [rowData]="rowData" [gridOptions]="gridOptions" [context]="context"
+              [frameworkComponents]="frameworkComponents"></app-ag-grid-listing>
+          </div>
+          <div class="left-right-container aps-py-12 p-px-3">
+            <div class="left-container"></div>
+            <div class="right-container text-size-13">
+              <span class="inline-block text-bold">
+                {{ 'Total' | apsTranslate }}
+              </span>
+              <span class="inline-block"> : {{ formData.totalPercentage }}% </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>

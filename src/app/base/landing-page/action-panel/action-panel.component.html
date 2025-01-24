@@ -1,0 +1,105 @@
+<div class="action-panel-wrapper">
+  <div class="main-heading">{{ 'msg_select_login_preference' | translate }}</div>
+
+  <div class="select-wrapper" *ngIf="this.userService.userDetails.isMultiCountryUser == 'Y'">
+    <p-dropdown
+      class="text-color-normal text-size-14"
+      [options]="countryList"
+      placeholder="Select a Country"
+      optionLabel="displayName"
+      optionValue="id"
+      [(ngModel)]="formData.countryId"
+    ></p-dropdown>
+  </div>
+
+  <div class="action-wrapper">
+    <div class="action-label">{{ 'msg_bank_type' | translate }}</div>
+
+    <div class="actions">
+      <div
+        class="action"
+        [ngClass]="{ active: formData.bankType === 'Conventional' }"
+        (click)="onChangeBankType('Conventional')"
+      >
+        <app-icon icon="fa-home"></app-icon>&nbsp;{{ 'msg_conventional' | translate }}
+      </div>
+      <div
+        class="action"
+        [ngClass]="{ active: formData.bankType === 'Islamic' }"
+        (click)="onChangeBankType('Islamic')"
+        *ngIf="userService.userDetails.isIslamicCorporate == 'Y'"
+      >
+        <app-icon icon="fa-moon"></app-icon>&nbsp;{{ 'msg_islamic' | translate }}
+      </div>
+    </div>
+  </div>
+
+  <div class="action-wrapper" *ngIf="userService.userDetails.isGroupUser == 'Y'">
+    <div class="action-label">{{ 'msg_login_type' | translate }}</div>
+
+    <div class="actions">
+      <div
+        class="action"
+        [ngClass]="{ active: formData.loginType === 'individual' }"
+        (click)="formData.loginType = 'individual'"
+      >
+        <app-icon icon="fa-user"></app-icon>&nbsp;{{ 'msg_individual' | translate }}
+      </div>
+      <div
+        class="action"
+        [ngClass]="{ active: formData.loginType === 'group' }"
+        (click)="formData.loginType = 'group'"
+      >
+        <app-icon icon="fa-users"></app-icon>&nbsp;{{ 'msg_group' | translate }}
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="select-wrapper"
+    *ngIf="formData.loginType == 'group' && userService.userDetails.isGroupUser == 'Y'"
+  >
+    <p-dropdown
+      class="text-color-normal text-size-14"
+      [(ngModel)]="formData.groupId"
+      [options]="groupList"
+      placeholder="Select a group"
+      optionLabel="displayName"
+      optionValue="id"
+    ></p-dropdown>
+  </div>
+
+  <div class="select-wrapper">
+    <p-dropdown
+      class="text-color-normal text-size-14"
+      [(ngModel)]="formData.defaultDashboardId"
+      [options]="dashboardList"
+      placeholder="Select a Dashboard"
+      optionLabel="displayName"
+      optionValue="id"
+    >
+    </p-dropdown>
+  </div>
+
+  <div class="p-my-3">
+    <p-checkbox
+      name="dlp"
+      id="dlp"
+      [binary]="true"
+      styleClass="text-size-14 text-color-normal"
+      label="{{ 'msg_set_login_preference' | translate }}"
+      [(ngModel)]="formData.isLoginPreference"
+    ></p-checkbox>
+  </div>
+
+  <button
+    type="button"
+    class="aps-w-100p btn btn-md btn-primary"
+    (click)="submitForm()"
+    [disabled]="iSubmitDisabled"
+  >
+    {{ 'msg_proceed' | translate }}
+  </button>
+
+  <div class="text-center text-size-14 p-my-3">{{ 'msg_reset' | translate | uppercase }}</div>
+</div>

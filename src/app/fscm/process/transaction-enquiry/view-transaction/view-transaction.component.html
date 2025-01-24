@@ -1,0 +1,79 @@
+<div class="view-transactions p-px-3 p-py-2">
+  <button class="p-mx-1 btn btn-sm btn-secondary p-px-2" (click)="backToSearch()">
+    <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right" class="app-icon"></app-icon>
+  </button>
+  <div class="text-size-16 text-color-dark-shade-1 text-bold inline-block p-mt-1">
+    Invoice Workflow
+  </div>
+
+  <app-org-tree [treeData]="orgTreeData"></app-org-tree>
+
+  <br />
+
+  <div class="p-grid p-mt-3">
+    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0 p-py-0 p-mb-3">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-size-16 text-color-dark-shade-1 text-bold">Transaction Details</div>
+        </div>
+        <div class="aps-card-body">
+          <app-tree
+            [treeNode]="transactionDetails"
+            [showData]="false"
+            [selectedNode]="selectedTransactionDetails"
+            (leafNodeSelected)="onTransactionSelected($event)"
+          ></app-tree>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-9 p-lg-9 p-sm-12 p-col-12 p-pr-0 p-pl-0 p-py-0">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="back-btn" (click)="back()" *ngIf="subTreeData">
+                <!-- <i class="pi pi-chevron-left"></i> -->
+                <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right"></app-icon>
+              </div>
+              <div class="text-size-16 text-color-dark-shade-1 inline-block text-bold">
+                {{ detailsHeader }}
+              </div>
+            </div>
+            <div class="right-container">
+              <div class="actions">
+                <div class="action p-p-1 p-mx-1">
+                  <!-- <i class="pi pi-envelope text-size-16"> </i> -->
+                  <app-icon icon="fa-envelope" class="text-size-16"></app-icon>
+                </div>
+                <div class="action p-p-1">
+                  <!-- <i class="pi pi-print text-size-16"> </i> -->
+                  <app-icon icon="fa-print" class="text-size-16"></app-icon>
+                </div>
+                <div class="action p-p-1">
+                  <!-- <i class="pi pi-ellipsis-v text-size-16"> </i> -->
+                  <app-icon icon="fa-ellipsis-v" class="text-size-16"></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aps-card-body overflow-scroll">
+          <ng-container *ngIf="selectedTransactionDetails">
+            <app-show-details
+              [transactionData]="selectedTransactionDetails.data"
+              *ngIf="!subTreeData"
+              (linkClicked)="onLinkClicked($event)"
+            ></app-show-details>
+
+            <app-show-details
+              *ngIf="subTreeData"
+              [transactionData]="subTreeData"
+            ></app-show-details>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

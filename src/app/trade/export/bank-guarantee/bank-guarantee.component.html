@@ -1,0 +1,288 @@
+<div class="container">
+  <app-modal [(isShow)]="showHistory" headerText="Bank Guarantee History" size="lg">
+    <div header>
+      <div class="text-size-12 text-semi-bold p-py-2">BG NO. 31131311</div>
+    </div>
+    <div class="aps-card aps-h-200 p-mt-3" body>
+      <app-ag-grid-listing
+        id="letterOfCreditHistoryGrid"
+        #letterOfCreditHistoryGrid
+        colDefUrl="trade/exportTransactions/bankGuarantee/private/bankGuaranteeHistoryColDefs"
+        rowDefUrl="trade/exportTransactions/bankGuarantee/private/bankGuaranteeHistoryData"
+        [gridOptions]="{ pagination: false }"
+        [context]="{ componentParent: this }"
+      ></app-ag-grid-listing>
+    </div>
+
+    <div class="left-right-container p-mt-2" footer>
+      <div class="left-container">
+        <app-icon icon="fa-print"></app-icon>&nbsp;
+        <app-icon icon="fa-download"></app-icon>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-tertiary" (click)="showHistory = false">
+          {{ 'CANCEL' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showDelete" headerText="Do you want to delete this draft?">
+    <div class="left-right-container p-mt-2" footer>
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-md btn-tertiary p-mr-3" (click)="showDelete = false">
+          {{ 'CANCEL' | apsTranslate }}
+        </button>
+        <button class="btn btn-md btn-primary" (click)="showDelete = false">
+          {{ 'CONFIRM' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid g-margin-x">
+    <div class="p-md-8 p-sm-12 p-col-12 p-p-0">
+      <div class="p-grid">
+        <div class="p-md-4 p-sm-12 p-col-12 p-py-0 p-mb-3">
+          <div
+            class="aps-card aps-filled-card text-color-inverted aps-h-200 p-p-3 pointer"
+            routerLink="initiate"
+          >
+            <div class="text-size-16 text-semi-bold p-mb-4">
+              {{ 'Initiate Bank Guarantee' | apsTranslate }}
+            </div>
+            <div class="text-size-12">
+              {{ 'Click here to initiate a new Bank Guarantee' | apsTranslate }}
+            </div>
+          </div>
+        </div>
+        <div class="p-md-8 p-sm-12 p-col-12 p-py-0 p-mb-3">
+          <div class="aps-card">
+            <div class="aps-card-header p-px-3 aps-py-12">
+              <div class="text-size-16 text-bold text-color-dark-shade-1">
+                {{ 'Type of Application/Undertaking' | apsTranslate }}
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="">
+                <app-pie-chart
+                  [options]="options"
+                  webHeight="150"
+                  mobileHeight="250"
+                ></app-pie-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-4 p-sm-12 p-col-12 p-py-0 p-mb-3">
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header p-px-3 aps-py-12 overflow-visible">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1">
+                {{ 'Bank Guarantee Overview' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container" style="width: 125px">
+              <aps-custom-select
+                label=""
+                [showLabel]="false"
+                value="Today"
+                [data]="[
+                  { id: 'Today', displayName: 'Today' },
+                  { id: 'This Month', displayName: 'This Month' },
+                  { id: 'All', displayName: 'All' }
+                ]"
+                (change)="onChangeBankGuaranteeOverview($event)"
+              ></aps-custom-select>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid text-color-dark-shade-1">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-h-100p border-radius-4 p-p-2">
+                <div class="text-size-14 text-bold p-mb-1">
+                  {{ bankGuaranteeOverview.corporateAuthorized }}
+                </div>
+                <div class="text-size-12">{{ 'Corporate Authorized' | apsTranslate }}</div>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-h-100p border-radius-4 p-p-2">
+                <div class="text-size-14 text-bold p-mb-1">
+                  {{ bankGuaranteeOverview.bankAuthorized }}
+                </div>
+                <div class="text-size-12">{{ 'Bank Authorized' | apsTranslate }}</div>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-h-100p border-radius-4 p-p-2">
+                <div class="text-size-14 text-bold p-mb-1">
+                  {{ bankGuaranteeOverview.toRepair }}
+                </div>
+                <div class="text-size-12">{{ 'To Repair' | apsTranslate }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="left-right-container p-mb-3">
+    <div class="left-container">
+      <div class="inline-items" [ngClass]="{ 'on-mobile': viewport !== 'web' }">
+        <div class="item p-mr-3" *ngFor="let l of listingTypes">
+          <div
+            class="aps-card p-p-2 text-size-12 text-semi-bold pointer border"
+            [ngClass]="{ 'aps-card-primary': activeListing.displayName === l.displayName }"
+            (click)="changeActiveListing(l)"
+          >
+            {{ l.displayName }}<span *ngIf="l.count"> ({{ l.count }})</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-container">
+      <div class="toggle-select-container p-mt-2">
+        <div
+          class="action pointer text-color-dark-shade-1"
+          (click)="onListTypeChange('grid')"
+          [ngClass]="{ active: listType === 'grid' }"
+        >
+          <app-icon icon="fa-list"></app-icon>
+        </div>
+        <div
+          class="action pointer text-color-dark-shade-1"
+          (click)="onListTypeChange('card')"
+          [ngClass]="{ active: listType === 'card' }"
+        >
+          <app-icon icon="fa-th-large"></app-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-card aps-h-400 p-mb-3">
+    <div class="aps-card-header overflow-visible">
+      <div class="left-right-container p-px-3">
+        <div class="left-container">
+          <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+            {{ 'Bank Guarantee' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container hide-on-mobile aps-py-12">
+          <app-grid-listing-tools
+            (changeFloatingFilter)="bankGuaranteeGrid.changeFloatFilter($event)"
+            (filterRecords)="bankGuaranteeGrid.onFilter($event)"
+            (applyColDefs)="bankGuaranteeGrid.onApplyConfig($event)"
+            [colDefs]="bankGuaranteeGrid.columnDefs"
+            [columnConfig]="true"
+            [moreOptions]="true"
+          >
+          </app-grid-listing-tools>
+        </div>
+      </div>
+    </div>
+    <div class="aps-card-body">
+      <app-ag-grid-listing
+        id="bankGuaranteeGrid"
+        #bankGuaranteeGrid
+        [colDefUrl]="activeListing.colDefsUrl"
+        [rowDefUrl]="activeListing.rowDefUrl"
+        [context]="{ componentParent: this }"
+        [frameworkComponents]="frameworkComponents"
+        [apsHide]="listType == 'card'"
+      ></app-ag-grid-listing>
+
+      <div class="card-list border-top" *ngIf="listType == 'card'">
+        <div class="p-grid p-p-2">
+          <div class="p-col-12" *ngFor="let data of bankGuaranteeGrid.rowData; let i = index">
+            <div class="aps-card text-size-12">
+              <div class="card-header">
+                <div class="p-grid">
+                  <div class="p-col-11 p-p-0">
+                    <div class="p-grid">
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">
+                          {{ bankGuaranteeGrid.columnDefs[0].headerName }}
+                        </div>
+                        <div class="">{{ data[bankGuaranteeGrid.columnDefs[0].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">
+                          {{ bankGuaranteeGrid.columnDefs[1].headerName }}
+                        </div>
+                        <div class="">{{ data[bankGuaranteeGrid.columnDefs[1].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">
+                          {{ bankGuaranteeGrid.columnDefs[2].headerName }}
+                        </div>
+                        <div class="">{{ data[bankGuaranteeGrid.columnDefs[2].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">
+                          {{ bankGuaranteeGrid.columnDefs[3].headerName }}
+                        </div>
+                        <div class="">{{ data[bankGuaranteeGrid.columnDefs[3].field] }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-col-1 p-p-3 text-right">
+                    <app-icon
+                      [icon]="data.isShow ? 'fa-chevron-up' : 'fa-chevron-down'"
+                      styleClasses="text-size-14 pointer"
+                      (click)="data.isShow = !data.isShow"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body border-top" *ngIf="data.isShow">
+                <div class="p-grid">
+                  <ng-container *ngFor="let field of bankGuaranteeGrid.columnDefs; let i = index">
+                    <div
+                      class="p-md-3 p-sm-12 p-col-12 p-p-0"
+                      *ngIf="bankGuaranteeGrid.columnDefs[i].field != 'actions'"
+                    >
+                      <div class="p-p-2" *ngIf="i >= 4">
+                        <div class="text-bold">
+                          {{ bankGuaranteeGrid.columnDefs[i].headerName }}
+                        </div>
+                        <div class="">{{ data[bankGuaranteeGrid.columnDefs[i].field] }}</div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-right-container p-py-2 p-px-3" *ngIf="listType === 'card'">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-sm btn-tertiary p-mr-3">
+            <app-icon
+              icon="fa-chevron-left"
+              (click)="previous()"
+              [disabled]="this.currentPage <= 1"
+            ></app-icon>
+          </button>
+          <button class="btn btn-sm btn-tertiary">
+            <app-icon
+              icon="fa-chevron-right"
+              (click)="next()"
+              [disabled]="this.currentPage >= this.numberOfPages"
+            ></app-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

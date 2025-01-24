@@ -1,0 +1,186 @@
+<app-modal [(isShow)]="isDownload" size="sm" headerText="{{ 'Download Options' | apsTranslate }}">
+    <ng-container body [ngTemplateOutlet]="downloadEmailOptionsTemplate"> </ng-container>
+    <div footer>
+        <div class="text-right">
+            <button class="btn btn-md btn-primary" (click)="onDownload()">
+                {{ 'DOWNLOAD' | apsTranslate }}
+            </button>
+        </div>
+    </div>
+</app-modal>
+
+<!-- <app-modal [(isShow)]="isEmail" size="sm" headerText="{{ 'Email Options' | apsTranslate }}">
+    <ng-container body [ngTemplateOutlet]="downloadEmailOptionsTemplate"> </ng-container>
+    <div footer>
+        <div class="text-right">
+            <button class="btn btn-md btn-primary" (click)="onEmail()">
+                {{ 'EMAIL' | apsTranslate }}
+            </button>
+        </div>
+    </div>
+</app-modal> -->
+
+<ng-template #downloadEmailOptionsTemplate>
+    <div class="p-grid">
+        <div class="p-col-12">
+            <p-radioButton class="p-mr-3" [label]="'PDF' | apsTranslate" name="PDF" id="PDF" value="PDF"
+                [(ngModel)]="downloadOptions">
+            </p-radioButton>
+            <p-radioButton class="p-mr-3" [label]="'CSV' | apsTranslate" id="CSV" value="CSV"
+                [(ngModel)]="downloadOptions">
+            </p-radioButton>
+            <p-radioButton class="p-mr-3" [label]="'EXCEL' | apsTranslate" id="EXCEL" value="EXCEL"
+                [(ngModel)]="downloadOptions">
+            </p-radioButton>
+            <p-radioButton class="p-mr-3" [label]="'XML' | apsTranslate" id="XML" value="XML"
+                [(ngModel)]="downloadOptions">
+            </p-radioButton>
+            <p-radioButton class="p-mr-3" [label]="'MT940' | apsTranslate" id="MT940" value="MT940"
+                [(ngModel)]="downloadOptions">
+            </p-radioButton>
+            <p-radioButton class="p-mr-3" [label]="'TEXT' | apsTranslate" id="TEXT" value="TEXT"
+                [(ngModel)]="downloadOptions">
+            </p-radioButton>
+        </div>
+        <div class="p-col-12">
+            <p-checkbox [binary]="true" NAME="isIncludeAdditionalFields" id="isIncludeAdditionalFields"
+                [(ngModel)]="isIncludeAdditionalFields" label="Include Additional Fields" [disabled]="
+            !(downloadOptions == 'PDF' || downloadOptions == 'EXCEL' || downloadOptions == 'TXT')
+          "></p-checkbox>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Save/Update Search Criteria -->
+<app-save-criterial-modal #saveCriteria [(isShow)]="isShowSaveSearchCriteriaModal" [(isUpdate)]="isUpdateCriteria"
+    [entityName]="entityName" [(criteria)]="criteriaData" (onSave)="onSavedCriteria()">
+</app-save-criterial-modal>
+
+<app-search-modal [(isShow)]="showCorporateList" colDefUrl="commons/private/corporateColDefs"
+    rowDefUrl="commons/commonService/private/getCorporates"
+    (onSelection)="onSelectCorporate($event)"></app-search-modal>
+
+<div class="container">
+    <div class="p-grid">
+        <div class="p-col-12 p-md-7 p-sm-12 p-p-1">
+            <form name="form" #form="ngForm">
+                <div class="aps-card aps-min-h-400">
+                    <div class="text-size-16 text-bold p-p-3">{{ 'Search By' | apsTranslate }}</div>
+                    <div class="p-grid">
+                        <div class="p-col-12 p-md-6 p-py-1 p-px-3">
+                            <!-- <aps-custom-select [label]="'Account No' | apsTranslate" name="accountNo" id="accountNo"
+                                [data]="accountsList" #accountNo="ngModel" [(ngModel)]="searchFilters[1].value"
+                                required="true" (change)="onAccountSelected(searchFilters[1].value)">
+                            </aps-custom-select> -->
+                            <aps-autocomplete colDefUrl="commons/private/consolidatedAccountStatmentListingColDefs"
+                                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                searchParameter="displayName" id="accountNo" name="accountNo" #accountNo="ngModel"
+                                [label]="'Account No' | apsTranslate" [(ngModel)]="searchFilters[1].value"
+                                [value]="searchFilters[1].value" (change)="onAccountSelected(searchFilters[1].value)"
+                                [required]="true"></aps-autocomplete>
+                        </div>
+                        <div class="p-grid">
+                            <div class="p-col-12 p-md-6 p-py-1 p-px-3">
+                                <aps-form-input id="accountNo" name="accountNo" #accountNo="ngModel"
+                                    label="{{ 'Corporate Code' | apsTranslate }}" [(ngModel)]="searchFilters[1].value"
+                                    rightIcon="fa-search" (onRightIcon)="showCorporateList = true"
+                                    (change)="onAccountSelected(searchFilters[1].value)"
+                                    [readonly]="true"></aps-form-input>
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-py-1 p-px-3">
+                                <aps-form-input id="corporateName" name="corporateName"
+                                    label="{{ 'Corporate Name' | apsTranslate }}" [(ngModel)]="searchFilters[2].value"
+                                    [disabled]="true"></aps-form-input>
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-py-1 p-px-3">
+                                <aps-custom-select name="year" id="year" label="{{ 'Year' | apsTranslate }}"
+                                    [data]="yearData" [value]="searchFilters[3].value"
+                                    [(ngModel)]="searchFilters[3].value"></aps-custom-select>
+                            </div>
+
+                            <div class="p-col-12 p-md-6 p-py-1 p-px-3">
+                                <aps-custom-select name="month" id="month" label="{{ 'Month' | apsTranslate }}"
+                                    [data]="monthData" [value]="searchFilters[4].value"
+                                    [(ngModel)]="searchFilters[4].value"></aps-custom-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="aps-card fixed-bottom-footer p-mt-2 p-px-3 aps-py-12">
+                <div class="left-right-container">
+                    <div class="left-container">
+                        <button class="btn btn-md btn-tertiary" (click)="showSaveSearchCriteriaModal()"
+                            [disabled]="form.invalid">
+                            <span *ngIf="!isUpdateCriteria">{{ 'SAVE SEARCH CRITERIA' | apsTranslate }}</span>
+                            <span *ngIf="isUpdateCriteria">{{ 'UPDATE SEARCH CRITERIA' | apsTranslate }}</span>
+                        </button>
+                    </div>
+                    <div class="right-container">
+                        <button class="btn btn-md btn-primary p-m-1" (click)="viewOnScreenClick()"
+                            [disabled]="form.invalid">
+                            {{ 'GENERATE' | apsTranslate }}
+                        </button>
+                        <!-- <button class="btn btn-md btn-primary p-m-1" (click)="isEmail = true" [disabled]="form.invalid">
+                            {{ 'Email' | apsTranslate }}
+                        </button> -->
+                        <!-- <button class="btn btn-md btn-primary p-m-1" (click)="isDownload = true"
+                            [disabled]="form.invalid">
+                            {{ 'DOWNLOAD' | apsTranslate }}
+                        </button> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-5 p-lg-5">
+            <div class="aps-card aps-h-100p p-px-3 p-pb-3 p-pt-0">
+                <app-nothing-here *ngIf="criteriaList.length == 0" colSize="5"
+                    message="Select Search by to view Saved Criteria"></app-nothing-here>
+                <p-tabView *ngIf="criteriaList.length > 0">
+                    <p-tabPanel header="{{ 'Saved Criterion' | apsTranslate }}">
+                        <div class="p-px-0 p-pt-3 p-pb-1 border-bottom"
+                            *ngFor="let criteria of criteriaList; let i = index">
+                            <div class="left-right-container">
+                                <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                                    <div class="text-size-12">{{ criteria.name }}</div>
+                                    <div class="text-size-10">{{ getCriteriaFilterCount(criteria) }} Parameters</div>
+                                </div>
+                                <div class="right-container">
+                                    <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                                        {{ 'Apply' | apsTranslate }}
+                                    </button>
+                                    <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                                        <app-icon icon="fa-trash-alt" class="text-size-14 pointer"
+                                            (click)="deleteCriteria(criteria)">
+                                        </app-icon>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </p-tabPanel>
+                    <p-tabPanel header="{{ 'Recent' | apsTranslate }}">
+                        <ng-container *ngFor="let criteria of criteriaList; let i = index">
+                            <div class="p-px-0 p-pt-3 p-pb-1 border-bottom" *ngIf="i < 3">
+                                <div class="left-right-container">
+                                    <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                                        <div class="text-size-12">{{ criteria.modifiedSysOn }}</div>
+                                        <div class="text-size-10">
+                                            {{ getCriteriaFilterCount(criteria) }} Parameters {{ criteria.name }}
+                                        </div>
+                                    </div>
+                                    <div class="right-container">
+                                        <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                                            {{ 'REUSE' | apsTranslate }}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </p-tabPanel>
+                </p-tabView>
+            </div>
+        </div>
+    </div>
+</div>

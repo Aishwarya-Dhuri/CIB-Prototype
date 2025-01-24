@@ -1,0 +1,277 @@
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+        <div class="aps-card p-mb-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">PO Details</div>
+            </div>
+
+            <div class="aps-card-body">
+                <app-search-modal [(isShow)]="showSponsorModal" header="Sponsor"
+                    colDefUrl="fscm/transactions/invoiceEntry/private/sponsorColDefs"
+                    rowDefUrl="fscm/transactions/invoiceEntry/private/getSponsorData" [isMultiSelect]="false"
+                    (onSelection)="onSponsorCode($event)" (close)="showSponsorModal = false">
+                </app-search-modal>
+
+                <app-search-modal [(isShow)]="showSellerModal" header="Seller/Buyer"
+                    colDefUrl="fscm/transactions/invoiceEntry/private/sellerBuyerColDefs"
+                    rowDefUrl="fscm/transactions/invoiceEntry/private/getSellerBuyerData" [isMultiSelect]="false"
+                    (onSelection)="onSellerCode($event)" (close)="showSellerModal = false">
+                </app-search-modal>
+
+                <app-search-modal [(isShow)]="showEntityCodeModal" header="Entity Code"
+                    colDefUrl="fscm/transactions/invoiceEntry/private/entitySubCodeColDefs"
+                    rowDefUrl="fscm/transactions/invoiceEntry/private/getEntitySubCodeData" [isMultiSelect]="false"
+                    (onSelection)="onEntityCode($event)" (close)="showEntityCodeModal = false">
+                </app-search-modal>
+
+
+                <div class="p-grid p-px-2">
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="sponsorCode" id="sponsorCode" label="{{ 'Sponsor Code' | apsTranslate }}"
+                            rightIcon="fa-search" (onRightIcon)="showSponsorModal = true" [readonly]="true"
+                            [(ngModel)]="formData.sponsorCode" [required]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="sponsorName" id="sponsorName" label="{{ 'Sponsor Name' | apsTranslate }}"
+                            [(ngModel)]="formData.sponsorName" [required]="true" [disabled]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="sellerBuyerCode" id="sellerBuyerCode"
+                            label="{{ 'Buyer/Seller Code' | apsTranslate }}" [(ngModel)]="formData.sellerBuyerCode"
+                            rightIcon="fa-search" (onRightIcon)="showSellerModal = true" [readonly]="true"
+                            [required]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="sellerBuyerName" id="sellerBuyerName"
+                            label="{{ 'Buyer/Seller Name' | apsTranslate }}" [(ngModel)]="formData.sellerBuyerName"
+                            [required]="true" [disabled]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-custom-select name="productCategory" id="productCategory"
+                            label="{{ 'Product Category' | apsTranslate }}" [(ngModel)]="formData.productCategory"
+                            [value]="formData.productCategory"
+                            dataUrl="fscm/transactions/invoiceEntry/private/getProductCategory"
+                            [reqBody]="{ sellerBuyerCode: formData.sellerBuyerCode }"
+                            (change)="formData.programReferenceNumberName = ''" [required]="true"></aps-custom-select>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-custom-select name="programReferenceNumberName" id="programReferenceNumberName"
+                            label="{{ 'Program Reference Number - Name' | apsTranslate }}"
+                            [(ngModel)]="formData.programReferenceNumberName"
+                            [value]="formData.programReferenceNumberName"
+                            dataUrl="fscm/transactions/invoiceEntry/private/getProgramReferenceNumber" [reqBody]="{
+                            sellerBuyerCode: formData.sellerBuyerCode,
+                            productCategory: formData.productCategory
+                          }" [required]="true"></aps-custom-select>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="entitySubCode" id="entitySubCode"
+                            label="{{ 'Entity Sub Code' | apsTranslate }}" [(ngModel)]="formData.entitySubCode"
+                            rightIcon="fa-search" (onRightIcon)="showEntityCodeModal = true" [readonly]="true"
+                            [required]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="entitySubCodeDescription" id="entitySubCodeDescription"
+                            label="{{ 'Entity Sub Code Description' | apsTranslate }}"
+                            [(ngModel)]="formData.entitySubCodeDescription" [required]="true"
+                            [disabled]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-custom-select name="documentType" id="documentType"
+                            label="{{ 'Document Type' | apsTranslate }}" [(ngModel)]="formData.documentType"
+                            [value]="formData.documentType" [data]="[{ id: 'IN', displayName: 'IN' }]"
+                            [required]="true"></aps-custom-select>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="purchaseOrderNo" id="purchaseOrderNo"
+                            label="{{ 'Purchase Order Number' | apsTranslate }}" [(ngModel)]="formData.purchaseOrderNo"
+                            [required]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-aps-calender name="purchaseOrderDate" id="purchaseOrderDate"
+                            label="{{ 'Purchase Order Date' | apsTranslate }}" [(ngModel)]="formData.purchaseOrderDate"
+                            [required]="true"></app-aps-calender>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-aps-calender name="poEntryDate" id="poEntryDate"
+                            label="{{ 'PO Entry Date' | apsTranslate }}" [(ngModel)]="formData.poEntryDate"
+                            [required]="true"></app-aps-calender>
+                    </div>
+
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="p-grid">
+                            <div class="p-col-3 p-pt-0 p-pl-0">
+                                <aps-custom-select label="CCY" id="poValueCcy" name="poValueCcy"
+                                    [(ngModel)]="formData.poValueCcy" [data]="currencyList" [required]="true">
+                                </aps-custom-select>
+                            </div>
+                            <div class="p-col-9 p-pt-0 p-pr-0">
+                                <aps-form-input id="poValueAmount" name="poValueAmount"
+                                    label="{{ 'lbl_amount' | translate }}" minLength="1" maxLength="16"
+                                    placeholder="{{ 'lbl_enter_amount' | translate }}" inputType="currencyFormatNotZero"
+                                    [required]="true" [(ngModel)]="formData.poValueAmount">
+                                </aps-form-input>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-aps-calender name="poExpiryDate" id="poExpiryDate"
+                            label="{{ 'PO Expiry Date' | apsTranslate }}" [(ngModel)]="formData.poExpiryDate"
+                            [required]="true"></app-aps-calender>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-aps-calender name="expectedDeliveryDate" id="expectedDeliveryDate"
+                            label="{{ 'Expected Delivery Date' | apsTranslate }}"
+                            [(ngModel)]="formData.expectedDeliveryDate" [required]="true"></app-aps-calender>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="billingAddress" id="billingAddress"
+                            label="{{ 'Billing Address' | apsTranslate }}" [(ngModel)]="formData.billingAddress"
+                            [required]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="deliveryAddress" id="deliveryAddress"
+                            label="{{ 'Delivery Address' | apsTranslate }}" [(ngModel)]="formData.deliveryAddress"
+                            [required]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <aps-form-input name="remarks" id="remarks" label="{{ 'Remarks' | apsTranslate }}"
+                            [(ngModel)]="formData.remarks" [required]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-size-12 text-color-normal p-mb-1">
+                            {{ 'Supporting Documents' | apsTranslate }}
+                        </div>
+                        <upload-form-control [files]="formData.supportingDocument"
+                            [hideDragDropContainerOnFIleUpload]="true"></upload-form-control>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+        <div class="aps-card p-mb-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">PO Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Sponsor Code"
+                            [value]="formData.sponsorCode"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Sponsor Name"
+                            [value]="formData.sponsorName"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Buyer/Seller Code"
+                            [value]="formData.sellerBuyerCode"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Buyer/Seller Name"
+                            [value]="formData.sellerBuyerName"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Product Category"
+                            [value]="formData.productCategory"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Program Reference Number - Name"
+                            [value]="formData.programReferenceNumberName"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Entity Sub Code"
+                            [value]="formData.entitySubCode"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Entity Sub Code Description"
+                            [value]="formData.entitySubCodeDescription"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Document Type"
+                            [value]="formData.documentType"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Purchase Order Number"
+                            [value]="formData.purchaseOrderNo"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Purchase Order Date"
+                            [value]="formData.purchaseOrderDate"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="PO Entry Date"
+                            [value]="formData.poEntryDate"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="p-grid">
+                            <div class="p-col-3 p-pt-0 p-pl-0">
+                                <app-review-form-field label="CCY"
+                                    [value]="formData.poValueCcy"></app-review-form-field>
+                            </div>
+                            <div class="p-col-9 p-pt-0 p-pr-0">
+                                <app-review-form-field label="Amount"
+                                    [value]="formData.poValueAmount"></app-review-form-field>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="PO Expiry Date"
+                            [value]="formData.poExpiryDate"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Expected Delivery Date"
+                            [value]="formData.expectedDeliveryDate"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12"></div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Billing Address"
+                            [value]="formData.billingAddress"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Delivery Address"
+                            [value]="formData.deliveryAddress"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Remarks" [value]="formData.remarks"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12"></div>
+                    <div class="p-md-3 p-sm-12 p-col-12">
+                        <app-review-form-field label="Supporting Documents" type="file"
+                            [value]="formData.supportingDocument ? formData.supportingDocument : ''">
+                        </app-review-form-field>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

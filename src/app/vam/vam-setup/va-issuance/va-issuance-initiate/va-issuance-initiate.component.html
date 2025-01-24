@@ -1,0 +1,868 @@
+<div *ngIf="!viewMode" class="container p-mt-3">
+  <!-- Step Tracker -->
+  <app-stepper-header [parentRef]="this" #stepperHeader></app-stepper-header>
+  <form #parentForm="ngForm" name="parentForm">
+    <ng-container *ngIf="stepperDetails.currentStep == 1">
+      <form #accountDetailsForm="ngForm" name="accountDetailsForm">
+        <div class="aps-card p-my-3 aps-min-h-400">
+          <div class="aps-card-header">
+            <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+              {{ 'Account Details' | apsTranslate }}
+            </div>
+          </div>
+
+          <div class="aps-card-body p-p-3">
+            <div class="p-grid g-margin-x">
+              <!--<div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                <aps-custom-select
+                  (change)="onAccountSelection($event)"
+                  [(ngModel)]="formData.corporateAccountId"
+                  [data]="accountNoList"
+                  [value]="formData.corporateAccountId" id="accountNo"
+                  [label]="'Account Number' | apsTranslate" name="accountNo"
+                  required="true">
+                </aps-custom-select>
+              </div>-->
+
+              <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                <aps-custom-select
+                  (change)="onCorporateStructure($event)"
+                  [(ngModel)]="formData.corporateStructureId"
+                  [data]="corporateStructureList"
+                  [label]="'Corporate Structure' | apsTranslate"
+                  [value]="formData.corporateStructureId"
+                  id="corporateStructure"
+                  name="corporateStructure"
+                  required="true"
+                >
+                </aps-custom-select>
+              </div>
+            </div>
+            <div *ngIf="formData" class="p-grid g-margin-x">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Length of Virtual Account' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.lenOfVA }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Total no of VA' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.countOfVA }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Prefix value' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.prefixValue }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Unissued Virtual Account' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.unIssuedVirtualAccount }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Virtual Account Creation Logic' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.vaCreationLogic }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Account No' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.corporateAccount }}</div>
+              </div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'VA Structure For' | apsTranslate }}
+                </div>
+                <div class="text-size-14">{{ formData.structureCreationFor }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ng-container>
+
+    <ng-container
+      *ngIf="formData.structureCreationFor == 'POBO' && stepperDetails.currentStep == 2"
+    >
+      <ng-container
+        ><div class="p-my-3">
+          <div [ngClass]="{ 'left-right-container': viewport === 'web' }">
+            <div
+              [ngClass]="{ 'aps-w-48p': viewport === 'web', 'aps-w-100p': viewport !== 'web' }"
+              class="left-container"
+            >
+              <div class="aps-card p-py-3">
+                <div class="p-px-3 p-mb-1 text-size-14 text-semi-bold">
+                  {{ 'Select Sub Entity' | apsTranslate }}
+                </div>
+                <div class="p-grid">
+                  <div
+                    [ngClass]="{
+                      'text-color-light-shade-3': !formData.subEntityName,
+                      'text-semi-bold': formData.subEntityName
+                    }"
+                    class="p-col-12 p-md-6 p-lg-6 p-px-3 p-pt-4 text-size-14"
+                  >
+                    {{ formData.subEntityName || 'Sub Entity Name' | apsTranslate }}
+                  </div>
+                  <div class="p-col-12 p-md-6 p-lg-6">
+                    <button
+                      (click)="showSearchSubEntityModal = true"
+                      class="btn btn-md btn-tertiary float-right"
+                    >
+                      <span *ngIf="!formData.subEntityName">{{
+                        'SELECT' | apsTranslate | uppercase
+                      }}</span>
+                      <span>{{ 'SUB ENTITY' | translate }}</span>
+                    </button>
+                    <app-search-modal
+                      (onSelection)="onSubEntitySelection($event)"
+                      [(isShow)]="showSearchSubEntityModal"
+                      [colDefUrl]="URL_CONST.SUB_ENTITY_COL_DEF_URL"
+                      [header]="'Select Sub Entity' | apsTranslate"
+                      [rowDefUrl]="URL_CONST.SEARCH_SUB_ENTITY_CREATE"
+                    >
+                    </app-search-modal>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              [ngClass]="{ 'p-pt-6': viewport === 'web', 'p-py-3': viewport !== 'web' }"
+              class="p-px-3"
+            >
+              {{ 'OR' | apsTranslate }}
+            </div>
+            <div
+              [ngClass]="{ 'aps-w-48p': viewport === 'web', 'aps-w-100p': viewport !== 'web' }"
+              class="right-container"
+            >
+              <div class="aps-card p-py-3">
+                <div class="p-px-3 p-mb-1 text-size-14 text-semi-bold">
+                  {{ 'Add New Sub Entity' | apsTranslate }}
+                </div>
+                <div class="p-grid">
+                  <div class="p-col-12 p-px-3">
+                    <button
+                      (click)="showRunTimeSubEntity()"
+                      class="btn btn-md btn-tertiary aps-w-100p border-primary"
+                    >
+                      {{ 'Add New Sub Entity' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="!showRunTimeSubEntityForm && !sunEntityFromSearchModal"
+          class="aps-card p-my-3 aps-h-300"
+        >
+          <app-nothing-here
+            [message]="'Select Or Add SubEntity to Begin' | apsTranslate"
+            class="p-col-12"
+          ></app-nothing-here>
+        </div>
+      </ng-container>
+
+      <div [hidden]="showRunTimeSubEntityForm !== true">
+        <app-sub-entity-initiate #subEntityInitiateComponent [subEntityDetails]="formData">
+        </app-sub-entity-initiate>
+      </div>
+      <ng-container *ngIf="sunEntityFromSearchModal && !showRunTimeSubEntityForm">
+        <app-sub-entity-view [subEntityDetails]="formData"> </app-sub-entity-view>
+      </ng-container>
+    </ng-container>
+
+    <ng-container
+      *ngIf="
+        (formData.structureCreationFor == 'POBO' && stepperDetails.currentStep == 3) ||
+        (formData.structureCreationFor == 'COBO' && stepperDetails.currentStep == 2)
+      "
+    >
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+            {{ 'Virtual Account Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-col-12 aps-h-200">
+              <app-ag-grid-listing
+                #virtualAccountTable
+                [columnDefs]="virtualAccountColDef"
+                [context]="{ componentParent: this }"
+                [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+                [rowData]="formData.vAIssuanceAccountDetList"
+                id="virtualAccountTable"
+              ></app-ag-grid-listing>
+            </div>
+          </div>
+          <div *ngIf="showAddNewAccBtn() && !showVAAddPage" class="p-grid g-margin-x">
+            <div class="p-md-12 p-sm-12 p-col-12 p-py-0 p-text-right">
+              <button
+                (click)="addVirtualAccount()"
+                class="p-mx-3 p-mt-3 btn-primary btn btn-md text-size-14 text-semi-bold"
+              >
+                ADD VIRTUAL ACCOUNT
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showVAAddPage" class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+            {{ 'New Virtual Account Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body p-p-3">
+          <form #virtualAccountDetailsForm="ngForm" name="virtualAccountDetailsForm">
+            <div class="p-grid g-margin-x">
+              <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Virtual Account Number' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">
+                      {{ virtualAccountData.virtualAccountNo || 'HR123456788' }}
+                    </div>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Currency' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ virtualAccountData.vaCurrency || 'INR' }}</div>
+                  </div>
+                </div>
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <aps-form-input
+                      #vaAdhocLimitInPercent="ngModel"
+                      [(ngModel)]="virtualAccountData.vaDescription"
+                      [label]="'Virtual Account Description' | apsTranslate"
+                      id="vaAliasDesc"
+                      name="vaAdhocLimitInPercent"
+                    ></aps-form-input>
+                  </div>
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <aps-form-input
+                      #vaAdhocLimitInPercent="ngModel"
+                      [(ngModel)]="virtualAccountData.vaAliasName"
+                      [label]="'Virtual Account Alias Name' | apsTranslate"
+                      id="vaAliasName"
+                      name="vaAdhocLimitInPercent"
+                    ></aps-form-input>
+                  </div>
+                  <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                    <app-aps-calender
+                      [(ngModel)]="virtualAccountData.vaExpiryDate"
+                      [label]="'Expiry Date' | apsTranslate"
+                      [required]="true"
+                      [showIcon]="true"
+                      id="vaExpiryDate"
+                      name="vaExpiryDate"
+                    ></app-aps-calender>
+                  </div>
+                </div>
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <aps-form-input
+                      #encrichment1="ngModel"
+                      [(ngModel)]="virtualAccountData.enrichment1"
+                      [label]="'Encrichment 1' | apsTranslate"
+                      id="encrichment1"
+                      name="encrichment1"
+                    ></aps-form-input>
+                  </div>
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <aps-form-input
+                      #encrichment2="ngModel"
+                      [(ngModel)]="virtualAccountData.enrichment2"
+                      [label]="'Encrichment 2' | apsTranslate"
+                      id="encrichment2"
+                      name="encrichment2"
+                    ></aps-form-input>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-4 p-md-4 p-my-3 p-py-0">
+                <div class="aps-card aps-h-200">
+                  <div class="p-px-3 p-pt-3 text-size-14 text-semi-bold">
+                    {{ 'lbl_upload_documents' | translate }}
+                  </div>
+                  <div class="p-px-3 text-size-10 text-color-light-shade-1">
+                    {{ 'Max 10MB' | apsTranslate }}
+                  </div>
+                  <div class="p-px-3 p-py-2">
+                    <upload-form-control
+                      (onUploaded)="onFileUploaded($event)"
+                      [files]="uploadedFiles"
+                      isMultiple="true"
+                    ></upload-form-control>
+                  </div>
+                  <div class="p-px-3 text-size-10 text-color-light-shade-1">
+                    {{
+                      'We Support PDF,JPEG Files. Make Sure that your file is no more than Max 10MB'
+                        | apsTranslate
+                    }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid g-margin-x" *ngIf="formData.structureCreationFor == 'COBO'">
+              <div class="aps-card p-my-3 p-col-12">
+                <div class="aps-card-header">
+                  <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+                    {{ 'Corporate Client Details' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="aps-card-body p-p-3">
+                  <form #vaCorporateClientDetailsForm="ngForm" name="vaCorporateClientDetailsForm">
+                    <div class="p-grid g-margin-x">
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.corporateClientCode"
+                          [label]="'Corporate Client Code' | apsTranslate"
+                          id="corporateClientCode"
+                          name="corporateClientCode"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.corporateClientName"
+                          [label]="'Corporate Client Name' | apsTranslate"
+                          id="corporateClientName"
+                          name="corporateClientName"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.clientAliasName"
+                          [label]="'Client Alias Name' | apsTranslate"
+                          id="clientAliasName"
+                          name="clientAliasName"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.clientTrnNo"
+                          [label]="'Client TRN Number' | apsTranslate"
+                          id="clientTrnNo"
+                          name="clientTrnNo"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.clientUniqueIdNo"
+                          [label]="'Client Unique ID No' | apsTranslate"
+                          id="clientUniqueIdNo"
+                          name="clientUniqueIdNo"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.address1"
+                          [label]="'Address 1' | apsTranslate"
+                          id="address1"
+                          name="address1"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.address2"
+                          [label]="'Address 2' | apsTranslate"
+                          id="address2"
+                          name="address2"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.address3"
+                          [label]="'Address 3' | apsTranslate"
+                          id="address3"
+                          name="address3"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.accountNo"
+                          [label]="'Account Number' | apsTranslate"
+                          id="accountNo"
+                          name="accountNo"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.bankName"
+                          [label]="'Bank Name' | apsTranslate"
+                          id="bankName"
+                          name="bankName"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.branchName"
+                          [label]="'Branch Name' | apsTranslate"
+                          id="branchName"
+                          name="branchName"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid g-margin-x">
+              <div class="aps-card p-my-3 p-col-12">
+                <div class="aps-card-header">
+                  <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+                    {{ 'Contact Details' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="aps-card-body p-p-3">
+                  <form #vaContactDetailsForm="ngForm" name="vaContactDetailsForm">
+                    <div class="p-grid g-margin-x">
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="vaContactObj.contactDetName"
+                          [label]="'Contact Person Name' | apsTranslate"
+                          id="vacontactPersonName"
+                          name="contactPersonName"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="vaContactObj.contactDetEmail"
+                          [label]="'Email Id' | apsTranslate"
+                          id="vaemailId"
+                          name="emailId"
+                          type="noSpace"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="vaContactObj.contactDetDesignation"
+                          [label]="'Designation' | apsTranslate"
+                          id="vadesignation"
+                          name="designation"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-2 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="vaContactObj.contactDetMobile"
+                          [label]="'Telephone Number' | apsTranslate"
+                          id="vamobileNo"
+                          inputType="numeric"
+                          name="mobileNo"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-1 p-sm-12 p-col-12 p-py-0 p-text-right">
+                        <button
+                          (click)="addVAContact(); vaContactDetailsForm.reset()"
+                          [disabled]="vaContactDetailsForm.invalid"
+                          class="p-mx-3 p-mt-3 btn-primary btn btn-md text-size-14 text-semi-bold"
+                        >
+                          ADD
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                  <div class="p-grid g-margin-x">
+                    <div class="p-col-12 aps-h-200 border-top">
+                      <app-ag-grid-listing
+                        #vaContactDetailsTable
+                        [columnDefs]="contactColDef"
+                        [context]="{ componentParent: this }"
+                        [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+                        [rowData]="virtualAccountData.vaContactDetList"
+                        id="vaContactDetailsTable"
+                      ></app-ag-grid-listing>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--VA LIMIT -->
+            <div class="p-grid g-margin-x">
+              <div class="aps-card p-my-3 p-col-12">
+                <div class="aps-card-header">
+                  <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+                    {{ 'Limit Arrangement Details' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="aps-card-body p-p-3">
+                  <form #vaLimitForm="ngForm" name="vaLimitForm">
+                    <div *ngIf="formData.subEntityLimitType !== 'FIFO'" class="p-grid g-margin-x">
+                      <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          [(ngModel)]="virtualAccountData.vaAllocatedLimit"
+                          [label]="'Allocated Limit' | apsTranslate"
+                          id="vaAllocatedLimit"
+                          inputType="currencyFormatNotZero"
+                          name="vaAllocatedLimit"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-size-12 text-color-light-shade-1">
+                          {{ 'Limit Replenish Period' | apsTranslate }}
+                        </div>
+                        <div class="text-size-14">{{ formData.subEntityLimitResetPeriodId }}</div>
+                      </div>
+
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-size-12 text-color-light-shade-1">
+                          {{ 'Limit Replenish Day/Date' | apsTranslate }}
+                        </div>
+                        <div class="text-size-14">{{ formData.subEntityLimitResetOnId }}</div>
+                      </div>
+
+                      <div class="p-md-12 p-sm-12 p-col-12">
+                        <div class="text-size-14 text-color-light-shade-1">
+                          {{ 'Allow Override Limit' | apsTranslate }}
+                        </div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="p-pt-2">
+                          <p-inputSwitch
+                            (onChange)="vaAllowOverrideIn.reset()"
+                            [(ngModel)]="virtualAccountData.vaAllowOverrideLimit"
+                            [disabled]="!formData.subEntityAllowOverrideLimit"
+                            id="vaAllowOverrideLimit"
+                            name="vaAllowOverrideLimit"
+                          >
+                          </p-inputSwitch
+                          ><!--(onChange)="resetFormSubEntityLimitForm(subEntityLimitForm)"-->
+                        </div>
+                      </div>
+
+                      <div
+                        [hidden]="!virtualAccountData.vaAllowOverrideLimit"
+                        class="p-md-3 p-sm-12 p-col-12 p-py-0"
+                      >
+                        <aps-custom-select
+                          #vaAllowOverrideIn="ngModel"
+                          (change)="
+                            vaAdhocLimitInPercent.reset();
+                            vaAdhocLimit.reset();
+                            onChangeVAAllowOverrideIn($event)
+                          "
+                          [(ngModel)]="virtualAccountData.vaAllowOverrideInId"
+                          [data]="overrideInData"
+                          [label]="'Allow Override in' | apsTranslate"
+                          [required]="virtualAccountData.vaAllowOverrideLimit"
+                          [value]="virtualAccountData.vaAllowOverrideInId"
+                          id="vaAllowOverrideIn"
+                          name="vaAllowOverrideIn"
+                        >
+                        </aps-custom-select>
+                      </div>
+
+                      <div
+                        [hidden]="virtualAccountData.vaAllowOverrideInId !== 'ADHOCLIMITINPERCENT'"
+                        class="p-md-3 p-sm-12 p-col-12 p-py-0"
+                      >
+                        <aps-form-input
+                          #vaAdhocLimitInPercent="ngModel"
+                          [(ngModel)]="virtualAccountData.vaAdhocLimitInPercent"
+                          [label]="'Adhoc Limit %' | apsTranslate"
+                          [required]="
+                            virtualAccountData.vaAllowOverrideInId === 'ADHOCLIMITINPERCENT'
+                          "
+                          id="vaAdhocLimitInPercent"
+                          inputType="numeric"
+                          name="vaAdhocLimitInPercent"
+                        ></aps-form-input
+                        ><!-- #subEntityAdhocLimitInPercent="ngModel"-->
+                      </div>
+
+                      <div
+                        [hidden]="virtualAccountData.vaAllowOverrideInId !== 'ADHOCLIMIT'"
+                        class="p-md-3 p-sm-12 p-col-12 p-py-0"
+                      >
+                        <aps-form-input
+                          #vaAdhocLimit="ngModel"
+                          [(ngModel)]="virtualAccountData.vaAdhocLimit"
+                          [label]="'Adhoc Limit' | apsTranslate"
+                          [required]="virtualAccountData.vaAllowOverrideInId === 'ADHOCLIMIT'"
+                          id="vaAdhocLimit"
+                          inputType="currencyFormatNotZero"
+                          name="vaAdhocLimit"
+                        ></aps-form-input
+                        ><!--#subEntityAdhocLimit="ngModel"-->
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid g-margin-x">
+              <div class="p-md-12 p-sm-12 p-col-12 p-py-0 p-text-right">
+                <button
+                  (click)="virtualAccountDetailsForm.reset(); cancelVirtualAccount()"
+                  class="p-mx-3 p-mt-3 btn-primary btn btn-md text-size-14 text-semi-bold"
+                >
+                  CANCLE
+                </button>
+                <button
+                  (click)="saveVirtualAccount()"
+                  class="p-mx-3 p-mt-3 btn-primary btn btn-md text-size-14 text-semi-bold"
+                >
+                  SAVE DETAILS
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container
+      *ngIf="
+        (formData.structureCreationFor == 'POBO' && stepperDetails.currentStep == 4) ||
+        (formData.structureCreationFor == 'COBO' && stepperDetails.currentStep == 3)
+      "
+    >
+      <form #confimForm="ngForm" name="confimForm">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-6 p-sm-12 p-mt-3">
+            <div class="aps-card aps-h-300">
+              <div class="aps-card-header">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div
+                      class="text-size-16 text-semi-bold text-color-dark-shade-1 p-px-3 aps-py-12"
+                    >
+                      {{ 'Account Details' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <app-icon
+                      (click)="stepperDetails.currentStep = 1"
+                      icon="fa-pencil"
+                      styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Corporate Structure' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ formData.corporateStructure }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Length of Virtual Account' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ corporateVAStructureData.lenOfVA }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Prefix value' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ corporateVAStructureData.prefixValue }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Unissued Virtual Account' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">
+                      {{ corporateVAStructureData.unIssuedVirtualAccount }}
+                    </div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Virtual Account Creation Logic' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ corporateVAStructureData.vaCreationLogic }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Account No' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ corporateVAStructureData.corporateAccount }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'VA Structure For' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">
+                      {{ corporateVAStructureData.structureCreationFor }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-6 p-sm-12 p-mt-3">
+            <div class="aps-card aps-h-300">
+              <div class="aps-card-header">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div
+                      class="text-size-16 text-semi-bold text-color-dark-shade-1 p-px-3 aps-py-12"
+                    >
+                      {{ 'Sub Entity Details' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <app-icon
+                      (click)="stepperDetails.currentStep = 2"
+                      icon="fa-pencil"
+                      styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Sub Entity Code' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ formData.subEntityCode }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Sub Entity Name' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ formData.subEntityName }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Sub Entity Alias Name' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ formData.subEntityAliasName }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Limit Applicable' | apsTranslate }}
+                    </div>
+                    <div class="p-pt-2">
+                      <p-inputSwitch
+                        [(ngModel)]="formData.subEntityLimitApplicable"
+                        disabled="true"
+                        name="subEntityLimitApplicable"
+                      >
+                      </p-inputSwitch
+                      ><!--(onChange)="resetFormSubEntityLimitForm(subEntityLimitForm)"-->
+                    </div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Limit Type' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ formData.subEntityLimitType }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Allocated Limit' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ formData.subEntityAllocatedLimit }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Limit Replenish Period' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ formData.subEntityLimitResetPeriodId }}</div>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Limit Replenish Day / Date' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">{{ formData.subEntityLimitResetOnId }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-md-12 p-sm-12 p-my-1">
+            <div class="aps-card aps-h-300">
+              <div class="aps-card-header">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div
+                      class="text-size-16 text-semi-bold text-color-dark-shade-1 p-px-3 aps-py-12"
+                    >
+                      {{ 'Virtual Account Details' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <app-icon
+                      (click)="stepperDetails.currentStep = 3"
+                      icon="fa-pencil"
+                      styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                  <div class="p-col-12 aps-h-200">
+                    <app-ag-grid-listing
+                      #virtualAccountTable
+                      [columnDefs]="virtualAccountColDef"
+                      [context]="{ componentParent: this }"
+                      [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+                      [rowData]="formData.vAIssuanceAccountDetList"
+                    ></app-ag-grid-listing>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </ng-container>
+  </form>
+  <!-- Form Actions -->
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>
+<ng-container *ngIf="viewMode">
+  <div class="container p-mt-3">
+    <app-va-issuance-view [viewData]="formData"></app-va-issuance-view>
+  </div>
+</ng-container>

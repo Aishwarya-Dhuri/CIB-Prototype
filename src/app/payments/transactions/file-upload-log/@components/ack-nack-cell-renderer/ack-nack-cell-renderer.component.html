@@ -1,0 +1,14 @@
+<span
+  *ngIf="params.data?.status == 'E'"
+  class="text-color-light-shade-1 text-size-12 text-bold pointer"
+  (click)="onAckNackClick('NACK')"
+  >NACK</span
+>
+<span
+  *ngIf="params.data?.status == 'S'"
+  class="text-color-light-shade-1 text-size-12 text-bold pointer"
+  (click)="onAckNackClick('ACK')"
+  >ACK</span
+>
+&nbsp;
+<span class="text-size-12 text-bold pointer" (click)="onStatusClick()">STATUS</span>

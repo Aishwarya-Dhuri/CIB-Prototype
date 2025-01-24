@@ -1,0 +1,186 @@
+<ng-container *ngIf="!loading; else loadingTemplate">
+  <div class="p-grid g-margin-x">
+    <div class="p-md-6 p-sm-12 p-col-12">
+      <div class="text-size-14 text-semi-bold p-mb-2">Fund Based Line summary</div>
+      <div class="background-color-dark-4 border-radius-6 p-p-3">
+        <div class="text-size-14 text-semi-bold">
+          {{ 'Total Allocated Limit' | apsTranslate }}
+        </div>
+        <div class="text-size-20 text-bold p-mt-2">
+          <app-base-currency
+            [amount]="creditLineSummaryGroupData.totalAllocatedLimit"
+            display="code"
+            digitsInfo="1.0-0"
+          ></app-base-currency>
+        </div>
+        <div class="p-mt-2">
+          <app-limit-bar
+            [utilized]="creditLineSummaryGroupData.utilizedLimit"
+            [available]="creditLineSummaryGroupData.availableLimit"
+          ></app-limit-bar>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-6 p-sm-12 p-col-12">
+      <div class="text-size-14 text-semi-bold p-mb-2">Non Fund Based line summary</div>
+      <div class="background-color-dark-4 border-radius-6 p-p-3">
+        <div class="text-size-14 text-semi-bold">
+          {{ 'Total Allocated Limit' | apsTranslate }}
+        </div>
+        <div class="text-size-20 text-bold p-mt-2">
+          <app-base-currency
+            [amount]="creditLineSummaryGroupData.totalAllocatedLimit"
+            display="code"
+            digitsInfo="1.0-0"
+          ></app-base-currency>
+        </div>
+        <div class="p-mt-2">
+          <app-limit-bar
+            [utilized]="creditLineSummaryGroupData.utilizedLimit"
+            [available]="creditLineSummaryGroupData.availableLimit"
+          ></app-limit-bar>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <div class="text-size-16 text-bold text-color-dark-shade-1">
+        {{ 'Corporates' | apsTranslate }} ({{ creditLineSummaryGroupData.corporates.length }})
+      </div>
+    </div>
+
+    <div class="p-col-12 p-py-0">
+      <div class="aps-h-300 p-p-1 overflow-x-hidden overflow-y-scroll">
+        <div
+          class="aps-card p-mb-3"
+          *ngFor="let corporate of creditLineSummaryGroupData.corporates"
+          (click)="toggleSelectedCorporate(corporate)"
+        >
+          <div class="p-grid">
+            <div class="p-md-6 p-sm-12 p-col-12 p-px-3 p-py-0 p-my-3 border-right">
+              <div class="left-right-container text-color-dark-shade-1">
+                <div class="left-container">
+                  <div class="label-with-icon-container">
+                    <div class="icon">
+                      <div class="corporate-icon">
+                        <img
+                          src="assets/images/{{ corporate.corporateImage }}"
+                          alt="corporate-logo"
+                        />
+                      </div>
+                    </div>
+                    <div class="label">
+                      <div class="text-size-16 text-bold">{{ corporate.corporateName }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="right-container">
+                  <div
+                    class="text-size-12 p-py-1 p-px-2 border-radius-4 background-color-primary-light-shade-2"
+                  >
+                    {{ 'Customer ID' | apsTranslate }} {{ corporate.corporateCode }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12 p-p-3">
+              <span class="text-size-12 text-semi-bold">
+                {{ 'Total Allocated Limit' | apsTranslate }}
+              </span>
+              <span>&nbsp;</span>
+              <span class="text-size-14 text-bold">
+                <app-base-currency
+                  [amount]="corporate.totalAllocatedLimit"
+                  display="code"
+                  digitsInfo="1.0-0"
+                ></app-base-currency>
+              </span>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+              <div class="left-right-container">
+                <div class="left-container p-p-3">
+                  <span class="text-size-12 text-semi-bold">{{
+                    'Credit Lines' | apsTranslate
+                  }}</span>
+                  &nbsp;
+                  <span class="text-size-14 text-bold">{{ corporate.creditLines.length }}</span>
+                </div>
+                <div class="right-container">
+                  <div class="inline-items">
+                    <div class="item p-p-2">
+                      <button
+                        class="btn btn-md btn-tertiary"
+                        (click)="viewCorporateDetails(corporate)"
+                      >
+                        {{ 'View Details' | apsTranslate }}
+                      </button>
+                    </div>
+                    <div class="item p-p-3">
+                      <app-icon icon="fa-chevron-down" styleClasses="text-size-12"></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="p-grid border-top"
+            *ngIf="selectedCorporate && selectedCorporate.corporateName === corporate.corporateName"
+          >
+            <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+              <div class="aps-h-200 p-pl-3 p-pr-0 p-py-3">
+                <div class="background-color-dark-4 aps-h-100p border-radius-6 p-p-3">
+                  <div class="text-size-14 text-semi-bold">
+                    {{ 'Total Allocated Limit' | apsTranslate }}
+                  </div>
+                  <div class="text-size-20 text-bold p-mt-2">
+                    <app-base-currency
+                      [amount]="corporate.totalAllocatedLimit"
+                      display="code"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                  <div class="p-mt-2">
+                    <app-limit-bar
+                      [utilized]="corporate.utilizedLimit"
+                      [available]="corporate.availableLimit"
+                    ></app-limit-bar>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-9 p-sm-12 p-col-12 p-p-3">
+              <div class="p-grid">
+                <div class="p-md-5 p-sm-12 p-col-12 p-px-3 p-py-0 border-right border-left">
+                  <div class="text-color-dark-shade-1 text-size-14 text-semi-bold">
+                    {{ 'Currency Wise Distribution' | apsTranslate }}
+                  </div>
+
+                  <app-pie-chart
+                    [options]="corporate.currencyWiseDistributionChartOptions"
+                    webHeight="150"
+                    mobileHeight="300"
+                  ></app-pie-chart>
+                </div>
+
+                <div class="p-md-7 p-sm-12 p-col-12 p-pl-3 p-pr-0 p-py-0">
+                  <div class="aps-h-100p">
+                    <app-insights [insights]="insights"></app-insights>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

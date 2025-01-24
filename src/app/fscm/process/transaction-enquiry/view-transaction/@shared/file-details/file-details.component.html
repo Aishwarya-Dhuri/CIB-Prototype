@@ -1,0 +1,16 @@
+<div class="p-grid text-size-14 p-p-3">
+  <div class="p-col-12 p-p-0 p-mb-3">
+    <div class="aps-card inline-block p-p-2 p-mr-2" *ngFor="let d of data">
+      <div class="label-with-icon-container">
+        <div class="icon">
+          <!-- <i class="pi pi-file"></i> -->
+          <app-icon icon="fa-file"></app-icon>
+        </div>
+        <div class="label text-color-light-shade-1">
+          <div class="text-size-12">{{ d.fileName }}</div>
+          <div class="text-size-10">{{ d.fileSize }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

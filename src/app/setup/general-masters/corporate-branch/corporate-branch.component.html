@@ -1,0 +1,490 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <div class="p-grid g-margin-x" [apsHide]="stepperDetails.currentStep != 1">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Corporate Branch' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <div class="background-color-dark-4 p-p-2">
+                <app-review-form-field
+                  label="Corporate Name"
+                  [value]="formData.corporateName"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="corporateBranchCode"
+                id="corporateBranchCode"
+                label="Corporate Branch Code"
+                [(ngModel)]="formData.corporateBranchCode"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="corporateBranchName"
+                id="corporateBranchName"
+                label="Corporate Branch Name"
+                [(ngModel)]="formData.corporateBranchName"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Address' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="locationName"
+                id="locationName"
+                label="Location Name"
+                [(ngModel)]="formData.locationName"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="pinCode"
+                id="pinCode"
+                label="PIN Code"
+                [(ngModel)]="formData.pinCode"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="city"
+                id="city"
+                label="City"
+                [(ngModel)]="formData.city"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="state"
+                id="state"
+                label="State"
+                [(ngModel)]="formData.state"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="country"
+                id="country"
+                label="Country"
+                [(ngModel)]="formData.country"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="telNo"
+                id="telNo"
+                label="Tel No"
+                [(ngModel)]="formData.telNo"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="faxNo"
+                id="faxNo"
+                label="FAX No"
+                [(ngModel)]="formData.faxNo"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="emailId"
+                id="emailId"
+                label="Email ID"
+                [(ngModel)]="formData.emailId"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="address1"
+                id="address1"
+                label="Address 1"
+                [(ngModel)]="formData.branchAddress1"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0" *ngIf="formData.branchAddressCount >= 2">
+              <aps-form-input
+                name="address2"
+                id="address2"
+                label="Address 2"
+                [(ngModel)]="formData.branchAddress2"
+                rightIcon="fa-trash-alt"
+                (onRightIcon)="formData.branchAddressCount = formData.branchAddressCount - 1"
+              ></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0" *ngIf="formData.branchAddressCount == 3">
+              <aps-form-input
+                name="address3"
+                id="address3"
+                label="Address 3"
+                [(ngModel)]="formData.branchAddress3"
+                rightIcon="fa-trash-alt"
+                (onRightIcon)="formData.branchAddressCount = formData.branchAddressCount - 1"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12" *ngIf="formData.branchAddressCount < 3">
+              <button
+                class="btn btn-md btn-secondary"
+                (click)="formData.branchAddressCount = formData.branchAddressCount + 1"
+              >
+                {{ 'Add More' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="left-right-container">
+                <div class="left-container">
+                  <div class="text-size-14 text-semi-bold">
+                    {{ 'Contact Information' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="right-container">
+                  <button
+                    class="btn btn-md btn-secondary"
+                    (click)="addContactInfo()"
+                    *ngIf="formData.contactInfo.length < 3"
+                  >
+                    {{ 'Add More' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngFor="let contactInfo of formData.contactInfo; let i = index">
+              <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+                <aps-form-input
+                  name="contactPersonName-{{ i }}"
+                  id="contactPersonName-{{ i }}"
+                  label="Contact Person Name"
+                  [(ngModel)]="contactInfo.contactPersonName"
+                  [required]="i == 0"
+                ></aps-form-input>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+                <aps-form-input
+                  name="designation-{{ i }}"
+                  id="designation-{{ i }}"
+                  label="Designation"
+                  [(ngModel)]="contactInfo.designation"
+                  [required]="i == 0"
+                ></aps-form-input>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+                <aps-form-input
+                  name="emailId-{{ i }}"
+                  id="emailId-{{ i }}"
+                  label="Email ID"
+                  [(ngModel)]="contactInfo.emailId"
+                  [required]="i == 0"
+                ></aps-form-input>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-12 p-p-0">
+                <div class="p-grid">
+                  <div class="p-py-0" [ngClass]="i == 0 ? 'p-col-12' : 'p-col-10'">
+                    <aps-form-input
+                      name="telNo-{{ i }}"
+                      id="telNo-{{ i }}"
+                      label="Tel No"
+                      [(ngModel)]="contactInfo.telNo"
+                      [required]="i == 0"
+                    ></aps-form-input>
+                  </div>
+                  <div class="p-col-2 p-py-3" *ngIf="i > 0">
+                    <app-icon
+                      class="pointer"
+                      icon="fa-trash-alt"
+                      (click)="removeContactInfo(i)"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Other Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <div class="text-size-12 text-color">
+                {{ 'Printer Available' | apsTranslate }}<sup class="text-danger">*</sup>
+              </div>
+              <p-radioButton
+                class="p-mr-3"
+                name="printerAvailable"
+                id="printerAvailableYes"
+                label="Yes"
+                value="Yes"
+                [(ngModel)]="formData.printerAvailable"
+              ></p-radioButton>
+              <p-radioButton
+                class=""
+                name="printerAvailable"
+                id="printerAvailableNo"
+                label="No"
+                value="No"
+                [(ngModel)]="formData.printerAvailable"
+              ></p-radioButton>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-custom-select
+                name="printBranch"
+                id="printBranch"
+                label="Print Branch"
+                [(ngModel)]="formData.printBranch"
+                [value]="formData.printBranch"
+                dataUrl="setup/generalMasters/corporateBranch/private/dropdown/printBranch"
+                (change)="formData.printBranchName = $event.displayName"
+                [required]="formData.printerAvailable == 'No'"
+                [disabled]="formData.printerAvailable == 'Yes'"
+              ></aps-custom-select>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <app-aps-calender
+                name="effectiveFrom"
+                id="effectiveFrom"
+                label="Effective From"
+                [(ngModel)]="formData.effectiveFrom"
+                [required]="true"
+              ></app-aps-calender>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <app-aps-calender
+                name="effectiveTill"
+                id="effectiveTill"
+                label="Effective Till"
+                [(ngModel)]="formData.effectiveTill"
+              ></app-aps-calender>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="noOfInstrumentPerPage"
+                id="noOfInstrumentPerPage"
+                label="Number of Instrument Per page"
+                [(ngModel)]="formData.noOfInstrumentPerPage"
+              ></aps-form-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid g-margin-x" [apsHide]="stepperDetails.currentStep != 2">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Corporate Branch' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Corporate Name"
+                [value]="formData.corporateName"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Corporate Branch Code"
+                [value]="formData.corporateBranchCode"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Corporate Branch Name"
+                [value]="formData.corporateBranchName"
+              ></app-review-form-field>
+            </div>
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Address' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Location Name"
+                [value]="formData.locationName"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="PIN Code"
+                [value]="formData.pinCode"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field label="City" [value]="formData.city"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field label="State" [value]="formData.state"></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Country"
+                [value]="formData.country"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Tel No"
+                [value]="formData.telNo"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="FAX No"
+                [value]="formData.faxNo"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Email ID"
+                [value]="formData.emailId"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Address 1"
+                [value]="formData.branchAddress1"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-6 p-col-12" *ngIf="formData.branchAddressCount >= 2">
+              <app-review-form-field
+                label="Address 2"
+                [value]="formData.branchAddress2"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-6 p-col-12" *ngIf="formData.branchAddressCount == 3">
+              <app-review-form-field
+                label="Address 3"
+                [value]="formData.branchAddress3"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Contact Information' | apsTranslate }}
+              </div>
+            </div>
+            <ng-container *ngFor="let contactInfo of formData.contactInfo; let i = index">
+              <div class="p-md-3 p-sm-6 p-col-12">
+                <app-review-form-field
+                  label="Contact Person Name"
+                  [value]="formData.contactPersonName"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-12">
+                <app-review-form-field
+                  label="Designation"
+                  [value]="formData.designation"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-12">
+                <app-review-form-field
+                  label="Email ID"
+                  [value]="formData.emailId"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-12">
+                <app-review-form-field
+                  label="Tel No"
+                  [value]="formData.telNo"
+                ></app-review-form-field>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Other Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Printer Available"
+                [value]="formData.printerAvailable"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Print Branch"
+                [value]="formData.printBranchName"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Effective From"
+                [value]="formData.effectiveFrom"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Effective Till"
+                [value]="formData.effectiveTill"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Number of Instrument Per page"
+                [value]="formData.noOfInstrumentPerPage"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12">
+        <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

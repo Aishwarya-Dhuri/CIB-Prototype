@@ -1,0 +1,14 @@
+<aps-form-input
+  id="authorizationLimit"
+  inputType="currencyFormatNotZero"
+  name="authorizationLimit"
+  label="Authorization Limit"
+  [(ngModel)]="cellValue"
+  [showLabel]="false"
+  [disabled]="
+    !data.isSelected ||
+    context?.componentParent?.stepperDetails?.currentStep ==
+      context?.componentParent?.stepperDetails?.headings?.length
+  "
+  (focusout)="onChange()"
+></aps-form-input>

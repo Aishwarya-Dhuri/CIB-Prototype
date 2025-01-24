@@ -1,0 +1,252 @@
+<div class="container text-color-dark-shade-1">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <div class="aps-card">
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+          <div class="aps-card aps-filled-card-primary-sm p-p-3 aps-h-100-p">
+            <div class="left-right-container">
+              <div class="left-container">
+                <img
+                  src="assets/images/{{ accountSummaryService.image }}"
+                  [alt]="accountSummaryService.name"
+                  class="img-40-x-40"
+                />
+              </div>
+              <div class="right-container">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <img
+                      src="assets/images/flag/{{ selectedCurrency.flag }}"
+                      [alt]="selectedCurrency.currency"
+                      class="country-flag-icon"
+                    />
+                  </div>
+                  <div class="label">
+                    <select
+                      class="select-primary text-size-14 text-color-inverted"
+                      name="currency"
+                      id="currency"
+                      (change)="changeCurrency($event.target.value)"
+                      [ngModel]="selectedCurrency.currency"
+                    >
+                      <option *ngFor="let currency of currencies" [value]="currency.currency">
+                        {{ currency.currency }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="text-color-inverted text-semi-bold text-size-16 p-pb-1">
+              {{ accountSummaryService.name }}
+            </div>
+            <div class="text-color-inverted text-size-12">
+              <span>{{ countries.length }} {{ 'Countries' | apsTranslate }} | </span
+              >{{ countriesData.totalAccounts }} {{ 'Accounts' | apsTranslate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-6 p-sm-12 p-col-12">
+          <div class="p-grid border-right no-border-on-mobile">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 p-p-3 border-radius-4">
+                <div class="text-size-20 text-bold p-mb-md-2 p-mb-sm-0 p-mb-0">
+                  <app-base-currency
+                    [amount]="countriesData.netBalance"
+                    [currency]="selectedCurrency.currency"
+                    display="code"
+                    digitsInfo="1.0-0"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">{{ 'Net Balance' | apsTranslate }}</div>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-success-light p-p-3 border-radius-4">
+                <div class="text-size-20 text-bold p-mb-md-2 p-mb-sm-0 p-mb-0 text-color-success">
+                  <app-base-currency
+                    [amount]="countriesData.assets"
+                    [currency]="selectedCurrency.currency"
+                    display="code"
+                    digitsInfo="1.0-0"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">{{ 'Assets' | apsTranslate }}</div>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-danger-light p-p-3 border-radius-4">
+                <div class="text-size-20 text-bold p-mb-md-2 p-mb-sm-0 p-mb-0 text-color-danger">
+                  <app-base-currency
+                    [amount]="countriesData.liabilities"
+                    [currency]="selectedCurrency.currency"
+                    display="code"
+                    digitsInfo="1.0-0"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">{{ 'Liabilities' | apsTranslate }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-3 p-sm-12 p-col-12 p-py-md-0 p-py-sm-2 p-py-2">
+          <app-pie-chart [options]="options" webHeight="120" mobileHeight="200"> </app-pie-chart>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-size-14 text-color-dark-shade-1 p-mt-4 p-mb-2">
+      Countries ({{ countries.length }})
+    </div>
+
+    <div class="aps-card aps-h-400 mobile-h-100p p-mb-3">
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+          <div class="aps-card aps-h-400 mobile-h-100p overflow-y-scroll overflow-x-hidden">
+            <div
+              class="p-p-3 border-bottom"
+              *ngFor="let country of countries"
+              [ngClass]="{ 'border-primary border-radius-4 ': country === activeCountry }"
+              (click)="changeCountry(country)"
+            >
+              <div class="label-with-icon-container">
+                <div class="icon">
+                  <img src="assets/images/flag/{{ country.flag }}" alt="country-flag-icon" />
+                </div>
+                <div class="label">
+                  <div class="text-size-14 text-semi-bold p-mb-1">{{ country.country }}</div>
+                  <div class="text-size-12 p-mb-2">
+                    <span class="inline-block"
+                      >{{ country.corporates.length }} {{ 'Corporates' | apsTranslate }}</span
+                    >
+                    <span class="inline-block p-px-2"> |</span>
+                    <span class="inline-block"
+                      >{{ country.totalAccounts }} {{ 'Accounts' | apsTranslate }}</span
+                    >
+                  </div>
+                  <div class="text-size-12 text-bold">
+                    <app-base-currency
+                      [amount]="country.balance"
+                      [currency]="country.currency"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-6 p-sm-12 p-col-12 p-p-0">
+          <div class="countries-map aps-h-400">
+            <div class="image">
+              <img
+                class="pointer"
+                [ngStyle]="{
+                  top: activeCountry.top * 100 + '%',
+                  left: activeCountry.left * 100 + '%'
+                }"
+                src="assets/images/map/Pointer.png"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+          <div class="aps-card p-p-3">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-16 text-color-dark-shade-1 text-semi-bold">
+                  {{ activeCountry.country }}
+                </div>
+              </div>
+              <div class="right-container">
+                <div class="pointer" routerLink="/accountServices/services/accountSummary">
+                  <app-icon icon="fa-external-link-square" styleClasses="text-size-16"></app-icon>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid g-margin-x">
+              <div class="p-col-12">
+                <div class="background-color-dark-3 aps-p-12">
+                  <div class="text-size-14 text-bold">
+                    <app-base-currency
+                      [amount]="activeCountry.balance"
+                      [currency]="selectedCurrency.currency"
+                      display="code"
+                      digitsInfo="1.0-0"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                  <div class="text-size-12">{{ 'Net Balance' | apsTranslate }}</div>
+                </div>
+              </div>
+              <div class="p-col-12">
+                <div class="background-color-success-light aps-p-12">
+                  <div class="text-size-14 text-bold text-color-success">
+                    <app-base-currency
+                      [amount]="activeCountry.balance * 0.75"
+                      [currency]="selectedCurrency.currency"
+                      display="code"
+                      digitsInfo="1.0-0"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                  <div class="text-size-12">{{ 'Assets' | apsTranslate }}</div>
+                </div>
+              </div>
+              <div class="p-col-12">
+                <div class="background-color-danger-light aps-p-12">
+                  <div class="text-size-14 text-bold text-color-danger">
+                    <app-base-currency
+                      [amount]="activeCountry.balance * 0.5"
+                      [currency]="selectedCurrency.currency"
+                      display="code"
+                      digitsInfo="1.0-0"
+                      digitsInfo="1.0-0"
+                    ></app-base-currency>
+                  </div>
+                  <div class="text-size-12">{{ 'Liabilities' | apsTranslate }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="heading text-size-12 p-mt-2">{{ 'Corporates' | apsTranslate }}</div>
+            <div class="aps-h-70 mobile-h-100p overflow-y-scroll overflow-x-hidden">
+              <div class="p-pt-2" *ngFor="let corporate of activeCountry.corporates">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <img
+                      src="assets/images/{{ corporate.corporateImage }}"
+                      alt=""
+                      class="img-35-x-35"
+                    />
+                  </div>
+
+                  <div class="label">
+                    <div class="heading text-size-14 text-semi-bold">
+                      {{ corporate.corporateName }}
+                    </div>
+                    <div class="text-size-10 p-mt-1">
+                      {{ corporate.totalAccounts }} {{ 'Accounts' | apsTranslate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

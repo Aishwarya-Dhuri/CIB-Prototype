@@ -1,0 +1,278 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal size="md" headerText="Batch Transaction Details" [(isShow)]="showBatchTransactions">
+      <div body class="aps-h-400 p-mt-3">
+        <app-ag-grid-listing
+          [columnDefs]="transactionColDefs"
+          [rowData]="transactionRowData"
+          [gridOptions]="{ rowModelType: 'clientSide' }"
+        ></app-ag-grid-listing>
+      </div>
+    </app-modal>
+
+    <!-- for singlePayment -->
+    <app-modal [(isShow)]="showSinglePayment" size="lg" headerText="Single Payment">
+      <div class="aps-h-500">
+        <app-large-single-payment-initiate
+          [isViewMode]="true"
+          *ngIf="showSinglePayment"
+        ></app-large-single-payment-initiate>
+      </div>
+    </app-modal>
+
+    <!-- for bulkPayment -->
+    <app-modal [(isShow)]="showBulkPayment" size="lg" headerText="Bulk Payment">
+      <div class="aps-h-500">
+        <app-bulk-payment-request
+          [isViewMode]="true"
+          *ngIf="showBulkPayment"
+        ></app-bulk-payment-request>
+      </div>
+    </app-modal>
+
+    <!-- for billPayment -->
+    <app-modal [(isShow)]="showBillPayment" size="lg" headerText="Bill Payments">
+      <div class="aps-h-500">
+        <!-- <app-wps-payment-initiate
+          [isViewMode]="true"
+          *ngIf="showBillPayment"
+        ></app-wps-payment-initiate> -->
+      </div>
+    </app-modal>
+
+    <!-- for fdInitiation -->
+    <app-modal [(isShow)]="showFdInitiation" size="lg" headerText="FD Initiation">
+      <div class="aps-h-500">
+        <app-fd-initiation [isViewMode]="true" *ngIf="showFdInitiation"></app-fd-initiation>
+      </div>
+    </app-modal>
+
+    <!-- for wpsPayment -->
+    <app-modal [(isShow)]="showWpsPayment" size="lg" headerText="WPS Payments">
+      <div class="aps-h-500">
+        <app-wps-payment-initiate
+          [isViewMode]="true"
+          *ngIf="showWpsPayment"
+        ></app-wps-payment-initiate>
+      </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2 aps-h-100p">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-14 text-bold">
+                {{ 'Released / Rejected Summary' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="" *ngIf="isGroupUser">
+                <aps-custom-select
+                  name="corporate"
+                  id="corporate"
+                  [showLabel]="false"
+                  dataUrl="setup/corporateOnboarding/corporateMain/private/getAllGroupCorporateList"
+                  (change)="onChangeCorporate($event)"
+                  [(ngModel)]="corporate"
+                  [value]="corporate"
+                ></aps-custom-select>
+              </div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12 text-right">
+              <div class="inline-items">
+                <div class="item">
+                  <p-radioButton
+                    name="action"
+                    id="accepted"
+                    value="Accepted"
+                    class="p-mr-3"
+                    label="Released"
+                    [(ngModel)]="action"
+                    (onClick)="onChangeAction()"
+                  ></p-radioButton>
+                </div>
+                <div class="item p-mr-2">
+                  <p-radioButton
+                    name="action"
+                    id="rejected"
+                    value="Rejected"
+                    label="Rejected"
+                    [(ngModel)]="action"
+                    (onClick)="onChangeAction()"
+                  ></p-radioButton>
+                </div>
+                <div class="item">
+                  <app-currency-select-dropdown
+                    [selectedCurrency]="chartCurrency"
+                    (currencyChanged)="chartCurrency = $event.displayName"
+                  ></app-currency-select-dropdown>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-6 col-sm-12 p-col-12 p-pt-4">
+              <app-pie-chart [options]="options" webHeight="100" mobileHeight="200"></app-pie-chart>
+            </div>
+            <div class="p-md-3 col-sm-6 p-col-6">
+              <div class="text-size-12 text-semi-bold text-center p-pt-3">
+                {{ 'Total Records' | apsTranslate }}
+              </div>
+              <div class="text-size-10 text-center p-pt-1" *ngFor="let data of options.data">
+                {{ data.records }}
+              </div>
+            </div>
+            <div class="p-md-3 col-sm-6 p-col-6">
+              <div class="text-size-12 text-semi-bold text-center p-pt-3">
+                {{ 'Total Amount' | apsTranslate }}
+              </div>
+              <div class="text-size-10 text-center p-pt-1" *ngFor="let data of options.data">
+                <app-base-currency
+                  [amount]="data.amount"
+                  [currency]="chartCurrency"
+                  display="symbol"
+                ></app-base-currency>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-3 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-100p">
+          <div class="text-size-14 text-bold aps-py-12 p-px-2 border-bottom">
+            {{ 'Status wise Summary (Today)' | apsTranslate }}
+          </div>
+          <div class="p-grid p-p-2">
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 p-p-2">
+                <div class="text-size-14 p-pb-2">{{ acceptedRecords }}</div>
+                <div class="text-size-14 text-semi-bold">
+                  {{ 'Released Records' | apsTranslate }}
+                </div>
+              </div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 p-p-2">
+                <div class="text-size-14 p-pb-2">{{ rejectedRecords }}</div>
+                <div class="text-size-14 text-semi-bold">
+                  {{ 'Rejected Records' | apsTranslate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-3 p-sm-12 p-col-12">
+        <app-insights
+          insightsUrl="dummyServer/json/commons/private/insights/sendToBank"
+          [height]="139"
+        ></app-insights>
+      </div>
+
+      <!-- <div class39="p-md-3 p-sm-12 p-col-12">
+        <div
+          class="aps-card-primary aps-h-100p p-p-3 pointer"
+          (click)="onInitiateSendToBankClick()"
+        >
+          <div class="text-size-16 text-bold">{{ 'Initiate Send to Bank' | apsTranslate }}</div>
+          <div class="p-py-3">
+            <hr />
+          </div>
+          <div class="text-size-14">{{ 'Click here to Initiate Send to Bank' | apsTranslate }}</div>
+        </div>
+      </div> -->
+
+      <div class="p-col-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="inline-items aps-w-100p overflow-scroll">
+              <div class="item p-mr-3" *ngFor="let l of listingTypes">
+                <div
+                  class="aps-card p-p-2 text-size-12 text-color-normal text-semi-bold pointer border"
+                  [ngClass]="{ 'aps-card-primary': activeListing.id === l.id }"
+                  (click)="changeActiveListing(l)"
+                >
+                  {{ l.displayName }}
+                  <span>
+                    ({{
+                      listType == 'getAuthorizedSendToBankList'
+                        ? l.acceptedCount
+                        : listType == 'getRejectedSendToBankList'
+                        ? l.rejectedCount
+                        : l.allCount
+                    }})
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary" (click)="onInitiateSendToBankClick()">
+              {{ 'Initiate' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="p-grid p-px-2">
+            <div class="p-md-3 p-sm-12 p-col-12 p-pb-0 p-pt-3">
+              <aps-custom-select
+                [showLabel]="false"
+                [data]="[
+                  { id: 'getAllAuthorizedRejectedSendToBankList', displayName: 'Show All' },
+                  { id: 'getAuthorizedSendToBankList', displayName: 'Show Released' },
+                  { id: 'getRejectedSendToBankList', displayName: 'Show Rejected' }
+                ]"
+                [value]="listType"
+                [(ngModel)]="listType"
+                (change)="refresh($event)"
+              ></aps-custom-select>
+            </div>
+            <div class="p-md-9 p-sm-12 p-col-12 p-py-3">
+              <div class="left-right-container p-px-3">
+                <div class="left-container"></div>
+                <div class="right-container">
+                  <app-grid-listing-tools
+                    (changeFloatingFilter)="sendToBankActionGrid.changeFloatFilter($event)"
+                    (filterRecords)="sendToBankActionGrid.onFilter($event)"
+                    (applyColDefs)="sendToBankActionGrid.onApplyConfig($event)"
+                    [colDefs]="sendToBankActionGrid.columnDefs"
+                    [columnConfig]="true"
+                    [moreOptions]="false"
+                  ></app-grid-listing-tools>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12 aps-h-400 border-top">
+              <app-ag-grid-listing
+                id="sendToBankActionGrid"
+                #sendToBankActionGrid
+                [colDefUrl]="activeListing.colDefsUrl"
+                [rowDefUrl]="rowDefUrl"
+                [rowDefReq]="{
+                  listingTypeId: activeListing.id,
+                  listingType: activeListing.displayName
+                }"
+                [frameworkComponents]="frameworkComponents"
+                [gridOptions]="{
+                  rowSelection: 'multiple',
+                  suppressRowClickSelection: true,
+                  masterDetail: true,
+                  detailCellRenderer: detailCellRenderer,
+                  detailRowHeight: 64
+                }"
+                [context]="{ componentParent: this }"
+              ></app-ag-grid-listing>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

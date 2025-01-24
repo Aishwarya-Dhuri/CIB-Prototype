@@ -1,0 +1,466 @@
+<div class="container">
+  <app-modal
+    [(isShow)]="showSubmit"
+    size="md"
+    headerText="Your payment was submitted"
+    *ngIf="biller"
+  >
+    <div body>
+      <div class="text-size-14 text-semi-bold p-pt-2">
+        <span class="inline-block"> {{ biller.billerName }} </span>
+        <span class="inline-block" *ngIf="biller.product">&nbsp;({{ biller.product }})&nbsp;</span>
+        <span class="inline-block"> - {{ consumersCount }} Consumers</span>
+        <span class="inline-block">
+          &nbsp;|&nbsp;{{ biller.totalBills }} Bills ({{ biller.overdueBills }} Overdue)</span
+        >
+      </div>
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-6 p-col-6">
+          <div class="text-size-12 text-color-normal p-mb-1">Reference Number</div>
+          <div class="text-size-12 text-color-dark-shade-1">{{ biller.id }}</div>
+        </div>
+        <div class="p-md-3 p-sm-6 p-col-6">
+          <div class="text-size-12 text-color-normal p-mb-1">Date</div>
+          <div class="text-size-12 text-color-dark-shade-1">
+            {{ biller.dueDate | date : 'dd-LLL-yyyy' }}
+          </div>
+        </div>
+        <div class="p-md-3 p-sm-6 p-col-6">
+          <div class="text-size-12 text-color-normal p-mb-1">Total Payable Amount</div>
+          <div class="text-size-12 text-color-dark-shade-1">
+            <app-base-currency [amount]="totalPayableAmount"></app-base-currency>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-sm btn-tertiary p-mb-4">SCHEDULE FOR FUTURE</button>
+    </div>
+    <div footer class="left-right-container">
+      <div class="left-container">
+        <div class="inline-items p-pt-1">
+          <div class="item p-mr-3">
+            <app-icon icon="fa-print"></app-icon>
+          </div>
+          <div class="item p-mr-3">
+            <app-icon icon="fa-arrow-to-bottom"></app-icon>
+          </div>
+          <div class="item p-mr-3">
+            <app-icon icon="fa-envelope"></app-icon>
+          </div>
+        </div>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-sm btn-primary" (click)="cancel()">CLOSE</button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showApplyToSelectedDialog">
+    <div body>
+      <div class="text-size-16 text-color-dark-shade-1">
+        Would you like to change the Payment date to
+        <strong>'{{ paymentDateToBeApplied }}'</strong> for all the selected bills?
+      </div>
+    </div>
+    <div footer class="left-right-container">
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-sm btn-tertiary p-mr-3" (click)="showApplyToSelectedDialog = false">
+          CANCEL
+        </button>
+        <button class="btn btn-sm btn-primary p-px-2" (click)="applyPaymentDateToSelectedBills()">
+          YES
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-pb-6" *ngIf="!paymentDetails && !isSchedulePayment && biller">
+    <div class="text-size-16 text-bold text-color-dark-shade-1 p-mb-2">
+      <span class="inline-block"> {{ biller.billerName }} </span>
+      <span class="inline-block" *ngIf="biller.product">&nbsp;({{ biller.product }})&nbsp;</span>
+      <span class="inline-block"> - {{ consumersCount }} Consumers</span>
+    </div>
+
+    <div class="aps-card aps-h-500">
+      <div class="aps-card-header p-px-3">
+        <div class="left-right-container">
+          <div class="left-container aps-py-12">
+            <span class="text-size-16 text-semi-bold text-color-dark-shade-1"
+              >Consumer Details</span
+            >
+            <button
+              class="btn btn-sm btn-tertiary p-ml-2"
+              (click)="fetchSelected()"
+              *ngIf="selectedConsumers.length > 0"
+            >
+              FETCH SELECTED
+            </button>
+          </div>
+          <div class="right-container">
+            <div class="inline-items hide-on-mobile">
+              <ng-container *ngIf="selectedBillsForTotal.length > 0">
+                <div class="item p-py-3">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1 p-mr-2">
+                    Payment Date
+                  </div>
+                </div>
+                <div class="item" style="margin-top: 12px">
+                  <app-aps-calender
+                    name="paymentDateToBeApplied"
+                    id="paymentDateToBeApplied"
+                    [showIcon]="true"
+                    [isStyleChange]="false"
+                    [showLabel]="false"
+                    [style]="'style2'"
+                    label=""
+                    [(ngModel)]="paymentDateToBeApplied"
+                  ></app-aps-calender>
+                </div>
+                <div class="item aps-py-12">
+                  <button
+                    class="btn btn-sm btn-tertiary p-ml-2"
+                    (click)="showApplyToSelectedDialog = true"
+                    [disabled]="!paymentDateToBeApplied"
+                  >
+                    APPLY TO SELECTED
+                  </button>
+                </div>
+              </ng-container>
+
+              <span class="item aps-py-12">
+                <app-grid-listing-tools
+                  (changeFloatingFilter)="consumersGrid.changeFloatFilter($event)"
+                  (filterRecords)="consumersGrid.onFilter($event)"
+                  [showMail]="false"
+                  [showDownload]="false"
+                  [columnConfig]="false"
+                  [moreOptions]="false"
+                ></app-grid-listing-tools
+              ></span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card-body" *ngIf="!loadingGrid">
+        <app-ag-grid-listing
+          id="consumersGrid"
+          #consumersGrid
+          [colDefUrl]="consumerDetailsColDefsUrl"
+          [rowData]="rowData"
+          [frameworkComponents]="frameworkComponents"
+          [gridOptions]="gridOptions"
+          [context]="{
+            componentParent: this
+          }"
+          (rowSelected)="onRowSelection($event)"
+          *ngIf="!loading"
+        ></app-ag-grid-listing>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-pb-6" *ngIf="paymentDetails || isSchedulePayment">
+    <div class="p-grid g-margin-x">
+      <div class="p-lg-9 p-md-9 p-sm-12 p-col-12 p-py-0" *ngIf="paymentDetails">
+        <div class="aps-card aps-h-600">
+          <div class="aps-card-header p-p-3">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Consumer Details</div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing
+              id="consumersGrid"
+              #consumersGrid
+              [columnDefs]="colDefs"
+              [rowData]="reviewRowData"
+              [frameworkComponents]="frameworkComponents"
+              [gridOptions]="gridOptions"
+              *ngIf="!loading"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-lg-9 p-md-9 p-sm-12 p-col-12 p-py-0" *ngIf="isSchedulePayment">
+        <div class="aps-card p-p-3">
+          <div class="p-grid">
+            <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+              <div class="p-grid">
+                <div class="p-md-3 p-sm-6 p-col-6 p-p-0">
+                  <div class="text-size-12 text-color-normal p-mb-1">Biller Name</div>
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ biller.billerName }}
+                  </div>
+                </div>
+                <div class="p-md-3 p-sm-6 p-col-6 p-p-0">
+                  <div class="text-size-12 text-color-normal p-mb-1">Consumer Details</div>
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ selectedConsumer.consumer }}
+                  </div>
+                </div>
+                <div class="p-md-3 p-sm-6 p-col-6 p-p-0">
+                  <div class="text-size-12 text-color-normal p-mb-1">Bill No</div>
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ selectedConsumer.id }}
+                  </div>
+                </div>
+                <div class="p-md-3 p-sm-6 p-col-6 p-p-0">
+                  <div class="text-size-12 text-color-normal p-mb-1">Due Date</div>
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ selectedConsumer.dueDate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-5 p-sm-12 p-col-12 p-p-0">
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-6 p-col-12 p-p-0">
+                  <div class="text-size-12 text-color-normal p-mb-1">Bill Amount</div>
+                  <div class="text-size-16 text-bold text-color-dark-shade-1">
+                    <app-base-currency [amount]="selectedConsumer.billAmount"></app-base-currency>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aps-card p-p-2 p-my-3">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-2">
+              <aps-custom-select
+                name="payType"
+                id="payType"
+                label="Pay"
+                [required]="true"
+                (change)="changePay($event)"
+                [data]="[
+                  { id: 'Billed Amount', displayName: 'Billed Amount' },
+                  { id: 'Other', displayName: 'Other' }
+                ]"
+                [value]="schedule.payType"
+                [(ngModel)]="schedule.payType"
+              ></aps-custom-select>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-2">
+              <aps-form-input
+                name="amount"
+                id="amount"
+                label="Amount"
+                type="currencyFormatNotZero"
+                [required]="true"
+                [(ngModel)]="schedule.payAmount"
+              ></aps-form-input>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-2">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">If Holiday</div>
+              <div class="p-mt-1">
+                <p-radioButton
+                  class="p-mr-4"
+                  id="prepone"
+                  name="holidayAction"
+                  value="Prepone"
+                  label="Prepone"
+                  [(ngModel)]="schedule.holidayAction"
+                ></p-radioButton>
+                <p-radioButton
+                  id="postpone"
+                  name="holidayAction"
+                  value="Postpone"
+                  label="Postpone"
+                  [(ngModel)]="schedule.holidayAction"
+                ></p-radioButton>
+              </div>
+            </div>
+            <div class="p-md-8 p-sm-12 p-col-12 p-p-0">
+              <div class="p-grid">
+                <div class="p-md-5 p-sm-12 p-col-12 p-p-2">
+                  <app-aps-calender
+                    name="startDate"
+                    id="startDate"
+                    label="Start Date"
+                    [showIcon]="true"
+                    [(ngModel)]="schedule.startDate"
+                  ></app-aps-calender>
+                </div>
+                <div class="p-md-5 p-sm-12 p-col-12 p-p-2">
+                  <app-aps-calender
+                    name="endDate"
+                    id="endDate"
+                    label="End Date"
+                    [showIcon]="true"
+                    [(ngModel)]="schedule.endDate"
+                  ></app-aps-calender>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="background-color-primary-light-shade-2 border-radius-6 text-color-normal text-size-14 p-px-3 aps-py-12 p-mb-3"
+        >
+          <div class="label-with-icon-container">
+            <div class="icon">
+              <app-icon icon="fa-info-circle" styleClasses="text-size-12"></app-icon>
+            </div>
+            <div class="label white-space-normal">
+              Bill details displayed are just for reference purpose. Schedule payment will happen
+              based on actual bills.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-0">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header p-px-3 p-pt-3">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Payment Details</div>
+          </div>
+          <div class="aps-card-body p-p-3">
+            <div class="p-grid">
+              <div class="p-col-12 p-p-0">
+                <aps-custom-select
+                  name="paymentMethod"
+                  id="paymentMethod"
+                  label="Payment Method"
+                  [required]="true"
+                  [data]="[
+                    { id: 'Account', displayName: 'Account' },
+                    { id: 'IBAN', displayName: 'IBAN' },
+                    { id: 'Wallets', displayName: 'Wallets' },
+                    { id: 'Credit Card', displayName: 'Credit Card' },
+                    { id: 'Debit Card', displayName: 'Debit Card (Preferred)' }
+                  ]"
+                  [(ngModel)]="paymentDetailsForm.paymentMethod"
+                ></aps-custom-select>
+              </div>
+              <div class="p-col-12 p-p-0">
+                <aps-custom-select
+                  name="cardNumber"
+                  id="cardNumber"
+                  label="Account Number"
+                  dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                  [(ngModel)]="paymentDetailsForm.cardNumber"
+                  [value]="paymentDetailsForm.cardNumber"
+                  [required]="true"
+                  *ngIf="paymentDetailsForm.paymentMethod == 'Account'"
+                ></aps-custom-select>
+
+                <aps-form-input
+                  *ngIf="paymentDetailsForm.paymentMethod != 'Account'"
+                  name="cardNumber"
+                  id="cardNumber"
+                  [label]="
+                    paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                    paymentDetailsForm.paymentMethod == 'Debit Card'
+                      ? 'Card Number'
+                      : paymentDetailsForm.paymentMethod == 'Wallets'
+                      ? 'Wallet ID'
+                      : paymentDetailsForm.paymentMethod + ' Number'
+                  "
+                  [inputType]="
+                    paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                    paymentDetailsForm.paymentMethod == 'Debit Card'
+                      ? 'cardNumber'
+                      : 'numeric'
+                  "
+                  [required]="true"
+                  [(ngModel)]="paymentDetailsForm.cardNumber"
+                ></aps-form-input>
+              </div>
+              <div class="p-col-12 p-p-0">
+                <aps-form-input
+                  name="nameOnTheCard"
+                  id="nameOnTheCard"
+                  label="Name on the Card"
+                  [required]="true"
+                  [(ngModel)]="paymentDetailsForm.nameOnCard"
+                  *ngIf="
+                    paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                    paymentDetailsForm.paymentMethod == 'Debit Card'
+                  "
+                ></aps-form-input>
+              </div>
+              <div class="p-col-12 p-p-0">
+                <app-aps-calender
+                  name="expiryDate"
+                  id="expiryDate"
+                  label="Expiry Date"
+                  [required]="true"
+                  [showIcon]="true"
+                  view="month"
+                  dateFormat="mm/yy"
+                  [(ngModel)]="paymentDetailsForm.expiryDate"
+                  *ngIf="
+                    paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                    paymentDetailsForm.paymentMethod == 'Debit Card'
+                  "
+                ></app-aps-calender>
+              </div>
+              <div class="p-col-12 p-p-0">
+                <aps-form-input
+                  name="cvv"
+                  id="cvv"
+                  label="CVV"
+                  type="password"
+                  inputType="numeric"
+                  maxLength="3"
+                  [required]="true"
+                  [(ngModel)]="paymentDetailsForm.cvv"
+                  *ngIf="
+                    paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                    paymentDetailsForm.paymentMethod == 'Debit Card'
+                  "
+                ></aps-form-input>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fixed-bottom-footer-container">
+    <div class="aps-card p-px-3 p-py-2">
+      <div class="left-right-container">
+        <div class="left-container">
+          <button class="btn btn-md btn-tertiary" (click)="cancel()">CANCEL</button>
+        </div>
+        <div class="right-container">
+          <span
+            class="inline-block text-size-14 text-semi-bold hide-on-mobile text-color-normal p-py-2 p-mr-3"
+            *ngIf="selectedBillsForTotal.length > 0"
+          >
+            {{ selectedBillsForTotal.length }} BILLS SELECTED | TOTAL PAYABLE
+            {{ totalPayableAmount | currency : 'INR ' : 'code' }}
+          </span>
+          <button
+            class="btn btn-md btn-tertiary p-mr-2"
+            (click)="previous()"
+            *ngIf="paymentDetails || isSchedulePayment"
+          >
+            PREVIOUS
+          </button>
+          <button
+            class="btn btn-md btn-primary"
+            *ngIf="!paymentDetails && !isSchedulePayment"
+            (click)="payNow()"
+            [disabled]="selectedBillsForTotal.length === 0"
+          >
+            PAY NOW
+          </button>
+          <button class="btn btn-md btn-primary" (click)="submit()" *ngIf="paymentDetails">
+            SUBMIT
+          </button>
+          <button class="btn btn-md btn-primary" (click)="onSchedule()" *ngIf="isSchedulePayment">
+            SCHEDULE
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,166 @@
+<div class="container text-color-dark-shade-1" *ngIf="!loading; else loadingTemplate">
+    <ng-container *ngIf="mode != 'VIEW'">
+        <app-modal [(isShow)]="isLayoutData" size="md" headerText="Data Layout Mapper">
+            <ng-container body>
+                <app-positive-pay-data-layout></app-positive-pay-data-layout>
+            </ng-container>
+        </app-modal>
+
+        <div class="p-grid g-margin-x">
+            <div class="p-md-7 p-sm-12 p-col-12">
+                <div class="aps-card p-p-2 aps-h-500">
+                    <div class="p-grid" *ngIf="stepperDetails.currentStep == 1">
+                        <div class="p-col-12">
+                            <div class="text-size-14 text-bold">{{ 'Transaction Date' | apsTranslate }}</div>
+                            <div class="text-size-14">{{ formData.transactionDate | date: 'd-MMMM-y' }}</div>
+                        </div>
+                        <div class="p-md-7 p-sm-12 p-col-12 p-py-0">
+                            <aps-custom-select name="template" id="template" label="Select Template" [data]="[
+                    {
+                      id: 'Bulk Cheque Upload template 1',
+                      displayName: 'Bulk Cheque Upload template 1'
+                    },
+                    {
+                      id: 'Bulk Cheque Upload template 2',
+                      displayName: 'Bulk Cheque Upload template 2'
+                    }
+                  ]" required="true" [value]="formData.template" [(ngModel)]="formData.template"></aps-custom-select>
+                        </div>
+                        <div class="p-md-5 p-sm-12 p-col-12" *ngIf="formData.template">
+                            <button class="btn btn-md btn-tertiary" (click)="isLayoutData = true">
+                                {{ 'View Sample Data Layout' | apsTranslate }}
+                            </button>
+                        </div>
+
+                        <div class="p-md-7 p-sm-12 p-col-12 p-py-0"></div>
+
+                        <div class="p-md-7 p-sm-12 p-col-12">
+                            <div class="text-size-13 text-bold">
+                                {{ 'Upload Document' | apsTranslate }}<span class="text-color-danger">*</span>
+                            </div>
+                            <upload-form-control [files]="formData.uploadDocument"
+                                [hideDragDropContainerOnFIleUpload]="true" (onSelected)="onFileUploaded($event)">
+                            </upload-form-control>
+                        </div>
+                        <div class="p-md-7 p-sm-12 p-col-12">
+                            <div class="text-size-13 text-bold">{{ 'Cheque Images' | apsTranslate }}</div>
+                            <upload-form-control [files]="formData.chequeImages" [isMultiple]="true"
+                                (onSelected)="onChequeImagesUploaded($event)"></upload-form-control>
+                        </div>
+                        <div class="p-md-7 p-sm-12 p-col-12">
+                            <textarea class="textarea-control" [rows]="5" placeholder="Remarks For Checker"
+                                [(ngModel)]="formData.remarkForChecker"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-md-5 p-sm-12 p-col-12">
+                <div class="aps-card aps-h-500">
+                    <div class="aps-card-header border-bottom aps-py-12 p-px-3">
+                        <div class="text-size-16 text-bold">
+                            <app-icon class="p-mr-3" icon="fa-project-diagram"></app-icon>Bulk Upload Workflow
+                        </div>
+                    </div>
+                    <div class="aps-card-body p-p-3 overflow-scroll">
+                        <div class="p-pl-6">
+                            <ng-container *ngTemplateOutlet="workflowTemplate"></ng-container>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="mode == 'VIEW'">
+        <app-modal [(isShow)]="!!chequeImageUrl" headerText="Cheque Image" (onClose)="chequeImageUrl = ''" size="md">
+            <img class="aps-w-100p h-auto" [src]="chequeImageUrl | safeResourceUrl" alt="Cheque Image" />
+        </app-modal>
+
+        <div class="p-grid g-margin-x">
+            <div class="p-col-12">
+                <div class="aps-card p-p-2">
+                    <div class="p-grid">
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Batch No" [value]="formData.id"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="transaction Date"
+                                [value]="formData.transactionDate | date: 'd-MMMM-yyyy'"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="No. of Cheques" [value]="formData.noOfCheques">
+                            </app-review-form-field>
+                        </div>
+
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Amount" [value]="formData.totalAmount" type="baseCurrency">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="File Name" [value]="formData.fileName">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12">
+                <div class="aps-card aps-h-400">
+                    <div class="aps-card-header aps-py-12 p-px-3">
+                        {{ 'Cheque Details' }}({{ formData.noOfCheques }})
+                    </div>
+                    <div class="aps-card-body">
+                        <app-ag-grid-listing
+                            colDefUrl="positivePay/transactions/chequeUpload/private/positivePayColDefs"
+                            [rowData]="formData.chequeData" [gridOptions]="{ rowModelType: 'clientSide' }"
+                            [frameworkComponents]="frameworkComponents" [context]="{ componentParent: this }">
+                        </app-ag-grid-listing>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+        </div>
+    </div>
+</div>
+
+<ng-template #workflowTemplate>
+    <div class="org-tree-container">
+        <ng-container *ngFor="let data of treeData">
+            <div class="org-tree-wrapper" *ngIf="data.type === 'single'">
+                <div class="tree-node" style="height: 100%" *ngFor="let node of data.nodes; let i = index">
+                    <div class="node-branch">
+                        <svg height="100%" width="100%">
+                            <line x1="16" y1="0" x2="16" y2="95%" class="line" [ngClass]="{
+                    'line-deactivated': node.partiallyActive || node.disabled
+                  }" *ngIf="!node.isLeafNode" />
+                            <circle cx="16" cy="7" r="6" class="circle" [ngClass]="{
+                    'circle-partially-activated': node.partiallyActive,
+                    'circle-deactivated': node.disabled
+                  }" />
+                        </svg>
+                    </div>
+
+                    <div class="node-data" [ngClass]="{ 'node-data-deactivated': node.disabled }"
+                        style="top: 0px; left: 32px">
+                        <div class=".text-size-16 text-color-dark-shade-1 text-bold">{{ node.header }}</div>
+                        <div class="p-pl-5">
+                            <div class="text-size-14 text-color-normal">{{ node.subHeader }}</div>
+                            <div class="text-size-12 text-color-light-shade-1" *ngFor="let d of node.data">
+                                {{ d }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</ng-template>
+
+<ng-template #loadingTemplate>
+    <app-loading-spinner></app-loading-spinner>
+</ng-template>

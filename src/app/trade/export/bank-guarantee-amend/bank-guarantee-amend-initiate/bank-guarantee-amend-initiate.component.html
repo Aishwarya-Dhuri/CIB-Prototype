@@ -1,0 +1,1667 @@
+<div class="" *ngIf="!loading; else loadingTemplate">
+  <app-modal [isShow]="showRemark" headerText="{{ 'Remark' | apsTranslate }}">
+    <div body>
+      <aps-form-input
+        name="remark"
+        id="remark"
+        [label]="'Add Remark' | apsTranslate"
+        [(ngModel)]="remark"
+      >
+      </aps-form-input>
+    </div>
+    <div footer class="left-right-container">
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-md btn-tertiary p-mr-3" (click)="showRemark = false">
+          {{ 'CANCEL' | apsTranslate }}
+        </button>
+        <button class="btn btn-md btn-primary" (click)="addRemark()">
+          {{ 'ADD' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showSubmit">
+    <div body>
+      <div class="text-size-16 text-bold text-color-dark-shade-1">
+        {{ 'Successfully Submitted' | apsTranslate }}
+      </div>
+      <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+        {{ 'Bank Guarantee Amend record has been successfully submitted.' | apsTranslate }}
+      </div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary p-px-3" (click)="cancel()">
+            {{ 'OKAY' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-search-modal
+    [(isShow)]="searchBeneficiary"
+    header="{{ 'Beneficiary List' | apsTranslate }}"
+    colDefUrl="trade/exportTransactions/bankGuarantee/private/beneficiaryColDefs"
+    rowDefUrl="trade/exportTransactions/bankGuarantee/private/beneficiaryData"
+    (onSelection)="onBeneSelection($event)"
+  >
+  </app-search-modal>
+
+  <div class="p-grid g-margin-x p-pb-3">
+    <div
+      class="p-col-12 p-py-1"
+      style="margin-top: -8px !important"
+      *ngIf="parentRef.currentScreen != 'AMENDVIEW'"
+    >
+      <div class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div
+                *ngIf="stepperDetails?.steps && stepperDetails?.steps.length > 0"
+                class="p-px-2 p-py-1 border-radius-4"
+                [ngClass]="
+                  stepperDetails?.steps[1].stepStatus == 'amend' ||
+                  stepperDetails?.steps[5].stepStatus == 'amend'
+                    ? 'background-color-warning-light'
+                    : 'background-color-success '
+                "
+              >
+                <div class="inline-items">
+                  <div class="item p-mr-2">
+                    <app-icon
+                      [icon]="
+                        stepperDetails?.steps[1].stepStatus == 'amend' ||
+                        stepperDetails?.steps[5].stepStatus == 'amend'
+                          ? 'fa-exclamation-triangle'
+                          : 'fa-check-circle'
+                      "
+                      [ngClass]="
+                        stepperDetails?.steps[1].stepStatus == 'amend' ||
+                        stepperDetails?.steps[5].stepStatus == 'amend'
+                          ? 'text-color-warning'
+                          : 'text-color-inverted'
+                      "
+                      styleClasses="text-size-12"
+                    ></app-icon>
+                  </div>
+                  <div class="item p-mr-4" style="padding-top: 2px">
+                    <div
+                      class="text-size-14 text-semi-bold"
+                      [ngClass]="
+                        stepperDetails?.steps[1].stepStatus == 'amend' ||
+                        stepperDetails?.steps[5].stepStatus == 'amend'
+                          ? 'text-color-normal'
+                          : 'text-color-inverted'
+                      "
+                    >
+                      {{ activeStepIndex == 1 ? '1' : activeStepIndex == 5 ? '2' : '0' }}
+                      {{ 'of' | apsTranslate }} 2 {{ 'Amendment made' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="item p-mr-3">
+                    <app-icon
+                      icon="fa-chevron-left"
+                      rtlIcon="fa-chevron-right"
+                      [styleClasses]="
+                        stepperDetails?.steps[1].stepStatus == 'amend' ||
+                        stepperDetails?.steps[5].stepStatus == 'amend'
+                          ? 'text-size-14 text-color-dark-shade-1'
+                          : 'text-size-14 text-color-inverted'
+                      "
+                      (click)="changeAmendStep('previous')"
+                    ></app-icon>
+                  </div>
+                  <div class="item p-mr-2">
+                    <app-icon
+                      icon="fa-chevron-right"
+                      rtlIcon="fa-chevron-left"
+                      [styleClasses]="
+                        stepperDetails?.steps[1].stepStatus == 'amend' ||
+                        stepperDetails?.steps[5].stepStatus == 'amend'
+                          ? 'text-size-14 text-color-dark-shade-1'
+                          : 'text-size-14 text-color-inverted'
+                      "
+                      (click)="changeAmendStep('next')"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="right-container p-py-1" *ngIf="viewport === 'web'">
+              <div class="inline-items">
+                <div class="item p-px-2">
+                  <app-icon icon="fa-refresh"></app-icon>
+                </div>
+                <div class="item p-px-2 border-right">
+                  <app-icon icon="fa-print"></app-icon>
+                </div>
+                <div class="item p-px-2">
+                  <app-icon icon="fa-user"></app-icon>
+                </div>
+                <div class="item p-px-2">
+                  <app-icon icon="fa-link"></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container
+      *ngIf="stepperDetails?.currentStep != 10 && parentRef.currentScreen != 'AMENDVIEW'"
+    >
+      <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+        <app-stepper-header
+          [parentRef]="this"
+          stepperType="vertical"
+          (stepsReady)="onStepsReady()"
+        ></app-stepper-header>
+      </div>
+
+      <div class="p-lg-9 p-md-9 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-530">
+          <div class="aps-card-header">
+            <div class="left-right-container p-px-3">
+              <div class="left-container">
+                <div class="text-size-16 text-bold text-color-dark-shade-1 aps-py-12">
+                  {{ stepperDetails.headings[stepperDetails.currentStep - 1] }}
+                </div>
+              </div>
+              <div class="right-container p-py-2"></div>
+            </div>
+          </div>
+
+          <div class="aps-card-body p-p-2 overflow-scroll">
+            <div class="p-grid" *ngIf="activeStepIndex === 0">
+              <div class="p-col-12">
+                <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                  <div class="text-color-normal">{{ 'Number Of Amendment' | apsTranslate }}</div>
+                  <div class="text-color-dark-shade-1">0</div>
+                </div>
+              </div>
+              <div class="p-col-12">
+                <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                  <div class="text-color-normal">{{ 'Date Of Amendment' | apsTranslate }}</div>
+                  <div class="text-color-dark-shade-1">25 OCT 2021</div>
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="activeStepIndex === 1">
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-normal">
+                    {{ 'Initial Values' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-px-0">
+                  <div
+                    class="text-size-14 text-semi-bold text-color-normal p-px-2 border-left border-right"
+                  >
+                    {{ 'Amend Values' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <aps-form-input
+                    name="corporateReferenceNo"
+                    id="corporateReferenceNo"
+                    [label]="'Corporate Ref No' | apsTranslate"
+                    [required]="true"
+                    (focusout)="setStepCompleted()"
+                    [(ngModel)]="bankGuarantee.bankGuaranteeDetails[0].corporateReferenceNo"
+                    [disabled]="true"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div
+                    class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                    *ngIf="
+                      bankGuaranteeAmend.bankGuaranteeDetails[0].corporateReferenceNo[0].remark
+                    "
+                  >
+                    <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                      <div
+                        class="text-size-12"
+                        [ngClass]="{
+                          'line-hight-12':
+                            bankGuaranteeAmend.bankGuaranteeDetails[0].corporateReferenceNo[0]
+                              .showRemark
+                        }"
+                      >
+                        {{
+                          bankGuaranteeAmend.bankGuaranteeDetails[0].corporateReferenceNo[0].remark
+                        }}
+                      </div>
+                    </div>
+                    <div class="item">
+                      <app-icon
+                        icon="fa-ellipsis-h"
+                        styleClasses="text-size-12 text-color-600 p-pr-5 pointer"
+                        (click)="
+                          bankGuaranteeAmend.bankGuaranteeDetails[0].corporateReferenceNo[0].showRemark =
+                            !bankGuaranteeAmend.bankGuaranteeDetails[0].corporateReferenceNo[0]
+                              .showRemark
+                        "
+                      ></app-icon>
+                      <app-icon
+                        icon="fa-times"
+                        styleClasses="text-size-12 text-color-600 pointer"
+                        (click)="
+                          bankGuaranteeAmend.bankGuaranteeDetails[0].corporateReferenceNo[0].remark =
+                            ''
+                        "
+                      >
+                      </app-icon>
+                      &nbsp;
+                      <app-icon
+                        icon="fa-pencil pointer"
+                        (click)="onComment('corporateReferenceNo')"
+                        styleClasses="text-size-12 text-color-600"
+                      ></app-icon>
+                    </div>
+                  </div>
+
+                  <div class="inline-items">
+                    <div class="item" style="width: calc(100% - 24px)">
+                      <aps-form-input
+                        name="corporateReferenceNoAmend"
+                        id="corporateReferenceNoAmend"
+                        [label]="'Corporate Ref No' | apsTranslate"
+                        [required]="true"
+                        [rightIcon]="
+                          bankGuaranteeAmend.bankGuaranteeDetails[0].corporateReferenceNo[0]
+                            .isValidated
+                            ? 'fal fa-check-circle text-size-14 text-color-success'
+                            : ''
+                        "
+                        (focusout)="amendValueEntered('corporateReferenceNo')"
+                        [(ngModel)]="
+                          bankGuaranteeAmend.bankGuaranteeDetails[0].corporateReferenceNo[0].value
+                        "
+                      >
+                      </aps-form-input>
+                    </div>
+                    <div class="item p-pl-2 p-pt-4">
+                      <app-icon
+                        icon="fa-comment-alt-lines pointer"
+                        (click)="onComment('corporateReferenceNo')"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Type Of Application/Undertaking' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.bankGuaranteeDetails[0].typeOfApplicationOrUndertaking }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Applicable Rule' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.bankGuaranteeDetails[0].applicableRule }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Transaction Date ' | apsTranslate
+                      }}<span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.bankGuaranteeDetails[0].transactionDate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="activeStepIndex === 3">
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-normal">
+                    {{ 'Initial Values' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-px-0">
+                  <div
+                    class="text-size-14 text-semi-bold text-color-normal p-px-2 border-left border-right"
+                  >
+                    {{ ' Amend Values' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Beneficiary Code' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryCode }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <aps-form-input
+                    name="beneficiaryCode"
+                    id="beneficiaryCode"
+                    [label]="'Beneficiary Code' | apsTranslate"
+                    [required]="true"
+                    (focusout)="amendValueEntered('beneficiaryCode')"
+                    [rightIcon]="'fa-search'"
+                    (onRightIcon)="searchBeneficiary = true"
+                    [(ngModel)]="bankGuaranteeAmend.beneficiaryDetails[0].beneficiaryCode[0].value"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ ' Beneficiary Name' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryName }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <aps-form-input
+                    name="beneficiaryName"
+                    id="beneficiaryName"
+                    [label]="'Beneficiary Name' | apsTranslate"
+                    [required]="true"
+                    (focusout)="amendValueEntered('beneficiaryName')"
+                    [(ngModel)]="bankGuaranteeAmend.beneficiaryDetails[0].beneficiaryName[0].value"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Email' | apsTranslate }} <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].email }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Bank Swift Code' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].bankSwiftCode }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Beneficiary Address' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryAddress1[0].address }}
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryAddress2[0].address }}
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryAddress3[0].address }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Country' | apsTranslate }} <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].country }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <aps-form-input
+                    name="country"
+                    id="country"
+                    [label]="'Country' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="bankGuaranteeAmend.beneficiaryDetails[0].country[0].value"
+                    (focusout)="amendValueEntered('country')"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Beneficiary Account Number' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryAccountNumber }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Beneficiary Bank Name' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryBankName }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Beneficiary Bank Address' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryBankAddress1[0].address }}
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryBankAddress2[0].address }}
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.beneficiaryDetails[0].beneficiaryBankAddress3[0].address }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="activeStepIndex === 4">
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-normal">
+                    {{ 'Initial Values' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-px-0">
+                  <div
+                    class="text-size-14 text-semi-bold text-color-normal p-px-2 border-left border-right"
+                  >
+                    {{ 'Amend Values' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Currency' | apsTranslate }} <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].currency }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Amount' | apsTranslate }} <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].amount }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Effective Date' | apsTranslate }} <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].effectiveDate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="text-size-14 text-semi-bold p-p-2 text-color-dark-shade-1">
+                  {{ 'Validity' | apsTranslate }}
+                </div>
+                <p-radioButton
+                  class="p-mr-5"
+                  name="fixed"
+                  id="fixed"
+                  value="Fixed"
+                  label="Fixed"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].validity"
+                ></p-radioButton>
+                <p-radioButton
+                  name="openEnded"
+                  id="openEnded"
+                  value="Open Ended"
+                  label="Open Ended"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].validity"
+                ></p-radioButton>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Expiry Date' | apsTranslate }} <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].expiryDate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Claim Expiry Date' | apsTranslate }}
+                      <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].claimExpiryDate }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div
+                    class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                    *ngIf="bankGuaranteeAmend.transactionDetails[0].claimExpiryDate[0].remark"
+                  >
+                    <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                      <div
+                        class="text-size-12"
+                        [ngClass]="{
+                          'line-hight-12':
+                            bankGuaranteeAmend.transactionDetails[0].claimExpiryDate[0].showRemark
+                        }"
+                      >
+                        {{ bankGuaranteeAmend.transactionDetails[0].claimExpiryDate[0].remark }}
+                      </div>
+                    </div>
+                    <div class="item">
+                      <app-icon
+                        icon="fa-ellipsis-h"
+                        styleClasses="text-size-12 text-color-600 pointer p-pr-5"
+                        (click)="
+                          bankGuaranteeAmend.transactionDetails[0].claimExpiryDate[0].showRemark =
+                            !bankGuaranteeAmend.transactionDetails[0].claimExpiryDate[0].showRemark
+                        "
+                      ></app-icon>
+                      <app-icon
+                        icon="fa-times"
+                        styleClasses="text-size-12 text-color-600 pointer"
+                        (click)="
+                          bankGuaranteeAmend.transactionDetails[0].claimExpiryDate[0].remark = ''
+                        "
+                      >
+                      </app-icon>
+                      &nbsp;
+                      <app-icon
+                        icon="fa-pencil pointer"
+                        (click)="onComment('claimExpiryDate')"
+                        styleClasses="text-size-12 text-color-600 "
+                      ></app-icon>
+                    </div>
+                  </div>
+
+                  <div class="inline-items">
+                    <div class="item" style="width: calc(100% - 24px)">
+                      <app-aps-calender
+                        name="claimExpiryDate"
+                        id="claimExpiryDate"
+                        [label]="'Claim Expiry Date' | apsTranslate"
+                        [rightIcon]="
+                          bankGuaranteeAmend.transactionDetails[0].claimExpiryDate[0].isValidated
+                            ? 'fal fa-check-circle text-size-14 text-color-success'
+                            : ''
+                        "
+                        (focusout)="amendValueEntered('claimExpiryDate')"
+                        [required]="true"
+                        [(ngModel)]="
+                          bankGuaranteeAmend.transactionDetails[0].claimExpiryDate[0].value
+                        "
+                      >
+                      </app-aps-calender>
+                    </div>
+                    <div class="item p-pl-2 p-pt-4">
+                      <app-icon
+                        icon="fa-comment-alt-lines pointer"
+                        (click)="onComment('claimExpiryDate')"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                    {{ 'Guarantee Format' | apsTranslate }}
+                  </div>
+                  <p-radioButton
+                    class="p-mr-5"
+                    name="asPerBankFormat"
+                    id="asPerBankFormat"
+                    value="As Per Bank Format"
+                    [label]="'As Per Bank Format' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="bankGuarantee.transactionDetails[0].guaranteeFormat"
+                    [disabled]="true"
+                  >
+                  </p-radioButton>
+                  <p-radioButton
+                    name="asPerAttachment"
+                    id="asPerAttachment"
+                    value="As Per Attachment"
+                    [label]="'As Per Attachment' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="bankGuarantee.transactionDetails[0].guaranteeFormat"
+                    [disabled]="true"
+                  >
+                  </p-radioButton>
+                </div>
+                <div class="p-md-8 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                    {{ ' Guarantee Format' | apsTranslate }}
+                  </div>
+                  <p-radioButton
+                    class="p-mr-5"
+                    name="asPerBankFormatAmend"
+                    id="asPerBankFormatAmend"
+                    value="As Per Bank Format"
+                    [label]="'As Per Bank Format' | apsTranslate"
+                    [required]="true"
+                    (click)="amendValueEntered('guaranteeFormat')"
+                    [(ngModel)]="bankGuaranteeAmend.transactionDetails[0].guaranteeFormat[0].value"
+                  >
+                  </p-radioButton>
+                  <p-radioButton
+                    name="asPerAttachmentAmend"
+                    id="asPerAttachmentAmend"
+                    value="As Per Attachment"
+                    [label]="'As Per Attachment' | apsTranslate"
+                    [required]="true"
+                    (click)="amendValueEntered('guaranteeFormat')"
+                    [(ngModel)]="bankGuaranteeAmend.transactionDetails[0].guaranteeFormat[0].value"
+                  >
+                  </p-radioButton>
+                  <div
+                    class="p-p-2"
+                    *ngIf="
+                      bankGuaranteeAmend.transactionDetails[0].guaranteeFormat[0].value ==
+                      'As Per Attachment'
+                    "
+                  >
+                    <upload-form-control
+                      [hideDragDropContainerOnFIleUpload]="true"
+                      [files]="
+                        bankGuaranteeAmend.transactionDetails[0].guaranteeFormat[0]
+                          .supportingDocument
+                      "
+                      (onUploaded)="
+                        bankGuaranteeAmend.transactionDetails[0].guaranteeFormat[0].supportingDocument =
+                          $event
+                      "
+                    >
+                    </upload-form-control>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div
+                  class="p-md-4 p-sm-12 p-col-12"
+                  *ngIf="bankGuarantee.transactionDetails[0].guaranteeFormat == 'As Per Attachment'"
+                >
+                  <div class="aps-card p-p-2">
+                    <div class="inline-items">
+                      <div class="item">
+                        <app-icon icon="fa-file"></app-icon>
+                      </div>
+                      <div
+                        class="item text-color-normal p-px-2"
+                        *ngIf="bankGuarantee.transactionDetails[0].supportingDocument.length > 0"
+                      >
+                        <div class="text-size-12">
+                          {{ bankGuarantee.transactionDetails[0].supportingDocument.fileName }}
+                        </div>
+                        <div class="text-size-10">
+                          {{
+                            (
+                              +bankGuarantee.transactionDetails[0].supportingDocument[0].fileSize /
+                              1024 /
+                              1024
+                            ).toFixed(2)
+                          }}Mb
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                    {{ 'Preferred Language of Guarantee' | apsTranslate }}
+                  </div>
+                  <p-radioButton
+                    class="p-mr-5"
+                    name="english"
+                    id="english"
+                    value="English"
+                    [label]="'English' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="bankGuarantee.transactionDetails[0].preferredLanguageOfGuarantee"
+                    [disabled]="true"
+                  >
+                  </p-radioButton>
+                  <p-radioButton
+                    class="p-mr-5"
+                    name="arabic"
+                    id="arabic"
+                    value="Arabic"
+                    [label]="'Arabic' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="bankGuarantee.transactionDetails[0].preferredLanguageOfGuarantee"
+                    [disabled]="true"
+                  >
+                  </p-radioButton>
+                  <p-radioButton
+                    name="bilingual"
+                    id="bilingual"
+                    value="Bilingual"
+                    [label]="'Bilingual (English & Arabic)' | apsTranslate"
+                    [required]="true"
+                    [(ngModel)]="bankGuarantee.transactionDetails[0].preferredLanguageOfGuarantee"
+                    [disabled]="true"
+                  >
+                  </p-radioButton>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                    {{ 'Preferred Language of Guarantee' | apsTranslate }}
+                  </div>
+                  <p-radioButton
+                    class="p-mr-5"
+                    name="english"
+                    id="english"
+                    value="English"
+                    [label]="'English' | apsTranslate"
+                    [required]="true"
+                    (click)="amendValueEntered('preferredLanguageOfGuarantee')"
+                    [(ngModel)]="
+                      bankGuaranteeAmend.transactionDetails[0].preferredLanguageOfGuarantee[0].value
+                    "
+                  >
+                  </p-radioButton>
+                  <p-radioButton
+                    class="p-mr-5"
+                    name="arabic"
+                    id="arabic"
+                    value="Arabic"
+                    [label]="'Arabic' | apsTranslate"
+                    [required]="true"
+                    (click)="amendValueEntered('preferredLanguageOfGuarantee')"
+                    [(ngModel)]="
+                      bankGuaranteeAmend.transactionDetails[0].preferredLanguageOfGuarantee[0].value
+                    "
+                  >
+                  </p-radioButton>
+                  <p-radioButton
+                    name="bilingual"
+                    id="bilingual"
+                    value="Bilingual"
+                    [label]="'Bilingual (English & Arabic)' | apsTranslate"
+                    [required]="true"
+                    (click)="amendValueEntered('preferredLanguageOfGuarantee')"
+                    [(ngModel)]="
+                      bankGuaranteeAmend.transactionDetails[0].preferredLanguageOfGuarantee[0].value
+                    "
+                  >
+                  </p-radioButton>
+                </div>
+              </div>
+              <div
+                class="p-col-12 text-size-14 text-semi-bold text-color-dark-shade-1 p-px-1 p-pt-3"
+              >
+                {{ 'Guarantee to be Delivered' | apsTranslate }}
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Name' | apsTranslate }} <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].name }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div
+                    class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                    *ngIf="bankGuaranteeAmend.transactionDetails[0].name[0].remark"
+                  >
+                    <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                      <div
+                        class="text-size-12"
+                        [ngClass]="{
+                          'line-hight-12':
+                            bankGuaranteeAmend.transactionDetails[0].name[0].showRemark
+                        }"
+                      >
+                        {{ bankGuaranteeAmend.transactionDetails[0].name[0].remark }}
+                      </div>
+                    </div>
+                    <div class="item">
+                      <app-icon
+                        icon="fa-ellipsis-h"
+                        styleClasses="text-size-12 text-color-600 pointer p-pr-5"
+                        (click)="
+                          bankGuaranteeAmend.transactionDetails[0].name[0].showRemark =
+                            !bankGuaranteeAmend.transactionDetails[0].name[0].showRemark
+                        "
+                      ></app-icon>
+                      <app-icon
+                        icon="fa-times"
+                        styleClasses="text-size-12 text-color-600 pointer"
+                        (click)="bankGuaranteeAmend.transactionDetails[0].name[0].remark = ''"
+                      >
+                      </app-icon>
+                      &nbsp;
+                      <app-icon
+                        icon="fa-pencil pointer"
+                        (click)="onComment('name')"
+                        styleClasses="text-size-12 text-color-600 "
+                      ></app-icon>
+                    </div>
+                  </div>
+
+                  <div class="inline-items">
+                    <div class="item" style="width: calc(100% - 24px)">
+                      <aps-form-input
+                        name="name"
+                        id="name"
+                        [label]="'Name' | apsTranslate"
+                        [(ngModel)]="bankGuaranteeAmend.transactionDetails[0].name[0].value"
+                        [required]="true"
+                        [rightIcon]="
+                          bankGuaranteeAmend.transactionDetails[0].name[0].isValidated
+                            ? 'fal fa-check-circle text-size-14 text-color-success'
+                            : ''
+                        "
+                        (focusout)="amendValueEntered('name')"
+                      ></aps-form-input>
+                    </div>
+                    <div class="item p-pl-2 p-pt-4">
+                      <app-icon
+                        icon="fa-comment-alt-lines pointer"
+                        (click)="onComment('name')"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Telephone No' | apsTranslate }} <span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].telephoneNo }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <aps-form-input
+                    name="telephoneNo"
+                    id="telephoneNo"
+                    label="{{ 'Telephone No' | apsTranslate }}"
+                    [(ngModel)]="bankGuaranteeAmend.transactionDetails[0].telephoneNo[0].value"
+                    [required]="true"
+                    (click)="amendValueEntered('telephoneNo')"
+                  ></aps-form-input>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Id' | apsTranslate }}<span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].idProof }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <aps-custom-select
+                    name="idProof"
+                    id="idProof"
+                    [label]="'Id' | apsTranslate"
+                    [data]="[{ id: 'Passport', displayName: 'Passport' }]"
+                    [required]="true"
+                    (click)="amendValueEntered('idProof')"
+                    [(ngModel)]="bankGuaranteeAmend.transactionDetails[0].idProof[0].value"
+                  >
+                  </aps-custom-select>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Purpose Of Guarantee' | apsTranslate
+                      }}<span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].purposeOfGuarantee }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-p-2">
+                    <div class="text-color-normal">
+                      {{ 'Account Number For Charges' | apsTranslate
+                      }}<span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ bankGuarantee.transactionDetails[0].accountNumberForCharges }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div
+      class="p-col-12"
+      *ngIf="stepperDetails?.currentStep == 8 || parentRef.currentScreen == 'AMENDVIEW'"
+    >
+      <div class="aps-card p-mb-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Bank Guarantee details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Type Of Application/Undertaking' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.bankGuaranteeDetails[0].typeOfApplicationOrUndertaking }}
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Applicable Rule' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.bankGuaranteeDetails[0].applicableRule }}
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Corporate Ref No.' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.bankGuaranteeDetails[0].corporateReferenceNo }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Transaction Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.bankGuaranteeDetails[0].transactionDate }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Applicant Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Name' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].applicantName }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Email' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].applicantEmail }}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12 p-p-0"></div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Mobile Number' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].applicantMobileNo }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Address' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].applicantAddress }}
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="bankGuarantee.applicantDetails[0].onBehalfOf">
+              <div class="p-col-12">
+                <p-checkbox
+                  name="onBehalfOf"
+                  id="onBehalfOf"
+                  label="On behalf of"
+                  [binary]="true"
+                  [disabled]="true"
+                  [(ngModel)]="bankGuarantee.applicantDetails[0].onBehalfOf"
+                >
+                </p-checkbox>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">{{ 'Name' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].name }}
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Telephone No' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].telephoneNo }}
+                </div>
+              </div>
+              <div class="p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Address' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].address1.address }}
+                  <span *ngIf="bankGuarantee.applicantDetails[0].address2.show"
+                    >, {{ bankGuarantee.applicantDetails[0].address2.address }}</span
+                  >
+                  <span *ngIf="bankGuarantee.applicantDetails[0].address3.show"
+                    >, {{ bankGuarantee.applicantDetails[0].address3.address }}</span
+                  >
+                </div>
+              </div>
+            </ng-container>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Name For Clarification' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].nameForClarification }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">
+                  {{ 'Mobile Number For Clarification' | apsTranslate }}
+                </div>
+                <div class="text-color-dark-shade-1">
+                  {{ bankGuarantee.applicantDetails[0].mobileNumberForClarification }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Beneficiary Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.beneficiaryDetails[0].beneficiaryName }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">{{ 'Email' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.beneficiaryDetails[0].email }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Bank Swift Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.beneficiaryDetails[0].bankSwiftCode }}
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Address' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.beneficiaryDetails[0].beneficiaryAddress1[0].address }}
+                <span *ngIf="bankGuarantee.beneficiaryDetails[0].beneficiaryAddress2[0].show"
+                  >, {{ bankGuarantee.beneficiaryDetails[0].beneficiaryAddress2[0].address }}</span
+                >
+                <span *ngIf="bankGuarantee.beneficiaryDetails[0].beneficiaryAddress3[0].show"
+                  >, {{ bankGuarantee.beneficiaryDetails[0].beneficiaryAddress3[0].address }}</span
+                >
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Country' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.beneficiaryDetails[0].country }}
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.beneficiaryDetails[0].beneficiaryAccountNumber }}
+              </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Bank Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.beneficiaryDetails[0].beneficiaryBankName }}
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Bank Address' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.beneficiaryDetails[0].beneficiaryBankAddress1[0].address }}
+                <span *ngIf="bankGuarantee.beneficiaryDetails[0].beneficiaryBankAddress2[0].show"
+                  >,
+                  {{ bankGuarantee.beneficiaryDetails[0].beneficiaryBankAddress2[0].address }}</span
+                >
+                <span *ngIf="bankGuarantee.beneficiaryDetails[0].beneficiaryBankAddress3[0].show"
+                  >,
+                  {{ bankGuarantee.beneficiaryDetails[0].beneficiaryBankAddress3[0].address }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ ' Transaction Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Currency' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.transactionDetails[0].currency }}
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Amount' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.transactionDetails[0].amount }}
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Effective Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.transactionDetails[0].effectiveDate }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  {{ 'Validity' | apsTranslate }}
+                </div>
+                <p-radioButton
+                  class="p-mr-5"
+                  name="fixed"
+                  id="fixed"
+                  value="Fixed"
+                  [label]="'Fixed' | apsTranslate"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].validity"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+                <p-radioButton
+                  name="openEnded"
+                  id="openEnded"
+                  value="Open Ended"
+                  [label]="'Open Ended' | apsTranslate"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].validity"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Expiry Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.transactionDetails[0].expiryDate }}
+                </div>
+              </div>
+              <div
+                class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+                *ngIf="bankGuarantee.transactionDetails[0].validity == 'Fixed'"
+              >
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Claim Expiry Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.transactionDetails[0].claimExpiryDate }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  {{ 'Guarantee Format' | apsTranslate }}
+                </div>
+                <p-radioButton
+                  class="p-mr-5"
+                  name="asPerBankFormat"
+                  id="asPerBankFormat"
+                  value="As Per Bank Format"
+                  [label]="'As Per Bank Format' | apsTranslate"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].guaranteeFormat"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+                <p-radioButton
+                  name="asPerAttachment"
+                  id="asPerAttachment"
+                  value="As Per Attachment"
+                  [label]="'As Per Attachment' | apsTranslate"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].guaranteeFormat"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+              </div>
+              <div
+                class="p-col-12 p-md-6 p-lg-6 p-sm-12"
+                *ngIf="bankGuarantee.transactionDetails[0].guaranteeFormat == 'As Per Attachment'"
+              >
+                <div class="aps-card p-p-2">
+                  <div class="inline-items">
+                    <div class="item">
+                      <app-icon icon="fa-file"></app-icon>
+                    </div>
+                    <div
+                      class="item text-color-normal p-px-2"
+                      *ngIf="bankGuarantee.transactionDetails[0].supportingDocument.length > 0"
+                    >
+                      <div class="text-size-12">
+                        {{ bankGuarantee.transactionDetails[0].supportingDocument.fileName }}
+                      </div>
+                      <div class="text-size-10">
+                        {{
+                          (
+                            +bankGuarantee.transactionDetails[0].supportingDocument[0].fileSize /
+                            1024 /
+                            1024
+                          ).toFixed(2)
+                        }}Mb
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  {{ 'Preferred Language of Guarantee' | apsTranslate }}
+                </div>
+                <p-radioButton
+                  class="p-mr-5"
+                  name="english"
+                  id="english"
+                  value="English"
+                  [label]="'English' | apsTranslate"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].preferredLanguageOfGuaranteee"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+                <p-radioButton
+                  class="p-mr-5"
+                  name="arabic"
+                  id="arabic"
+                  value="Arabic"
+                  [label]="'Arabic' | apsTranslate"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].preferredLanguageOfGuaranteee"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+                <p-radioButton
+                  name="bilingual"
+                  id="bilingual"
+                  value="Bilingual"
+                  [label]="'Bilingual (English & Arabic)' | apsTranslate"
+                  [required]="true"
+                  (click)="setStepCompleted()"
+                  [(ngModel)]="bankGuarantee.transactionDetails[0].preferredLanguageOfGuaranteee"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 text-size-14 text-semi-bold text-color-dark-shade-1 p-px-1 p-pt-3">
+            {{ 'Guarantee to be Delivered' | apsTranslate }}
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">{{ 'Name' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.transactionDetails[0].name }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Telephone No' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.transactionDetails[0].telephoneNo }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">{{ 'Id' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.transactionDetails[0].idProof }}
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Purpose Of Guarantee' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.transactionDetails[0].purposeOfGuarantee }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Account Number For Charges' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ bankGuarantee.transactionDetails[0].accountNumberForCharges }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Supporting Documents' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Document Type' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Reference Number' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Upload Documents' | apsTranslate }}
+              </div>
+            </div>
+            <ng-container *ngIf="bankGuarantee.supportingDocuments[0].bgStandard359">
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <p-checkbox
+                  name="bgStandard359"
+                  id="bgStandard359"
+                  [label]="'BG Standard 359' | apsTranslate"
+                  [binary]="true"
+                  [disabled]="true"
+                  [(ngModel)]="bankGuarantee.supportingDocuments[0].bgStandard359"
+                >
+                </p-checkbox>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Reference Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ bankGuarantee.supportingDocuments[0].bgStandard359RefNo }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="aps-card p-p-2">
+                  <div class="inline-items">
+                    <div class="item">
+                      <app-icon icon="fa-file"></app-icon>
+                    </div>
+                    <div
+                      class="item text-color-normal p-px-2"
+                      *ngIf="bankGuarantee.supportingDocuments[0].bgStandard359Document.length > 0"
+                    >
+                      <div class="text-size-12">
+                        {{ bankGuarantee.supportingDocuments[0].bgStandard359Document[0].fileName }}
+                      </div>
+                      <div class="text-size-10">
+                        {{
+                          (
+                            +bankGuarantee.supportingDocuments[0].bgStandard359Document[0]
+                              .fileSize /
+                            1024 /
+                            1024
+                          ).toFixed(2)
+                        }}Mb
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Terms and condition' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <p-checkbox
+                name="agreeToTermsAndCondition"
+                id="agreeToTermsAndCondition"
+                [label]="'I agree to terms and conditions' | apsTranslate"
+                [binary]="true"
+                [disabled]="true"
+                [(ngModel)]="bankGuarantee.termsAndCondition[0].agreeToTermsAndCondition"
+              ></p-checkbox>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

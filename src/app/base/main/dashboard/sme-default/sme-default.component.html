@@ -1,0 +1,194 @@
+<div class="container">
+  <div class="p-grid g-margin-x">
+    <!-- Quick links -->
+    <div class="p-col-12 p-md-8 p-lg-8">
+      <div class="p-grid g-margin-x quick-link-container">
+        <div
+          class="p-col-6 p-md-3 p-lg-3"
+          *ngFor="let link of quickLinkCards"
+          (click)="routeTo(link.routeUrl)"
+        >
+          <div class="aps-card quick-link position-relative aps-min-h-80 overflow-hidden">
+            <div class="link-background"><app-icon [icon]="link.icon"></app-icon></div>
+            <div class="text-center p-mt-2 link-icon">
+              <app-icon [icon]="link.icon"></app-icon>
+            </div>
+            <div class="text-center text-size-14 text-semi-bold link-text border-bottom p-py-2">
+              {{ link.displayName }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Recent Activities -->
+    <div class="p-col-12 p-md-4 p-lg-4">
+      <div class="aps-card p-mt-2 p-p-2">
+        <div class="p-grid">
+          <div class="p-col-12 p-px-1 p-py-2 border-bottom-primary text-bold text-size-16">
+            Recent Activities
+          </div>
+          <div class="p-col-12 p-p-0 aps-h-125 overflow-y-scroll">
+            <app-activities></app-activities>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Details -->
+  <div class="p-grid g-margin-x">
+    <!-- Account Card -->
+    <div class="p-col-12 p-md-4 p-lg-4">
+      <div class="aps-card p-p-0">
+        <div class="p-grid">
+          <div class="p-col-12 p-p-2 border-bottom-primary text-bold text-size-16">
+            <div class="p-p-1">Accounts ({{ corporateAccounts.length }})</div>
+          </div>
+          <div class="p-col-12 p-p-0 aps-h-250 overflow-y-scroll">
+            <div class="p-grid">
+              <div
+                class="p-col-12 p-p-3 border-bottom account-container"
+                *ngFor="let account of corporateAccounts"
+                [ngClass]="{ active: selectedAccount == account }"
+                (click)="selectedAccount = account"
+              >
+                <div class="p-mt-1 text-size-14 text-semi-bold">
+                  {{ account.enrichments.accountTitle }}
+                </div>
+                <div class="p-mb-1 text-size-14">{{ account.displayName }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-8 p-lg-8 p-p-0">
+      <div class="p-grid">
+        <!-- Selected Account Balance -->
+        <div class="p-col-12">
+          <div class="aps-card">
+            <div class="p-grid" *ngIf="selectedAccount">
+              <div class="p-col-12 p-md-4 p-lg-4 text-center">
+                <div class="p-p-2 border-right">
+                  <app-currency-select-dropdown
+                    classes="p-mt-2"
+                    [showFlag]="false"
+                    selectStyleClass="select"
+                  >
+                  </app-currency-select-dropdown>
+                  <span class="text-size-24 text-bold" *ngIf="selectedAccount">
+                    {{ selectedAccount.enrichments.balance | currency: '':'':'1.0-0' }}
+                  </span>
+                  <div class="text-size-16">Closing Balance</div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 text-center">
+                <div class="text-size-24 text-bold">
+                  <app-base-currency
+                    [amount]="selectedAccount.enrichments.totalCreditBalance"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">Total Credit Balance</div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 text-center">
+                <div class="text-size-24 text-bold">
+                  <app-base-currency
+                    [amount]="selectedAccount.enrichments.totalDebitBalance"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">Total Debit Balance</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Recent Transactions -->
+        <div class="p-col-12">
+          <div class="aps-card">
+            <div class="p-grid">
+              <div class="p-col-6 p-p-2 border-bottom-primary text-bold text-size-16">
+                <div class="p-p-1">Recent Transaction</div>
+              </div>
+              <div class="p-col-6 p-p-1 border-bottom-primary">
+                <button class="btn btn-md btn-tertiary p-mx-2 float-right">VIEW STATEMENT</button>
+              </div>
+              <div class="p-col-12 p-p-0 aps-h-150 overflow-y-scroll">
+                <div class="p-grid">
+                  <div class="p-col-12 p-px-1 text-size-14">
+                    <p-radioButton
+                      name="recentTransactionType"
+                      class="p-mx-1"
+                      value="Pending"
+                      label="Pending"
+                      [(ngModel)]="recentTransactionType"
+                    >
+                    </p-radioButton>
+                    <p-radioButton
+                      name="recentTransactionType"
+                      class="p-mx-1"
+                      value="Rejected"
+                      label="Rejected"
+                      [(ngModel)]="recentTransactionType"
+                    >
+                    </p-radioButton>
+                    <p-radioButton
+                      name="recentTransactionType"
+                      class="p-mx-1"
+                      value="Failed"
+                      label="Failed"
+                      [(ngModel)]="recentTransactionType"
+                    >
+                    </p-radioButton>
+                  </div>
+                  <ng-container *ngIf="recentTransactions">
+                    <ng-container
+                      *ngFor="let transaction of recentTransactions[recentTransactionType]"
+                    >
+                      <div class="p-col-12 p-md-6 p-lg-6 p-p-0">
+                        <div class="p-grid border-bottom">
+                          <div class="p-col-6">
+                            <div class="text-size-12 text-color-light-shade-1">Description</div>
+                            <div class="text-size-14">{{ transaction.description }}</div>
+                          </div>
+                          <div class="p-col-6">
+                            <div class="text-size-12 text-color-light-shade-1">Value Date</div>
+                            <div class="text-size-14">{{ transaction.valueDate }}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-col-12 p-md-6 p-lg-6 p-p-0">
+                        <div class="p-grid border-bottom">
+                          <div class="p-col-6 p-md-4 p-lg-4">
+                            <div class="text-size-12 text-color-light-shade-1">
+                              Reference Number
+                            </div>
+                            <div class="text-size-14">{{ transaction.referenceNumber }}</div>
+                          </div>
+                          <div class="p-col-6 p-md-4 p-lg-4">
+                            <div class="text-size-12 text-color-light-shade-1">
+                              Transaction Date
+                            </div>
+                            <div class="text-size-14">{{ transaction.transactionDate }}</div>
+                          </div>
+                          <div class="p-col-6 p-md-4 p-lg-4">
+                            <div class="text-size-14 text-color-danger p-mt-1">
+                              <app-base-currency
+                                [amount]="transaction.amount"
+                                display="symbol"
+                              ></app-base-currency>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

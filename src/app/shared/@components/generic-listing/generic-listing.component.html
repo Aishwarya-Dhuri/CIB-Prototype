@@ -1,0 +1,17 @@
+<app-modal [(isShow)]="!!rejectReason" headerText="Reject Reason" (onClose)="rejectReason = ''">
+  <div class="text-semi-bold text-size-16">
+    {{ rejectReason }}
+  </div>
+</app-modal>
+
+<app-modal
+  [(isShow)]="!!errorMessage"
+  headerText="Error"
+  (onClose)="errorMessage = ''; errors = []"
+>
+  <div class="text-semi-bold text-size-16 p-py-2" *ngFor="let error of errors; let i = index">
+    {{ i + 1 }}.&nbsp;{{ error }}
+  </div>
+</app-modal>
+
+<app-listing #listing [parentComponentRef]="parentComponentRef"></app-listing>

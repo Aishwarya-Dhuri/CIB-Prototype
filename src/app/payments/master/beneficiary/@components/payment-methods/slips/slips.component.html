@@ -1,0 +1,150 @@
+<app-modal [(isShow)]="isShowBeforeSubmitModel" size="md">
+  <div body class="p-p-3">
+    <div class="text-size-14 text-semi-bold">
+      If you want to {{ account ? 'edit' : 'map' }} this account to below payment methods as well
+      please select the checkbox and click 'SAVE' button. And if not, then without selecting any
+      checkbox, click 'SAVE'.
+    </div>
+    <div class="p-pt-3">
+      <p-checkbox
+        class="p-mr-3"
+        label="RTGS"
+        value="RTGS"
+        name="paymentMethods"
+        [(ngModel)]="paymentMethods"
+      ></p-checkbox>
+      <p-checkbox
+        label="NEFT"
+        value="NEFT"
+        name="paymentMethods"
+        [(ngModel)]="paymentMethods"
+      ></p-checkbox>
+    </div>
+  </div>
+  <div footer class="left-right-container">
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="btn btn-md btn-tertiary p-mr-3" (click)="isShowBeforeSubmitModel = false">
+        CANCEL
+      </button>
+      <button class="btn btn-md btn-primary" (click)="add()">SAVE</button>
+    </div>
+  </div>
+</app-modal>
+
+<div class="p-grid g-margin-x">
+  <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+    <aps-form-input
+      name="accountNumber"
+      id="accountNumber"
+      label="Account Number"
+      inputType="alphaNumeric"
+      [(ngModel)]="formData.accountNumber"
+    ></aps-form-input>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <p-checkbox
+      name="defaultAccount"
+      id="defaultAccount"
+      label="Default Account"
+      [binary]="true"
+      [(ngModel)]="formData.defaultAccount"
+    ></p-checkbox>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <aps-form-input
+      name="beneficiaryBank"
+      id="beneficiaryBank"
+      label="Beneficiary Bank"
+      [(ngModel)]="formData.beneficiaryBank"
+    ></aps-form-input>
+  </div>
+
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <aps-form-input
+      name="beneficiaryBankBranch"
+      id="beneficiaryBankBranch"
+      label="Beneficiary Bank Branch"
+      [(ngModel)]="formData.beneficiaryBankBranch"
+    ></aps-form-input>
+  </div>
+
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0"></div>
+
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <aps-form-input
+      name="address1"
+      id="address1"
+      label="Address 1"
+      [(ngModel)]="formData.address1"
+    ></aps-form-input>
+  </div>
+
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <aps-form-input
+      name="address2"
+      id="address2"
+      label="Address 2"
+      [(ngModel)]="formData.address2"
+    ></aps-form-input>
+  </div>
+
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <aps-form-input
+      name="address3"
+      id="address3"
+      label="Address 3"
+      [(ngModel)]="formData.address3"
+    ></aps-form-input>
+  </div>
+
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <app-aps-calender
+      name="effectiveFrom"
+      id="effectiveFrom"
+      label="Effective From"
+      [(ngModel)]="formData.effectiveFrom"
+    ></app-aps-calender>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <app-aps-calender
+      name="effectiveTill"
+      id="effectiveTill"
+      label="Effective Till"
+      [(ngModel)]="formData.effectiveTill"
+    ></app-aps-calender>
+  </div>
+  <div class="p-col-12 p-py-0">
+    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+      Beneficiary Advice Dispatch Mode
+    </div>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Electronic Mode</div>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <p-checkbox
+      class="p-mr-3"
+      label="Email"
+      value="Email"
+      [(ngModel)]="formData.beneficiaryAdviceDispatchMode"
+    ></p-checkbox>
+    <p-checkbox
+      label="SMS"
+      value="SMS"
+      [(ngModel)]="formData.beneficiaryAdviceDispatchMode"
+    ></p-checkbox>
+  </div>
+  <div class="p-col-12">
+    <div class="left-right-container p-mt-6">
+      <div class="left-container">
+        <button class="btn btn-md btn-tertiary" (click)="cancel.emit()">CANCEL</button>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="isShowBeforeSubmitModel = true">
+          {{ account ? 'UPDATE' : 'ADD' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

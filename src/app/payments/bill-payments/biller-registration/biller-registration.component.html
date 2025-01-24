@@ -1,0 +1,482 @@
+<app-modal [(isShow)]="showSampleBill" size="md" headerText="Sample Bill">
+  <div class="sample-bill-container" body>
+    <img class="sample-bill" [src]="getSampleBill()" alt="Sample Bill" />
+  </div>
+</app-modal>
+
+<div class="container text-color-dark-shade-1">
+  <ng-container *ngIf="stepperDetails.currentStep === 1">
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Biller Details</div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-custom-select
+              name="billerName"
+              id="billerName"
+              label="Biller Name"
+              [data]="billers"
+              (change)="onBiller($event)"
+              [value]="formData.billerName"
+              [(ngModel)]="formData.billerName"
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-custom-select
+              name="product"
+              id="product"
+              label="Product"
+              [data]="products"
+              (change)="getExistingSubscribers()"
+              [value]="formData.product"
+              [(ngModel)]="formData.product"
+            ></aps-custom-select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card p-my-3">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Subscriber Details</div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">Copy From Existing Subscriber</div>
+            <p-radioButton
+              class="p-mr-3"
+              id="yes"
+              name="copyFromExistingSubscriber"
+              value="Y"
+              label="Yes"
+              [(ngModel)]="formData.copyFromExistingSubscriber"
+            ></p-radioButton>
+            <p-radioButton
+              class=""
+              id="no"
+              name="copyFromExistingSubscriber"
+              value="N"
+              label="No"
+              (onClick)="resetExistingSubscriber()"
+              [(ngModel)]="formData.copyFromExistingSubscriber"
+            ></p-radioButton>
+          </div>
+
+          <div
+            class="p-md-4 p-sm-12 p-col-12 p-py-0"
+            *ngIf="formData.copyFromExistingSubscriber === 'Y'"
+          >
+            <aps-custom-select
+              name="existingSubscriber"
+              id="existingSubscriber"
+              label="Existing Subscriber"
+              [data]="existingSubscribers"
+              (change)="onSelectExistingSubscriber($event)"
+              [value]="formData.existingSubscriber"
+              [(ngModel)]="formData.existingSubscriber"
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-col-12 p-p-0"></div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-form-input
+              name="consumerName"
+              id="consumerName"
+              label="Subscriber Name"
+              [(ngModel)]="formData.consumer"
+            ></aps-form-input>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-form-input
+              name="ref1"
+              id="ref1"
+              label="Ref 1"
+              [(ngModel)]="formData.ref1"
+              [required]="true"
+              rightIcon="fa-file"
+              (onRightIcon)="showSampleBill = true"
+            ></aps-form-input>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-form-input
+              name="ref2"
+              id="ref2"
+              label="ref 2"
+              [(ngModel)]="formData.ref2"
+            ></aps-form-input>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-md-3 p-sm-4 p-col-4 p-py-0">
+                <aps-custom-select
+                  name="currency"
+                  id="currency"
+                  label="CCY"
+                  dataUrl="setup/generalMasters/currency/private/currencyList"
+                  [value]="formData.currency"
+                  [(ngModel)]="formData.currency"
+                  [disabled]="true"
+                >
+                </aps-custom-select>
+              </div>
+              <div class="p-md-9 p-sm-8 p-col-8 p-py-0">
+                <aps-form-input
+                  name="maxAmount"
+                  id="maxAmount"
+                  label="Maximum Amount"
+                  inputType="currencyFormatNotZero"
+                  [(ngModel)]="formData.maximumAmount"
+                ></aps-form-input>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-form-input
+              name="tolerance"
+              id="tolerance"
+              label="Tolerance"
+              rightIcon="fa-percent"
+              inputType="numeric"
+              [(ngModel)]="formData.tolerance"
+            ></aps-form-input>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-custom-select
+              name="preferredPaymentMethod"
+              id="preferredPaymentMethod"
+              label="Preferred Payment Method"
+              dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+              [value]="formData.preferredPaymentMethod"
+              [(ngModel)]="formData.preferredPaymentMethod"
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <app-aps-calender
+              name="effectiveStartDate"
+              id="effectiveStartDate"
+              label="Effective From"
+              [(ngModel)]="formData.effectiveStartDate"
+            ></app-aps-calender>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <app-aps-calender
+              name="effectiveEndDate"
+              id="effectiveEndDate"
+              label="Effective Till"
+              [(ngModel)]="formData.effectiveEndDate"
+            ></app-aps-calender>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">Schedule Payment</div>
+            <p-radioButton
+              class="p-mr-3"
+              id="yes"
+              name="schedulePayment"
+              value="Y"
+              label="Yes"
+              [(ngModel)]="formData.schedulePayment"
+            ></p-radioButton>
+            <p-radioButton
+              class=""
+              id="no"
+              name="schedulePayment"
+              value="N"
+              label="No"
+              [(ngModel)]="formData.schedulePayment"
+            ></p-radioButton>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card" *ngIf="formData.schedulePayment === 'Y'">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Schedule Payment Details</div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-custom-select
+              name="pay"
+              id="pay"
+              label="Pay"
+              [data]="[
+                { id: 'Billed Amount', displayName: 'Billed Amount' },
+                { id: 'Other', displayName: 'Other' }
+              ]"
+              [value]="formData.pay"
+              [(ngModel)]="formData.pay"
+              [required]="formData.schedulePayment === 'Y'"
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0" *ngIf="formData.pay === 'Other'">
+            <aps-form-input
+              name="amount"
+              id="amount"
+              label="Amount"
+              inputType="currencyFormatNotZero"
+              [(ngModel)]="formData.amount"
+            ></aps-form-input>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1">If Holiday</div>
+            <p-radioButton
+              class="p-mr-3"
+              id="Prepone"
+              name="ifHoliday"
+              value="Prepone"
+              label="Prepone"
+              [(ngModel)]="formData.ifHoliday"
+              [required]="formData.schedulePayment === 'Y'"
+            ></p-radioButton>
+            <p-radioButton
+              class="p-mr-3"
+              id="Postpone"
+              name="ifHoliday"
+              value="Postpone"
+              label="Postpone"
+              [required]="formData.schedulePayment === 'Y'"
+              [(ngModel)]="formData.ifHoliday"
+            ></p-radioButton>
+            <p-radioButton
+              class="p-mr-3"
+              id="Process"
+              name="ifHoliday"
+              value="Process"
+              label="Process"
+              [required]="formData.schedulePayment === 'Y'"
+              [(ngModel)]="formData.ifHoliday"
+            ></p-radioButton>
+          </div>
+
+          <div class="p-col-12 p-py-0"></div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-custom-select
+              name="schedulePaymentMethod"
+              id="schedulePaymentMethod"
+              label="Payment Method"
+              dataUrl="payments/billPayments/billerRegistration/private/dropdown/preferredPaymentMethods"
+              (change)="onSchedulePaymentMethod($event)"
+              [value]="formData.schedulePaymentMethod"
+              [(ngModel)]="formData.schedulePaymentMethod"
+              [required]="formData.schedulePayment === 'Y'"
+              [disabled]="!!formData.accountNumber"
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0" *ngIf="formData.schedulePaymentMethod">
+            <aps-custom-select
+              name="accountNumber"
+              id="accountNumber"
+              label="Debit Account Number"
+              [data]="accounts"
+              [value]="formData.accountNumber"
+              [(ngModel)]="formData.accountNumber"
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-col-12 p-py-0"></div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <app-aps-calender
+              name="startDate"
+              id="startDate"
+              label="Start Date"
+              [(ngModel)]="formData.startDate"
+              [required]="true"
+            ></app-aps-calender>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+            <app-aps-calender
+              name="endDate"
+              id="endDate"
+              label="End Date"
+              [(ngModel)]="formData.endDate"
+              [required]="true"
+            ></app-aps-calender>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Biller Details</div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Biller Name"
+              [value]="formData.billerName"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Product"
+              [value]="formData.product"
+            ></app-review-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card p-my-3">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Subscriber Details</div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-6 p-col-12">
+            <app-review-form-field
+              label="Copy From Existing Subscriber"
+              [value]="formData.copyFromExistingSubscriber"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-col-12 p-p-0"></div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Subscriber Name"
+              [value]="formData.consumer"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field label="Ref 1" [value]="formData.ref1"></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field label="Ref 2" [value]="formData.ref2"></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Maximum Amount"
+              [value]="formData.maximumAmount"
+              type="baseCurrency"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Tolerance"
+              value="{{ formData.tolerance }}%"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Preferred Payment Method"
+              [value]="formData.preferredPaymentMethod"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Effective From"
+              [value]="formData.effectiveStartDate"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Effective Till"
+              [value]="formData.effectiveEndDate"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Schedule Payment"
+              [value]="formData.schedulePayment"
+            ></app-review-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card" *ngIf="formData.schedulePayment === 'Y'">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Schedule Payment Details</div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field label="Pay" [value]="formData.pay"></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6" *ngIf="formData.pay === 'Other'">
+            <app-review-form-field label="Amount" [value]="formData.amount"></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="If Holiday"
+              [value]="formData.ifHoliday"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-col-12 p-p-0"></div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Payment Method"
+              [value]="formData.schedulePaymentMethod"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6" *ngIf="formData.schedulePaymentMethod">
+            <app-review-form-field
+              label="{{ formData.schedulePaymentMethod }} - Debit Account Number"
+              [value]="formData.accountNumber"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-col-12 p-p-0"></div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="Start Date"
+              [value]="formData.startDate"
+            ></app-review-form-field>
+          </div>
+
+          <div class="p-md-4 p-sm-6 p-col-6">
+            <app-review-form-field
+              label="End Date"
+              [value]="formData.endDate"
+            ></app-review-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

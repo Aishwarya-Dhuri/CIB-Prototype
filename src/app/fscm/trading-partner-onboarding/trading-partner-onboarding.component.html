@@ -1,0 +1,108 @@
+<app-search-modal [(isShow)]="isShowCopyExistingModel" header="Copy Existing {{ formData.type }}"
+  [colDefUrl]="copyFromExistingColDefUrl" [rowDefUrl]="copyFromExistingRowDefUrl" (onSelection)="onSelection($event)">
+</app-search-modal>
+
+<div class="trading-partner-onboarding-container" *ngIf="!isInitiateForm">
+  <div class="p-grid p-px-2">
+    <div class="p-md-6 p-col-12 p-sm-12">
+      <div class="aps-card p-p-3">
+        <div class="text-size-16 text-color-dark-shade-2 text-bold p-mb-2">Add a Seller</div>
+        <div class="p-grid">
+          <div class="p-md-6 p-sm-12 p-col-12 p-pl-1">
+            <button class="btn btn-md btn-primary aps-w-100p" (click)="newOnboarding('Seller')">
+              <app-icon icon="fa-plus" class="app-icon p-mr-2"></app-icon>
+              Create a New Seller
+            </button>
+          </div>
+          <div class="p-md-6 p-sm-12 p-col-12 p-pl-1">
+            <button class="btn btn-md btn-secondary aps-w-100p" (click)="copyFromExisting('Seller')">
+              <app-icon icon="fa-copy" class="app-icon p-mr-2"></app-icon>
+              Copy from an Existing Seller
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-6 p-col-12 p-sm-12">
+      <div class="aps-card p-p-3">
+        <div class="text-size-16 text-color-dark-shade-2 text-bold p-mb-2">Add a Buyer</div>
+        <div class="p-grid">
+          <div class="p-md-6 p-sm-12 p-col-12 p-pl-1">
+            <button class="btn btn-md btn-primary aps-w-100p" (click)="newOnboarding('Buyer')">
+              <app-icon icon="fa-plus" class="app-icon p-mr-2"></app-icon>
+              Create a New Buyer
+            </button>
+          </div>
+          <div class="p-md-6 p-sm-12 p-col-12 p-pl-1">
+            <button class="btn btn-md btn-secondary aps-w-100p" (click)="copyFromExisting('Buyer')">
+              Copy from an Existing Buyer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="left-right-container p-mx-3 p-my-2">
+    <div class="left-container">
+      <div class="text-size-16 text-bold text-color-dark-shade-2">Drafts (0)</div>
+    </div>
+    <div class="right-container">
+      <div class="tree-type">
+        <div class="icon icon-active">
+          <app-icon icon="fa-list" class="app-icon"></app-icon>
+        </div>
+        <div class="icon">
+          <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-container aps-card p-mx-3 p-my-2">
+    <div class="aps-card-header">
+      <div class="aps-search-container-2">
+        <input type="text" class="aps-search-input" [(ngModel)]="searchText" placeholder="Enter keyword to search" />
+        <div class="search-icon">
+          <app-icon icon="fa-search" class="app-icon"></app-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card-body">
+      <app-ag-grid-listing #listing id="drafts"
+        colDefUrl="fscm/onboarding/tradingPartnerOnboarding/private/draftColDefs"
+        rowDefUrl="fscm/onboarding/tradingPartnerOnboarding/private/getDraftList"
+        [context]="{ componentParent: this }"></app-ag-grid-listing>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngIf="isInitiateForm">
+  <div class="container seller-onboarding-container">
+    <div class="seller-onboarding-steps">
+      <app-stepper-header [parentRef]="this"></app-stepper-header>
+    </div>
+
+    <div class="seller-onboarding-body p-mb-2">
+      <div class="text-size-16 text-bold text-color-dark-shade-2 p-mt-3">
+        {{ stepperDetails.headings[stepperDetails.currentStep - 1] }}
+      </div>
+
+      <app-seller-details #details [(details)]="formData" *ngIf="stepperDetails.currentStep === 1"></app-seller-details>
+
+      <app-parameters #parameters [(parameters)]="formData.parameters[0]"
+        *ngIf="stepperDetails.currentStep === 2"></app-parameters>
+
+      <app-authentication-rule #authenticationRules [(authenticationRules)]="formData.authenticationRules"
+        *ngIf="stepperDetails.currentStep === 3"></app-authentication-rule>
+
+      <app-review-n-confirm [(sellerBuyerData)]="formData" (edit)="onEdit($event)"
+        *ngIf="stepperDetails.currentStep === stepperDetails.headings.length"></app-review-n-confirm>
+    </div>
+
+    <div class="seller-onboarding-footer p-mb-2">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</ng-container>

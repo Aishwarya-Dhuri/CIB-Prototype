@@ -1,0 +1,142 @@
+<div class="p-grid">
+  <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+    <aps-form-input
+      name="notifyPartyCode"
+      id="notifyPartyCode"
+      label="Notify Party Code"
+      [required]="true"
+      [(ngModel)]="parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyCode"
+    >
+    </aps-form-input>
+  </div>
+  <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+    <aps-form-input
+      name="notifyPartyName"
+      id="notifyPartyName"
+      label="Notify Party Name"
+      [required]="true"
+      [(ngModel)]="parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyName"
+    >
+    </aps-form-input>
+  </div>
+</div>
+<div class="p-grid">
+  <div class="p-col-9 p-py-0">
+    <div class="p-grid">
+      <div class="p-col-12 p-p-0">
+        <aps-form-input
+          name="notifyPartyAddress1"
+          id="notifyPartyAddress1"
+          label="Notify Party Address1"
+          [(ngModel)]="
+            parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress1[0]
+              .address
+          "
+          [required]="true"
+        >
+        </aps-form-input>
+      </div>
+      <div
+        class="p-col-12 p-p-0"
+        *ngIf="
+          parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress2[0].show
+        "
+      >
+        <aps-form-input
+          name="notifyPartyAddress2"
+          id="notifyPartyAddress2"
+          label="Notify Party Address2"
+          [rightIcon]="'fa-trash-alt'"
+          (onRightIcon)="deleteNotifyPartyAddress(2)"
+          [(ngModel)]="
+            parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress2[0]
+              .address
+          "
+        ></aps-form-input>
+      </div>
+      <div
+        class="p-col-12 p-p-0"
+        *ngIf="
+          parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress3[0].show
+        "
+      >
+        <aps-form-input
+          name="notifyPartyAddress3"
+          id="notifyPartyAddress3"
+          label="Notify Party Address3"
+          [rightIcon]="'fa-trash-alt'"
+          (onRightIcon)="deleteNotifyPartyAddress(3)"
+          [(ngModel)]="
+            parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress3[0]
+              .address
+          "
+        ></aps-form-input>
+      </div>
+    </div>
+  </div>
+  <div class="p-col-3">
+    <button
+      class="btn text-center btn btn-tertiary"
+      (click)="addNotifyPartyAddress()"
+      [disabled]="
+        parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress1[0].show &&
+        parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress2[0].show &&
+        parentRef.formData.shippingDocumentDetails[0].notifyParty[0].notifyPartyAddress3[0].show
+      "
+    >
+      <app-icon icon="fa-plus"> </app-icon>&nbsp;ADDRESS LINE
+    </button>
+  </div>
+</div>
+<div class="p-grid">
+  <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+    <aps-form-input
+      name="contactPersonName"
+      id="contactPersonName"
+      label="Contact Person Name"
+      [required]="true"
+      [(ngModel)]="parentRef.formData.shippingDocumentDetails[0].notifyParty[0].contactPersonName"
+    >
+    </aps-form-input>
+  </div>
+  <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+    <aps-form-input
+      name="mobileNo"
+      id="mobileNo"
+      label="Mobile No"
+      [required]="true"
+      [(ngModel)]="parentRef.formData.shippingDocumentDetails[0].notifyParty[0].mobileNo"
+    >
+    </aps-form-input>
+  </div>
+  <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+    <aps-form-input
+      name="email"
+      id="email"
+      label="Email"
+      [required]="true"
+      [(ngModel)]="parentRef.formData.shippingDocumentDetails[0].notifyParty[0].email"
+    >
+    </aps-form-input>
+  </div>
+  <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+    <app-aps-calender
+      name="effectiveFrom"
+      id="effectiveFrom"
+      label="Effective From"
+      [required]="true"
+      [(ngModel)]="parentRef.formData.shippingDocumentDetails[0].notifyParty[0].effectiveFrom"
+    >
+    </app-aps-calender>
+  </div>
+  <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+    <app-aps-calender
+      name="effectiveTill"
+      id="effectiveTill"
+      label="Effective Till"
+      [required]="true"
+      [(ngModel)]="parentRef.formData.shippingDocumentDetails[0].notifyParty[0].effectiveTill"
+    >
+    </app-aps-calender>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<div class="container">
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12 p-md-7 p-sm-12">
+      <div class="aps-card transaction-search-container">
+        <div class="p-grid">
+          <div class="p-col-12 p-py-2 p-px-3 p-pb-0 p-mb-0">
+            <div class="text-size-16 text-color-normal p-py-2 text-bold">Search By</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-grid">
+        <div class="p-col-12 p-p-0">
+          <app-dynamic-search
+            #dynamicSearch
+            [(entityName)]="searchByEntityName"
+            (onSaveCriteria)="getCriteriaList()"
+            (onFiltersReady)="onDynamicFiltersReady()"
+            [preFillFilters]="billPaymentHistoryService.selectedFilters"
+            (onSearch)="getRecords($event)"
+            [isShowSearchByHeader]="false"
+          >
+          </app-dynamic-search>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-5 p-sm-12">
+      <div class="aps-card aps-h-100p p-px-3 p-pb-3">
+        <p-tabView>
+          <p-tabPanel header="Saved Criterion">
+            <div class="p-px-0 p-pt-3 p-pb-1 border-bottom" *ngFor="let criteria of criteriaList">
+              <div class="left-right-container">
+                <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                  <div class="text-size-12">{{ criteria.name }}</div>
+                  <div class="text-size-10">{{ getCriteriaFilterCount(criteria) }} Parameters</div>
+                </div>
+                <div class="right-container">
+                  <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                    Apply
+                  </button>
+                  <!-- <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                    <app-icon icon="fa-pencil" class="text-size-14 pointer"></app-icon>
+                  </span> -->
+                  <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                    <app-icon
+                      icon="fa-trash-alt"
+                      class="text-size-14 pointer"
+                      (click)="deleteCriteria(criteria)"
+                    ></app-icon>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+export class EarlyRedemption {
+  constructor(
+    public id: string = '',
+    public batchNo: string = '',
+    public fdNumber: string = '',
+    public productTypeId: string = '',
+    public productTypeName: string = '',
+    public maturityDate: string = '',
+    public amount: string = '',
+    public amountCurrency: string = '',
+    public currentBalance: string = '',
+    public currentBalanceCurrency: string = '',
+    public redemptionType: string = 'Full Amount',
+    public redemptionAmount: string = '',
+    public redemptionCurrency: string = '',
+    public redemptionDate: string = '',
+    public creditAccount: string = 'Other Account',
+    public remarks: string = '',
+    public principalCreditMode: string = '',
+    public principalCreditAccount: string = '',
+    public principalPrefferedCurrency: string = '',
+    public interestCreditMode: string = '',
+    public interestCreditAccount: string = '',
+    public interestPrefferedCurrency: string = '',
+    public termsAndCondition: boolean = false,
+    public status: string = 'Processing',
+  ) {}
+}

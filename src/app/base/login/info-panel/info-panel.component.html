@@ -1,0 +1,63 @@
+<app-demo-video *ngIf="demoVideo" (closeDemoVideo)="demoVideo = false"></app-demo-video>
+
+<div class="info-panel-container" *ngIf="screenDetails">
+  <div class="main-heading" [ngClass]="{ 'hide-on-mobile': isMobileScreenLogin }">
+    <div class="heading">
+      {{ screenDetails.mainHeading }}
+    </div>
+
+    <div class="carousel-wrapper">
+      <div *ngFor="let carousal of screenDetails.backgroundImages; let i = index" class="carousel"
+        [ngClass]="{ 'carousel-active': backgroundImageIndex === i }" (click)="changeBgImage(i)"></div>
+    </div>
+  </div>
+
+  <div class="card-wrapper" [ngClass]="{ 'hide-on-mobile': isMobileScreenLogin }">
+    <div class="card" *ngFor="let subHeading of screenDetails.subHeadings">
+      <div class="card-icon">
+        <app-icon [icon]="subHeading.icon"></app-icon>
+      </div>
+      <div class="card-panel">
+        <div class="card-heading">{{ subHeading.heading }}</div>
+        <div class="card-body">
+          {{ subHeading.details }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="announcement-wrapper" [ngClass]="{ 'hide-on-mobile': isMobileScreenLogin }"
+    *ngIf="broadcastMessages.length > 0">
+    <div class="announcement-icon">
+      <app-icon icon="fa-volume-up"></app-icon>
+    </div>
+    <div class="announcement">
+      <div class="announcement-body">
+        {{ broadcastMessage.messageDescription }}
+      </div>
+
+      <div class="carousel-wrapper">
+        <div *ngFor="let broadcastMessage of broadcastMessages; let i = index" class="carousel"
+          [ngClass]="{ 'carousel-active': broadcastMessageIndex === i }" (click)="changeMessage(i)"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="buttons-wrapper" [ngClass]="isMobileScreenLogin ? 'hide-on-mobile' : ' show-on-mobile'">
+    <button class="aps-w-100p" pButton label="LOGIN" (click)="onLoginClick()"></button>
+  </div>
+
+  <div class="help-wrapper" [ngClass]="{ 'hide-on-mobile': !isMobileScreenLogin }">
+    <div class="help" *ngFor="let help of screenDetails.helpOptions"
+      (click)="help.id === 'dv' ? (demoVideo = true) : ''">
+      <div class="icon">
+        <app-icon [icon]="help.icon"></app-icon>
+      </div>
+      <div class="label" (click)="onLoginHelpClick(help)">{{ help.label }}</div>
+    </div>
+  </div>
+
+  <div class="footer-wrapper hide-on-mobile">
+    <app-footer></app-footer>
+  </div>
+</div>

@@ -1,0 +1,185 @@
+<div class="container">
+    <div class="p-grid" *ngIf="!loading">
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+            <div class="aps-card">
+                <div class="left-right-container p-px-3 p-pt-3">
+                    <div class="left-container">
+                        <div class="text-size-14 text-semi-bold">Top 5 Merchants</div>
+                    </div>
+                    <div class="right-container aps-w-30p">
+                        <aps-custom-select [data]="periodForMerchantsList" name="selectedPeriodForMerchants"
+                            [(ngModel)]="selectedPeriodForMerchants" [value]="selectedPeriodForMerchants"
+                            [showLabel]="false">
+                        </aps-custom-select>
+                    </div>
+                </div>
+                <div class="left-right-container p-px-3">
+                    <div class="left-container">
+                        <p-radioButton class="p-mr-3" name="transactionCount" id="transactionCount" label="Count Wise"
+                            value="transactionCount" [(ngModel)]="topMerchatChartType" (onClick)="getTopMerchants()">
+                        </p-radioButton>
+                        <p-radioButton name="transactionAmount" id="transactionAmount" label="Amount Wise"
+                            value="transactionAmount" [(ngModel)]="topMerchatChartType" (onClick)="getTopMerchants()">
+                        </p-radioButton>
+                    </div>
+                    <div class="right-container">
+                        <app-currency-select-dropdown>
+                        </app-currency-select-dropdown>
+                    </div>
+                </div>
+                <aps-chart *ngIf="topMerchatChartType === 'transactionCount'" [options]="topMerchantOptions">
+                </aps-chart>
+                <aps-chart *ngIf="topMerchatChartType === 'transactionAmount'" [options]="topMerchantOptions">
+                </aps-chart>
+
+            </div>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+            <div class="aps-card p-p-3 aps-h-100p">
+                <div class="left-right-container">
+                    <div class="left-container">
+                        <div class="text-size-14 text-semi-bold">Category Wise Spend Analysis</div>
+                    </div>
+                    <div class="right-container aps-w-30p">
+                        <aps-custom-select [data]="periodForMerchantsList" name="selectedPeriodForCategoryWiseAnalysis"
+                            [(ngModel)]="selectedPeriodForCategoryWiseAnalysis"
+                            [value]="selectedPeriodForCategoryWiseAnalysis" [showLabel]="false">
+                        </aps-custom-select>
+                    </div>
+                </div>
+                <app-pie-chart [options]="categoryWiseSpendOptions" webHeight="300" mobileHeight="300"></app-pie-chart>
+            </div>
+        </div>
+        <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+            <div class="aps-card aps-h-100p">
+                <app-insights height="215" isTransparentBackground="true"
+                    insightsUrl="dummyServer/json/commons/private/insights/merchantPayment">
+                </app-insights>
+            </div>
+        </div>
+        <div class="p-col-12 p-py-0">
+            <div class="left-right-container p-py-2">
+                <div class="left-container">
+                    <span *ngFor="let item of filters"
+                        class="aps-card inline-block p-p-2 p-mr-2 p-mb-1 text-size-14 text-semi-bold pointer border"
+                        [ngClass]="{
+                      'aps-card-primary': item.displayName === selectedFilter
+                    }" (click)="changeFilter(item, $event)">
+                        {{ item.displayName }} ({{item.count}})
+                    </span>
+                    <button class="p-p-2 btn btn-md btn-tertiary">
+                        {{ "Merchant Statement Download" | apsTranslate }}
+                        <app-icon icon="fa-arrow-up-right-from-square"></app-icon>
+                    </button>
+                </div>
+            </div>
+            <div class="aps-card aps-h-350 p-mb-3">
+                <div class="card-header">
+                    <div class="left-right-container p-px-3">
+                        <div class="left-container">
+                            <div class="text-size-16 text-color-dark-shade-1 text-bold p-py-3">
+                                {{ selectedFilter | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="right-container p-pt-3">
+                            <app-grid-listing-tools (changeFloatingFilter)="
+                          accountStatement?.changeFloatFilter($event)
+                        " (filterRecords)="accountStatement?.onFilter($event)"
+                                (applyColDefs)="accountStatement?.onApplyConfig($event)"
+                                [colDefs]="accountStatement?.columnDefs" [columnConfig]="true" [showDownload]="true"
+                                [showPrint]="false" [showRefresh]="false">
+                            </app-grid-listing-tools>
+                        </div>
+                    </div>
+                </div>
+                <div class="aps-card-body px-3" *ngIf="!loadingList">
+                    <app-ag-grid-listing id="accountStatement" #accountStatement
+                        colDefUrl="accountServices/services/merchantPayment/private/getColDefs" [rowDefUrl]="rowDataUrl"
+                        [gridOptions]="gridOptions" [supressAutoFit]="true" [colDefReq]="colDefReqBody">
+                    </app-ag-grid-listing>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <app-modal [(isShow)]="isShowViewModal" size="md">
+        <div body>
+            <div class="text-size-16 text-bold p-pb-3">
+                {{'Order Summary' | apsTranslate}}
+            </div>
+            <div class="p-grid">
+                <div class="p-col-12 background-color-disabled p-py-0">
+                    <div class="text-size-14 text-bold">
+                        {{'Merchant Details' | apsTranslate}}
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <app-review-form-field label="Merchant Name" [value]="formData.merchantName">
+                    </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <app-review-form-field label="Customer Name" [value]="formData.corporateName">
+                    </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <app-review-form-field label="Getway Ref No" [value]="formData.id">
+                    </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <app-review-form-field label="Transaction Ref No" [value]="formData.batchNo">
+                    </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <app-review-form-field label="Transaction Date" [value]="formData.transactionDate">
+                    </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <div class="text-size-12 text-color-light-shade-1 ">
+                        Transaction Amount
+                    </div>
+                    <app-base-currency [amount]="formData.transactionAmount"></app-base-currency>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <app-review-form-field label="Additional Info" [value]="formData.additionalInfo">
+                    </app-review-form-field>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-12 background-color-disabled p-py-0">
+                    <div class="text-size-14 text-bold">
+                        {{'Payment Details' | apsTranslate}}
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <app-review-form-field label="Debit Account" [value]="formData.debitAccountNumber">
+                    </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <app-review-form-field label="Account Title" [value]="formData.accountTitle">
+                    </app-review-form-field>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                    <div class="text-size-12 text-color-light-shade-1 ">
+                        Debit Amount
+                    </div>
+                    <app-base-currency [amount]="formData.debitAmount"></app-base-currency>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-12 background-color-disabled p-py-0">
+                    <div class="text-size-14 text-bold">
+                        {{'Order Details' | apsTranslate}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div footer>
+            <div class="left-right-container p-mt-3">
+                <div class="left-container"></div>
+                <div class="right-container">
+                    <button class="btn btn-md btn-tertiary" (click)="isShowViewModal = false">CANCEL</button>
+                </div>
+            </div>
+        </div>
+    </app-modal>
+</div>

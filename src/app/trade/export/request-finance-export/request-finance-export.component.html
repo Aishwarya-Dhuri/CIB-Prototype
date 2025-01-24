@@ -1,0 +1,80 @@
+<div *ngIf="!loading">
+  <app-modal
+    [(isShow)]="!!submitMessage"
+    [headerText]="submitMessage"
+    size="md"
+    (onClose)="onSubmitPopupClose()"
+  >
+    <div class="p-grid" body>
+      <div class="p-col">
+        <app-review-form-field
+          label="Reference Number"
+          [value]="formData.id"
+        ></app-review-form-field>
+      </div>
+
+      <div class="p-col">
+        <app-review-form-field
+          label="Date"
+          [value]="formData.transactionDate"
+        ></app-review-form-field>
+      </div>
+
+      <div class="p-col">
+        <app-review-form-field label="Time" value="03:32 PM"></app-review-form-field>
+      </div>
+
+      <div class="p-col">
+        <app-review-form-field
+          label="Finance Amount"
+          [value]="formData.loanAmount"
+          type="baseCurrency"
+          [baseCurrency]="formData.loanCurrencyCode"
+        ></app-review-form-field>
+      </div>
+
+      <div class="p-col">
+        <app-review-form-field
+          label="Tenor"
+          [value]="formData.loanAppliedFor + ' Days'"
+        ></app-review-form-field>
+      </div>
+    </div>
+    <div class="left-right-container" footer>
+      <div class="left-container">
+        <div class="inline-items">
+          <div class="item p-pr-2">
+            <app-icon icon="fa-print"></app-icon>
+          </div>
+          <div class="item p-pr-2">
+            <app-icon icon="fa-download"></app-icon>
+          </div>
+          <div class="item p-pr-2">
+            <app-icon icon="fa-envelope"></app-icon>
+          </div>
+        </div>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-sm btn-primary" (click)="onSubmitPopupClose()">CLOSE</button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-request-finance-export-init
+    #initiate
+    *ngIf="stepperDetails.currentStep < stepperDetails.headings.length"
+    [parentRef]="this"
+  >
+  </app-request-finance-export-init>
+
+  <app-request-finance-export-review
+    #review
+    *ngIf="stepperDetails.currentStep === stepperDetails.headings.length"
+    [parentRef]="this"
+  >
+  </app-request-finance-export-review>
+
+  <div class="p-pl-4 p-pr-3 p-pb-3 p-mt--3" *ngIf="!isViewMode">
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </div>
+</div>

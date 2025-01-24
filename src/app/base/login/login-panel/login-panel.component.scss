@@ -1,0 +1,36 @@
+.login-panel-container {
+  display: block;
+
+  .login-header {
+    margin: 16px 0 10px 0;
+    font-size: 1.25rem;
+    font-family: 'CIB Bold';
+    color: var(--text-color-dark-shade-1);
+    letter-spacing: 0px;
+    opacity: 1;
+  }
+
+  .login-card {
+    display: block;
+
+    .view-panel {
+      /*padding: 1rem;*/
+    }
+  }
+
+  .login-help {
+    display: block;
+    color: #293636;
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
+  .footer-wrapper {
+    display: none;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: var(--text-color-dark-shade-1);
+    width: 100%;
+  }
+}

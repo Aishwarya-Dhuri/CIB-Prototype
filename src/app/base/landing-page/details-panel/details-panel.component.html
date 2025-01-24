@@ -1,0 +1,28 @@
+<div class="detail-panel-wrapper">
+  <div class="user-wrapper">
+    <div class="user-details">
+      <div class="profile-image">
+        <img [src]="profileImageUrl" alt="" />
+      </div>
+      <div class="profile-details">
+        <div class="profile-name">{{ 'msg_hi' | translate }} {{ userDetails.fullName }}</div>
+        <div class="last-login">
+          {{ 'msg_last_login_at' | translate }} {{ userDetails.lastLoginTime }}
+        </div>
+      </div>
+    </div>
+
+    <div class="extra-details">
+      <div class="text">{{ 'msg_corporate_login' | translate }}</div>
+      <div class="main-text">{{ userDetails.lastCorporateLoginDateTime }}</div>
+    </div>
+    <div class="extra-details">
+      <div class="text">{{ 'msg_corporate_name' | translate }}</div>
+      <div class="main-text">{{ userDetails.corporateName }}</div>
+    </div>
+    <div class="extra-details">
+      <div class="text">{{ 'msg_token_used' | translate }}</div>
+      <div class="main-text">{{ userDetails.tokenUsed }}</div>
+    </div>
+  </div>
+</div>

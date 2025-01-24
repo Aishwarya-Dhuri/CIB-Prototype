@@ -1,0 +1,211 @@
+<div class="statutory-payment-review-container text-color-dark-shade-1 p-py-2">
+  <div class="p-grid g-margin-x">
+    <div class="p-md-8 p-sm-12 p-col-12 p-pt-0 p-pb-3">
+      <div class="aps-card aps-h-530">
+        <div class="aps-card-header p-p-3">
+          <div class="text-size-16 text-semi-bold">{{ 'Tax Details' | apsTranslate }}</div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid"
+            *ngIf="!institution?.isComplexData || statutoryPaymentDetails.institutionDetails.institutionType != 'Custom Duty'">
+            <div class="p-md-4 p-sm-6 p-col-6">
+              <div class="text-size-14 text-color-light-shade-1">
+                {{
+                (statutoryPaymentDetails.institutionDetails.institutionType == 'GST'
+                ? 'GST Amount'
+                : statutoryPaymentDetails.institutionDetails.institutionType == 'Direct Tax'
+                ? 'Tax Amount'
+                : 'Voucher Amount'
+                ) | apsTranslate
+                }}
+              </div>
+              <div class="text-size-16">
+                <app-base-currency [amount]="statutoryPaymentDetails.taxDetails.voucherAmount"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-6 p-col-6">
+              <div class="text-size-14 text-color-light-shade-1">
+                {{ 'Payment Reference Number' | apsTranslate }}
+              </div>
+              <div class="text-size-16">
+                {{ statutoryPaymentDetails.taxDetails.paymentReferenceNumber }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-6 p-col-6">
+              <div class="text-size-14 text-color-light-shade-1">{{ 'Status' | apsTranslate }}</div>
+              <div class="text-size-16">{{ statutoryPaymentDetails.taxDetails.status }}</div>
+            </div>
+          </div>
+
+          <div class="p-grid" *ngIf="institution?.isComplexData">
+            <div class="p-col-12 p-p-0" *ngFor="let td of statutoryPaymentDetails.taxDetails; let i = index">
+              <div class="border border-radius-4 p-pb-0 p-pt-3 p-px-2 p-mb-2" *ngIf="td.isSelected">
+                <div class="p-grid text-size-14 p-pb-3">
+                  <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                    <div class="inline-items">
+                      <!-- <div class="item p-pt-2 p-mr-2">
+                        <p-checkbox
+                          name="containerNumber{{ i }}"
+                          id="ContainerNumber{{ i }}"
+                          label=""
+                          [binary]="true"
+                          [(ngModel)]="td.isSelected"
+                          [disabled]="true"
+                        ></p-checkbox>
+                      </div> -->
+                      <div class="item text-size-14">
+                        <div class="text-color-light-shade-1 p-pb-1">
+                          {{ 'Container No.' | apsTranslate }}
+                        </div>
+                        <div class="text-color-dark-shade-1">{{ td.containerNo }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                    <div class="text-color-light-shade-1 p-pb-1">
+                      {{ 'Weight Charges' | apsTranslate }}
+                    </div>
+                    <div class="text-color-dark-shade-1">{{ td.weightCharges }}</div>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                    <div class="text-color-light-shade-1 p-pb-1">
+                      {{ 'Collection Start Date' | apsTranslate }}
+                    </div>
+                    <div class="text-color-dark-shade-1">{{ td.collectionStartDate }}</div>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                    <div class="text-color-light-shade-1 p-pb-1">
+                      {{ 'Collection End Date' | apsTranslate }}
+                    </div>
+                    <div class="text-color-dark-shade-1">{{ td.collectionEndDate }}</div>
+                  </div>
+                </div>
+                <div class="p-grid text-size-14 p-pb-3">
+                  <div class="p-md-3 p-sm-12 p-col-12 p-py-0"></div>
+                  <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                    <div class="text-color-light-shade-1">
+                      {{ 'Outstanding Amount' | apsTranslate }}
+                    </div>
+                    <app-base-currency [amount]="td.outstandingAmount"></app-base-currency>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                    <div class="text-color-light-shade-1">{{ 'Tax' | apsTranslate }}</div>
+                    <div class="text-color-dark-shade-1">{{ td.tax }}</div>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6 p-py-0">
+                    <div class="text-color-light-shade-1">{{ 'Total' | apsTranslate }}</div>
+                    <div class="text-color-dark-shade-1">{{ td.total }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid" *ngIf="statutoryPaymentDetails.institutionDetails.institutionType == 'Custom Duty'">
+            <div class="p-col-12 p-p-0" *ngFor="let td of statutoryPaymentDetails.taxDetails; let i = index">
+              <div class="border border-radius-4 p-pb-0 p-px-3 p-mb-2">
+                <div class="p-grid">
+                  <div class="p-md-1 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Sr No</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.srNo}}</div>
+                  </div>
+                  <div class="p-md-2 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Document No</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.docNo}}</div>
+                  </div>
+                  <div class="p-md-2 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Document Date</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.docDate}}</div>
+                  </div>
+                  <div class="p-md-3 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Challan Number</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.challanNo}}</div>
+                  </div>
+                  <div class="p-md-2 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">JEC Name</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.jecName}}</div>
+                  </div>
+                  <div class="p-md-2 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-light-shade-1">Duty Amount</div>
+                    <div class="text-size-14 ng-star-inserted">{{td.dutyAmount}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="p-md-4 p-sm-12 p-col-12 p-pt-0 p-pb-3">
+      <div class="aps-card payment-summary-container p-pb-6 aps-h-530">
+        <div class="aps-card-header p-p-3">
+          <div class="text-size-16 text-semi-bold">{{ 'Payment Summary' | apsTranslate }}</div>
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid text-size-14">
+            <div class="p-md-12 p-sm-6 p-col-6">
+              <div class="text-color-light-shade-1">{{ 'Institution Type' | apsTranslate }}</div>
+              <div class="text-color-dark-shade-1">
+                {{ statutoryPaymentDetails.institutionDetails.institutionType }}
+              </div>
+            </div>
+            <div class="p-md-12 p-sm-6 p-col-6">
+              <div class="text-color-light-shade-1">{{ 'Value Date' | apsTranslate }}</div>
+              <div class="text-color-dark-shade-1">
+                {{ statutoryPaymentDetails.institutionDetails.valueDate }}
+              </div>
+            </div>
+            <div class="p-col-12" *ngIf="statutoryPaymentDetails.paymentDetails === 'Debit From Account'">
+              <div class="text-color-light-shade-1">{{ 'Debit From Account' | apsTranslate }}</div>
+              <div class="text-color-dark-shade-1">
+                {{ statutoryPaymentDetails.debitAccountNumber }}
+              </div>
+            </div>
+            <div class="p-col-12" *ngIf="statutoryPaymentDetails.paymentDetails === 'Merchant From Account'">
+              <div class="text-color-light-shade-1">
+                {{ 'Merchant From Account' | apsTranslate }}
+              </div>
+              <div class="text-color-dark-shade-1">
+                {{ statutoryPaymentDetails.merchantAccount }}
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="text-color-light-shade-1">{{ 'Balance Amount' | apsTranslate }}</div>
+              <div class="text-color-dark-shade-1">
+                <app-base-currency [amount]="statutoryPaymentDetails.balanceAmount"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-12 p-mt-5">
+              <textarea class="remark-input" [(ngModel)]="statutoryPaymentDetails.remarkForChecker"
+                placeholder="Remarks for checker" [disabled]="parentRef?.mode == 'VIEW'">
+              </textarea>
+            </div>
+            <div class="p-col-12">
+              <div class="border border-radius-4 p-p-2" *ngIf="parentRef?.mode != 'VIEW'">
+                <p-checkbox name="tc" [binary]="true" id="tc" label="" [(ngModel)]="termsAndConditions"></p-checkbox>
+                <label class="text-size-12" for="tc">&nbsp;{{ 'I agree to all the' | apsTranslate }}
+                  <span class="text-color-primary text-underline">{{
+                    'terms and conditions' | apsTranslate
+                    }}</span></label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="payment-summary-footer">
+          <div class="aps-card p-p-3">
+            <div class="left-right-container">
+              <div class="left-container text-size-14 p-mr-2 text-bold">
+                {{ 'Total Payable' | apsTranslate }}
+              </div>
+
+              <div class="right-container">
+                <app-base-currency [amount]="statutoryPaymentDetails.totalAmount" [showFlag]="true"></app-base-currency>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

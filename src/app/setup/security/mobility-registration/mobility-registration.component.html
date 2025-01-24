@@ -1,0 +1,79 @@
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Generate Registration Code</div>
+            </div>
+
+            <div class="aps-card-body">
+                <div class="p-grid g-margin-x">
+                    <!-- <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select name="billerName" id="billerName" label="Biller Name" [data]="billers"
+                            (change)="onBiller($event)" [value]="formData.billerName" [(ngModel)]="formData.billerName">
+                        </aps-custom-select>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select name="product" id="product" label="Product" [data]="products"
+                            (change)="getExistingSubscribers()" [value]="formData.product"
+                            [(ngModel)]="formData.product">
+                        </aps-custom-select>
+                    </div> -->
+                    <div class="p-md-12 p-sm-12 p-col-12">
+                        <!-- <div class="aps-card-header border-bottom aps-py-12 p-px-3">
+                            <div class="text-size-16 text-bold">
+                                <app-icon class="p-mr-3" icon="fa-project-diagram"></app-icon>Bulk Upload Workflow
+                            </div>
+                        </div> -->
+                        <div class="aps-card-body p-p-3 overflow-scroll">
+                            <div class="p-pl-3">
+                                <ng-container *ngTemplateOutlet="workflowTemplate"></ng-container>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>
+
+<ng-template #workflowTemplate>
+
+    <form #form="ngForm" name="form">
+        <div class="org-tree-container">
+            <ng-container *ngFor="let data of treeData">
+                <div class="org-tree-wrapper">
+                    <div class="tree-node" style="height: 100%" *ngFor="let node of data.nodes; let i = index">
+                        <div class="node-branch">
+                            <svg height="100%" width="100%">
+                                <line x1="16" y1="0" x2="16" y2="95%" class="line"
+                                    [ngClass]="{'line-deactivated': node.partiallyActive || node.disabled}"
+                                    *ngIf="!node.isLeafNode" />
+                                <circle cx="16" cy="7" r="6" class="circle"
+                                    [ngClass]="{'circle-partially-activated': node.partiallyActive,'circle-deactivated': node.disabled}" />
+                            </svg>
+                        </div>
+
+                        <div class="node-data" [ngClass]="{ 'node-data-deactivated': node.disabled }"
+                            style="top: 0px; left: 32px">
+                            <div class=".text-size-16 text-color-dark-shade-1 text-bold">{{ node.header }}</div>
+                            <div *ngIf="node.header === 'Enter Nick name for ADCB Mobile App'">
+                                <div class="p-px-3 p-col-12 p-md-4 p-sm-12">
+                                    <aps-form-input name="roleCode" id="roleCode" [(ngModel)]="formData.billerName"
+                                        [required]="true">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+
+                            <div *ngIf="node.header === 'Click on generate code button to send Activation code'">
+                                <button class="btn btn-md btn-primary" (click)="reset()">GENERATE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </form>
+</ng-template>

@@ -1,0 +1,7 @@
+<div class="download-options-wrapper aps-shadow text-left">
+  <div class="label-with-icon-container" *ngFor="let option of optionList">
+    <div class="label pointer" (click)="onOptionClick(option.method)">
+      {{ option.label | apsTranslate }}
+    </div>
+  </div>
+</div>

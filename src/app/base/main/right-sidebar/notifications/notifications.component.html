@@ -1,0 +1,82 @@
+<div class="user-notifications-container">
+  <div class="notifications-header">
+    <div class="header-text">
+      <app-icon icon="fa-bell" class="app-icon"></app-icon>
+      {{ 'Notifications' | apsTranslate }}
+      <div class="notifications-count">3</div>
+    </div>
+    <div class="header-actions">
+      <div class="action" (click)="closeSidebar()">
+        <app-icon icon="fa-times" class="app-icon"></app-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="notifications" *ngIf="notifications; else loadingTemplate">
+    <div class="">
+      <div class="text-size-14 text-bold background-color-dark-5 border-radius-4 p-py-1 p-px-3">
+        {{ 'Today' | apsTranslate }}
+      </div>
+      <div class="p-px-2" *ngIf="notifications.today.length > 0; else noNotificationsTemplate">
+        <div
+          class="notification p-px-2 p-py-3 border-bottom"
+          *ngFor="let notification of notifications.today"
+        >
+          <div class="text-size-12 text-bold">{{ notification.title }}</div>
+          <div class="text-size-12 p-my-1">
+            {{ notification.notification }}
+          </div>
+          <div class="text-size-10 text-color-normal">
+            {{ notification.dateTime | amCalendar }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="">
+      <div class="text-size-14 text-bold background-color-dark-5 border-radius-4 p-py-1 p-px-3">
+        {{ 'Yesterday' | apsTranslate }}
+      </div>
+      <div class="p-px-2" *ngIf="notifications.yesterday.length > 0; else noNotificationsTemplate">
+        <div
+          class="notification p-px-2 p-py-3 border-bottom"
+          *ngFor="let notification of notifications.yesterday"
+        >
+          <div class="text-size-12 text-bold">{{ notification.title }}</div>
+          <div class="text-size-12 p-my-1">
+            {{ notification.notification }}
+          </div>
+          <div class="text-size-10 text-color-normal">
+            {{ notification.dateTime | amCalendar }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="">
+      <div class="text-size-14 text-bold background-color-dark-5 border-radius-4 p-py-1 p-px-3">
+        {{ 'Earlier' | apsTranslate }}
+      </div>
+      <div class="p-px-2" *ngIf="notifications.earlier.length > 0; else noNotificationsTemplate">
+        <div
+          class="notification p-px-2 p-py-3 border-bottom"
+          *ngFor="let notification of notifications.earlier"
+        >
+          <div class="text-size-12 text-bold">{{ notification.title }}</div>
+          <div class="text-size-12 p-my-1">
+            {{ notification.notification }}
+          </div>
+          <div class="text-size-10 text-color-normal">
+            {{ notification.dateTime | amCalendar }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>
+
+<ng-template #noNotificationsTemplate>
+  <p class="py-4 text-size-13 text-center">{{ 'No Notifications' | apsTranslate }}</p>
+</ng-template>

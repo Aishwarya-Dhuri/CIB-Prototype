@@ -1,0 +1,62 @@
+<app-backdrop [background]="'rgba(0, 0, 0, 0.5)'" [zIndex]="50"></app-backdrop>
+
+<div class="last-activities-container">
+  <div class="user-details">
+    <div class="profile-image">
+      <img [src]="userDetails.profilePicUrl" alt="" />
+    </div>
+    <div class="profile-details">
+      <div class="profile-name">{{ 'Hi' | apsTranslate }} {{ userDetails.fullName }}</div>
+      <div class="last-login">
+        {{ 'You Logged in last at' | apsTranslate }} {{ userDetails.lastCorporateLoginDateTime }}
+      </div>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="activities">
+    <h3>{{ 'Last Activities' | apsTranslate }}</h3>
+    <app-activities></app-activities>
+  </div>
+
+  <hr />
+
+  <div class="left-right-container dont-show-container p-my-3">
+    <div class="left-container">
+      <p-checkbox
+        type="checkbox"
+        name="dsa"
+        id="dsa"
+        [binary]="true"
+        [(ngModel)]="dontShowAgain"
+        label="{{ 'Don\'t Show this Again' | apsTranslate }}"
+        (change)="dontShowAgain = !dontShowAgain"
+      ></p-checkbox>
+    </div>
+
+    <div class="right-container">
+      <p-radioButton
+        class="p-mr-3"
+        name="g1"
+        id="today"
+        value="today"
+        label="{{ 'For Today' | apsTranslate }}"
+        [disabled]="!dontShowAgain"
+        [(ngModel)]="dsaType"
+      ></p-radioButton>
+      <p-radioButton
+        name="g1"
+        id="future"
+        value="future"
+        label="{{ 'In Future' | apsTranslate }}"
+        [disabled]="!dontShowAgain"
+        [(ngModel)]="dsaType"
+      ></p-radioButton>
+    </div>
+  </div>
+
+  <button type="button" class="aps-w-100p btn btn-md btn-primary p-mt-3" (click)="goToDashboard()">
+    {{ 'PROCEED' | apsTranslate }}
+  </button>
+</div>

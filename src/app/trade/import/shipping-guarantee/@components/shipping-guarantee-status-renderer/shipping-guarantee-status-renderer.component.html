@@ -1,0 +1,10 @@
+<span
+  class="text-size-10 p-py-1 p-px-2 border-radius-4"
+  [ngClass]="
+    cellValue === 'authorized'
+      ? 'background-color-success text-color-inverted'
+      : 'background-color-danger-light'
+  "
+>
+  {{ cellValue }}
+</span>

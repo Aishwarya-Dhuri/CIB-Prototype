@@ -1,0 +1,7 @@
+<img
+  class="cheque-image-cell pointer"
+  [src]="chequeImage[0].chequeImageUrl | safeResourceUrl"
+  [alt]="chequeImage[0].fileName"
+  (click)="invokeParentMethod(chequeImage[0].chequeImageUrl)"
+  *ngIf="chequeImage && chequeImage.length > 0"
+/>

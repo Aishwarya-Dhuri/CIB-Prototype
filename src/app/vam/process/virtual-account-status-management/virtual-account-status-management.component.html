@@ -1,0 +1,264 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal [(isShow)]="showSuspendModel" headerText="" size="sm">
+      <div class="p-grid g-margin-x" body>
+        <div class="p-col-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold">
+                {{ 'Are you sure You want to suspend this account?' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon icon="fa-times" class="pointer" (click)="onCloseModal()"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12">
+          <div class="text-size-14">
+            {{ 'If Yes, please provide below Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="p-md-6 p-sm-12 p-col-12">
+          <app-aps-calender
+            id="suspendTill"
+            name="suspendTill"
+            label="Suspend Till"
+            [(ngModel)]="formData.suspendTill"
+            [required]="true"
+          ></app-aps-calender>
+        </div>
+        <div class="p-md-6 p-sm-12 p-col-12">
+          <aps-form-input
+            id="suspendReason"
+            name="suspendReason"
+            [(ngModel)]="formData.suspendReason"
+            label="Suspend Reason"
+            [required]="true"
+          ></aps-form-input>
+        </div>
+        <div class="p-col-12 text-right">
+          <button class="btn btn-md btn-primary" (click)="onSubmitRequest()">
+            {{ 'SUSPEND' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal [(isShow)]="showCloseModel" headerText="" size="sm">
+      <div class="p-grid g-margin-x" body>
+        <div class="p-col-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold">
+                {{ 'Are you sure You want to close this account?' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon icon="fa-times" class="pointer" (click)="onCloseModal()"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12 text-right">
+          <button class="btn btn-md btn-primary" (click)="onSubmitRequest()">
+            {{ 'Yes, CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal [(isShow)]="showActivateModel" headerText="" size="sm">
+      <div class="p-grid g-margin-x" body>
+        <div class="col-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold">
+                {{ 'Are you sure You want to activate this account?' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon icon="fa-times" class="pointer" (click)="onCloseModal()"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12 text-right">
+          <button class="btn btn-md btn-primary" (click)="onSubmitRequest()">
+            {{ 'Yes, ACTIVATE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal
+      [(isShow)]="showAccountDetailsModel"
+      headerText="View - Virtual Account"
+      size="md"
+      (onClose)="onCloseModal()"
+    >
+      <div class="p-grid g-margin-x">
+        <div class="p-md-4 p-sm-6 p-col-12">
+          <app-review-form-field
+            label="Corporate Code"
+            [value]="formData.corporateCode"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-6 p-col-12">
+          <app-review-form-field
+            label="Corporate Client Code"
+            [value]="formData.corporateClientCode"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-6 p-col-12">
+          <app-review-form-field
+            label="Corporate Structure"
+            [value]="formData.corporateStructureName"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-6 p-col-12">
+          <app-review-form-field
+            label="Virtual Account"
+            [value]="formData.virtualAccount"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-6 p-col-12">
+          <app-review-form-field
+            label="VA Alice Name"
+            [value]="formData.vaAliceName"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-6 p-col-12">
+          <app-review-form-field label="Status" [value]="formData.status"></app-review-form-field>
+        </div>
+      </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-md-3 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-100p p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-col-12 p-py-0">
+              <aps-custom-select
+                name="corporateName"
+                id="corporateName"
+                label="Corporate Name"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/getGroupCorporateList"
+                [(ngModel)]="widgetData.corporateId"
+                [value]="widgetData.corporateId"
+                (change)="getCorporateWiseRecords($event)"
+                *ngIf="isGroupUser"
+              ></aps-custom-select>
+              <div class="p-mb-3" *ngIf="!isGroupUser">
+                <app-review-form-field
+                  label="Corporate Name"
+                  [value]="widgetData.corporateName"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Total Actual Account Used' | apsTranslate }} :
+                {{ widgetData.totalVirtualAccountUsed }}
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Total Virtual Account' | apsTranslate }}: {{ widgetData.totalVirtualAccount }}
+              </div>
+            </div>
+            <div class="p-col-12">
+              <app-pie-chart [options]="options" webHeight="150" mobileHeight="300"></app-pie-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-9 p-sm-12 p-col-12 p-p-0">
+        <div class="p-grid">
+          <div class="p-md-8 p-sm-12 p-col-12">
+            <app-dynamic-search
+              #dynamicSearch
+              [entityName]="entityName"
+              (onSearch)="getRecords($event)"
+              [isShowSearchByHeader]="true"
+              [isShowPrefillCriteria]="false"
+              [isShowSaveSearchCriteria]="false"
+              [isDisplayPrefillCriteriaModal]="false"
+              (onFiltersReady)="onDynamicFiltersReady()"
+              (onSaveCriteria)="getCriteriaList()"
+              cardHeight="320"
+              optionalParametersColSize="4"
+            >
+            </app-dynamic-search>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <app-insights
+              insightsUrl="dummyServer/json/commons/private/insights/vamStatusManagement"
+              height="280"
+            ></app-insights>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="inline-items">
+              <div class="item p-mr-3" *ngFor="let listingType of listingTypes">
+                <div
+                  class="aps-card pointer p-py-2 p-px-3"
+                  [ngClass]="{ 'aps-card-primary': listingType.id == activeListing.id }"
+                  (click)="activeListing = listingType"
+                >
+                  <div class="text-size-14">
+                    {{ listingType.displayName }} ({{ listingType.count }})
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-secondary" (click)="onInitiateVirtualAccountIssuance()">
+              <app-icon icon="fa-plus"></app-icon>&nbsp;{{
+                'Initiate Virtual Account Issuance' | apsTranslate
+              }}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header overflow-visible">
+            <div class="left-right-container p-px-3">
+              <div class="left-container"></div>
+              <div class="right-container aps-py-12">
+                <app-grid-listing-tools
+                  (changeFloatingFilter)="searchResultGrid.changeFloatFilter($event)"
+                  (filterRecords)="searchResultGrid.onFilter($event)"
+                  (applyColDefs)="searchResultGrid.onApplyConfig($event)"
+                  [colDefs]="searchResultGrid.columnDefs"
+                  [columnConfig]="true"
+                >
+                </app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing
+              #searchResultGrid
+              colDefUrl="vam/process/virtualAccountStatusManagement/private/searchResultColDefs"
+              [rowDefUrl]="activeListing.rowDefUrl"
+              [rowDefReq]="{ searchFilters: selectedFilters }"
+              [gridOptions]="gridOptions"
+              [context]="context"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

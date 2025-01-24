@@ -1,0 +1,42 @@
+<div class="container" *ngIf="!loading">
+  <ng-container *ngIf="structureCreationType == 'copy'">
+    <app-copy-account-structure [parentRef]="this"></app-copy-account-structure>
+  </ng-container>
+
+  <ng-container *ngIf="structureCreationType == 'create'">
+    <ng-container *ngIf="!isAdvancedChildAccountDetails && !isSuspendAccount">
+      <app-stepper-header [parentRef]="this"></app-stepper-header>
+    </ng-container>
+
+    <div class="text-size-16 text-bold p-my-2">
+      {{ stepperDetails.headings[stepperDetails.currentStep - 1] | apsTranslate }}
+    </div>
+
+    <ng-container *ngIf="stepperDetails.currentStep == 1">
+      <app-main-account #mainAccountDetailsComponent [parentRef]="this"></app-main-account>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep == 2">
+      <app-account-structure-hierarchy
+        #accountStructureHierarchyComponent
+        *ngIf="!isAdvancedChildAccountDetails && !isSuspendAccount"
+        [parentRef]="this"
+      ></app-account-structure-hierarchy>
+
+      <app-add-child-account
+        [parentRef]="this"
+        *ngIf="isAdvancedChildAccountDetails"
+      ></app-add-child-account>
+
+      <app-suspend-account [parentRef]="this" *ngIf="isSuspendAccount"></app-suspend-account>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <app-review-account-structure [parentRef]="this"></app-review-account-structure>
+    </ng-container>
+
+    <ng-container *ngIf="!isAdvancedChildAccountDetails && !isSuspendAccount && !isEdit">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </ng-container>
+  </ng-container>
+</div>

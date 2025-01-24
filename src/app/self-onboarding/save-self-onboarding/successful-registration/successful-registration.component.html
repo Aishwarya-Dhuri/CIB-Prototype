@@ -1,0 +1,133 @@
+<div
+  class="successful-registration-container text-center text-color-dark-shade-1"
+  *ngIf="!welcomeLetter"
+>
+  <div class="text-size-24 text-bold aps-pb-12">Successfully Registered!</div>
+
+  <div class="image">
+    <img src="../../../../assets/images/mask/self-onboarding-success.png" alt="" />
+  </div>
+
+  <div class="text-size-14 text-bold text-color-dark-shade-2 p-pt-4">
+    Your application has been submitted successfully.
+  </div>
+
+  <div class="text-size-14 p-pt-4">
+    Your application number {{ applicationNumber }}, an email has been sent to your registered Email
+    ID.
+    <span class="text-bold text-primary">Click Here</span>
+    <br />
+    To Print Please quote this number for any further communication.
+    <br />
+    Please call XXXXXXXXXXX for any enquires about your application.
+  </div>
+
+  <div class="p-pt-5">
+    <button class="btn btn-md btn-primary" routerLink="/">HOME</button>
+  </div>
+
+  <div class="p-pt-2">
+    <button class="btn btn-md btn-secondary p-mt-3">
+      <!-- ICASHPRO+  -->
+      OVERVIEW
+    </button>
+
+    <button class="btn btn-md btn-secondary p-mt-3 p-mx-4">TOKEN REGISTRATION</button>
+    <button class="btn btn-md btn-secondary p-mt-3" (click)="welcomeLetter = true">
+      WELCOME LETTER
+    </button>
+    <button class="btn btn-md btn-secondary p-mt-3 p-mx-4" (click)="vKyc = true">
+      Schedule VKYC
+    </button>
+  </div>
+</div>
+
+<div class="p-p-6" *ngIf="welcomeLetter">
+  <div class="text-center text-size-16 text-bold p-mb-3 text-color-primary">WELCOME LETTER</div>
+
+  <div class="text-size-14 text-semi-bold">
+    Dec 10, 2021
+    <br />
+    Dear Customer,
+  </div>
+  <br />
+  <div class="text-size-13">
+    Thank you for your recent enrolment for Online/Mobile Banking at Demo Bank. We hope that you
+    will find it a very helpful and useful tool when performing your banking functions.
+    <br />
+    <br />
+    Please login to the system using the “Login Id” and “Temporary Password” you chose during
+    enrolment.
+    <br />
+    <br />
+    The system will walk you through your first-time user enrolment including:
+    <br />
+    <br />
+    <ul>
+      <li>Choosing the method to receive your Secure Access Code</li>
+      <li>Entering your Secure Access Code</li>
+      <li>Viewing and accepting the Online/mobile Banking Disclosures</li>
+      <li>Changing your password from your Temporary Password to your New Password</li>
+    </ul>
+
+    <br />
+    <br />
+    To guide you through the transition, we’ve enclosed several helpful materials.
+
+    <ul>
+      <li>Standard Templates/upload format details – .click here to download</li>
+      <li>Standard cover note (for cheque printing) – click here to download</li>
+      <li>Standard authorization matrix/operating mandate – click here to download</li>
+      <li>Schedule for Fees – click here for more details</li>
+      <li>Terms and conditions as agreed – click here for more details</li>
+    </ul>
+    <br />
+    <br />
+    Please contact our customer service department if you have any questions at: “Customer care
+    Information”
+    <br />
+    <br />
+    Thank you for using Demo Bank’s Online/Mobile Banking services!
+
+    <br /><br />
+
+    <div class="text-center">
+      <button class="btn btn-md btn-primary" (click)="welcomeLetter = false">BACK</button>
+    </div>
+
+    <br /><br />
+  </div>
+</div>
+<!--  added for CBI demo  -->
+<app-modal [(isShow)]="vKyc" size="md" headerText="Schedule VKYC" (onClose)="resetVKYCForm()">
+  <div body class="p-grid g-margin-x">
+    <div class="p-md-4 p-sm-12 p-col-12">
+      <app-aps-calender name="date" id="date" label="Date" [(ngModel)]="kycDate" [required]="true"></app-aps-calender>
+    </div>
+    <div class="p-md-4 p-sm-12 p-col-12">
+      <app-aps-calender name="time" id="time" label="Time" [timeOnly]="true" [(ngModel)]="kycTime"
+        [required]="true"></app-aps-calender>
+    </div>
+    <div class="p-col-12 text-right">
+      <button class="btn btn-md btn-secondary p-mr-3" (click)="resetVKYCForm()">CANCEL</button>
+      <button class="btn btn-md btn-primary" (click)="confirm = true; resetVKYCForm()">
+        Confirm
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal [(isShow)]="confirm" size="md" headerText="" (onClose)="resetVKYCForm()">
+  <div body class="p-grid">
+    <div class="text-size-14 text-bold text-color-dark-shade-2 p-pt-4">
+      Your request for video KYC has been submitted to bank.
+    </div>
+    <div class="p-col-12 text-right">
+      <button class="btn btn-md btn-primary" (click)="confirmVKyc()">
+        OK
+      </button>
+    </div>
+
+  </div>
+</app-modal>
+<!-- end -->

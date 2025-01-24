@@ -1,0 +1,70 @@
+<div class="p-grid">
+  <div class="p-pt-2 p-px-2 p-col-12 p-md-3 p-sm-12">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Transaction Reference Number</div>
+      <div class="text-size-14">{{ receiptData.transactionRefNo }}</div>
+    </div>
+  </div>
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Account Number</div>
+      <div class="text-size-14">{{ receiptData.accountNumber }}</div>
+    </div>
+  </div>
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Biller Name</div>
+      <div class="text-size-14">{{ receiptData.billerName }}</div>
+    </div>
+  </div>
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Product Name</div>
+      <div class="text-size-14">{{ receiptData.productName }}</div>
+    </div>
+  </div>
+</div>
+<div class="p-grid">
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Payment Amount</div>
+      <div class="text-size-14">
+        <app-base-currency [amount]="receiptData.paymentAmount"></app-base-currency>
+      </div>
+    </div>
+  </div>
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Consumer No</div>
+      <div class="text-size-14">{{ receiptData.erwr }}</div>
+    </div>
+  </div>
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Consumer Name</div>
+      <div class="text-size-14">{{ receiptData.consumerName }}</div>
+    </div>
+  </div>
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Bill Amount</div>
+      <div class="text-size-14">
+        <app-base-currency [amount]="receiptData.billAmount"></app-base-currency>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="p-grid">
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Payment Date</div>
+      <div class="text-size-14">{{ receiptData.paymentDate }}</div>
+    </div>
+  </div>
+  <div class="p-pt-2 p-px-2 p-md-3 p-sm-6 p-col-6">
+    <div class="p-p-2">
+      <div class="text-size-12 text-color-light-shade-1">Channel</div>
+      <div class="text-size-14">{{ receiptData.channel }}</div>
+    </div>
+  </div>
+</div>

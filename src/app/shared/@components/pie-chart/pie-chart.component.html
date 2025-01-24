@@ -1,0 +1,8 @@
+<div
+  class="pie-chart-container aps-min-h-100"
+  [ngStyle]="{
+    height: viewport === 'web' ? webHeight + 'px' : mobileHeight + 'px'
+  }"
+>
+  <ag-charts-angular [options]="chartOptions" *ngIf="!loading"></ag-charts-angular>
+</div>

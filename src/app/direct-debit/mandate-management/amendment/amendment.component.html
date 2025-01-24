@@ -1,0 +1,1154 @@
+<div class="container" *ngIf="!loading">
+  <app-modal [(isShow)]="isSuppdoc" size="md" headerText="{{ 'Supporting Documents' | apsTranslate }}">
+    <ng-container body>
+      <img class="p-p-4" alt="Supporting Documents" height="300" width="785"
+        src="assets/MMS-CREATE-INDB-INDBH2H-25062023-526954_front.jpg" />
+    </ng-container>
+  </app-modal>
+
+  <app-modal [(isShow)]="isMandateUpload" size="md" headerText="{{ 'Mandate Upload' | apsTranslate }}">
+    <ng-container body>
+      <img class="p-p-4" alt="Supporting Documents" height="300" width="785" src="assets/mandateImage.png" />
+    </ng-container>
+  </app-modal>
+
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12" *ngIf="currentScreen == 'FILTERS'">
+      <app-dynamic-search #dynamicSearch entityName="DIRECT_DEBIT_MANDATE" (onSearch)="getRecords($event)"
+        [isShowSearchByHeader]="true" [isShowPrefillCriteria]="false" [isDisplayPrefillCriteriaModal]="false"
+        optionalParametersColSize="4" (onFiltersReady)="onDynamicFiltersReady()">
+      </app-dynamic-search>
+    </div>
+
+    <ng-container *ngIf="currentScreen == 'SEARCH_RESULTS'">
+      <div class="p-col-12">
+        <app-searched-by-view [filters]="selectedFilters" (onClear)="selectedFilters = []; currentScreen = 'FILTERS'"
+          (onModify)="currentScreen = 'FILTERS'"></app-searched-by-view>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header aps-py-12 p-px-3 overflow-visible">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold">
+                  {{ 'Search Results' | apsTranslate }} ({{ rowData.length }})
+                </div>
+              </div>
+              <div class="right-container">
+                <app-grid-listing-tools (changeFloatingFilter)="searchResultGrid.changeFloatFilter($event)"
+                  (filterRecords)="searchResultGrid.onFilter($event)"
+                  (applyColDefs)="searchResultGrid.onApplyConfig($event)" [colDefs]="searchResultGrid.columnDefs"
+                  [columnConfig]="true" [moreOptions]="true">
+                </app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing #searchResultGrid id="searchResultGrid" [colDefUrl]="colDefUrl" [rowData]="rowData"
+              [context]="context" [frameworkComponents]="frameworkComponents" [supressAutoFit]="true"
+              [gridOptions]="gridOptions"></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="currentScreen == 'VIEW'">
+      <app-modal [isShow]="showRemarkModal" headerText="{{ 'Remark' | apsTranslate }}">
+        <div body>
+          <aps-form-input name="remark" id="remark" label="{{ 'Add Remark' | apsTranslate }}"
+            [(ngModel)]="remarkInput"></aps-form-input>
+        </div>
+        <div footer class="left-right-container">
+          <div class="left-container"></div>
+          <div class="right-container">
+            <button class="btn btn-md btn-tertiary p-mr-3" (click)="showRemark = false">
+              {{ 'CANCEL' | apsTranslate }}
+            </button>
+            <button class="btn btn-md btn-primary" (click)="addRemark()">
+              {{ 'ADD' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </app-modal>
+
+      <div class="p-col-12">
+        <app-stepper-header [parentRef]="this"></app-stepper-header>
+      </div>
+
+      <div class="p-col-12">
+        <div class="text-siz e-16 text-bold">
+          <span *ngIf="mode != 'VIEW'">
+            {{ stepperDetails.headings[stepperDetails.currentStep - 1] | apsTranslate }}
+          </span>
+          <span *ngIf="mode == 'VIEW'">
+            {{ 'Mandate Management - Details' | apsTranslate }}
+          </span>
+        </div>
+      </div>
+
+      <ng-container *ngIf="stepperDetails.currentStep == 1">
+        <div class="p-col-12">
+          <div class="aps-card p-px-2 p-pt-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Product Details' | apsTranslate }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field label="Corporate Code" [value]="formData.corporateCode"></app-review-form-field>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field label="Corporate Name" [value]="formData.corporateName"></app-review-form-field>
+              </div>
+
+              <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="productCode" name="productCode" label="{{ 'Product Code' | apsTranslate }}"
+                  [(ngModel)]="formData.productCode" [required]="true" [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="productName" name="productName" label="{{ 'Product Name' | apsTranslate }}"
+                  [(ngModel)]="formData.productName" [required]="true" [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="utilityCode" name="utilityCode" label="{{ 'Utility Code' | apsTranslate }}"
+                  [(ngModel)]="formData.utilityCode" [required]="true" [disabled]="true"></aps-form-input>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-12 p-sm-12 p-col-12">
+          <div class="aps-card p-px-2 p-pt-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Payer Details' | apsTranslate }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="customerNo" name="customerNo" label="{{ 'Customer No / ID' | apsTranslate }}"
+                  [(ngModel)]="formData.customerNo" [required]="true" [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="legalId" name="legalId" label="{{ 'Legal ID' | apsTranslate }}"
+                  [(ngModel)]="formData.legalId" [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12"></div>
+              <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="payerName" name="payerName" label="{{ 'Payer Name' | apsTranslate }}"
+                  [(ngModel)]="formData.payerName" [required]="true" [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                  *ngIf="formData.payerEmailId[0].remark">
+                  <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                    <div class="text-size-12" [ngClass]="{
+                        'line-hight-12': formData.payerEmailId[0].showRemark
+                      }">
+                      {{ formData.payerEmailId[0].remark }}
+                    </div>
+                  </div>
+                  <div class="item p-pl-2">
+                    <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 " (click)="
+                        formData.payerEmailId[0].showRemark = !formData.payerEmailId[0].showRemark
+                      "></app-icon>
+                  </div>
+                </div>
+
+                <div class="inline-items">
+                  <div class="item" style="width: calc(100% - 24px)">
+                    <aps-form-input id="payerEmailId" name="payerEmailId" label="{{ 'Email ID' | apsTranslate }}"
+                      [required]="true" [(ngModel)]="formData.payerEmailId[0].newValue" [disabled]="true" [icon]="
+                        formData.payerEmailId[0].value !== formData.payerEmailId[0].newValue
+                          ? 'fa-exclamation-triangle text-color-warning'
+                          : ''
+                      " [helpText]="
+                        formData.payerEmailId[0].value !== formData.payerEmailId[0].newValue
+                          ? formData.payerEmailId[0].value
+                          : ''
+                      "></aps-form-input>
+                  </div>
+                  <div class="item p-pl-2 p-pt-4">
+                    <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('payerEmailId')"></app-icon>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                  *ngIf="formData.payerMobileNo[0].remark">
+                  <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                    <div class="text-size-12" [ngClass]="{
+                        'line-hight-12': formData.payerMobileNo[0].showRemark
+                      }">
+                      {{ formData.payerMobileNo[0].remark }}
+                    </div>
+                  </div>
+                  <div class="item p-pl-2">
+                    <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 " (click)="
+                        formData.payerMobileNo[0].showRemark = !formData.payerMobileNo[0].showRemark
+                      "></app-icon>
+                  </div>
+                </div>
+
+                <div class="inline-items">
+                  <div class="item" style="width: calc(100% - 24px)">
+                    <aps-form-input id="payerMobileNo" name="payerMobileNo" label="{{ 'Mobile Number' | apsTranslate }}"
+                      [required]="true" [disabled]="true" [(ngModel)]="formData.payerMobileNo[0].newValue" [icon]="
+                        formData.payerMobileNo[0].value !== formData.payerMobileNo[0].newValue
+                          ? 'fa-exclamation-triangle text-color-warning'
+                          : ''
+                      " [helpText]="
+                        formData.payerMobileNo[0].value !== formData.payerMobileNo[0].newValue
+                          ? formData.payerMobileNo[0].value
+                          : ''
+                      "></aps-form-input>
+                  </div>
+                  <div class="item p-pl-2 p-pt-4">
+                    <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('payerMobileNo')"></app-icon>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                  *ngIf="formData.address1[0].remark">
+                  <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                    <div class="text-size-12" [ngClass]="{
+                        'line-hight-12': formData.address1[0].showRemark
+                      }">
+                      {{ formData.address1[0].remark }}
+                    </div>
+                  </div>
+                  <div class="item p-pl-2">
+                    <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 "
+                      (click)="formData.address1[0].showRemark = !formData.address1[0].showRemark"></app-icon>
+                  </div>
+                </div>
+
+                <div class="inline-items">
+                  <div class="item" style="width: calc(100% - 24px)">
+                    <aps-form-input id="address1" name="address1" label="{{ 'Address 1' | apsTranslate }}"
+                      [(ngModel)]="formData.address1[0].newValue" [disabled]="true" [icon]="
+                        formData.address1[0].value !== formData.address1[0].newValue
+                          ? 'fa-exclamation-triangle text-color-warning'
+                          : ''
+                      " [helpText]="
+                        formData.address1[0].value !== formData.address1[0].newValue
+                          ? formData.address1[0].value
+                          : ''
+                      "></aps-form-input>
+                  </div>
+                  <div class="item p-pl-2 p-pt-4">
+                    <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('address1')"></app-icon>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                  *ngIf="formData.address2[0].remark">
+                  <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                    <div class="text-size-12" [ngClass]="{
+                        'line-hight-12': formData.address2[0].showRemark
+                      }">
+                      {{ formData.address2[0].remark }}
+                    </div>
+                  </div>
+                  <div class="item p-pl-2">
+                    <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 "
+                      (click)="formData.address2[0].showRemark = !formData.address2[0].showRemark"></app-icon>
+                  </div>
+                </div>
+
+                <div class="inline-items">
+                  <div class="item" style="width: calc(100% - 24px)">
+                    <aps-form-input id="address2" [disabled]="true" name="address2"
+                      label="{{ 'Address 2' | apsTranslate }}" [(ngModel)]="formData.address2[0].newValue" [icon]="
+                        formData.address2[0].value !== formData.address2[0].newValue
+                          ? 'fa-exclamation-triangle text-color-warning'
+                          : ''
+                      " [helpText]="
+                        formData.address2[0].value !== formData.address2[0].newValue
+                          ? formData.address2[0].value
+                          : ''
+                      "></aps-form-input>
+                  </div>
+                  <div class="item p-pl-2 p-pt-4">
+                    <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('address2')"></app-icon>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                  *ngIf="formData.address3[0].remark">
+                  <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                    <div class="text-size-12" [ngClass]="{
+                        'line-hight-12': formData.address3[0].showRemark
+                      }">
+                      {{ formData.address3[0].remark }}
+                    </div>
+                  </div>
+                  <div class="item p-pl-2">
+                    <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 "
+                      (click)="formData.address3[0].showRemark = !formData.address3[0].showRemark"></app-icon>
+                  </div>
+                </div>
+
+                <div class="inline-items">
+                  <div class="item" style="width: calc(100% - 24px)">
+                    <aps-form-input id="address3" [disabled]="true" name="address3"
+                      label="{{ 'Address 3' | apsTranslate }}" [(ngModel)]="formData.address3[0].newValue" [icon]="
+                        formData.address3[0].value !== formData.address3[0].newValue
+                          ? 'fa-exclamation-triangle text-color-warning'
+                          : ''
+                      " [helpText]="
+                        formData.address3[0].value !== formData.address3[0].newValue
+                          ? formData.address3[0].value
+                          : ''
+                      "></aps-form-input>
+                  </div>
+                  <div class="item p-pl-2 p-pt-4">
+                    <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('address3')"></app-icon>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+              <!-- <div class="p-md-4 p-sm-12 p-col-12">
+                <aps-form-input id="payerBank" name="payerBank" label="{{ 'IFSC Bank' | apsTranslate }}"
+                  [(ngModel)]="formData.payerBank" [required]="true" [disabled]="true"></aps-form-input>
+              </div> -->
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input name="payerSortCode" id="payerSortCode" label="IFSC Code" [value]="formData.payerBank"
+                  [(ngModel)]="formData.payerBank" rightIcon="fa-search" (onRightIcon)="showBicCodeModal = true"
+                  [disabled]="true"></aps-form-input>
+              </div>
+
+              <app-search-modal [(isShow)]="showBicCodeModal" colDefUrl="commons/private/ifscColDefs"
+                rowDefUrl="commons/private/ifscCodeData" headerText="SWIFT BIC Code"
+                (onSelection)="onSelectIfsc($event)">
+              </app-search-modal>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="payerSortCode" name="payerSortCode" label="{{ 'Payer Bank' | apsTranslate }}"
+                  [(ngModel)]="formData.payerSortCode" [required]="true" [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="payerAccountNumber" name="payerAccountNumber"
+                  label="{{ 'Payer Account Number' | apsTranslate }}" [(ngModel)]="formData.payerAccountNumber"
+                  [required]="true" [disabled]="true"></aps-form-input>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-12 p-sm-12 p-col-12">
+          <div class="aps-card p-p-3 aps-h-100p">
+            <div class="p-grid">
+              <div class="p-col-4">
+                <div class="text-size-14 text-bold p-mb-3">
+                  {{ 'Supporting Documents' | apsTranslate }}
+                </div>
+                <upload-form-control [files]="supportingDocuments" [isMultiple]="true"></upload-form-control>
+              </div>
+
+              <div class="p-col-4">
+                <div class="text-size-14 text-bold p-mb-3">
+                  {{ 'Mandate Upload' | apsTranslate }}
+                </div>
+                <upload-form-control [files]="formData.mandateUpload" [isMultiple]="true"></upload-form-control>
+                <div class="text-size-10">Acceptable Formats: TIF & JPEG.&nbsp; Maximum size: 100KB each</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+      </ng-container>
+
+      <ng-container *ngIf="stepperDetails.currentStep == 2">
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <app-aps-calender name="mandateStartDate" id="mandateStartDate"
+                  label="{{ 'Mandate Start Date' | apsTranslate }}" [(ngModel)]="formData.mandateStartDate"
+                  [required]="true" [disabled]="true"></app-aps-calender>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                  *ngIf="formData.mandateEndDate[0].remark">
+                  <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                    <div class="text-size-12" [ngClass]="{
+                        'line-hight-12': formData.mandateEndDate[0].showRemark
+                      }">
+                      {{ formData.mandateEndDate[0].remark }}
+                    </div>
+                  </div>
+                  <div class="item p-pl-2">
+                    <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 " (click)="
+                        formData.mandateEndDate[0].showRemark =
+                          !formData.mandateEndDate[0].showRemark
+                      "></app-icon>
+                  </div>
+                </div>
+
+                <div class="inline-items">
+                  <div class="item" style="width: calc(100% - 24px)">
+                    <app-aps-calender id="mandateEndDate" name="mandateEndDate" [disabled]="true"
+                      label="{{ 'Mandate End Date' | apsTranslate }}" [(ngModel)]="formData.mandateEndDate[0].newValue"
+                      [required]="true"></app-aps-calender>
+                  </div>
+                  <div class="item p-pl-2 p-pt-4">
+                    <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('mandateEndDate')"></app-icon>
+                  </div>
+
+                  <!-- [icon]="
+                        formData.mandateEndDate[0].value !== formData.mandateEndDate[0].newValue
+                          ? 'fa-exclamation-triangle text-color-warning'
+                          : ''
+                      " [helpText]="
+                        formData.mandateEndDate[0].value !== formData.mandateEndDate[0].newValue
+                          ? formData.mandateEndDate[0].value
+                          : ''
+                      " -->
+                </div>
+
+                <!-- <div class="p-md-3 p-sm-12 p-col-12">
+                  <div style="padding-top: 12px;">
+                    <p-checkbox class="p-mr-12" label="{{ 'Until Cancelled' | apsTranslate }}"
+                      id="mandateUntillCancelled" name="mandateUntillCancelled" [binary]="true"
+                      (onChange)="onCheckboxCheck($event)" [(ngModel)]="formData.mandateUntillCancelled"></p-checkbox>
+                    
+                  </div>
+                </div> -->
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+                <div style="padding-top: 25px;margin-left: 30px;">
+                  <p-checkbox class="p-mr-12" label="{{ 'Until Cancelled' | apsTranslate }}" id="mandateUntillCancelled"
+                    name="mandateUntillCancelled" [binary]="true" (onChange)="onCheckboxCheck($event)"
+                    [(ngModel)]="formData.mandateUntillCancelled"></p-checkbox>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12 p-p-0"></div>
+
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Amount Type' | apsTranslate }}
+                </div>
+                <p-radioButton class="p-mr-3" name="amountType" id="fixed" value="Fixed"
+                  label="{{ 'Fixed' | apsTranslate }}" [(ngModel)]="formData.amountType"
+                  [disabled]="true"></p-radioButton>
+                <p-radioButton class="p-mr-3" name="amountType" id="variable" value="Variable"
+                  label="{{ 'Variable' | apsTranslate }}" [(ngModel)]="formData.amountType"
+                  [disabled]="true"></p-radioButton>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-custom-select name="days" id="days" label="{{ 'Currency Code' | apsTranslate }}"
+                  dataUrl="directDebit/mandateManagement/registration/private/dropdown/currencyCode"
+                  [value]="formData.currencyCode" [(ngModel)]="formData.currencyCode" [disabled]="true"
+                  [required]="true"></aps-custom-select>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.amountType == 'Fixed'">
+                <aps-form-input id="fixedAmount" name="fixedAmount" label="{{ 'Amount' | apsTranslate }}" [(ngModel)]="formData.fixedAmount
+                  " [required]="true" inputType="currencyFormatNotZero"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.amountType == 'Variable'">
+                <aps-form-input id="variableAmount" name="variableAmount" label="{{ 'Variable Amount' | apsTranslate }}"
+                  [(ngModel)]="formData.variableAmount" [required]="true"
+                  [helpText]="'Max Upto 1,00,000.00' | apsTranslate" inputType="currencyFormatNotZero"></aps-form-input>
+              </div>
+
+              <!-- <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.amountType == 'Fixed'">
+                <div class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                  *ngIf="formData.amount[0].remark">
+                  <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                    <div class="text-size-12" [ngClass]="{
+                        'line-hight-12': formData.amount[0].showRemark
+                      }">
+                      {{ formData.amount[0].remark }}
+                    </div>
+                  </div>
+                  <div class="item p-pl-2">
+                    <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 "
+                      (click)="formData.amount[0].showRemark = !formData.amount[0].showRemark"></app-icon>
+                  </div>
+                </div>
+
+                <div class="inline-items">
+                  <div class="item" style="width: calc(100% - 24px)">
+                    <aps-form-input id="amount" name="amount" label="{{ 'Amount' | apsTranslate }}"
+                      [(ngModel)]="formData.amount[0].newValue" [required]="true" [icon]="
+                        formData.amount[0].value !== formData.amount[0].newValue
+                          ? 'fa-exclamation-triangle text-color-warning'
+                          : ''
+                      " [helpText]="
+                        formData.amount[0].value !== formData.amount[0].newValue
+                          ? formData.amount[0].value
+                          : ''
+                      "></aps-form-input>
+                  </div>
+                  <div class="item p-pl-2 p-pt-4">
+                    <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('amount')"></app-icon>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="formData.amountType == 'Variable'">
+                <div class="p-md-9 p-sm-12 p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-3">
+                      <p-radioButton class="" name="variableAmountType" id="variableAmountType" value="Max Upto"
+                        label="{{ 'Max Upto' | apsTranslate }}"
+                        [(ngModel)]="formData.variableAmountType"></p-radioButton>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div
+                          class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                          *ngIf="formData.maxUpto[0].remark">
+                          <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                            <div class="text-size-12" [ngClass]="{
+                                'line-hight-12': formData.maxUpto[0].showRemark
+                              }">
+                              {{ formData.maxUpto[0].remark }}
+                            </div>
+                          </div>
+                          <div class="item p-pl-2">
+                            <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 " (click)="
+                                formData.maxUpto[0].showRemark = !formData.maxUpto[0].showRemark
+                              "></app-icon>
+                          </div>
+                        </div>
+
+                        <div class="inline-items">
+                          <div class="item" style="width: calc(100% - 24px)">
+                            <aps-form-input id="maxUpto" name="maxUpto" label="{{ 'Max Upto' | apsTranslate }}"
+                              [(ngModel)]="formData.maxUpto[0].newValue" [icon]="
+                                formData.maxUpto[0].value !== formData.maxUpto[0].newValue
+                                  ? 'fa-exclamation-triangle text-color-warning'
+                                  : ''
+                              " [helpText]="
+                                formData.maxUpto[0].value !== formData.maxUpto[0].newValue
+                                  ? formData.maxUpto[0].value
+                                  : ''
+                              " [required]="formData.variableAmountType == 'Max Upto'"
+                              [disabled]="formData.variableAmountType != 'Max Upto'"
+                              inputType="currencyFormatNotZero"></aps-form-input>
+                          </div>
+                          <div class="item p-pl-2 p-pt-4">
+                            <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('maxUpto')"></app-icon>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-3">
+                      <p-radioButton class="" name="variableAmountType" id="variableAmountType" value="In Multiply"
+                        label="{{ 'In Multiply' | apsTranslate }}"
+                        [(ngModel)]="formData.variableAmountType"></p-radioButton>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <div
+                        class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                        *ngIf="formData.inMultiply[0].remark">
+                        <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                          <div class="text-size-12" [ngClass]="{
+                              'line-hight-12': formData.inMultiply[0].showRemark
+                            }">
+                            {{ formData.inMultiply[0].remark }}
+                          </div>
+                        </div>
+                        <div class="item p-pl-2">
+                          <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 " (click)="
+                              formData.inMultiply[0].showRemark = !formData.inMultiply[0].showRemark
+                            "></app-icon>
+                        </div>
+                      </div>
+
+                      <div class="inline-items">
+                        <div class="item" style="width: calc(100% - 24px)">
+                          <aps-form-input id="inMultiply" name="inMultiply" label="{{ 'In Multiply' | apsTranslate }}"
+                            [(ngModel)]="formData.inMultiply[0].newValue" [icon]="
+                              formData.inMultiply[0].value !== formData.inMultiply[0].newValue
+                                ? 'fa-exclamation-triangle text-color-warning'
+                                : ''
+                            " [helpText]="
+                              formData.inMultiply[0].value !== formData.inMultiply[0].newValue
+                                ? formData.inMultiply[0].value
+                                : ''
+                            " [required]="formData.variableAmountType == 'In Multiply'"
+                            [disabled]="formData.variableAmountType != 'In Multiply'"></aps-form-input>
+                        </div>
+                        <div class="item p-pl-2 p-pt-4">
+                          <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('inMultiply')"></app-icon>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <div
+                        class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                        *ngIf="formData.notAbove[0].remark">
+                        <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                          <div class="text-size-12" [ngClass]="{
+                              'line-hight-12': formData.notAbove[0].showRemark
+                            }">
+                            {{ formData.notAbove[0].remark }}
+                          </div>
+                        </div>
+                        <div class="item p-pl-2">
+                          <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 " (click)="
+                              formData.notAbove[0].showRemark = !formData.notAbove[0].showRemark
+                            "></app-icon>
+                        </div>
+                      </div>
+
+                      <div class="inline-items">
+                        <div class="item" style="width: calc(100% - 24px)">
+                          <aps-form-input id="notAbove" name="notAbove" label="{{ 'Not Above' | apsTranslate }}"
+                            [(ngModel)]="formData.notAbove[0].newValue" [icon]="
+                              formData.notAbove[0].value !== formData.notAbove[0].newValue
+                                ? 'fa-exclamation-triangle text-color-warning'
+                                : ''
+                            " [helpText]="
+                              formData.notAbove[0].value !== formData.notAbove[0].newValue
+                                ? formData.notAbove[0].value
+                                : ''
+                            " [required]="formData.variableAmountType == 'In Multiply'"
+                            [disabled]="formData.variableAmountType != 'In Multiply'"
+                            inputType="currencyFormatNotZero"></aps-form-input>
+                        </div>
+                        <div class="item p-pl-2 p-pt-4">
+                          <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('notAbove')"></app-icon>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container> -->
+            </div>
+
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-13 text-color-normal">
+                  {{ 'How would you like to process the Mandate?' | apsTranslate }}
+                </div>
+
+                <p-radioButton class="p-mr-3" id="standingInstruction" name="mandateType"
+                  [(ngModel)]="formData.mandateType" value="Standing Instruction"
+                  label="{{ 'Standing Instruction' | apsTranslate }}" [disabled]="true"></p-radioButton>
+
+                <p-radioButton id="fileUpload" name="mandateType" [(ngModel)]="formData.mandateType" value="File Upload"
+                  label="{{ 'File Upload' | apsTranslate }}" [disabled]="true"></p-radioButton>
+              </div>
+
+              <ng-container *ngIf="formData.mandateType == 'Standing Instruction'">
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <aps-custom-select name="frequency" id="frequency" label="{{ 'SI Frequency' | apsTranslate }}"
+                    dataUrl="directDebit/mandateManagement/registration/private/dropdown/mandateFrequency"
+                    [value]="formData.mandateFrequency" [(ngModel)]="formData.mandateFrequency"
+                    [required]="true"></aps-custom-select>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Weekly'">
+                  <aps-custom-select name="days" id="days" label="{{ 'Days' | apsTranslate }}"
+                    dataUrl="directDebit/mandateManagement/registration/private/dropdown/days"
+                    [value]="formData.mandateDays" [(ngModel)]="formData.mandateDays"
+                    [required]="true"></aps-custom-select>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Monthly'">
+                  <!-- <aps-custom-select name="days" id="days" label="{{ 'Date' | apsTranslate }}"
+                    [value]="formData.mandateDays" [(ngModel)]="formData.mandateDays"
+                    dataUrl="directDebit/mandateManagement/registration/private/dropdown/months"
+                    *ngIf="formData.mandateFrequency == 'monthly'" [required]="true"></aps-custom-select> -->
+                  <app-aps-calender name="monthDate" id="monthDate" label="{{ 'Date' | apsTranslate }}"
+                    [(ngModel)]="formData.monthDate" [required]="true"></app-aps-calender>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Quaterly'">
+                  <aps-custom-select name="days" id="days" label="{{ 'Quarters' | apsTranslate }}"
+                    dataUrl="directDebit/mandateManagement/registration/private/dropdown/quaters"
+                    [value]="formData.mandateDays" [(ngModel)]="formData.mandateDays"
+                    [required]="true"></aps-custom-select>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Quaterly'">
+                  <app-aps-calender name="quarterDate" id="quarterDate" label="{{ 'Date' | apsTranslate }}"
+                    [(ngModel)]="formData.quarterDate" [required]="true"></app-aps-calender>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Yearly'">
+                  <!-- <aps-custom-select name="days" id="days" label="{{ 'Years' | apsTranslate }}"
+                    dataUrl="directDebit/mandateManagement/registration/private/dropdown/years"
+                    [value]="formData.mandateDays" [(ngModel)]="formData.mandateDays"
+                    [required]="true"></aps-custom-select> -->
+                  <app-aps-calender name="yearDate" id="yearDate" label="{{ 'Date' | apsTranslate }}"
+                    [(ngModel)]="formData.yearDate" [required]="true"></app-aps-calender>
+                </div>
+
+
+                <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+                <div class="p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'If Holiday' | apsTranslate }}
+                  </div>
+                  <!-- <p-radioButton class="p-mr-3" name="mandateIfHoliday" id="prepone" value="Prepone"
+                    label="{{ 'Prepone' | apsTranslate }}" [(ngModel)]="formData.mandateIfHoliday"></p-radioButton> -->
+
+                  <p-radioButton class="p-mr-3" name="mandateIfHoliday" id="postpone" value="Postpone"
+                    label="{{ 'Postpone' | apsTranslate }}" [(ngModel)]="formData.mandateIfHoliday"></p-radioButton>
+
+                  <p-radioButton name="mandateIfHoliday" id="process" value="process"
+                    label="{{ 'Process' | apsTranslate }}" [(ngModel)]="formData.mandateIfHoliday"></p-radioButton>
+                </div>
+
+
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">
+                  Amendment Remarks
+                </div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="amendmentRemarks" [required]="true" name="amendmentRemarks"
+                  label="{{ 'Remarks' | apsTranslate }}" [(ngModel)]="amendmentRemarks"></aps-form-input>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="stepperDetails.currentStep == 3">
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="loanNumber" name="loanNumber" label="{{ 'Reference 1' | apsTranslate }}"
+                  [(ngModel)]="formData.loanNumber" [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="loanAccountNumber" name="loanAccountNumber"
+                  label="{{ 'Reference 2' | apsTranslate }}" [(ngModel)]="formData.loanAccountNumber"
+                  [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+              <!-- <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-form-input id="enrichmentProductCode" name="enrichmentProductCode"
+                  label="{{ 'Product Code' | apsTranslate }}" [(ngModel)]="formData.enrichmentProductCode"
+                  [disabled]="true"></aps-form-input>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="inline-items background-color-warning-light border-radius-4 text-color-normal p-px-2 p-py-1"
+                  *ngIf="formData.relationshipManager[0].remark">
+                  <div class="item white-space-normal" style="width: calc(100% - 24px)">
+                    <div class="text-size-12" [ngClass]="{
+                        'line-hight-12': formData.relationshipManager[0].showRemark
+                      }">
+                      {{ formData.relationshipManager[0].remark }}
+                    </div>
+                  </div>
+                  <div class="item p-pl-2">
+                    <app-icon icon="fa-ellipsis-h" styleClasses="text-size-12 text-color-600 " (click)="
+                        formData.relationshipManager[0].showRemark =
+                          !formData.relationshipManager[0].showRemark
+                      "></app-icon>
+                  </div>
+                </div>
+
+                <div class="inline-items">
+                  <div class="item" style="width: calc(100% - 24px)">
+                    <aps-form-input id="relationshipManager" name="relationshipManager"
+                      label="{{ 'Relationship Manager' | apsTranslate }}"
+                      [(ngModel)]="formData.relationshipManager[0].newValue" [icon]="
+                        formData.relationshipManager[0].value !==
+                        formData.relationshipManager[0].newValue
+                          ? 'fa-exclamation-triangle text-color-warning'
+                          : ''
+                      " [helpText]="
+                        formData.relationshipManager[0].value !==
+                        formData.relationshipManager[0].newValue
+                          ? formData.notAbove[0].value
+                          : ''
+                      "></aps-form-input>
+                  </div>
+                  <div class="item p-pl-2 p-pt-4">
+                    <app-icon icon="fa-comment-alt-lines pointer" (click)="onComment('relationshipManager')"></app-icon>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+        <div class="p-md-5 p-sm-12 p-col-12">
+          <div class="aps-card p-p-2 aps-h-100p">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Product Details' | apsTranslate }}</div>
+              </div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Corporate Code' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.corporateCode }}</div>
+              </div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Corporate Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.corporateName }}</div>
+              </div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Product Code' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.productCode }}</div>
+              </div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Product Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.productName }}</div>
+              </div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Customer Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.customerNo }}</div>
+              </div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Legal ID' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.legalId }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-7 p-sm-12 p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Payer Details' | apsTranslate }}</div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Payer Name' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerName }}</div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Email ID' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.payerEmailId[0].newValue }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mobile Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.payerMobileNo[0].newValue }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Address 1' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.address1[0].newValue }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Address 2' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.address2[0].newValue }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Address 3' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.address3[0].newValue }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'IFSC Code' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerBank }}</div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Payer Bank' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerSortCode }}</div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Payer Account Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.payerAccountNumber }}
+                </div>
+              </div>
+
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Supporting Document' | apsTranslate }}</div>
+              </div>
+              <!-- <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.supportingDocuments.length == 0">
+                {{ 'No Supporting Documents Available' | apsTranslate }}
+              </div> -->
+              <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of supportingDocuments">
+                <div class="aps-card p-p-2">
+                  <div class="label-with-icon-container" (click)="isSuppdoc = true">
+                    <div class="icon">
+                      <app-icon icon="fa-file"></app-icon>
+                    </div>
+                    <div class="label">
+                      <div class="text-size-12">
+                        {{ document.fileName }}
+                      </div>
+                      <div class="text-size-10 text-color-normal">
+                        {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Mandate Upload' | apsTranslate }}</div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.mandateUpload.length == 0">
+                {{ 'No Mandate Upload Available' | apsTranslate }}
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of formData.mandateUpload">
+                <div class="aps-card p-p-2">
+                  <div class="label-with-icon-container" (click)="isMandateUpload = true">
+                    <div class="icon">
+                      <app-icon icon="fa-file"></app-icon>
+                    </div>
+                    <div class="label">
+                      <div class="text-size-12">
+                        {{ document.fileName }}
+                      </div>
+                      <div class="text-size-10 text-color-normal">
+                        {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Payment Setup' | apsTranslate }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate Start Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.mandateStartDate }}
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate End Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.mandateEndDate[0].newValue }}
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Amount Type' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.amountType }}</div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.amountType == 'Fixed'">
+                <div class="text-size-12 text-color-normal">{{ 'Amount' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.amount[0].newValue }}
+                </div>
+              </div>
+
+              <ng-container *ngIf="formData.amountType == 'Variable'">
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">{{ 'Max Upto' | apsTranslate }}</div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.maxUpto[0].newValue }}
+                  </div>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'In Multiply' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.inMultiply[0].newValue }}
+                  </div>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">{{ 'Not Above' | apsTranslate }}</div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.notAbove[0].newValue }}
+                  </div>
+                </div>
+              </ng-container>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate Type' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateType }}</div>
+              </div>
+
+              <ng-container *ngIf="formData.mandateType == 'Standing INstruction'">
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'Mandate Frequency' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.mandateFrequency }}
+                  </div>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'Mandate Days' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateDays }}</div>
+                </div>
+
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'If Holiday' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.mandateIfHoliday }}
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Amendment Remarks' | apsTranslate }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Remarks' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ amendmentRemarks }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">{{ 'Enrichment Details' | apsTranslate }}</div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Reference 1' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.loanNumber }}</div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Reference 1' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.loanAccountNumber }}
+                </div>
+              </div>
+
+              <!-- <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Enrichment Product Code' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.enrichmentProductCode }}
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Relationship Manager' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.relationshipManager[0].newValue }}
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="p-col-12">
+        <div class="aps-card p-px-3 aps-py-12" *ngIf="viewMode">
+          <div class="left-right-container">
+            <div class="left-container">
+              <button class="btn btn-md btn-tertiary" (click)="close()">CLOSE</button>
+            </div>
+            <div class="right-container"></div>
+          </div>
+        </div>
+        <app-stepper-footer [parentRef]="this" [apsHide]="viewMode"></app-stepper-footer>
+      </div>
+    </ng-container>
+  </div>
+</div>

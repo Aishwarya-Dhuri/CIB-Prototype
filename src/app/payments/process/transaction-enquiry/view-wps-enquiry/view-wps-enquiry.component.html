@@ -1,0 +1,286 @@
+<div class="view-transactions p-px-3 p-py-2">
+  <span class="p-p-1 p-mx-1 border-primary border-radius-4 pointer" (click)="backToSearch()">
+    <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right" class="app-icon"></app-icon>
+  </span>
+  <div class="text-size-16 text-color-dark-shade-1 text-bold inline-block">
+    Payment Request Workflow
+  </div>
+
+  <app-org-tree [treeData]="orgTreeData"></app-org-tree>
+
+  <br />
+
+  <div class="p-grid p-mt-3">
+    <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-pl-0 p-py-0 p-mb-3">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-size-16 text-color-dark-shade-1 text-bold">Transaction Details</div>
+        </div>
+        <div class="aps-card-body">
+          <app-tree
+            [treeNode]="transactionDetails"
+            [showData]="false"
+            [selectedNode]="selectedTransactionDetails"
+            (leafNodeSelected)="onTransactionSelected($event)"
+          ></app-tree>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-9 p-lg-9 p-sm-12 p-col-12 p-pr-0 p-pl-0 p-py-0">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div
+                class="text-size-16 text-color-dark-shade-1 inline-block text-bold"
+                *ngIf="selectedTransactionDetails"
+              >
+                {{ selectedTransactionDetails.label }}
+              </div>
+            </div>
+            <div class="right-container">
+              <div class="actions">
+                <div class="action p-p-1 p-mx-1">
+                  <app-icon icon="fa-envelope" class="text-size-16"></app-icon>
+                </div>
+                <div class="action p-p-1">
+                  <app-icon icon="fa-print" class="text-size-16"></app-icon>
+                </div>
+                <div class="action p-p-1">
+                  <app-icon icon="fa-ellipsis-v" class="text-size-16"></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="aps-card-body overflow-scroll p-p-2">
+          <ng-container *ngIf="selectedTransactionDetails">
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'wpsPaymentDetails'">
+              <ng-container *ngTemplateOutlet="wpsPaymentDetails"></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'employeeDataRecord'">
+              <ng-container *ngTemplateOutlet="employeeDataRecord"></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'employeeVariablePay'">
+              <ng-container *ngTemplateOutlet="employeeVariablePay"></ng-container>
+            </ng-container>
+
+            <ng-container *ngIf="selectedTransactionDetails.data.key == 'wpsDocument'">
+              <ng-container *ngTemplateOutlet="wpsDocument"></ng-container>
+            </ng-container>
+
+            <app-maker-checker-detail
+              *ngIf="selectedTransactionDetails.data.key == 'makerCheckerDetails'"
+              [isShowOnlyValues]="true"
+              [formData]="formData"
+            ></app-maker-checker-detail>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #wpsPaymentDetails>
+    <div class="p-grid p-pb-2">
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field label="Batch No" [value]="formData.id"></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Data Layout"
+          [value]="formData.dataLayout"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="WPS Upload File Name"
+          [value]="formData.fileName"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="SIF File Name"
+          [value]="formData.fileName"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Total Amount"
+          [value]="formData.payableCurrencyAndSalaryAmount"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="No of records"
+          [value]="formData.edrCount"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Value Date"
+          [value]="formData.valueDate"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Debit Account"
+          [value]="formData.debitFromAccount"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field label="MOL ID" [value]="formData.molId"></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Request Status"
+          [value]="formData.status"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Reject/Fail Reason"
+          [value]="formData.rejectReason"
+        ></app-review-form-field>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #employeeDataRecord>
+    <div class="p-grid p-pb-2">
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Employee Unique ID"
+          [value]="formData.employeeId"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Routing Code of the Agent"
+          [value]="formData.routingCodeAgentId"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Employee Account with Agent"
+          [value]="formData.creditAccount"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Pay Start Date"
+          [value]="formData.payStartDate"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Pay End Date"
+          [value]="formData.payEndDate"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Salary Payable days for the period"
+          [value]="formData.noOfDaysInMonth"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Income Fixed Component"
+          [value]="formData.fixedSalary"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Income Variable Component"
+          [value]="formData.variableSalary"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Days on leave without pay for the period"
+          [value]="formData.noOfDaysWithUnpaidLeaves"
+        ></app-review-form-field>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #employeeVariablePay>
+    <div class="p-grid p-pb-2">
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Housing Allowance"
+          [value]="formData.housingAllowance"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Conveyance Allowance"
+          [value]="formData.conveyanceAllowance"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Medical Allowance"
+          [value]="formData.medicalAllowance"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Annual Passage Allowance"
+          [value]="formData.annualPassageAllowance"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Overtime Allowances"
+          [value]="formData.overtimeAllowance"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="All Other Allowances"
+          [value]="formData.allOtherAllowances"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <app-review-form-field
+          label="Leave Encashment"
+          [value]="formData.leaveEncashment"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #wpsDocument>
+    <div class="p-grid p-py-2">
+      <div class="p-col-12 p-md-3 p-lg-3 p-pt-0" *ngFor="let file of formData.wpsFile">
+        <div class="aps-card">
+          <div class="p-grid">
+            <div class="p-col-2">
+              <app-icon icon="fa-file" class="p-mt-2"></app-icon>
+            </div>
+            <div class="p-col-10">
+              <div class="text-size-12 review-file-name">{{ file.fileName }}</div>
+              <div class="text-size-10 text-color-light-shade-1">
+                {{ (file.fileSize / 1024 / 1024).toFixed(2) }}Mb
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

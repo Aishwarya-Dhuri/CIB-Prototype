@@ -1,0 +1,68 @@
+.currency-select {
+  outline: none;
+  border: none;
+}
+
+
+.payment-details-container {
+  position: fixed;
+  // top: 50%;
+  // left: 50%;
+  // transform: translate(-50%, -50%);
+  z-index: 15;
+  width: 61vw;
+  height: 333px;
+    overflow-y: scroll;
+}
+
+.borderBottom {
+  border-bottom: 2px solid var(--background-color-dark-6);
+}
+
+.aps-search-container-2 {
+  position: relative;
+  padding: 6px 16px;
+  color: var(--text-color);
+
+  .aps-search-input {
+    height: 36px;
+    // padding: 8px 24px;
+    font-size: 0.875rem;
+    outline: none;
+    border: none;
+    // border-bottom: 1px solid var(--background-color-dark-6);
+  }
+
+  i {
+    font-size: 0.75rem;
+    padding: 6px;
+  }
+
+  .search-icon {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    display: block;
+    width: 24px;
+    height: 24px;
+
+    i {
+      font-size: 0.75rem;
+      padding: 6px;
+    }
+  }
+
+  .close-icon {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+  }
+}
+
+.height {
+  height: 334px;
+}
+
+.width{
+  width: 90px;
+}

@@ -1,0 +1,673 @@
+<app-small-credit-card-summary *ngIf="corporateType == 'S'"></app-small-credit-card-summary>
+<ng-container *ngIf="corporateType == 'L'">
+  <div class="container">
+    <!-- Tile buttons Overall and Quick Pay -->
+    <div class="p-grid g-margin-x">
+      <!-- Tile divs -->
+      <div class="p-col-12 p-md-3 p-col-lg-3">
+        <div
+          (click)="registerNewCard($event)"
+          class="aps-card aps-filled-card-primary-sm p-py-4 p-px-3 p-mb-2"
+        >
+          <div class="p-mb-3 text-color-inverted text-size-16">
+            {{ 'Register New Card' | apsTranslate }}
+          </div>
+          <hr />
+          <div class="text-color-inverted text-size-12">
+            {{ 'Click here to register new card in CIB' | apsTranslate }}
+          </div>
+        </div>
+        <div
+          (click)="applyNewCard()"
+          class="aps-card p-mt-3 p-px-3 p-py-4 pointer border-primary-2px"
+        >
+          <div class="p-mb-3 text-color-primary text-size-16">
+            {{ 'Apply New Card' | apsTranslate }}
+          </div>
+          <hr class="border-color-primary" />
+          <div class="text-color-dark-shade-3 text-size-12">
+            {{ 'Click here to apply new card or supplementary card' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+      <!-- Top 5 Nearest Due-->
+      <div class="p-lg-5 p-md-5 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold aps-py-12 p-px-3">
+              {{ 'Top 5 Nearest Due' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body p-p-2">
+            <div class="p-grid">
+              <div class="p-col-4 p-p-0"></div>
+              <div class="p-col-8 p-p-0">
+                <div class="p-grid">
+                  <div class="p-col-3 p-p-0 text-center">
+                    <div class="text-size-12 text-bold">{{ 'Due Date' | apsTranslate }}</div>
+                  </div>
+                  <div class="p-col-6 p-p-0 text-center">
+                    <div class="text-size-12 text-bold">
+                      {{ 'Total Outstanding Amount' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="p-col-3 p-p-0"></div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              *ngFor="let transaction of nearestDueObj | async | slice: 0:5 | orderBy: 'dueDate'"
+              class="p-grid text-size-12 text-center p-pt-2"
+            >
+              <div class="p-col-4 p-p-0">
+                <div class="text-center">{{ transaction.cardNo }}</div>
+              </div>
+              <div class="p-col-8 p-p-0">
+                <div class="p-grid">
+                  <div class="p-col-3 p-p-0">
+                    <div class="">{{ transaction.dueDate }}</div>
+                  </div>
+                  <div class="p-col-6 p-p-0">
+                    <div class="">
+                      <app-base-currency
+                        [amount]="transaction.outStandingAmount"
+                      ></app-base-currency>
+                    </div>
+                  </div>
+                  <div class="p-col-3 p-p-0">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-tertiary p-py-0 text-size-13"
+                      (click)="redirectToPage($event, 'creditCardBillPayment', transaction)"
+                    >
+                      {{ 'Pay Now' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid">
+              <div class="p-col-12">
+                <button
+                  (click)="viewNearestDueModal($event)"
+                  class="btn btn-md btn-tertiary text-size-12 float-right"
+                >
+                  {{ 'VIEW ALL' | apsTranslate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Top 5 Unbilled-->
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold aps-py-12 p-px-3">
+              {{ 'Top 5 Unbilled Amount' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body p-p-2">
+            <div class="p-grid">
+              <div class="p-col-5 p-p-0"></div>
+              <div class="p-col-7 p-p-0">
+                <div class="p-grid text-size-12 text-center text-bold">
+                  <div class="p-col-6 p-p-0">
+                    <div class=" ">{{ 'Unbilled Amount' | apsTranslate }}</div>
+                  </div>
+                  <div class="p-col-6 p-p-0">
+                    <div class="">{{ 'Statement Date' | apsTranslate }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              *ngFor="
+                let transaction of nearestDueObj
+                  | async
+                  | slice: 0:5
+                  | orderBy: 'unbilledAmount':'reverse'
+              "
+              class="p-grid p-pt-2 text-center text-size-12"
+              s
+            >
+              <div class="p-col-5 p-p-0">
+                <div class="">{{ transaction.cardNo }}</div>
+              </div>
+              <div class="p-col-7 p-p-0">
+                <div class="p-grid">
+                  <div class="p-col-6 p-p-0">
+                    <div class="">
+                      <app-base-currency [amount]="transaction.unbilledAmount"></app-base-currency>
+                    </div>
+                  </div>
+                  <div class="p-col-6 p-p-0">
+                    <div class="">{{ transaction.statementDate }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid">
+              <div class="p-col-12">
+                <button
+                  (click)="viewTopUnbilledModal($event)"
+                  class="btn btn-md btn-tertiary text-size-12 float-right"
+                >
+                  {{ 'VIEW ALL' | apsTranslate }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-size-16 text-bold text-color-dark-shade-1 p-mt-2">
+      {{ 'Credit Cards' | apsTranslate }} ({{ totalRecords }})
+    </div>
+
+    <div class="p-grid" *ngIf="creditCardData">
+      <div *ngFor="let creditCard of creditCardData" class="p-col-12 p-p-0 p-my-2">
+        <div (click)="cardClick(creditCard)" class="aps-card primary-border-on-hover">
+          <div class="p-grid p-p-2">
+            <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-color-dark-shade-1">
+              <div class="label-with-icon-container">
+                <div class="icon">
+                  <div class="credit-card">
+                    <img [src]="creditCard.cardImg" alt="corporate-logo" />
+                  </div>
+                </div>
+                <div class="label">
+                  <div class="text-size-16 text-semi-bold">
+                    {{ creditCard.cardType }}
+                    <div
+                      class="text-size-12"
+                      [ngClass]="
+                        creditCard.cardStatus === 'Inactive'
+                          ? 'text-color-danger'
+                          : 'text-color-success'
+                      "
+                    >
+                      {{ creditCard.cardStatus }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-lg-7 p-md-7 p-sm-12 p-col-12 p-p-0">
+              <div class="p-grid">
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold">
+                    {{ creditCard.cardNo }} - {{ creditCard.currency }}
+                  </div>
+                  <div class="text-size-12">{{ creditCard.embossedName }}</div>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                  <span class="text-size-12 text-semi-bold inline-block aps-mt-2">{{
+                    'Credit Limit' | apsTranslate
+                  }}</span>
+                  &nbsp;
+                  <span class="text-size-14 text-semi-bold inline-block">
+                    <app-base-currency
+                      [amount]="creditCard.cardLimit"
+                      [currency]="creditCard.currency"
+                    ></app-base-currency>
+                  </span>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                  <span class="text-size-12 text-semi-bold inline-block aps-mt-2"
+                    >Total Unbilled Amount</span
+                  >
+                  &nbsp;
+                  <span class="text-size-14 text-semi-bold inline-block">
+                    <app-base-currency
+                      [amount]="creditCard.unbilledAmount"
+                      [currency]="creditCard.currency"
+                    ></app-base-currency
+                  ></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-0">
+              <div class="left-right-container">
+                <div class="left-container aps-py-12 p-px-2">
+                  <button (click)="viewTxnDetails(creditCard)" class="btn btn-md btn-tertiary">
+                    {{ 'VIEW TRANSACTIONS' | apsTranslate }}
+                  </button>
+                </div>
+
+                <div class="right-container p-p-3">
+                  <app-icon
+                    class="pointer"
+                    [icon]="creditCard.isOpen ? 'fa-chevron-up' : 'fa-chevron-down'"
+                    styleClasses="text-size-12"
+                  ></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid border-top" *ngIf="creditCard.isOpen">
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="text-center">
+                <div class="text-size-12 p-p-1">
+                  {{ 'ACCOUNT STATUS ON' | apsTranslate }}
+                  <span>{{ todayDate | uppercase }}</span>
+                </div>
+                <div class="text-size-10 p-p-1">{{ 'TOTAL OUTSTANDING' | apsTranslate }} :</div>
+                <div class="text-size-12 text-bold">
+                  {{ creditCard.currency || 'INR' }} {{ creditCard.outStandingAmount }}
+                </div>
+                <div class="text-size-10 p-p-1">{{ 'UNBILLED OUTSTANDING' | apsTranslate }} :</div>
+                <div class="text-size-12 text-bold">
+                  {{ creditCard.currency || 'INR' }} {{ creditCard.unbilledAmount }}
+                </div>
+              </div>
+              <div class="p-pt-2 credit-limit">
+                <div class="text-size-10 text-bold p-pt-2 border-top">
+                  {{ 'CREDIT & CASH LIMIT' | apsTranslate }}
+                </div>
+
+                <div class="p-grid text-size-10 text-center text-semi-bold">
+                  <div class="p-col-4 p-p-0"></div>
+                  <div class="p-col-4 p-p-0">
+                    <div class="">{{ 'TOTAL' | apsTranslate }}</div>
+                  </div>
+                  <div class="p-col-4 p-p-0">
+                    <div class="">{{ 'AVAILABLE' | apsTranslate }}</div>
+                  </div>
+                  <div class="p-col-3 p-p-0"></div>
+                </div>
+
+                <div class="p-grid">
+                  <div
+                    class="p-col-4 p-p-0 text-size-10 p-mt-1 border-left aps-border-w-2px p-pl-2 credit"
+                  >
+                    {{ 'CREDIT' | apsTranslate }}
+                  </div>
+                  <div class="p-col-4 p-p-0 text-center">
+                    <div class="p-mt-1 text-size-12">
+                      <app-base-currency [amount]="creditCard.cardLimit"></app-base-currency>
+                    </div>
+                  </div>
+                  <div class="p-col-4 p-p-0 text-center">
+                    <div class="p-mt-1 text-size-12">
+                      <app-base-currency [amount]="creditCard.availableLimit"></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-grid">
+                  <div class="p-col-4 p-p-0 text-size-10 p-mt-1 border-left aps-border-w-2px cash">
+                    {{ 'CASH' | apsTranslate }}
+                  </div>
+                  <div class="p-col-4 p-p-0 text-center">
+                    <div class="p-mt-1 text-size-12">
+                      <app-base-currency [amount]="creditCard.cashLimit"></app-base-currency>
+                    </div>
+                  </div>
+                  <div class="p-col-4 p-p-0 text-center">
+                    <div class="p-mt-1 text-size-12">
+                      <app-base-currency
+                        [amount]="creditCard.availableCashLimit"
+                      ></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="aps-card">
+                <div class="p-grid">
+                  <div class="p-col-12 p-px-3 p-py-2">
+                    <div class="text-color-dark-shade-1 text-size-14 text-semi-bold">
+                      {{ 'Category wise Spend Analysis' | apsTranslate }}
+                    </div>
+
+                    <app-pie-chart
+                      [options]="creditCard.options"
+                      webHeight="200"
+                      mobileHeight="200"
+                    ></app-pie-chart>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-p-3">
+              <div class="_aps-card">
+                <div class="p-grid">
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="redirectToPage($event, 'creditCardDetails', creditCard)"
+                    >
+                      {{ 'View Card Details' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="redirectToPage($event, 'creditCardBillPayment', creditCard)"
+                    >
+                      {{ 'Pay Now' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="redirectToPage($event, 'creditCardStatementDownload', creditCard)"
+                    >
+                      {{ 'Statement Download' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="viewSupplementaryCard($event, creditCard.id)"
+                    >
+                      {{ 'View Supplementary Card' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="redirectToPage($event, 'blockCreditCard', creditCard)"
+                    >
+                      {{ 'Block Card' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="redirectToPage($event, 'unblockCreditCard', creditCard)"
+                    >
+                      {{ 'Unblock Card' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="redirectToPage($event, 'creditCardChangePin', creditCard)"
+                    >
+                      {{ 'Change Pin' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="redirectToPage($event, 'creditCardDeregistration', creditCard)"
+                    >
+                      {{ 'Deregister Card' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="viewRecentCreditsModal($event, creditCard.id)"
+                    >
+                      {{ 'View Recent Credit' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="manageAutoPay($event, 'manageAutoPay', creditCard)"
+                    >
+                      {{ 'Manage Auto Pay' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="redirectToPage($event, 'creditCardUpgradeLimit', creditCard)"
+                    >
+                      {{ 'Upgrade Limit' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button
+                      class="btn btn-xsm btn-tertiary"
+                      (click)="paymentHistory($event, creditCard.id)"
+                    >
+                      {{ 'Payment History' | apsTranslate }}
+                    </button>
+                  </div>
+
+
+
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button class="btn btn-xsm btn-tertiary">
+                      {{ 'Re-issue Card' | apsTranslate }}
+                    </button>
+                  </div>
+
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button class="btn btn-xsm btn-tertiary" style="text-align: left;"
+                      (click)="viewSupplementaryCard($event, creditCard.id)">
+                      {{ 'View Supplementary Card' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button class="btn btn-xsm btn-tertiary" style="text-align: left;">
+                      {{ 'Enable/Disable paper statements' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button class="btn btn-xsm btn-tertiary">
+                      {{ 'Request addon card' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                    <button class="btn btn-xsm btn-tertiary" style="text-align: left;">
+                      {{ 'Mark credit card as primary card' | apsTranslate }}
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="creditCardData">
+        <div class="p-col-12 p-p-0">
+          <app-pagination
+            [numberOfRecords]="totalRecords"
+            (doPagination)="onPageChange($event)"
+          ></app-pagination>
+        </div>
+      </ng-container>
+    </div>
+
+    <!--Supplementary Cards Modal Start-->
+    <app-modal *ngIf="supplementaryCardsData" [(isShow)]="isShowSupplementaryCard" size="md">
+      <div header class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-20 text-bold text-color-dark-shade-1">
+            {{ 'Supplementary Cards' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container"></div>
+      </div>
+      <div body class="p-my-3 aps-h-300">
+        <app-ag-grid-listing
+          [columnDefs]="supplementaryCardsData.columnData"
+          [rowData]="supplementaryCardsData.rowData"
+          [gridOptions]="{
+            rowModelType: 'clientSide',
+            pagination: false
+          }"
+        ></app-ag-grid-listing>
+      </div>
+      <div footer class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="isShowSupplementaryCard = false">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+    <!--Supplementary Cards Modal End-->
+
+    <!--Nearest Due Cards Modal Start-->
+    <app-modal *ngIf="isShowNearestDueModal" [(isShow)]="isShowNearestDueModal" size="md">
+      <div header class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-20 text-bold text-color-dark-shade-1">
+            {{ 'Nearest Dues' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container"></div>
+      </div>
+      <div body class="p-my-3 aps-h-300">
+        <app-ag-grid-listing
+          [columnDefs]="nearestDueData.columnData"
+          [rowData]="nearestDueData.rowData"
+          [gridOptions]="{
+            rowModelType: 'clientSide',
+            pagination: true
+          }"
+        ></app-ag-grid-listing>
+      </div>
+      <div footer class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="isShowNearestDueModal = false">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+    <!--Nearest Due Cards Modal End-->
+
+    <!--Top Unbilled Cards Modal Start-->
+    <app-modal *ngIf="isShowTopUnbilledModal" [(isShow)]="isShowTopUnbilledModal" size="md">
+      <div header class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-20 text-bold text-color-dark-shade-1">
+            {{ 'Unbilled Cards' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container"></div>
+      </div>
+      <div body class="p-my-3 aps-h-300">
+        <app-ag-grid-listing
+          [columnDefs]="topUnbilledData.columnData"
+          [rowData]="topUnbilledData.rowData"
+          [gridOptions]="{
+            rowModelType: 'clientSide',
+            pagination: true
+          }"
+        ></app-ag-grid-listing>
+      </div>
+      <div footer class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="isShowTopUnbilledModal = false">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+    <!--Top Unbilled Cards Modal End-->
+
+    <!--Top Unbilled Cards Modal Start-->
+    <app-modal *ngIf="isShowRecentCreditsModal" [(isShow)]="isShowRecentCreditsModal" size="md">
+      <div header class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-20 text-bold text-color-dark-shade-1">
+            {{ 'View Recent Credits' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container"></div>
+      </div>
+      <div body class="p-my-3 aps-h-300">
+        <div class="p-grid">
+          <div class="p-col-3 p-p-2">
+            <div class="text-size-14">{{ 'Credit Card' | apsTranslate }}</div>
+          </div>
+          <div class="p-col-9 p-p-2">
+            <div class="text-size-14 text-semi-bold">{{ recentCreditsData.cardNo }}</div>
+          </div>
+        </div>
+        <app-ag-grid-listing
+          [colDefUrl]="recentCreditsData.colDataURL"
+          [rowData]="recentCreditsData.rowData"
+          [gridOptions]="{
+            rowModelType: 'clientSide',
+            pagination: false
+          }"
+        ></app-ag-grid-listing>
+      </div>
+      <div footer class="left-right-container">
+        <div class="left-container p-py-2">
+          <app-icon class="p-px-2" icon="fa-print"></app-icon>
+          <app-icon class="p-px-2" icon="fa-download"></app-icon>
+          <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+        </div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="isShowRecentCreditsModal = false">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+    <!--Top Unbilled Cards Modal End-->
+
+    <!--Payment history Modal Start-->
+    <app-modal *ngIf="isShowPaymentHistoryModal" [(isShow)]="isShowPaymentHistoryModal" size="md">
+      <div header class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-20 text-bold text-color-dark-shade-1">
+            {{ 'Payment History' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container"></div>
+      </div>
+      <div body class="p-my-3 aps-h-300">
+        <div class="p-grid">
+          <div class="p-col-3 p-p-2">
+            <div class="text-size-14">{{ 'Credit Card' | apsTranslate }}</div>
+          </div>
+          <div class="p-col-9 p-p-2">
+            <div class="text-size-14 text-semi-bold">{{ paymentHistoryData.cardNo }}</div>
+          </div>
+          <div class="p-col-12 text-size-12 text-right">
+            <app-icon class="" icon="fa-info-circle"></app-icon> Payment history avaible for last 6
+            monthes
+          </div>
+        </div>
+        <app-ag-grid-listing
+          [colDefUrl]="paymentHistoryData.colDataURL"
+          [rowData]="paymentHistoryData.rowData"
+          [gridOptions]="{
+            rowModelType: 'clientSide',
+            pagination: false
+          }"
+        ></app-ag-grid-listing>
+      </div>
+      <div footer class="left-right-container">
+        <div class="left-container p-py-2">
+          <app-icon class="p-px-2" icon="fa-print"></app-icon>
+          <app-icon class="p-px-2" icon="fa-download"></app-icon>
+          <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+        </div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="isShowPaymentHistoryModal = false">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+    <!--Payment history Modal End-->
+  </div>
+</ng-container>

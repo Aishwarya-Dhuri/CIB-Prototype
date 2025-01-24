@@ -1,0 +1,43 @@
+.demo-videos-container {
+  display: block;
+
+  .demo-video-header {
+  }
+
+  .demo-videos {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    vertical-align: top;
+    position: relative;
+    overflow: scroll;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .video {
+      display: block;
+      padding: 0.5rem;
+      min-width: 12.5rem;
+
+      img {
+        width: 100%;
+        height: 7.5rem;
+        border-radius: 5px;
+      }
+
+      .sub-heading {
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

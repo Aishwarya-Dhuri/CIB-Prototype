@@ -1,0 +1,28 @@
+.border-top,
+.border-right {
+  border-color: var(--primary-color) !important;
+}
+
+.corporates:last-child {
+  .border-top:last-child {
+    border: none;
+  }
+}
+
+.border-1 {
+  border: 1px solid var(--background-color);
+  transition: all 0.125s;
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+}
+
+.border-2 {
+  border: 2px solid var(--background-color);
+  transition: all 0.125s;
+
+  &:hover {
+    border-color: var(--primary-color);
+  }
+}

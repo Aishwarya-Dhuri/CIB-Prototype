@@ -1,0 +1,420 @@
+<div class="container" *ngIf="!loading">
+  <div class="p-grid g-margin-x">
+    <ng-container *ngIf="currentScreen == 'FILTERS'">
+      <div class="p-md-7 p-sm-12 p-col-12">
+        <!-- [genericFilterList]="selectedFilters" -->
+        <app-dynamic-search #dynamicSearch [entityName]="entityName" (onSearch)="getRecords($event)"
+          [isShowSearchByHeader]="true" [isShowPrefillCriteria]="true" [isDisplayPrefillCriteriaModal]="true"
+          (onFiltersReady)="onDynamicFiltersReady()" (onSaveCriteria)="getCriteriaList()">
+        </app-dynamic-search>
+      </div>
+
+      <div class="p-md-5 p-sm-12 p-col-12">
+        <div class="aps-card aps-h-100p p-px-3 p-pb-3 p-pt-0">
+          <app-nothing-here *ngIf="criteriaList.length == 0" colSize="5"
+            message="Select Search by to view Saved Criteria"></app-nothing-here>
+          <p-tabView *ngIf="criteriaList.length > 0">
+            <p-tabPanel header="{{ 'Saved Criterion' | apsTranslate }}">
+              <div class="p-px-0 p-pt-3 p-pb-1 border-bottom" *ngFor="let criteria of criteriaList; let i = index">
+                <div class="left-right-container">
+                  <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                    <div class="text-size-12">{{ criteria.name }}</div>
+                    <div class="text-size-10">
+                      {{ getCriteriaFilterCount(criteria) }} {{ 'Parameters' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                      {{ 'Apply' | apsTranslate }}
+                    </button>
+                    <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                      <app-icon icon="fa-trash-alt" class="text-size-14 pointer"
+                        (click)="deleteCriteria(criteria)"></app-icon>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </p-tabPanel>
+            <p-tabPanel header="{{ 'Recent' | apsTranslate }}">
+              <ng-container *ngFor="let criteria of criteriaList; let i = index">
+                <div class="p-px-0 p-pt-3 p-pb-1 border-bottom" *ngIf="i < 3">
+                  <div class="left-right-container">
+                    <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                      <div class="text-size-12">{{ criteria.modifiedSysOn }}</div>
+                      <div class="text-size-10">
+                        {{ getCriteriaFilterCount(criteria) }} {{ 'Parameters' | apsTranslate }}
+                        {{ criteria.name }}
+                      </div>
+                    </div>
+                    <div class="right-container">
+                      <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                        {{ 'REUSE' | apsTranslate }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </p-tabPanel>
+          </p-tabView>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="currentScreen == 'SEARCH_RESULTS'">
+      <app-modal [(isShow)]="showMandateHistory" size="lg" *ngIf="showMandateHistory">
+        <div class="" body>
+          <app-header-with-search heading="{{ 'Mandate History' | apsTranslate }}"
+            (search)="mandateHistoryGrid?.onFilter($event)"></app-header-with-search>
+
+          <div class="aps-h-300">
+            <app-ag-grid-listing #mandateHistoryGrid
+              colDefUrl="directDebit/enquiry/mandateEnquiry/private/mandateHistoryColDefs"
+              [rowData]="mandateHistoryData" [gridOptions]="gridOptions"></app-ag-grid-listing>
+          </div>
+        </div>
+        <div class="left-right-container p-pt-3" footer>
+          <div class="left-container">
+            <div class="inline-items">
+              <div class="item">
+                <app-icon class="pointer" icon="fa-download"></app-icon>
+              </div>
+              <div class="item p-px-3">
+                <app-icon class="pointer" icon="fa-envelope"></app-icon>
+              </div>
+              <div class="item">
+                <app-icon class="pointer" icon="fa-print"></app-icon>
+              </div>
+            </div>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary" (click)="showMandateHistory = false">
+              CLOSE
+            </button>
+          </div>
+        </div>
+      </app-modal>
+
+      <app-modal [(isShow)]="showTransactionHistory" size="lg" *ngIf="showTransactionHistory">
+        <div class="" body>
+          <app-header-with-search heading="{{ 'Transaction History' | apsTranslate }}"
+            (search)="transactionHistoryGrid?.onFilter($event)"></app-header-with-search>
+
+          <div class="aps-h-300">
+            <app-ag-grid-listing #transactionHistoryGrid
+              colDefUrl="directDebit/enquiry/mandateEnquiry/private/transactionHistoryColDefs"
+              [rowData]="transactionHistoryData" [gridOptions]="gridOptions"></app-ag-grid-listing>
+          </div>
+        </div>
+        <div class="left-right-container p-pt-3" footer>
+          <div class="left-container">
+            <div class="inline-items">
+              <div class="item">
+                <app-icon class="pointer" icon="fa-download"></app-icon>
+              </div>
+              <div class="item p-px-3">
+                <app-icon class="pointer" icon="fa-envelope"></app-icon>
+              </div>
+              <div class="item">
+                <app-icon class="pointer" icon="fa-print"></app-icon>
+              </div>
+            </div>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary" (click)="showTransactionHistory = false">
+              CLOSE
+            </button>
+          </div>
+        </div>
+      </app-modal>
+
+      <div class="p-col-12">
+        <app-searched-by-view [filters]="selectedFilters" (onClear)="selectedFilters = []; currentScreen = 'FILTERS'"
+          (onModify)="currentScreen = 'FILTERS'"></app-searched-by-view>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header aps-py-12 p-px-3 overflow-visible">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold">
+                  {{ 'Search Results' | apsTranslate }} ({{ rowData.length }})
+                </div>
+              </div>
+              <div class="right-container">
+                <app-grid-listing-tools (changeFloatingFilter)="searchResultGrid.changeFloatFilter($event)"
+                  (filterRecords)="searchResultGrid.onFilter($event)"
+                  (applyColDefs)="searchResultGrid.onApplyConfig($event)" [colDefs]="searchResultGrid.columnDefs"
+                  [columnConfig]="true" [moreOptions]="true">
+                </app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing #searchResultGrid id="searchResultGrid" [colDefUrl]="colDefUrl" [rowData]="rowData"
+              [context]="context" [frameworkComponents]="frameworkComponents"
+              [gridOptions]="gridOptions"></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="currentScreen == 'VIEW'">
+      <div class="p-md-5 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2 aps-h-100p">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Product Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Corporate Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.corporateCode }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Corporate Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.corporateName }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Product Code' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.productCode }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Product Name' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.productName }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Customer Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.customerNo }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Legal ID' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.legalId }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-7 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Payer Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Payer Name' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerName }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Email ID' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerEmailId }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Mobile Number' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerMobileNo }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Address 1' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.address1 }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Address 2' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.address2 }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Address 3' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.address3 }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Payer Bank' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerBank }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Payer Sort Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerSortCode }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Payer Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.payerAccountNumber }}
+              </div>
+            </div>
+
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Supporting Document' | apsTranslate }}</div>
+            </div>
+
+            <div class="p-col-12" *ngIf="formData.supportingDocuments && formData.supportingDocuments.length == 0">
+              {{ 'No Supporting Documents Available' | apsTranslate }}
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of formData.supportingDocuments">
+              <div class="aps-card p-p-2">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <app-icon class="pointer" icon="fa-file"></app-icon>
+                  </div>
+                  <div class="label">
+                    <div class="text-size-12">
+                      {{ document.fileName }}
+                    </div>
+                    <div class="text-size-10 text-color-normal">
+                      {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Payment Setup' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Mandate Start Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.mandateStartDate }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Mandate End Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateEndDate }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Account Type' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.accountType }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.accountType == 'Fixed'">
+              <div class="text-size-12 text-color-normal">{{ 'Amount' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.amount }}</div>
+            </div>
+
+            <ng-container *ngIf="formData.accountType == 'Variable'">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Max Upto' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.maxUpto }}</div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'In Multiply' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.inMultiply }}</div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Not Above' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.notAbove }}</div>
+              </div>
+            </ng-container>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Mandate Type' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateType }}</div>
+            </div>
+
+            <ng-container *ngIf="formData.mandateType == 'Standing INstruction'">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate Frequency' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.mandateFrequency }}
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate Days' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateDays }}</div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate If Holiday' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.mandateIfHoliday }}
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Enrichment Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Loan Number' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.loanNumber }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Loan Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.loanAccountNumber }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Enrichment Product Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.enrichmentProductCode }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Relationship Manager' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.relationshipManager }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <aps-card class="aps-card aps-py-12 p-px-3">
+          <div class="left-right-container">
+            <div class="left-container"></div>
+            <div class="right-container">
+              <button class="btn btn-md btn-tertiary" (click)="close()">
+                {{ 'CANCEL' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </aps-card>
+      </div>
+    </ng-container>
+  </div>
+</div>

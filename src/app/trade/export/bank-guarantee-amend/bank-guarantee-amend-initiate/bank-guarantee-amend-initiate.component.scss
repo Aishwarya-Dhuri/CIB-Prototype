@@ -1,0 +1,27 @@
+.active {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 4px;
+}
+
+.active-warning {
+  border: 1px solid var(--warning);
+  color: var(--color-400);
+  border-radius: 4px;
+}
+
+.line-hight-12 {
+  height: 16px;
+  padding-top: 4px;
+  // line-height: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.line-hight-3 {
+  height: 64px;
+  padding-top: 4px;
+  // line-height: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

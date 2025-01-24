@@ -1,0 +1,12 @@
+<div class="label-with-icon-container pointer" (click)="billerDetails()">
+  <div class="icon p-pt-2">
+    <div class="corporate-icon">
+      <img [src]="biller.billerIcon" [alt]="biller.billerName" />
+    </div>
+  </div>
+  <div class="label">
+    <div class="text-color-primary text-underline grid-row-text-size">
+      {{ biller.billerName }}
+    </div>
+  </div>
+</div>

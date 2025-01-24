@@ -1,0 +1,49 @@
+.payment-details-container {
+    position: fixed;
+    // top: 50%;
+    // left: 50%;
+    // transform: translate(-50%, -50%);
+    z-index: 15;
+    width: 610px;
+    height: 400px;
+    overflow-y: scroll;
+}
+
+
+.aps-card-blur {
+    display: block;
+    background-color: var(--background-color);
+    border-radius: var(--aps-card-border-radius);
+    box-shadow: 0 0 10px var(--background-color-dark-5);
+    .aps-card-header {
+      height: 3rem;
+      border-radius: var(--aps-card-border-radius) var(--aps-card-border-radius) 0 0;
+      overflow: hidden;
+      border-bottom: 1px solid var(--background-color-dark-5);
+    }
+    .aps-card-body {
+      height: calc(100% - 3rem);
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+  }
+
+  .borderBottom{
+    border-bottom: 1px solid var(--secondary-color-light-shade-3);
+  }
+
+  .width{
+    width: 90px;
+  }
+
+  .caldendarDateStyle{
+    padding-top: 4px;
+    padding-bottom: 4px;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  
+  
+
+
+@media screen and(max-width: 480px) {}

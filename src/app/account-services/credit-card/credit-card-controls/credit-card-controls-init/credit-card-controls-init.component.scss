@@ -1,0 +1,23 @@
+.progress-bar {
+  width: calc(100% - 8px);
+  height: 2px;
+  background-color: var(--background-color-dark-6);
+  border-radius: 2px;
+}
+
+.error {
+  background-color: var(--color-error);
+  height: 2px;
+  border-radius: 2px;
+}
+
+.progress {
+  background-color: var(--progress);
+  height: 2px;
+  border-radius: 2px;
+}
+.active {
+  border: 1px solid var(--primary-color);
+  color: var(--primary-color);
+  border-radius: 4px;
+}

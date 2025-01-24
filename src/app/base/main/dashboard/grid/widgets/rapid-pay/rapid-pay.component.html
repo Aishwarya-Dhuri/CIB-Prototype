@@ -1,0 +1,289 @@
+<app-widgets-header
+  [heading]="title"
+  [showChangeChartOption]="showChangeChartOption"
+  (action)="this.actionEvent($event)"
+></app-widgets-header>
+<div class="rapid-service-container gridster-item-content">
+  <div class="p-grid" *ngIf="step === 1">
+    <div class="p-col-12">
+      <div class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <div class="inline-items">
+            <div class="item">
+              <div class="p-mr-2 p-py-1 p-px-2 text-size-12 background-color-primary-light-shade-2">
+                1
+              </div>
+            </div>
+            <div class="item">
+              <div class="p-py-1 p-px-2 text-size-12 background-color-primary-light-shade-2">2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+      <aps-form-input
+        label="Select Beneficiary"
+        rightIcon="fa-search"
+        name="beneficiary"
+        id="beneficiary"
+        [(ngModel)]="quickPayDetails.beneficiaryCode"
+        (onRightIcon)="onBeneficiarySearch()"
+        [readOnly]="true"
+        [disabled]="true"
+      ></aps-form-input>
+    </div>
+    <div class="p-md-6 p-sm-12 p-col-12" *ngIf="quickPayDetails.beneficiaryCode">
+      <div class="text-size-14">
+        <span class="inline-block text-color-normal">Account Number:</span>&nbsp;<span
+          class="inline-block text-color-dark-shade-1 text-semi-bold"
+        >
+          {{ quickPayDetails.creditAccount }}
+        </span>
+      </div>
+      <div class="text-size-14">
+        <span class="inline-block text-color-normal">Bank:</span>&nbsp;<span
+          class="inline-block text-color-dark-shade-1 text-semi-bold"
+        >
+          {{ quickPayDetails.bank }}</span
+        >
+      </div>
+    </div>
+    <div class="p-md-9 p-sm-12 p-col-12 p-p-0">
+      <div class="text-size-12 text-semi-bold text-color-normal p-px-2">Payable Amount</div>
+      <div class="p-grid">
+        <div class="p-col-4 p-pt-0">
+          <aps-custom-select
+            label="Currency"
+            name="currency"
+            id="currenccy"
+            [value]="quickPayDetails.currencyName"
+            [(ngModel)]="quickPayDetails.currencyName"
+            [data]="currencyList"
+          ></aps-custom-select>
+        </div>
+        <div class="p-col-8 p-py-0">
+          <aps-form-input
+            label="Amount"
+            inputType="currencyFormatNotZero"
+            name="payableAmount"
+            id="payableAmount"
+            [(ngModel)]="quickPayDetails.amount"
+          ></aps-form-input>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-7 p-sm-12 p-col-12 p-py-0">
+      <aps-custom-select
+        label="Debit Account"
+        name="debitAccount"
+        id="debitAccount"
+        [data]="debitAccounts"
+        (change)="changeDebitAccount($event)"
+        [value]="quickPayDetails.debitAccountId"
+        [(ngModel)]="quickPayDetails.debitAccountId"
+      ></aps-custom-select>
+    </div>
+    <div class="p-md-5 p-sm-12 p-col-12" *ngIf="quickPayDetails.debitAccountId">
+      <div class="text-size-14 text-color-normal">Balance</div>
+      <div class="text-size-14 text-color-dark-shade-1 text-semi-bold">
+        <app-base-currency [amount]="quickPayDetails.balance"></app-base-currency>
+      </div>
+    </div>
+    <div class="p-col-12">
+      <div class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-tertiary p-mr-3" (click)="reset()">RESET</button>
+          <button class="btn btn-md btn-primary" (click)="next()">NEXT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-grid" *ngIf="step === 2">
+    <div class="p-col-12">
+      <div class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <div class="inline-items">
+            <div class="item">
+              <div class="p-mr-2 p-py-1 p-px-2 text-size-12 background-color-primary-light-shade-2">
+                1
+              </div>
+            </div>
+            <div class="item">
+              <div class="p-py-1 p-px-2 text-size-12 background-color-primary-light-shade-2">2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-6 p-p-1 p-mt-2">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_beneficiary_name' | translate }}
+      </div>
+      <div class="text-size-14">{{ quickPayDetails.beneficiaryName }}</div>
+    </div>
+    <div class="p-col-6 p-p-1 p-mt-2">
+      <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_amount' | translate }}</div>
+      <div class="text-size-14">{{ quickPayDetails.amount }}</div>
+    </div>
+
+    <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let item of paymentMethodRecords">
+      <div class="text-size-10 text-color-normal p-pl-4" *ngIf="item.recommended === 'true'">
+        Recommended</div>
+      <div class="text-size-10 text-color-normal p-pl-4" *ngIf="item.recommended === 'false'">&nbsp;
+      </div>
+      <p-radioButton label={{item.name}} value={{item.name}} labelStyleClass="text-size-16" name="paymentMethod"
+        id="ibg" [(ngModel)]="quickPayDetails.paymentMethod"></p-radioButton>
+      <div class="p-pl-4">
+        <div class="text-size-12 text-color-normal">{{item.line1}}</div>
+        <div class="text-size-12 text-color-normal">{{item.line2}}</div>
+        <div class="text-size-12 text-color-normal">{{item.line3}}</div>
+      </div>
+    </div>
+
+    <!-- <div class="p-md-4 p-sm-12 p-col-12">
+      <div class="text-size-10 text-color-normal p-pl-4">Recommended</div>
+      <p-radioButton
+        label="IMPS"
+        value="IMPS"
+        labelStyleClass="text-size-16"
+        name="paymentMethod"
+        id="ibg"
+        [(ngModel)]="quickPayDetails.paymentMethod"
+      ></p-radioButton>
+      <div class="p-pl-4">
+        <div class="text-size-12 text-color-normal">INR5</div>
+        <div class="text-size-12 text-color-normal">Time Taken</div>
+        <div class="text-size-12 text-color-normal">Immediate</div>
+      </div>
+    </div>
+    <div class="p-md-4 p-sm-12 p-col-12">
+      <div class="text-size-10 text-color-normal">&nbsp;</div>
+      <p-radioButton
+        label="NEFT"
+        value="NEFT"
+        labelStyleClass="text-size-16"
+        name="paymentMethod"
+        id="NEFT"
+        [(ngModel)]="quickPayDetails.paymentMethod"
+      ></p-radioButton>
+      <div class="p-pl-4">
+        <div class="text-size-12 text-color-normal">INR4</div>
+        <div class="text-size-12 text-color-normal">Time Taken</div>
+        <div class="text-size-12 text-color-normal">2hrs</div>
+      </div>
+    </div>
+    <div class="p-md-4 p-sm-12 p-col-12">
+      <div class="text-size-10 text-color-normal">&nbsp;</div>
+      <p-radioButton
+        label="RTGS"
+        value="RTGS"
+        labelStyleClass="text-size-16"
+        name="paymentMethod"
+        id="RTGS"
+        [(ngModel)]="quickPayDetails.paymentMethod"
+      ></p-radioButton>
+      <div class="p-pl-4">
+        <div class="text-size-12 text-color-normal">INR5</div>
+        <div class="text-size-12 text-color-normal">Time Taken</div>
+        <div class="text-size-12 text-color-normal">Immediate</div>
+      </div>
+    </div> -->
+
+    <div class="p-col-12 p-pt-6">
+      <div class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-tertiary p-mr-3" (click)="reset()">RESET</button>
+          <button class="btn btn-md btn-primary" (click)="next()">SUBMIT</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="step === 3">
+    <div class="p-col-12 p-p-1">
+      <div class="text-size-16 text-center text-bold">Payment successful..!!</div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-12 p-p-1">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_reference_no' | translate }}
+        </div>
+        <div class="text-size-14">3456576856</div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+        <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_date' | translate }}</div>
+        <div class="text-size-14">16 Sep 2021</div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+        <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_time' | translate }}</div>
+        <div class="text-size-14">10:10 AM</div>
+      </div>
+      <div class="p-col-12 p-p-1 border-bottom">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_debit_account' | translate }}
+        </div>
+        <div class="text-size-14 p-mb-2">{{ quickPayDetails.debitAccountId }}</div>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-12 p-p-1 p-mt-2">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_beneficiary_name' | translate }}
+        </div>
+        <div class="text-size-14">{{ quickPayDetails.beneficiaryName }}</div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_beneficiary_code' | translate }}
+        </div>
+        <div class="text-size-14">{{ quickPayDetails.beneficiaryCode }}</div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_account_number' | translate }}
+        </div>
+        <div class="text-size-14">{{ quickPayDetails.creditAccount }}</div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_payment_method' | translate }}
+        </div>
+        <div class="text-size-14">{{ quickPayDetails.paymentMethod }}</div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+        <div class="text-size-12 text-color-light-shade-1">
+          {{ 'lbl_payable_amount' | translate }}
+        </div>
+        <div class="text-size-14">
+          <app-base-currency [amount]="quickPayDetails.balance"></app-base-currency>
+        </div>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-12 p-p-1 p-mt-2">
+        <div class="left-right-container p-mt-2 p-pt-2 border-top" footer>
+          <div class="left-container p-mt-1">
+            <span class="p-p-2">
+              <app-icon icon="fa-copy" class="pointer text-size-18"></app-icon>
+            </span>
+            <span class="p-p-2">
+              <app-icon icon="fa-share-alt" class="pointer text-size-18"></app-icon>
+            </span>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary" (click)="next()">
+              {{ 'lbl_done' | translate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

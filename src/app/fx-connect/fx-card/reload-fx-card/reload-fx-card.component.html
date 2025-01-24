@@ -1,0 +1,1144 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12">
+        <app-stepper-header [parentRef]="this"></app-stepper-header>
+      </div>
+
+      <ng-container *ngIf="stepperDetails.currentStep == 1">
+        <div class="p-md-8 p-sm-12 p-col-12 p-p-0">
+          <app-search-modal
+            [(isShow)]="showMfContractFxRate"
+            header="MF Connect FX Rate"
+            colDefUrl="fxConnect/fxCard/reload/private/mfContractFxRateColDef"
+            rowDefUrl="fxConnect/fxCard/reload/private/mfContractFxRateRowData"
+            (onSelection)="onChangeMfContractFxRate($event)"
+          ></app-search-modal>
+
+          <form name="fxForm" #fxForm="ngForm">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="aps-card">
+                  <div class="aps-card-header aps-py-12 p-px-3 text-size-14 text-semi-bold">
+                    {{ 'Forex Details' | apsTranslate }}
+                  </div>
+                  <div class="aps-card-body p-p-2">
+                    <div class="p-grid">
+                      <div class="p-md-6 p-sm-12 p-col-12">
+                        <aps-custom-select
+                          name="fxCardNo"
+                          id="fxCardNo"
+                          dataUrl="fxConnect/fxCard/reload/private/getFxCardList"
+                          label="{{ 'FX Card No' | apsTranslate }}"
+                          (change)="formData.cardBalance = $event.enrichments.balance"
+                          [value]="formData.fxCardNo"
+                          [(ngModel)]="formData.fxCardNo"
+                          [required]="true"
+                        ></aps-custom-select>
+                      </div>
+                      <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                        <ng-container *ngIf="formData.fxCardNo && formData.cardBalance">
+                          <div class="background-color-dark-3 p-p-2">
+                            <div class="text-size-12 text-color-normal">
+                              {{ 'Card Balance' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                              <app-base-currency
+                                [amount]="formData.cardBalance"
+                              ></app-base-currency>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+                      <div class="p-md-2 p-sm-12 p-col-12">
+                        <aps-custom-select
+                          name="expiryMonth"
+                          id="expiryMonth"
+                          dataUrl="fxConnect/fxCard/reload/private/dropdown/months"
+                          label="{{ 'Expiry Month' | apsTranslate }}"
+                          [value]="formData.expiryMonth"
+                          [(ngModel)]="formData.expiryMonth"
+                          [required]="true"
+                        ></aps-custom-select>
+                      </div>
+                      <div class="p-md-2 p-sm-12 p-col-12">
+                        <aps-custom-select
+                          name="expiryYear"
+                          id="expiryYear"
+                          dataUrl="fxConnect/fxCard/reload/private/dropdown/years"
+                          label="{{ 'Expiry Year' | apsTranslate }}"
+                          [value]="formData.expiryYear"
+                          [(ngModel)]="formData.expiryYear"
+                          [required]="true"
+                        ></aps-custom-select>
+                      </div>
+                      <div class="p-md-2 p-sm-12 p-col-12">
+                        <aps-form-input
+                          name="pin"
+                          id="pin"
+                          label="{{ 'PIN' | apsTranslate }}"
+                          type="password"
+                          minlength="3"
+                          maxlength="3"
+                          [value]="formData.pin"
+                          [(ngModel)]="formData.pin"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-6 p-sm-12 p-col-12 text-right">
+                        <button
+                          class="btn btn-md btn-primary p-mt-md-5 p-mt-sm-0 p-mt-0"
+                          (click)="getCardDetails()"
+                          [disabled]="
+                            !formData.fxCardNo ||
+                            !formData.expiryMonth ||
+                            !formData.expiryYear ||
+                            !formData.pin
+                          "
+                        >
+                          {{ 'VALIDATE' | apsTranslate }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid" *ngIf="isValidated">
+              <div class="p-col-12">
+                <div class="aps-card">
+                  <div class="aps-card-header aps-py-12 p-px-3 text-size-14 text-semi-bold">
+                    {{ 'Reload Currency' | apsTranslate }}
+                  </div>
+                  <div class="aps-card-body p-p-2">
+                    <div class="p-grid">
+                      <div class="p-md-6 p-sm-12 p-col-12 p-p-0">
+                        <div class="p-grid">
+                          <div class="p-col-4 p-py-0">
+                            <aps-custom-select
+                              name="currency"
+                              id="currency"
+                              dataUrl="setup/generalMasters/currency/private/currencyList"
+                              label="{{ 'Currency' | apsTranslate }}"
+                              (change)="
+                                currencyDetails.currencyCode = $event.displayName;
+                                currencyDetails.fxRate = $event.enrichments.fxRateToBase
+                              "
+                              [value]="currencyDetails.currency"
+                              [(ngModel)]="currencyDetails.currency"
+                              [required]="true"
+                            ></aps-custom-select>
+                          </div>
+                          <div class="p-col-8 p-py-0">
+                            <aps-form-input
+                              name="amount"
+                              id="amount"
+                              label="{{ 'Amount' | apsTranslate }}"
+                              [(ngModel)]="currencyDetails.amount"
+                              inputType="currencyFormatNotZero"
+                              [required]="true"
+                            ></aps-form-input>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select
+                          name="paymentType"
+                          id="paymentType"
+                          label="{{ 'Payment Type' | apsTranslate }}"
+                          dataUrl="fxConnect/fxCard/reload/private/dropdown/paymentType"
+                          [value]="currencyDetails.paymentType"
+                          [(ngModel)]="currencyDetails.paymentType"
+                          [required]="true"
+                        ></aps-custom-select>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select
+                          name="accountNumber"
+                          id="accountNumber"
+                          dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                          label="{{ 'Account Number' | apsTranslate }}"
+                          [value]="currencyDetails.account"
+                          [(ngModel)]="currencyDetails.account"
+                          (change)="
+                            currencyDetails.accountBalance = $event.enrichments.balance;
+                            currencyDetails.accountCurrency = $event.enrichments.currency;
+                            currencyDetails.accountNumber = $event.displayName
+                          "
+                          [required]="true"
+                        ></aps-custom-select>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <ng-container *ngIf="currencyDetails.accountNumber">
+                          <div class="background-color-dark-3 p-p-2">
+                            <div class="text-size-12 text-color-normal">
+                              {{ 'Account Balance' | apsTranslate }}
+                            </div>
+                            <div class="text-size-14 text-color-dark-shade-1">
+                              <app-base-currency
+                                [amount]="currencyDetails.accountBalance"
+                                [currency]="currencyDetails.accountCurrency"
+                              ></app-base-currency>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select
+                          name="rateType"
+                          id="rateType"
+                          dataUrl="fxConnect/fxCard/reload/private/dropdown/rateType"
+                          label="{{ 'Rate Type' | apsTranslate }}"
+                          [value]="currencyDetails.rateType"
+                          [(ngModel)]="currencyDetails.rateType"
+                          [required]="true"
+                        ></aps-custom-select>
+                      </div>
+
+                      <div
+                        class="p-md-4 p-sm-12 p-col-12 p-p-0"
+                        *ngIf="currencyDetails.rateType != 'MF Contract'"
+                      >
+                        <app-review-form-field
+                          label="FX Rate"
+                          [value]="currencyDetails.fxRate"
+                          *ngIf="currencyDetails.rateType == 'Card'"
+                        ></app-review-form-field>
+                      </div>
+
+                      <div
+                        class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                        *ngIf="currencyDetails.rateType == 'MF Contract'"
+                      >
+                        <aps-form-input
+                          name="rateType"
+                          id="rateType"
+                          label="{{ 'MF Connect FX Rate' | apsTranslate }}"
+                          rightIcon="fa-search"
+                          (onRightIcon)="showMfContractFxRate = true"
+                          [(ngModel)]="currencyDetails.mfContractFxRate"
+                          [required]="true"
+                          [readonly]="true"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <div class="left-right-container p-pt-3">
+                          <div class="left-container"></div>
+                          <div class="right-container">
+                            <button
+                              class="btn btn-md btn-primary"
+                              (click)="
+                                editFxDetailsIndex == -1 ? addForexDetails() : saveForexDetails()
+                              "
+                            >
+                              {{ (editFxDetailsIndex == -1 ? 'ADD' : 'UPDATE') | apsTranslate }}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-col-12">
+                <div class="aps-card">
+                  <div class="aps-card-header aps-py-12 p-px-3">
+                    <div class="text-size-14 text-semi-bold">
+                      {{ 'Travel Details' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="aps-card-body p-p-2">
+                    <div class="p-grid">
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select
+                          name="countryOfTravel"
+                          id="countryOfTravel"
+                          dataUrl="fxConnect/fxCard/reload/private/dropdown/countryOfTravel"
+                          label="{{ 'Country of Travel' | apsTranslate }}"
+                          [value]="formData.countryOfTravel"
+                          [(ngModel)]="formData.countryOfTravel"
+                          [required]="true"
+                        ></aps-custom-select>
+                      </div>
+
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select
+                          name="purpose"
+                          id="purpose"
+                          dataUrl="fxConnect/fxCard/reload/private/dropdown/purpose"
+                          label="{{ 'Purpose' | apsTranslate }}"
+                          [value]="formData.purpose"
+                          [(ngModel)]="formData.purpose"
+                          [required]="true"
+                        ></aps-custom-select>
+                      </div>
+
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender
+                          name="activationDate"
+                          id="activationDate"
+                          label="{{ 'Activation Date' | apsTranslate }}"
+                          [(ngModel)]="formData.activationDate"
+                          [required]="true"
+                        ></app-aps-calender>
+                      </div>
+
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          name="embossedName"
+                          id="embossedName"
+                          label="{{ 'Embossed Name' | apsTranslate }}"
+                          [(ngModel)]="formData.embossedName"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          name="mobileNo"
+                          id="mobileNo"
+                          inputType="numeric"
+                          label="{{ 'mobile Number' | apsTranslate }}"
+                          [(ngModel)]="formData.mobileNo"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input
+                          name="emailId"
+                          id="emailId"
+                          label="{{ 'Email ID' | apsTranslate }}"
+                          [(ngModel)]="formData.emailId"
+                          [required]="true"
+                        ></aps-form-input>
+                      </div>
+
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <div class="text-size-12 text-semi-bold">
+                          {{ 'Delivery Details' | apsTranslate }}
+                        </div>
+                        <p-radioButton
+                          class="p-mr-3"
+                          name="deliveryDetails"
+                          id="courierMe"
+                          value="Courier me"
+                          [(ngModel)]="formData.deliveryDetails"
+                          label="{{ 'Courier me' | apsTranslate }}"
+                        ></p-radioButton>
+                        <p-radioButton
+                          class=""
+                          name="deliveryDetails"
+                          id="iWillCollect"
+                          value="I will collect"
+                          [(ngModel)]="formData.deliveryDetails"
+                          label="{{ 'I will collect' | apsTranslate }}"
+                        ></p-radioButton>
+                      </div>
+
+                      <ng-container *ngIf="formData.deliveryDetails == 'Courier me'">
+                        <div class="p-md-8 p-sm-12 p-col-12">
+                          <div class="text-size-12 text-semi-bold">
+                            {{ 'Delivery Details' | apsTranslate }}
+                          </div>
+                          <p-radioButton
+                            class="p-mr-3"
+                            name="addressType"
+                            id="corporatesRegisteredAddress"
+                            value="Corporates Registered Address"
+                            [(ngModel)]="formData.addressType"
+                            label="{{ 'Corporates Registered Address' | apsTranslate }}"
+                          ></p-radioButton>
+                          <p-radioButton
+                            class=""
+                            name="addressType"
+                            id="other"
+                            value="Other"
+                            [(ngModel)]="formData.addressType"
+                            label="{{ 'Other' | apsTranslate }}"
+                          ></p-radioButton>
+                        </div>
+
+                        <div class="p-col-12 p-p-0" *ngIf="formData.addressType == 'Other'">
+                          <div class="p-grid">
+                            <div class="p-col-9 p-py-0">
+                              <div class="p-grid">
+                                <div class="p-col-12 p-p-0">
+                                  <aps-form-input
+                                    name="address1"
+                                    id="address1"
+                                    label="{{ 'Address 1' | apsTranslate }}"
+                                    [(ngModel)]="formData.address1"
+                                    [required]="true"
+                                  ></aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-p-0" *ngIf="addressLine2">
+                                  <aps-form-input
+                                    name="address2"
+                                    id="address2"
+                                    label="{{ 'Address 2' | apsTranslate }}"
+                                    [(ngModel)]="formData.address2"
+                                    [rightIcon]="'fa-trash-alt'"
+                                    (onRightIcon)="deleteAddressLine(2)"
+                                    [required]="true"
+                                  ></aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-p-0" *ngIf="addressLine3">
+                                  <aps-form-input
+                                    name="address3"
+                                    id="address3"
+                                    label="{{ 'Address 3' | apsTranslate }}"
+                                    [(ngModel)]="formData.address3"
+                                    [rightIcon]="'fa-trash-alt'"
+                                    (onRightIcon)="deleteAddressLine(3)"
+                                    [required]="true"
+                                  ></aps-form-input>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="p-col-3">
+                              <button
+                                class="btn text-center btn-sm btn-tertiary"
+                                (click)="
+                                  addressLine2 ? (addressLine3 = true) : (addressLine2 = true)
+                                "
+                                [disabled]="addressLine2 && addressLine3"
+                              >
+                                <app-icon icon="fa-plus"> </app-icon>&nbsp;{{
+                                  'ADD MORE' | apsTranslate
+                                }}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </ng-container>
+
+                      <ng-container *ngIf="formData.deliveryDetails == 'I will collect'">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                          <aps-custom-select
+                            name="branch"
+                            id="branch"
+                            dataUrl="fxConnect/fxCard/reload/private/dropdown/branch"
+                            label="{{ 'Branch' | apsTranslate }}"
+                            [value]="formData.branch"
+                            [(ngModel)]="formData.branch"
+                            [required]="true"
+                          ></aps-custom-select>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                          <aps-form-input
+                            name="collectingOfficialsName"
+                            id="collectingOfficialsName"
+                            label="{{ 'Collecting Officials Name' | apsTranslate }}"
+                            [(ngModel)]="formData.collectingOfficialsName"
+                            [required]="true"
+                          ></aps-form-input>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                          <aps-custom-select
+                            name="collectingOfficialsIdType"
+                            id="collectingOfficialsIdType"
+                            dataUrl="fxConnect/fxCard/reload/private/dropdown/idType"
+                            label="{{ 'Collecting Officials ID Type' | apsTranslate }}"
+                            [value]="formData.collectingOfficialsIdType"
+                            [(ngModel)]="formData.collectingOfficialsIdType"
+                            [required]="true"
+                          ></aps-custom-select>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                          <aps-form-input
+                            name="idCardNumberDetails"
+                            id="idCardNumberDetails"
+                            label="{{ 'ID Card Number Details' | apsTranslate }}"
+                            [(ngModel)]="formData.idCardNumberDetails"
+                            [required]="true"
+                          ></aps-form-input>
+                        </div>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <ng-container *ngTemplateOutlet="listTemplate"></ng-container>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="stepperDetails.currentStep == 2">
+        <app-modal
+          [(isShow)]="showTermsAndConditions"
+          headerText="{{ 'Terms and Conditions' | apsTranslate }}"
+          size="md"
+        >
+          <div class="text-size-12" body>
+            <div class="">{{ 'I, declare that' | apsTranslate }} -</div>
+            <div class="p-pt-1" *ngFor="let termsAmdCondition of termsAndConditions; let i = index">
+              {{ i + 1 }}) {{ termsAmdCondition.termsAndConditionText }}
+            </div>
+          </div>
+        </app-modal>
+
+        <div class="p-md-8 p-sm-12 p-col-12 p-p-0">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="aps-card">
+                <div class="aps-card-header">
+                  <div class="aps-py-12 p-px-3 text-size-14 text-semi-bold">
+                    {{ 'ID Details' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="aps-card-body p-p-2">
+                  <div class="p-grid">
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                      <aps-form-input
+                        id="nationalId"
+                        name="nationalId"
+                        label="{{ 'National ID' | apsTranslate }}"
+                        [(ngModel)]="formData.nationalId"
+                        (focusout)="formData.nationalIdLimit = 5000000"
+                        [required]="true"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-2 p-sm-12 p-col-12 p-p-0"></div>
+                    <div class="p-md-4 p-sm-12 p-col-12 text-size-14">
+                      <div class="text-semi-bold">
+                        {{ 'Limit Utilization' | apsTranslate }}
+                      </div>
+                      <div class="">
+                        <app-base-currency [amount]="formData.nationalIdLimit"></app-base-currency>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12">
+              <div class="aps-card">
+                <div class="aps-card-header">
+                  <div class="aps-py-12 p-px-3 text-size-14 text-semi-bold">
+                    {{ 'Supporting Documents' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="aps-card-body p-p-2">
+                  <div class="p-grid">
+                    <ng-container *ngFor="let document of supportingDocuments">
+                      <div
+                        [ngClass]="
+                          document.fieldList.length > 1
+                            ? 'p-md-12 p-sm-12 p-col-12 '
+                            : 'p-md-6 p-sm-12 p-col-12 '
+                        "
+                        class="text-size-12 text-semi-bold"
+                        *ngIf="document.purpose.includes(formData.purpose.toLowerCase())"
+                      >
+                        {{ document.label | apsTranslate }}
+
+                        <div class="p-grid">
+                          <ng-container *ngFor="let field of document.fieldList">
+                            <div
+                              class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                              *ngIf="field.fieldType == 'TEXT'"
+                            >
+                              <aps-form-input
+                                [name]="field.name"
+                                [id]="field.name"
+                                label="{{ field.displayName | apsTranslate }}"
+                                [(ngModel)]="formData[field.name]"
+                                [required]="field.mandatory"
+                              ></aps-form-input>
+                            </div>
+
+                            <div
+                              class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                              *ngIf="field.fieldType == 'DATE'"
+                            >
+                              <app-aps-calender
+                                [name]="field.name"
+                                [id]="field.name"
+                                label="{{ field.displayName | apsTranslate }}"
+                                [(ngModel)]="formData[field.name]"
+                                [required]="field.mandatory"
+                              ></app-aps-calender>
+                            </div>
+
+                            <div
+                              class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                              *ngIf="field.fieldType == 'SELECT'"
+                            >
+                              <aps-custom-select
+                                [name]="field.name"
+                                [id]="field.name"
+                                label="{{ field.displayName | apsTranslate }}"
+                                [value]="formData[field.name]"
+                                [(ngModel)]="formData[field.name]"
+                                [dataUrl]="field.dataUrl"
+                                [required]="field.mandatory"
+                              ></aps-custom-select>
+                            </div>
+
+                            <div
+                              class="p-py-0"
+                              [ngClass]="
+                                document.fieldList.length == 1
+                                  ? 'p-md-12 p-sm-12 p-col-12 '
+                                  : 'p-md-6 p-sm-12 p-col-12 '
+                              "
+                              *ngIf="field.fieldType == 'FILE'"
+                            >
+                              <upload-form-control
+                                [files]="formData[field.name]"
+                                [hideDragDropContainerOnFIleUpload]="true"
+                              ></upload-form-control>
+                            </div>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <ng-container *ngTemplateOutlet="listTemplate"></ng-container>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid text-size-14">
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="inline-items">
+                  <div class="item p-mr-2">
+                    <p-checkbox
+                      id="iAgree"
+                      name="iAgree"
+                      styleClasses="text-size-14"
+                      label="{{ 'I Agree' | apsTranslate }}"
+                      [binary]="true"
+                      [(ngModel)]="isAgree"
+                    ></p-checkbox>
+                  </div>
+                  <div class="item aps-pt-2">
+                    <div class="link text-size-14 pointer" (click)="showTermsAndConditions = true">
+                      {{ 'Terms & Conditions' | apsTranslate }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                <aps-form-input
+                  name="remarks"
+                  id="remarks"
+                  label="{{ 'Remarks' | apsTranslate }}"
+                  [(ngModel)]="formData.remarks"
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12" *ngIf="false">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                <aps-form-input
+                  name="otp"
+                  id="otp"
+                  label="{{ 'One Time Password' | apsTranslate }}"
+                  [(ngModel)]="otp"
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+              <div class="p-md-8 p-sm-12 p-col-12 p-pt-md-4 p-pt-sm-2 text-size-14">
+                OTP has been generated and sent to your registered mobile number
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">
+                  {{ 'Forex Detail' | apsTranslate }}
+                </div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Total Amount' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  <app-base-currency [amount]="formData.totalBalance"></app-base-currency>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Charges' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  <app-base-currency [amount]="formData.Charges"></app-base-currency>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'GST on Charges' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  <app-base-currency [amount]="formData.gstOnCharges"></app-base-currency>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'GST on FX Conversion' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  <app-base-currency [amount]="formData.gstOnCFxConversion"></app-base-currency>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Total Charges Applicable' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  <app-base-currency
+                    [amount]="formData.totalChargesApplicable"
+                    [showFlag]="true"
+                  ></app-base-currency>
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Net Total' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  <app-base-currency
+                    [amount]="formData.netTotal"
+                    [showFlag]="true"
+                  ></app-base-currency>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">
+                  {{ 'Currency Reload Details' | apsTranslate }}
+                </div>
+              </div>
+              <div class="p-col-12">
+                <div class="aps-h-300">
+                  <app-ag-grid-listing
+                    [columnDefs]="columnDefs"
+                    [rowData]="formData.currencyDetails"
+                    [gridOptions]="gridOptions"
+                    *ngIf="formData.currencyDetails.length > 0"
+                  ></app-ag-grid-listing>
+                  <app-nothing-here
+                    colSize="4"
+                    *ngIf="formData.currencyDetails.length == 0"
+                    message="No Currency Details Added"
+                  ></app-nothing-here>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">
+                  {{ 'Travel Details' | apsTranslate }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Country of Travel' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.countryOfTravel }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Purpose' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.purpose }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Activation Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.activationDate }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Embossed Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.embossedName }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mobile Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.mobileNo }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Email ID' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.emailId }}
+                </div>
+              </div>
+
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Delivery Details' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.deliveryDetails }}
+                </div>
+              </div>
+
+              <ng-container *ngIf="formData.deliveryDetails == 'Courier me'">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'Address Type' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.addressType }}
+                  </div>
+                </div>
+                <ng-container *ngIf="formData.addressType == 'Other'">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-normal">
+                      {{ 'Address 1' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ formData.address1 }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-normal">
+                      {{ 'Address 2' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ formData.address2 }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <div class="text-size-12 text-color-normal">
+                      {{ 'Address 3' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ formData.address3 }}
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+
+              <ng-container *ngIf="formData.deliveryDetails != 'Courier me'">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'Branch' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.branch }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'Collecting Officials Name' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.collectingOfficialsName }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'Collecting Officials ID Type' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.collectingOfficialsIdType }}
+                  </div>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'ID Card Number Details' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 text-color-dark-shade-1">
+                    {{ formData.idCardNumberDetails }}
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="text-size-14 text-bold">
+                  {{ 'Supporting Documents' | apsTranslate }}
+                </div>
+              </div>
+
+              <ng-container *ngFor="let document of supportingDocuments">
+                <div class="p-md-3 p-sm-12 p-col-12" *ngFor="let field of document.fieldList">
+                  <ng-container
+                    *ngIf="
+                      field.fieldType == 'TEXT' ||
+                      field.fieldType == 'DATE' ||
+                      field.fieldType == 'SELECT'
+                    "
+                  >
+                    <div class="text-size-12 text-color-normal">
+                      {{ field.displayName | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ formData[field.name] }}
+                    </div>
+                  </ng-container>
+
+                  <ng-container *ngIf="field.fieldType == 'FILE'">
+                    <div class="text-size-12 text-color-normal">
+                      {{ field.displayName | apsTranslate }}
+                    </div>
+                    <div
+                      class="aps-card p-p-2"
+                      *ngIf="formData[field.name].length > 0; else noFileAttached"
+                    >
+                      <div class="label-with-icon-container">
+                        <div class="icon">
+                          <app-icon icon="fa-file"></app-icon>
+                        </div>
+                        <div class="label">
+                          <div class="text-size-12">{{ formData[field.name][0].fileName }}</div>
+                          <div class="text-size-10 text-color-normal">
+                            {{ (formData[field.name][0].fileSize / 1024 / 1024).toFixed(2) }} MB
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
+
+              <div class="p-col-12 p-mt-2">
+                <div class="text-size-14 text-bold">
+                  {{ 'Transaction Remarks' | apsTranslate }}
+                </div>
+              </div>
+              <div class="p-col-12">
+                {{ formData.remarks }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="p-col-12">
+        <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>
+
+<ng-template #noFileAttached>
+  <div class="text-size-14 text-color-dark-shade-1">
+    {{ 'No File Attached' | apsTranslate }}
+  </div>
+</ng-template>
+
+<ng-template #listTemplate>
+  <div class="aps-card">
+    <div class="aps-card-header">
+      <div class="text-size-14 text-semi-bold aps-py-12 p-px-3">
+        {{ 'List' | apsTranslate }} ({{ formData.currencyDetails.length }})
+      </div>
+    </div>
+
+    <div class="aps-card-body">
+      <div class="aps-h-300 p-px-3 overflow-y-scroll">
+        <ng-container *ngIf="formData.currencyDetails.length > 0">
+          <div
+            class="border-bottom p-py-2"
+            *ngFor="let fx of formData.currencyDetails; let i = index"
+          >
+            <div class="left-right-container p-py-1">
+              <div class="left-container text-semi-bold">
+                <app-base-currency
+                  [amount]="fx.amount"
+                  [currency]="fx.currencyCode"
+                  [showFlag]="true"
+                ></app-base-currency>
+              </div>
+              <div class="right-container text-color-primary">
+                {{ fx.accountNumber }}
+              </div>
+            </div>
+
+            <div class="left-right-container text-size-13 text-color-normal p-py-1">
+              <div class="left-container">
+                <span class="inline-block text-semi-bold">
+                  {{ 'Rate Type' | apsTranslate }} :
+                </span>
+                {{ fx.rateType }}
+              </div>
+              <div class="right-container">
+                <span class="inline-block text-semi-bold">
+                  {{ 'Payment Type' | apsTranslate }} :
+                </span>
+                {{ fx.paymentType }}
+              </div>
+            </div>
+
+            <div class="left-right-container p-py-1">
+              <div class="left-container"></div>
+              <div class="right-container">
+                <div class="inline-items">
+                  <div class="item">
+                    <app-icon icon="fa-eye" class="pointer" (click)="(null)"></app-icon>
+                  </div>
+                  <div class="item p-px-2">
+                    <app-icon
+                      icon="fa-pencil"
+                      class="pointer"
+                      (click)="editForexDetails(i)"
+                    ></app-icon>
+                  </div>
+                  <div class="item">
+                    <app-icon
+                      icon="fa-trash-alt"
+                      class="pointer"
+                      (click)="deleteForexDetails(i)"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <app-nothing-here
+          colSize="6"
+          *ngIf="formData.currencyDetails.length == 0"
+        ></app-nothing-here>
+      </div>
+
+      <div class="p-py-2 p-px-3 border-top">
+        <div class="left-right-container p-py-1">
+          <div class="left-container text-size-12 text-color-light-shade-1">
+            <div>{{ 'Total' | apsTranslate }} :</div>
+          </div>
+          <div class="right-container text-size-14 text-color-dark-shade-1">
+            <app-base-currency
+              [amount]="formData.totalBalance"
+              [showFlag]="false"
+            ></app-base-currency>
+          </div>
+        </div>
+
+        <div class="left-right-container p-py-1">
+          <div class="left-container text-size-12 text-color-light-shade-1">
+            <div>{{ 'Charges' | apsTranslate }} :</div>
+          </div>
+          <div class="right-container text-size-14 text-color-danger">
+            <app-base-currency [amount]="formData.charges" [showFlag]="false"></app-base-currency>
+          </div>
+        </div>
+
+        <div class="left-right-container p-py-1">
+          <div class="left-container text-size-12 text-color-light-shade-1">
+            <div>{{ 'GST on Charges' | apsTranslate }} :</div>
+          </div>
+          <div class="right-container text-size-14 text-color-danger">
+            <app-base-currency
+              [amount]="formData.gstOnCharges"
+              [showFlag]="false"
+            ></app-base-currency>
+          </div>
+        </div>
+
+        <div class="left-right-container p-py-1">
+          <div class="left-container text-size-12 text-color-light-shade-1">
+            <div>{{ 'GST on FX Conversion' | apsTranslate }} :</div>
+          </div>
+          <div class="right-container text-size-14 text-color-danger">
+            <app-base-currency
+              [amount]="formData.gstOnCFxConversion"
+              [showFlag]="false"
+            ></app-base-currency>
+          </div>
+        </div>
+
+        <div class="left-right-container p-py-1">
+          <div class="left-container text-size-12 text-color-light-shade-1">
+            <div>{{ 'Total Charges Applicable' | apsTranslate }} :</div>
+          </div>
+          <div class="right-container text-size-14 text-color-danger">
+            <app-base-currency
+              [amount]="formData.totalChargesApplicable"
+              [showFlag]="true"
+            ></app-base-currency>
+          </div>
+        </div>
+
+        <div class="left-right-container p-py-1 text-bold">
+          <div class="left-container text-size-12 text-color-light-shade-1">
+            <div>{{ 'Net Total' | apsTranslate }} :</div>
+          </div>
+          <div class="right-container text-size-14 text-color-success">
+            <app-base-currency [amount]="formData.netTotal" [showFlag]="true"></app-base-currency>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

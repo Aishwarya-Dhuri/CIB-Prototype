@@ -1,0 +1,424 @@
+<div class="container">
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12 p-md-3 p-lg-3 p-pb-0" *ngIf="stepperDetails.currentStep < stepperDetails.headings.length">
+            <app-stepper-header [parentRef]="this"></app-stepper-header>
+        </div>
+        <div class="p-col-12 p-pb-0 p-mb-3"
+            [ngClass]="{ 'p-md-9 p-lg-9': stepperDetails.currentStep < stepperDetails.headings.length }">
+            <div [apsHide]="stepperDetails.currentStep != 1">
+                <form name="step1Form" #step1Form="ngForm">
+                    <div class="aps-card aps-h-600">
+                        <div class="aps-card-header">
+                            <div class="text-size-16 text-semi-bold p-p-2">
+                                {{ 'Security Mapping' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="aps-card-body">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-custom-select [label]="'Encryption Type' | apsTranslate" name="encryptionType"
+                                        id="encryptionType" [(ngModel)]="formData.encryptionTypeId"
+                                        dataUrl="setup/security/corporateSecurityMapping/private/dropdown/encryptionType"
+                                        [required]="true" (change)="onEncryptionTypeChange($event)"
+                                        [disabled]="isReviewEdit && !userAccessFields?.gender?.cibAdmin">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-custom-select [label]="'Encryption Required' | apsTranslate"
+                                        name="encryptionRequired" id="encryptionRequired"
+                                        [(ngModel)]="formData.encryptionRequired"
+                                        dataUrl="setup/security/corporateSecurityMapping/private/dropdown/encryptionRequired"
+                                        [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.gender?.cibAdmin">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <div class="text-size-14 text-semi-bold text-color-dark-shade-2">
+                                        {{ 'Upload Key File' | apsTranslate }}
+                                    </div>
+                                    <upload-form-control [files]="formData.uploadKeyFile"
+                                        [hideDragDropContainerOnFIleUpload]="true"
+                                        (onUploaded)="onSignatureFileSelected($event)"
+                                        [disabled]="isReviewEdit && !userAccessFields?.signature?.cibAdmin"></upload-form-control>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-form-input inputType="alphaNumeric" [label]="'Key ID' | apsTranslate"
+                                        name="keyId" id="keyId" [(ngModel)]="formData.keyId" [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.keyId?.cibAdmin">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-form-input inputType="alphaNumeric" [label]="'Encryption Key' | apsTranslate"
+                                        name="encryptionKey" id="encryptionKey" [(ngModel)]="formData.encryptionKey"
+                                        [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.keyId?.cibAdmin">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-form-input [type]="isPasswordVisible ? 'text' : 'password'"
+                                        [label]="'Password' | apsTranslate" name="password" id="password"
+                                        [(ngModel)]="formData.password" [required]="true"
+                                        [rightIcon]="isPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+                                        (onRightIcon)="isPasswordVisible = !isPasswordVisible"
+                                        [disabled]="isReviewEdit && !userAccessFields?.password?.cibAdmin">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+            <div [apsHide]="stepperDetails.currentStep != 2">
+                <form name="step2Form" #step2Form="ngForm">
+                    <div class="aps-card aps-h-600">
+                        <div class="aps-card-header">
+                            <div class="text-size-16 text-semi-bold p-p-2">
+                                {{ 'Other Details' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="aps-card-body">
+
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-custom-select [label]="'Utility Type' | apsTranslate" name="utilityType"
+                                        id="utilityType" [(ngModel)]="formData.utilityTypeId"
+                                        dataUrl="setup/security/corporateSecurityMapping/private/dropdown/utilityType"
+                                        (change)="onUtilityTypeChange($event)" [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.utilityType?.cibAdmin">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-custom-select [label]="'H2H Report' | apsTranslate" name="h2hReport"
+                                        id="h2hReport" [(ngModel)]="formData.h2hReportId"
+                                        dataUrl="setup/security/corporateSecurityMapping/private/dropdown/h2hReport"
+                                        (change)="onH2HreportChange($event)" [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.h2hReport?.cibAdmin">
+                                    </aps-custom-select>
+                                </div>
+
+                                <div class="p-col-12 p-md-4 p-lg-4"></div>
+
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-form-input [label]="'Source Folder Name & Path' | apsTranslate"
+                                        name="sourceFolder" id="sourceFolder" [(ngModel)]="formData.sourceFolder"
+                                        [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.sourceFolder?.cibAdmin">
+                                    </aps-form-input>
+                                    <div class="text-size-10">Example: C:\\Download\</div>
+                                </div>
+
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <aps-form-input [label]="'Destination Folder Name & Path' | apsTranslate"
+                                        name="destinationFolder" id="destinationFolder"
+                                        [(ngModel)]="formData.destinationFolder" [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.destinationFolder?.cibAdmin">
+                                    </aps-form-input>
+                                    <div class="text-size-10">Example: C:\\Download\</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div [apsHide]="!(stepperDetails.currentStep == 6 && isGroupUser)">
+                <div class="aps-card aps-h-600">
+                    <div class="aps-card-header">
+                        <div class="text-size-16 text-semi-bold p-p-2">
+                            {{ 'Group User Details' | apsTranslate }}
+                        </div>
+                    </div>
+                    <div class="aps-card-body">
+                        <form name="step6Form" #step6Form="ngForm">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-sm-12">
+                                    <div class="text-size-14 text-bold p-p-1">
+                                        {{ 'Is Group User' | apsTranslate }}
+                                    </div>
+                                    <p-radioButton [(ngModel)]="formData.isGroupUser" class="p-p-1" id="yes"
+                                        name="isGroup" [value]="true" [label]="'Yes' | apsTranslate"
+                                        [disabled]="isReviewEdit && !userAccessFields?.isGroupUser?.cibAdmin">
+                                    </p-radioButton>
+                                    <p-radioButton [(ngModel)]="formData.isGroupUser" class="p-p-1" id="no"
+                                        name="isGroup" [value]="false" [label]="'No' | apsTranslate"
+                                        [disabled]="isReviewEdit && !userAccessFields?.isGroupUser?.cibAdmin">
+                                    </p-radioButton>
+                                </div>
+
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                    <p-checkbox [(ngModel)]="groupUserFormData.isGroupAdmin"
+                                        class="p-px-1 p-pt-3 p-pb-2" id="isGroupAdmin" name="isGroupAdmin"
+                                        [binary]="true" [label]="'Is Group Admin' | apsTranslate"
+                                        [disabled]="isReviewEdit && !userAccessFields?.isGroupAdmin?.cibAdmin">
+                                    </p-checkbox>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                    <aps-custom-select [label]="'Group Profile Name' | apsTranslate"
+                                        name="groupProfileId" id="groupProfileId"
+                                        [(ngModel)]="groupUserFormData.groupProfileId"
+                                        [value]="groupUserFormData.groupProfileId"
+                                        dataUrl="setup/security/corporateProfile/private/getProfileNameList"
+                                        [reqBody]="{ groupProfile: true }" (change)="onGroupUserProfileChange($event)"
+                                        [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.groupProfile?.cibAdmin">
+                                    </aps-custom-select>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-col-12">
+                                    <p-checkbox [(ngModel)]="groupUserFormData.selfAuthorization" class="p-px-1 p-py-1"
+                                        id="selfAuthorizer" name="selfAuthorizer"
+                                        [label]="'Self Authorizer and Authorization Matrix' | apsTranslate"
+                                        [binary]="true" [disabled]="
+                        isReviewEdit &&
+                        userAccessFields?.groupSelfAuthorizerAndAuthorizationMatrix?.cibAdmin
+                      ">
+                                    </p-checkbox>
+                                </div>
+                            </div>
+
+                            <div class="p-grid" *ngIf="groupUserFormData.selfAuthorization">
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <p-checkbox [(ngModel)]="groupUserFormData.isTransactionSelfAuthorizer"
+                                        class="p-p-1" id="isTransactionSelfAuthorizer"
+                                        name="isTransactionSelfAuthorizer" [binary]="true"
+                                        [label]="'Transaction Self Authorizer' | apsTranslate"
+                                        (onChange)="onGroupTransactionSelfAuthorizer()" [disabled]="
+                        isReviewEdit && !userAccessFields?.groupTransactionSelfAuthorizer?.cibAdmin
+                      "></p-checkbox>
+                                    <div class="text-size-14 text-underline pointer p-ml-4"
+                                        (click)="showGroupAccountWiseAuthorizationLimit = true"
+                                        *ngIf="groupUserFormData.mappedAccounts > 0">
+                                        Account Mapped ({{ groupUserFormData.mappedAccounts }})
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <p-checkbox [(ngModel)]="groupUserFormData.isMasterSelfAuthorizer" class="p-p-1"
+                                        id="isMasterSelfAuthorizer" name="isMasterSelfAuthorizer" [binary]="true"
+                                        [label]="'Master Self Authorizer' | apsTranslate" [disabled]="
+                        isReviewEdit && !userAccessFields?.groupMasterSelfAuthorizer?.cibAdmin
+                      "></p-checkbox>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4">
+                                    <p-checkbox [(ngModel)]="groupUserFormData.isSelfServiceRequest" class="p-p-1"
+                                        id="isSelfServiceRequest" name="isSelfServiceRequest" [binary]="true"
+                                        [label]="'Self-Service Request -Self Authorizer' | apsTranslate" [disabled]="
+                        isReviewEdit &&
+                        userAccessFields?.groupSelfServiceRequestSelfAuthorizer?.cibAdmin
+                      "></p-checkbox>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-3 p-lg-3">
+                                    <aps-custom-select [label]="'Module Name' | apsTranslate" name="moduleId"
+                                        id="moduleId" [(ngModel)]="groupRoleFormData.moduleId"
+                                        [value]="groupRoleFormData.moduleId"
+                                        dataUrl="commons/commonService/private/getProductList"
+                                        (change)="onGroupUserModuleChange($event)" [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.groupModuleName?.cibAdmin">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3">
+                                    <aps-custom-select [label]="'Role' | apsTranslate" name="roleId" id="roleId"
+                                        [(ngModel)]="groupRoleFormData.roleId" [value]="groupRoleFormData.roleId"
+                                        dataUrl="setup/security/corporateRole/private/dropdown/roleList"
+                                        [reqBody]="groupRoleListReqData" [isLoadUrlData]="isFireRoleList"
+                                        (change)="onGroupRoleChange($event)" [required]="true"
+                                        [disabled]="isReviewEdit && !userAccessFields?.groupRole?.cibAdmin">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-1 p-lg-1">
+                                    <button class="btn btn-md btn-tertiary p-mt-2" (click)="onAddGroupRoleClick()"
+                                        [disabled]="
+                        !(groupRoleFormData.moduleId && groupRoleFormData.roleId) ||
+                        (isReviewEdit && !userAccessFields?.assignGroupRole?.cibAdmin)
+                      ">
+                                        {{ 'ADD' | apsTranslate }}
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                        <div class="p-grid aps-h-300">
+                            <div class="p-col-12">
+                                <app-ag-grid-listing #userRole id="userRoleGrid" [gridOptions]="roleGridOptions"
+                                    [rowData]="groupUserFormData.groupRoles"
+                                    colDefUrl="setup/securityBank/bankUser/private/roleInitColDefs"
+                                    (gridReady)="onGroupRoleInitGridReady($event)">
+                                </app-ag-grid-listing>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div [apsHide]="stepperDetails.currentStep != stepperDetails.headings.length">
+                <div class="p-py-3 text-size-16 text-bold">
+                    {{ 'Review Details & Confirm' | apsTranslate }}
+                </div>
+                <!-- Step 1 Review-->
+                <div class="aps-card p-px-3">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Security Mapping' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'Encryption Type' | apsTranslate"
+                                [value]="formData.encryptionTypeName">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'Encryption Required' | apsTranslate"
+                                [value]="formData.encryptionRequired">
+                            </app-review-form-field>
+                        </div>
+
+                        <div class="p-col-6 p-md-3 p-lg-3" *ngIf="formData.uploadKeyFile.length == 0">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                <div class="inline-items">
+                                    <div class="item">
+                                        Upload Key File
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-size-14">
+                                {{ 'No Upload Key File Available' | apsTranslate }}
+                            </div>
+                        </div>
+
+                        <div class="p-col-6 p-md-3 p-lg-3" *ngFor="let document of formData.uploadKeyFile">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                <div class="inline-items">
+                                    <div class="item">
+                                        Upload Key File
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="label-with-icon-container">
+                                <div class="icon">
+                                    <app-icon icon="fa-file"></app-icon>
+                                </div>
+                                <div class="label">
+                                    <div class="text-size-12">
+                                        {{ document.fileName }}
+                                    </div>
+                                    <div class="text-size-10 text-color-normal">
+                                        {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'Key ID' | apsTranslate" [value]="formData.keyId">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'Encryption Key' | apsTranslate"
+                                [value]="formData.encryptionKey">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'Password' | apsTranslate" [value]="formData.password">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 2 Review-->
+                <div class="aps-card p-px-3 p-mt-3">
+                    <div class="p-py-3 text-size-14 text-semi-bold">
+                        {{ 'Other Details' | apsTranslate }}
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'Utility Type' | apsTranslate"
+                                [value]="formData.utilityTypeName">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'H2H Report' | apsTranslate"
+                                [value]="formData.h2hReportName">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'Source Folder Name & Path' | apsTranslate"
+                                [value]="formData.sourceFolder">
+                            </app-review-form-field>
+                        </div>
+                        <div class="p-col-6 p-md-3 p-lg-3">
+                            <app-review-form-field [label]="'Destination Folder Name & Path' | apsTranslate"
+                                [value]="formData.destinationFolder">
+                            </app-review-form-field>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12 p-pt-0">
+            <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+        </div>
+    </div>
+    <!-- Role View Modal -->
+    <app-modal [(isShow)]="isShowRoleViewModal" size="lg" [headerText]="'Role Details' | apsTranslate">
+        <ng-container body>
+            <app-corporate-role viewOnAnotherComponent="true" #corporateRoleView></app-corporate-role>
+        </ng-container>
+    </app-modal>
+
+    <!-- Account Wise Authorization Limit Modal -->
+    <app-modal [(isShow)]="showAccountWiseAuthorizationLimit" *ngIf="showAccountWiseAuthorizationLimit" size="md"
+        headerText="Account-Wise Authorization Limit" (onClose)="saveAccountWiseAuthorizationLimit()">
+        <div class="aps-h-400" body>
+            <app-ag-grid-listing colDefUrl="setup/security/corporateUser/private/accountWiseAuthorizationLimit"
+                [rowData]="formData.accountWiseAccess" [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+                [frameworkComponents]="frameworkComponents" [context]="{ componentParent: this }"></app-ag-grid-listing>
+        </div>
+        <div class="left-right-container">
+            <div class="left-container"></div>
+            <div class="right-container">
+                <button class="btn btn-md btn-primary" (click)="saveAccountWiseAuthorizationLimit()">
+                    OK
+                </button>
+            </div>
+        </div>
+    </app-modal>
+
+    <!-- Group Account Wise Authorization Limit Modal -->
+    <app-modal [(isShow)]="showGroupAccountWiseAuthorizationLimit" *ngIf="showGroupAccountWiseAuthorizationLimit"
+        size="md" headerText="Account-Wise Authorization Limit" (onClose)="saveGroupAccountWiseAuthorizationLimit()">
+        <div class="aps-h-400" body>
+            <app-ag-grid-listing colDefUrl="setup/security/corporateUser/private/groupAccountWiseAuthorizationLimit"
+                [rowData]="groupUserFormData.groupAccountWiseAccess"
+                [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+                [frameworkComponents]="frameworkComponents" [context]="{ componentParent: this }"></app-ag-grid-listing>
+        </div>
+        <div class="left-right-container">
+            <div class="left-container"></div>
+            <div class="right-container">
+                <button class="btn btn-md btn-primary" (click)="saveGroupAccountWiseAuthorizationLimit()">
+                    OK
+                </button>
+            </div>
+        </div>
+    </app-modal>
+
+    <!-- Login View Modal -->
+    <app-search-modal header="Locations" colDefUrl="setup/security/corporateUser/private/locationDef"
+        rowDefUrl="setup/generalMasters/location/private/getAllList" [(isShow)]="isLocation"
+        (onSelection)="setSearchModelData($event)"></app-search-modal>
+</div>

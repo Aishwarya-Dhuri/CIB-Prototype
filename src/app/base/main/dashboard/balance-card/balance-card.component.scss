@@ -1,0 +1,190 @@
+.balance-card {
+  width: 100%;
+  border-radius: 10px;
+  /* height: 8.5rem;*/
+  background-color: var(--background-color);
+  padding: 16px 16px 0 16px;
+
+  .main-text {
+    font-size: 1.5rem;
+    color: var(--text-color-dark-shade-1);
+    font-family: 'CIB Bold';
+  }
+
+  .sub-text-bold14 {
+    font-size: 0.875rem;
+    color: var(--text-color-dark-shade-1);
+  }
+
+  .sub-text-bold {
+    font-size: 1rem;
+    color: var(--text-color-dark-shade-1);
+  }
+
+  .sub-text {
+    font-size: 0.75rem;
+    color: var(--text-color);
+    font-weight: lighter;
+  }
+
+  .overall-container {
+    display: inline-block;
+    vertical-align: top;
+    // padding: 0.5rem;
+    width: 23.5%;
+
+    .balance-btn {
+      width: 100%;
+      text-align: center;
+      padding: 0.75rem 0rem;
+      background-color: var(--primary-color) !important;
+      color: var(--inverted-text-color);
+      font-size: 1rem;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+      // white-space: nowrap;
+
+      i {
+        font-size: 1rem;
+        margin: 0 0.5rem;
+      }
+    }
+
+    .balance-card-dropdown {
+      width: 100%;
+
+      i {
+        color: var(--inverted-text-color);
+        z-index: 1;
+      }
+    }
+
+    .details-wrapper {
+      padding: 1rem 0;
+
+      .main-text {
+        .currancy {
+          font-size: 0.875rem;
+          color: var(--text-color-dark-shade-1);
+          border: none;
+          outline: none;
+          cursor: pointer;
+        }
+      }
+      // .sub-text-bold,
+      // .sub-text {
+      // }
+    }
+  }
+
+  .divider-v {
+    display: inline-block;
+    border: 1px solid var(--background-color-dark-5);
+    height: 7rem;
+    margin: 0 1rem;
+  }
+
+  .detailed-container {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: top;
+    width: calc(76.5% - 2.5rem);
+    overflow: auto;
+    // padding: 0.5rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    .details-panel {
+      display: flex;
+      justify-content: space-between;
+      vertical-align: top;
+
+      .details-wrapper {
+        display: flex;
+        width: 12.5rem;
+        padding: 0 0.75rem;
+
+        .details {
+          padding: 1rem 0;
+
+          .main-text {
+            margin-bottom: 0.5rem;
+          }
+
+          .sub-text-bold,
+          .sub-text {
+            // padding: 2px 0;
+          }
+        }
+      }
+    }
+  }
+
+  .detailed-container::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .balance-card {
+    height: 12rem;
+    padding: 0.5rem;
+
+    .main-text {
+      font-size: var(--font-size-16) !important;
+    }
+
+    .sub-text-bold {
+      font-size: 0.875rem;
+    }
+
+    .sub-text {
+      font-size: 0.75rem;
+    }
+
+    .overall-container {
+      display: block;
+      // padding: 0.5rem;
+      width: 100%;
+
+      .details-wrapper {
+        padding: 0.5rem 0;
+
+        .main-text {
+          .currancy {
+            font-size: 0.875rem;
+            color: var(--text-color-dark-shade-1);
+            border: none;
+            outline: none;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
+    .divider-v {
+      display: none;
+    }
+
+    .detailed-container {
+      display: block;
+      width: 100%;
+
+      .details-panel {
+        .details-wrapper {
+          width: 10rem;
+          padding: 0 0.75rem;
+
+          .details {
+            padding: 0.5rem 0 !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+.custom-dropdown {
+  font-size: 1rem !important;
+}

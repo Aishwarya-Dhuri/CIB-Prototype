@@ -1,0 +1,122 @@
+<app-modal [(isShow)]="showSubmitSuccess">
+  <div body>
+    <div class="text-size-16 text-bold text-color-dark-shade-1">
+      {{ 'Successfully Registered' | apsTranslate }}
+    </div>
+    <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+      {{ 'This card is successfully registered' | apsTranslate }}.
+    </div>
+  </div>
+  <div footer>
+    <div class="left-right-container p-mt-3">
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button (click)="redirectToSummary()" class="btn btn-sm btn-primary p-px-3">OKAY</button>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<div class="container p-mt-3">
+  <!-- Step Tracker -->
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <!-- Step 1 Details -->
+  <ng-container *ngIf="stepperDetails.currentStep == 1">
+    <div class="aps-card p-my-3 p-p-2 aps-min-h-300">
+      <div class="p-grid">
+        <div class="p-col-12">
+          <div class="p-grid">
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <aps-form-input
+                id="creditCard"
+                name="creditCard"
+                [label]="'Credit Card' | apsTranslate"
+                [(ngModel)]="formData.cardNo"
+                inputType="cardNumber"
+                maxLength="16"
+                [required]="true"
+              >
+              </aps-form-input>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <app-aps-calender
+                [(ngModel)]="formData.cardExpiry"
+                id="cardExpiry"
+                [label]="'Card Expiry' | apsTranslate"
+                view="month"
+                dateFormat="M - yy"
+                name="cardExpiry"
+                [required]="true"
+              >
+              </app-aps-calender>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <aps-form-input
+                (onRightIcon)="viewPin1 = !viewPin1"
+                [(ngModel)]="formData.creditCardPIN"
+                [rightIcon]="viewPin1 ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                [type]="viewPin1 ? 'text' : 'password'"
+                id="pin"
+                inputType="numeric"
+                [label]="'Card PIN' | apsTranslate"
+                maxLength="4"
+                minLength="4"
+                name="creditCardPIN"
+                [required]="true"
+              >
+              </aps-form-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!--Step 2 Details-->
+  <ng-container *ngIf="stepperDetails.currentStep == 2">
+    <div class="aps-card p-my-3 p-p-2 aps-h-300 overflow-y-scroll">
+      <div class="p-grid">
+        <div class="p-col-12 p-md-4 p-lg-4 p-px-3">
+          <app-review-form-field
+            label="Credit Card"
+            [value]="formData.cardNo"
+          ></app-review-form-field>
+        </div>
+        <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Card Expiry"
+            [value]="formData.cardExpiry"
+          ></app-review-form-field>
+        </div>
+        <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+          <app-review-form-field label="Card PIN" value="XXXX"></app-review-form-field>
+        </div>
+      </div>
+      <div class="p-grid">
+        <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+          <aps-form-input
+            [(ngModel)]="formData.otp"
+            [rightIcon]="viewOtp ? 'fa-eye-slash' : 'fa-eye'"
+            (onRightIcon)="viewOtp = !viewOtp"
+            [type]="viewOtp ? 'text' : 'password'"
+            id="otp"
+            inputType="numeric"
+            maxLength="6"
+            minLength="6"
+            [label]="'Enter OTP' | apsTranslate"
+            name="otp"
+            [required]="true"
+          >
+          </aps-form-input>
+        </div>
+      </div>
+      <!-- Structure Preview -->
+    </div>
+  </ng-container>
+
+  <!-- Form Actions -->
+  <app-stepper-footer (onNext)="generateOTP()" [parentRef]="this"></app-stepper-footer>
+</div>

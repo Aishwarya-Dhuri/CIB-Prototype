@@ -1,0 +1,32 @@
+<div *ngIf="!loading">
+    <app-modal [(isShow)]="submitMessage" headerText="Successfully Submitted" (onClose)="onSubmitPopupClose()">
+        <div class="text-size-14" body>
+            {{ submitMessage }}
+        </div>
+        <div class="text-right" footer>
+            <button class="btn btn-sm btn-primary" (click)="onSubmitPopupClose()">OKAY</button>
+        </div>
+    </app-modal>
+
+    <app-outward-telegraphic-transfer-init #initiate *ngIf="stepperDetails.currentStep < stepperDetails.headings.length"
+        [parentRef]="this"></app-outward-telegraphic-transfer-init>
+
+    <app-outward-telegraphic-transfer-review #review
+        *ngIf="stepperDetails.currentStep === stepperDetails.headings.length" [parentRef]="this">
+
+    </app-outward-telegraphic-transfer-review>
+
+
+
+    <!-- <app-letter-of-credit-init #initiate *ngIf="stepperDetails.currentStep < stepperDetails.headings.length"
+        [parentRef]="this">
+    </app-letter-of-credit-init>
+
+    <app-letter-of-credit-review #review *ngIf="stepperDetails.currentStep === stepperDetails.headings.length"
+        [parentRef]="this">
+    </app-letter-of-credit-review> -->
+
+    <div class="p-pl-4 p-pr-3 p-pb-3 p-mt--3" *ngIf="!isViewMode">
+        <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+</div>

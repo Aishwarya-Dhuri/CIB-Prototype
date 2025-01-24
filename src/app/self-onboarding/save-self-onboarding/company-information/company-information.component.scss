@@ -1,0 +1,12 @@
+.mt--3 {
+  margin-top: -16px !important;
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

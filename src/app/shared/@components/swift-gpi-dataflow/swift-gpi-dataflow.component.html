@@ -1,0 +1,161 @@
+<div class="container">
+    <div class="aps-card">
+        <div class="text-size-16 text-bold p-p-3">Dataflow</div>
+        <div class="p-grid p-px-2">
+            <div class="p-col-12 p-md-2 p-lg-2 p-sm-12 text-center">
+                <div class="border aps-h-100p p-py-4">
+                    <div class="text-size-10 text-color-normal">Latest Status</div>
+                    <div class="text-size-16 text-semi-bold">In Progress</div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-2 p-lg-2 p-sm-12 text-center">
+                <div class="border aps-h-100p p-py-4">
+                    <div class="text-size-10 text-color-normal">Debited Amount</div>
+                    <div class="text-size-14 text-semi-bold">
+                        <app-base-currency amount="20000"></app-base-currency>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 text-center">
+                <div class="p-grid border p-py-1">
+                    <div class="p-col-5 p-px-0 p-py-4">
+                        <div class="text-size-10 text-color-normal">Charge Type</div>
+                        <div class="text-size-16 text-semi-bold">NEFT</div>
+                    </div>
+                    <div class="p-col-7 p-p-0">
+                        <div class="text-size-10 text-color-normal p-pt-1">Born By Payee</div>
+                        <div class="text-size-14 text-semi-bold">
+                            <app-base-currency amount="200"></app-base-currency>
+                        </div>
+                        <div class="text-size-10 text-color-normal p-pt-1">Born By Payer</div>
+                        <div class="text-size-14 text-semi-bold">
+                            <app-base-currency amount="200"></app-base-currency>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-2 p-lg-2 p-sm-12 text-center">
+                <div class="border aps-h-100p p-py-4">
+                    <div class="text-size-10 text-color-normal">Credited Amount</div>
+                    <div class="text-size-16 text-semi-bold">
+                        <div class="text-size-14 text-semi-bold">
+                            <app-base-currency amount="200"></app-base-currency>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 text-center">
+                <div class="p-grid border aps-h-100p p-py-2">
+                    <div class="p-col-12 p-p-0">
+                        <div class="text-size-10 text-color-normal">UETR</div>
+                        <span class="text-size-12 text-semi-bold">ASDERFTGYHUJPD123456789098QWERVDGFEVS</span>
+                    </div>
+                    <div class="p-col-12 p-p-0">
+                        <div class="text-size-10 text-color-normal">Total Duration</div>
+                        <div class="text-size-14 text-semi-bold">20</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-grid p-px-2">
+            <div class="p-col p-mt-3 p-p-0" *ngFor="let n of data; let i = index">
+                <div class="tree-node">
+                    <div class="node-branch">
+                        <svg height="100%" width="100%">
+                            <line x1="calc(18% - 20px)" y1="10" x2="calc(18% - 14px)" y2="16" class="line"
+                                *ngIf="i != 0" />
+
+                            <line x1="0" y1="16" x2="calc(18% - 14px)" y2="16" class="line" *ngIf="i != 0" />
+
+                            <line x1="calc(18% - 20px)" y1="22" x2="calc(18% - 14px)" y2="16" class="line"
+                                *ngIf="i != 0" />
+
+                            <circle cx="18%" cy="16" r="6" class="circle" />
+
+                            <line x1="18%" y1="16" x2="25%" y2="16" class="line" />
+
+                            <line x1="25%" y1="16" x2="100%" y2="16" class="line" *ngIf="i != data.length - 1" />
+                        </svg>
+                    </div>
+
+                    <div class="node-data">
+                        <div class="header text-semi-bold">{{ n.header | apsTranslate }}</div>
+                        <div class="sub-header text-size-12 text-semi-bold">{{ n.subHeader | apsTranslate }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border text-center p-p-2 p-m-2" *ngFor="let d of n.data;">
+                    <app-icon icon="{{d.icon}}" class="text-size-24 text-bold"></app-icon>
+                    <div class="text-size-14 text-semi-bold" *ngIf="d.payerName">{{d.payerName}}</div>
+                    <div class="text-size-12 text-semi-bold" *ngIf="d.accountNumber">{{d.accountNumber}}</div>
+                    <div class="text-size-14 text-semi-bold" *ngIf="d.bankName">{{d.bankName}}</div>
+                    <div class="text-size-12 text-semi-bold" *ngIf="d.bic">{{d.bic}}</div>
+
+                    <ng-container *ngIf="n.isViewMore">
+                        <div class="text-size-10 text-semi-bold text-color-normal p-pt-3" *ngIf="d.dateTimeIn">Date &
+                            Time
+                            In
+                        </div>
+                        <div class="text-size-12 text-semi-bold" *ngIf="d.dateTimeIn">{{d.dateTimeIn}}</div>
+
+                        <div class="text-size-10 text-semi-bold text-color-normal p-pt-2" *ngIf="d.dateTimeOut">Date &
+                            Time
+                            Out
+                        </div>
+                        <div class="text-size-12 text-semi-bold" *ngIf="d.dateTimeOut">{{d.dateTimeOut}}</div>
+
+                        <div class="text-size-10 text-semi-bold text-color-normal p-pt-2" *ngIf="d.fxRate">FX Rate
+                        </div>
+                        <div class="text-size-12 text-semi-bold" *ngIf="d.fxRate">{{d.fxRate}}</div>
+
+                        <div class="text-size-10 text-semi-bold text-color-normal p-pt-2" *ngIf="d.sentAmount">Sent
+                            Amount
+                        </div>
+                        <div class="text-size-12 text-semi-bold" *ngIf="d.sentAmount">
+                            <app-base-currency [amount]="d.sentAmount"></app-base-currency>
+                        </div>
+
+                        <div class="text-size-10 text-semi-bold text-color-normal p-pt-2" *ngIf="d.chargePaymentMode">
+                            Charge
+                            Payment Mode
+                        </div>
+                        <div class="text-size-12 text-semi-bold" *ngIf="d.chargePaymentMode">{{d.chargePaymentMode}}
+                        </div>
+
+                        <div class="text-size-10 text-semi-bold text-color-normal p-pt-2" *ngIf="d.chargeBornByPayee">
+                            Charge
+                            Born By Payee
+                        </div>
+                        <div class="text-size-12 text-semi-bold" *ngIf="d.chargeBornByPayee">
+                            <app-base-currency [amount]="d.chargeBornByPayee"></app-base-currency>
+                        </div>
+
+                        <div class="text-size-10 text-semi-bold text-color-normal p-pt-2" *ngIf="d.chargeBornByPayer">
+                            Charge
+                            Born By Payer
+                        </div>
+                        <div class="text-size-12 text-semi-bold" *ngIf="d.chargeBornByPayer">
+                            <app-base-currency [amount]="d.chargeBornByPayer"></app-base-currency>
+                        </div>
+
+                        <div class="text-size-10 text-semi-bold text-color-normal p-pt-2" *ngIf="d.debitedAmount">
+                            Debited
+                            Amount
+                        </div>
+                        <div class="text-size-12 text-semi-bold" *ngIf="d.debitedAmount">
+                            <app-base-currency [amount]="d.debitedAmount"></app-base-currency>
+                        </div>
+                    </ng-container>
+                    <div class="text-size-10 text-color-primary text-semi-bold text-right pointer p-pt-2"
+                        *ngIf="i > 0 && i < 5 " (click)="n.isViewMore =! n.isViewMore">
+                        View More</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

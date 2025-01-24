@@ -1,0 +1,247 @@
+<div class="container">
+    <form name="form" #form="ngForm">
+        <div *ngIf="!fieldsetDisabled" class="p-grid g-margin-x">
+            <div class="p-col-12">
+                <div class="aps-card">
+                    <div class="aps-card-header">
+                        <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                            Contract Details
+                        </div>
+                    </div>
+                    <div class="aps-card-body">
+                        <form #bookForwardForm="ngForm" autocomplete="off">
+
+                            <div class="p-grid p-px-2">
+                                <div class="p-col-12 p-md-12 p-lg-12 p-sm-12">
+
+                                    <p-radioButton class="p-mr-5" name="contract" id="buy" value="buy" label="Buy"
+                                        [(ngModel)]="bookForwardData.contract">
+                                    </p-radioButton>
+                                    <p-radioButton name="contract" id="sell" value="sell" label="Sell"
+                                        [(ngModel)]="bookForwardData.contract">
+                                    </p-radioButton>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                    <app-aps-calender name="dealDate" id="dealDate" label="Deal Date"
+                                        [(ngModel)]="bookForwardData.dealDate" [required]="true">
+                                    </app-aps-calender>
+                                </div>
+
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                    <aps-custom-select name="dealType" id="dealType" label="Deal Type"
+                                        [(ngModel)]="bookForwardData.dealType" [data]="dealTypeDataList"
+                                        [required]="true"></aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                    <div class="item p-pr-2" style="padding-top: 22px;padding: 0px;">
+                                        <aps-custom-select name="foreignCurrency" id="foreignCurrency"
+                                            label="Currency Pair" [required]="true"
+                                            [(ngModel)]="bookForwardData.foreignCurr"
+                                            dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/currency"></aps-custom-select>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                    <div class="item p-pr-2" style="padding-top: 22px;padding: 0px;">
+                                        <aps-custom-select name="localCurrency" id="localCurrency" label="Currency Pair"
+                                            [required]="true" [(ngModel)]="bookForwardData.localCurr"
+                                            dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/currency"></aps-custom-select>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                    <aps-form-input name="amount" id="amount" label="{{ 'Amount' | apsTranslate }}"
+                                        inputType="currencyFormatNotZero" [required]="true"
+                                        [(ngModel)]="bookForwardData.dealAmount">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+                                    *ngIf="bookForwardData.dealType == 'forward'">
+                                    <aps-custom-select name="forwardType" id="forwardType"
+                                        label="Type of Forward Contract"
+                                        [(ngModel)]="bookForwardData.forwardContractType"
+                                        [data]="forwardContractDataList" [required]="true"></aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+                                    *ngIf="bookForwardData.forwardContractType != 'option'">
+                                    <app-aps-calender name="maturityDate" id="maturityDate" label="Maturity Date"
+                                        [(ngModel)]="bookForwardData.maturityDate" [required]="true">
+                                    </app-aps-calender>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+                                    *ngIf="bookForwardData.forwardContractType == 'option'">
+                                    <app-aps-calender name="effectiveFrom" id="effectiveFrom" label="Effective From"
+                                        [required]="true" [(ngModel)]="bookForwardData.effectiveFrom">
+                                    </app-aps-calender>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+                                    *ngIf="bookForwardData.forwardContractType == 'option'">
+                                    <app-aps-calender name="effectiveTill" id="effectiveTill" label="Effective Till"
+                                        [required]="true" [(ngModel)]="bookForwardData.effectiveTill">
+                                    </app-aps-calender>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                    <aps-form-input name="corporateReferenceNo" id="corporateReferenceNo"
+                                        [(ngModel)]="bookForwardData.corporateReferenceNo"
+                                        label="{{ 'Corporate Reference No.' | apsTranslate }}"></aps-form-input>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-md-12 p-lg-12 p-my-12 p-py-0">
+                <div class="aps-card aps-h-100p">
+                    <div class="p-px-3 p-pt-3 text-size-14 text-semi-bold">
+                        {{ 'Upload Documents' | apsTranslate }}
+                    </div>
+                    <div class="p-px-3 text-size-8 text-color-light-shade-1">
+                        {{ 'Max 10mb Each' | apsTranslate }}
+                    </div>
+
+                    <div class=" p-col-12 p-md-3 p-lg-3 p-px-3 p-py-2">
+                        <upload-form-control isMultiple="true" (onUploaded)="onFileUploaded($event)">
+                        </upload-form-control>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="p-col-12">
+                <div class="aps-card p-p-1">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <button class="btn btn-md btn-tertiary" (click)="cancel()">CANCEL</button>
+                            &nbsp;
+                            <button class="btn btn-md btn-tertiary">SAVE AS DRAFT</button>
+                        </div>
+                        <div class="right-container">
+                            <button [disabled]="bookForwardForm.status == 'INVALID'" class="btn btn-md btn-tertiary"
+                                (click)="next()">REVIEW</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="fieldsetDisabled" class="p-grid g-margin-x">
+            <div class="p-col-12">
+                <div class="aps-card">
+                    <div class="aps-card-header">
+                        <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                            Beneficiary Details
+                        </div>
+                    </div>
+                    <div class="aps-card-body">
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Deal Date' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.dealDate }}
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Deal Type' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.dealType }}
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Currency Pair' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.foreignCurr }}
+                                </div>
+                            </div>
+
+                            <div class="p-col-12 p-md-4 p-lg-3 p-sm-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Currency Pair' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.localCurr }}
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 ">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Deal Amount' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.dealAmount }}
+                                </div>
+                            </div>
+                            <div *ngIf="bookForwardData.dealType == 'forward'" class="p-col-12 p-md-3 p-lg-4 p-sm-12 ">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Type of Forward Contract' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.forwardContractType }}
+                                </div>
+                            </div>
+                            <div *ngIf="bookForwardData.forwardContractType == 'option'"
+                                class="p-col-12 p-md-3 p-lg-4 p-sm-12 ">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Effective From' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.effectiveFrom }}
+                                </div>
+                            </div>
+                            <div *ngIf="bookForwardData.forwardContractType == 'option'"
+                                class="p-col-12 p-md-3 p-lg-4 p-sm-12 ">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Effective Till' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.effectiveTill }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-grid p-px-2">
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12"
+                                *ngIf="bookForwardData.forwardContractType != 'option'">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Maturity Date' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.maturityDate }}
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Corporate Reference Number' | apsTranslate }}
+                                </div>
+                                <div class="text-size-14 text-color-dark-shade-1">
+                                    {{ bookForwardData.corporateReferenceNo }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12">
+                <div class="aps-card p-p-1">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <button class="btn btn-md btn-tertiary" (click)="backToForm()">BACK</button>
+                        </div>
+                        <div class="right-container">
+                            <button class="btn btn-md btn-tertiary" (click)="onSubmit(bookForwardForm)">SUBMIT</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<ng-template *ngIf="loading" #loadingTemplate>
+    <app-loading-spinner></app-loading-spinner>
+</ng-template>

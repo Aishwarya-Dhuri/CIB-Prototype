@@ -1,0 +1,188 @@
+<div class="container">
+  <div class="p-grid g-margin-x">
+    <ng-container *ngIf="stepperDetails.currentStep == 1">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="text-bold p-p-2">{{ 'Account Structure Select' | apsTranslate }}</div>
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-custom-select id="accountStructure" name="accountStructure" [value]="formData.accountStructure"
+                [(ngModel)]="formData.accountStructure" label="{{ 'Account Structure' | apsTranslate }}"
+                dataUrl="lms/generalMaster/interestReallocation/private/getAccountStructureList"
+                (change)="onChangeAccountStructure($event)" [required]="true"></aps-custom-select>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-custom-select id="sweepType" name="sweepType" [value]="formData.sweepType"
+                [(ngModel)]="formData.sweepType" label="{{ 'Sweep Type' | apsTranslate }}"
+                dataUrl="lms/corporate/accountStructure/private/dropdown/sweepType"
+                [isDisabled]="!isFieldsEditable"></aps-custom-select>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-custom-select id="executionSequence" name="executionSequence" [value]="formData.executionSequence"
+                [(ngModel)]="formData.executionSequence" label="{{ 'Execution Sequence' | apsTranslate }}"
+                dataUrl="lms/corporate/newAccountStructure/private/dropdown/executionSequence"
+                [isDisabled]="!isFieldsEditable"></aps-custom-select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="left-right-container aps-py-12 p-px-3">
+              <div class="left-container">
+                <div class="text-bold">{{ 'Account Structure' | apsTranslate }}</div>
+              </div>
+              <div class="right-container">
+                <app-icon icon="fa-pencil" class="pointer" (click)="isEditAccountStructure = !isEditAccountStructure"
+                  *ngIf="isFieldsEditable"></app-icon>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="aps-h-300">
+              <app-tree-structure-hierarchy [treeStructureHierarchy]="accountStructureHierarchyTreeData" [zoom]="100"
+                *ngIf="!isEditAccountStructure"></app-tree-structure-hierarchy>
+
+              <app-ag-grid-listing id="accountDetailsTreeGrid" #accountDetailsTreeGrid [columnDefs]="columnDefs"
+                [rowData]="rowData" [gridOptions]="gridOptions" [context]="context"
+                *ngIf="isEditAccountStructure"></app-ag-grid-listing>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep == 2">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="text-bold p-p-2">{{ 'Account Balance' | apsTranslate }}</div>
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Account Structure' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ formData.accountStructure }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Sweep Type' | apsTranslate }}</div>
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ formData.sweepType }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Execution Sequence' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ formData.executionSequence }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header aps-py-12 p-px-3">
+            <div class="text-bold">{{ 'Account Structure' | apsTranslate }}</div>
+          </div>
+          <div class="aps-card-body">
+            <div class="aps-h-300">
+              <app-ag-grid-listing id="accountDetailsTreeGrid" #accountDetailsTreeGrid
+                [columnDefs]="accountBalanceColumnDefs" [rowData]="accountBalanceRowData"
+                [frameworkComponents]="frameworkComponents" [gridOptions]="gridOptions"
+                [context]="context"></app-ag-grid-listing>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="text-bold p-p-2">{{ 'Simulate Result Details' | apsTranslate }}</div>
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Account Structure' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ formData?.accountStructure }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Sweep Type' | apsTranslate }}</div>
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ formData?.sweepType }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Execution Sequence' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ formData?.executionSequence }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12 p-p-0"></div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Main Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ mainAccountDetails?.accountNo }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Main Account Balance' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                <app-base-currency [amount]="mainAccountDetails?.balance"></app-base-currency>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header aps-py-12 p-px-3">
+            <div class="text-bold">{{ 'Account Structure' | apsTranslate }}</div>
+          </div>
+          <div class="aps-card-body">
+            <div class="aps-h-300">
+              <app-ag-grid-listing id="accountDetailsTreeGrid" #accountDetailsTreeGrid
+                [columnDefs]="accountFundMovementColumnDefs" [rowData]="accountFundMovementRowData"
+                [gridOptions]="gridOptions" [context]="context"></app-ag-grid-listing>
+            </div>
+
+            <div class="text-size-12 text-color-primary text-underline p-p-3">
+              <span class="inline-block pointer" (click)="onFundMovementReportForSimulation()">
+                {{ 'Click here for the Fund Movement report for this simulation' | apsTranslate }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>

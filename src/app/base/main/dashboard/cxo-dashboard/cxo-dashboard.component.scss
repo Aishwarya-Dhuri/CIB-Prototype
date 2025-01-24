@@ -1,0 +1,21 @@
+.news-feed-container {
+  position: fixed;
+  right: 0;
+  top: 50;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
+  transition: all 0.25s;
+  // z-index: 10;
+
+  &:hover {
+    padding-right: 12px;
+  }
+}
+
+.news-body {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

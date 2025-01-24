@@ -1,0 +1,124 @@
+<div class="container p-mt-3">
+  <!-- Step Tracker -->
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <!-- Step 1 Details -->
+  <ng-container *ngIf="stepperDetails.currentStep == 1">
+    <div class="aps-card p-my-3 p-p-2 aps-min-h-400">
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-12 p-col-12">
+          <ng-container
+            *ngIf="nonActiveCreditCardDataList && nonActiveCreditCardDataList.length > 0"
+          >
+            <aps-custom-select
+              id="creditCard"
+              name="creditCard"
+              [label]="'Credit Card' | apsTranslate"
+              [(ngModel)]="formData.id"
+              (change)="onCreditCardSelection(formData)"
+              [data]="nonActiveCreditCardDataList"
+              required="true"
+            >
+            </aps-custom-select>
+          </ng-container>
+        </div>
+        <ng-container *ngIf="formData?.cardNo">
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <div class="background-color-disabled p-p-2">
+              <app-review-form-field
+                label="Card Type"
+                [value]="formData.cardType"
+              ></app-review-form-field>
+            </div>
+          </div>
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <div class="background-color-disabled p-p-2">
+              <app-review-form-field
+                label="Embossed Name"
+                [value]="formData.embossedName"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <!--Step 2 Details-->
+  <ng-container *ngIf="stepperDetails.currentStep == this.stepperDetails.headings.length">
+    <div class="aps-card p-my-3 p-p-2 aps-h-400">
+      <div class="p-grid">
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Credit Card"
+            [value]="formData.cardNo"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Card Type"
+            [value]="formData.cardType"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Embossed Name"
+            [value]="formData.embossedName"
+          ></app-review-form-field>
+        </div>
+      </div>
+      <!-- Structure Preview -->
+    </div>
+  </ng-container>
+
+  <!-- Form Actions -->
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>
+
+<app-modal
+  [(isShow)]="showSubmitSuccess"
+  (onClose)="goToListing()"
+  size="sm"
+  headerText="Your unblock card request is submitted"
+>
+  <ng-container body>
+    <div class="p-grid p-pt-2">
+      <div class="p-col-12">
+        <app-review-form-field label="Card No" [value]="formData.cardNo"></app-review-form-field>
+      </div>
+
+      <div class="p-md-4 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Reference No"
+          [value]="submitResponse?.dataMap?.id"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-4 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Date"
+          [value]="submitResponse?.dataMap?.id | date: 'dd MMM yyyy'"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-4 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Time"
+          [value]="submitResponse?.dataMap?.id | date: 'shortTime'"
+        ></app-review-form-field>
+      </div>
+    </div>
+  </ng-container>
+  <div footer>
+    <div class="left-right-container">
+      <div class="left-container p-py-2">
+        <app-icon class="p-px-2" icon="fa-print"></app-icon>
+        <app-icon class="p-px-2" icon="fa-download"></app-icon>
+        <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+      </div>
+      <div class="right-container">
+        <button type="button" (click)="goToListing()" class="btn btn-md btn-primary">
+          {{ 'CLOSE' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</app-modal>

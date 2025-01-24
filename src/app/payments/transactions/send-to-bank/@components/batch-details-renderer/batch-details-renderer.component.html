@@ -1,0 +1,78 @@
+<div class="p-grid p-p-2">
+  <ng-container *ngIf="this.params.data.recordType == 'singlePayment'">
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">Value Date</div>
+      <div class="text-size-13 text-color-dark-shade-1">{{ params.data.valueDate }}</div>
+    </div>
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">Payment Method</div>
+      <div class="text-size-13 text-color-dark-shade-1">{{ params.data.paymentMethodName }}</div>
+    </div>
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">Beneficiary Name</div>
+      <div class="text-size-13 text-color-dark-shade-1">{{ params.data.valueDate }}</div>
+    </div>
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">
+        Beneficiary Account No. / IBAN / Credit Card No
+      </div>
+      <div class="text-size-13 text-color-dark-shade-1">{{ params.data.beneficiaryAccountNo }}</div>
+    </div>
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">Payable Currency</div>
+      <div class="text-size-13 text-color-dark-shade-1">{{ params.data.payableCurrencyCode }}</div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="this.params.data.recordType == 'billPayment'">
+    <!-- <div class="p-col">
+      <div class="text-size-13 text-color-normal">Total Request</div>
+      <div class="text-size-13 text-color-dark-shade-1">{{ params.data.noOfTransactions }}</div>
+    </div> -->
+  </ng-container>
+
+  <ng-container *ngIf="this.params.data.recordType == 'fdInitiation'">
+    <!-- <div class="p-col">
+      <div class="text-size-13 text-color-normal">Total Request</div>
+      <div class="text-size-13 text-color-dark-shade-1">{{ params.data.noOfTransactions }}</div>
+    </div> -->
+  </ng-container>
+
+  <ng-container *ngIf="this.params.data.recordType == 'bulkPayment'">
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">Total Request</div>
+      <div class="text-size-13 text-color-dark-shade-1">{{ params.data.noOfTransactions }}</div>
+    </div>
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">Total Amount</div>
+      <div class="text-size-13 text-color-dark-shade-1">
+        <app-base-currency [amount]="params.data.amount"></app-base-currency>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="this.params.data.recordType == 'wpsPayment'">
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">Debit Account Number</div>
+      <div class="text-size-13 text-color-dark-shade-1">
+        {{ params.data.debitFromAccountNumber }}
+      </div>
+    </div>
+    <div class="p-col">
+      <div class="text-size-13 text-color-normal">Debit Account Title</div>
+      <div class="text-size-13 text-color-dark-shade-1">
+        {{ params.data.debitFromAccountTitle }}
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="p-col">
+    <div class="text-size-13 text-color-normal">&nbsp;</div>
+    <div
+      class="text-size-13 text-color-dark-shade-1 text-underline pointer"
+      (click)="onViewClick()"
+    >
+      View
+    </div>
+  </div>
+</div>

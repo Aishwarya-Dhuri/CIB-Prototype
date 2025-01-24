@@ -1,0 +1,67 @@
+.trading-partner-onboarding-container {
+  .tree-type {
+    display: block;
+    width: 48px;
+    height: 24px;
+    border-radius: 4px;
+    background-color: var(--background-color-dark-5);
+    color: var(--text-color-dark-shade-1);
+
+    .icon {
+      width: 24px;
+      height: 24px;
+      display: inline-block;
+      vertical-align: top;
+      padding: 3px 6px;
+      cursor: pointer;
+
+      i,
+      .app-icon {
+        font-size: 0.75rem;
+      }
+    }
+
+    .icon-active {
+      background-color: var(--primary-color-light);
+      color: var(--inverted-text-color);
+      border-radius: 4px;
+    }
+  }
+
+  .grid-container {
+    height: 28rem;
+  }
+}
+
+.seller-onboarding-container {
+  .seller-onboarding-steps {
+  }
+
+  .seller-onboarding-body {
+  }
+
+  // .seller-onboarding-footer {
+  //   // position: fixed;
+  //   bottom: 1rem;
+  //   width: calc(100% - 6.25rem);
+  // }
+}
+
+@media screen and(max-width: 480px) {
+  .p-col-2 {
+    width: 50% !important;
+  }
+  .text-size-20 {
+    margin-top: 16px !important;
+  }
+
+  .seller-onboarding-container .seller-onboarding-footer {
+    position: relative !important;
+    width: 100% !important;
+  }
+
+  // .left-right-container {
+  //   display: block !important;
+  //   justify-content: normal !important;
+  // }
+}

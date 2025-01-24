@@ -1,0 +1,21 @@
+.steps-footer-container {
+    padding: 10px 16px;
+}
+
+.back-btn {
+    display: inline-block;
+    vertical-align: top;
+    width: 23px;
+    height: 28px;
+    padding: 5px 7px;
+    background-color: var(--background-color);
+    border-radius: 4px;
+    box-shadow: 0 0 4px var(--background-color-dark-6);
+    margin-right: 4px;
+  
+    i,
+    .app-icon {
+      font-size: 0.75rem;
+      color: var(--primary-color);
+    }
+  }

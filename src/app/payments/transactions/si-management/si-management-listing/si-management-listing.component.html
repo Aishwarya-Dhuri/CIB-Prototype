@@ -1,0 +1,198 @@
+<app-listing #listing [parentComponentRef]="parentComponentRef" [topTemplate]="topTemplate">
+</app-listing>
+
+<ng-template #topTemplate>
+  <div class="p-grid g-margin-x" *ngIf="!isLoading">
+    <div class="p-md-4 p-sm-6 p-col-12">
+      <div class="aps-card aps-h-100p p-p-2">
+        <div class="p-grid">
+          <div class="p-col-12">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-semi-bold">
+                  {{ 'SI Status' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container">
+                <aps-custom-select
+                  id="corporate"
+                  name="corporate"
+                  [showLabel]="false"
+                  dataUrl="setup/corporateOnboarding/corporateMain/private/getAllGroupCorporateList"
+                  [(ngModel)]="siStatus.corporate"
+                  [value]="siStatus.corporate"
+                  (change)="onSiStatusCorporate($event)"
+                  *ngIf="isGroupUser"
+                ></aps-custom-select>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-7 p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-col-6 text-center">
+                <app-modal
+                  [(isShow)]="showOngoingSiTransactions"
+                  *ngIf="showOngoingSiTransactions"
+                  headerText="Ongoing (to date)"
+                  size="md"
+                >
+                  <div class="aps-h-300">
+                    <app-ag-grid-listing
+                      colDefUrl="payments/transactions/siManagement/private/corporateOngoingSiTransactionsColDefs"
+                      rowDefUrl="payments/transactions/siManagement/private/getCorporateOngoingSiTransactionsList"
+                      [rowDefReq]="{
+                        corporateId: siStatus.corporate
+                      }"
+                    ></app-ag-grid-listing>
+                  </div>
+                </app-modal>
+                <div class="text-size-12 text-bold">
+                  {{ 'Ongoing (to date)' }}
+                </div>
+                <div
+                  class="text-size-10 text-underline pointer"
+                  (click)="showOngoingSiTransactions = true"
+                >
+                  {{ siStatus.ongoing }}
+                </div>
+              </div>
+              <div class="p-col-6 text-center">
+                <div class="text-size-12 text-bold">
+                  {{ 'Expired (to date)' }}
+                </div>
+                <div class="text-size-10">{{ siStatus.expired }}</div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-5 p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-col-3">
+                <app-modal
+                  [(isShow)]="showCorporateAttentionRequiredSiTransactions"
+                  headerText="Attention Required"
+                  size="md"
+                  *ngIf="showCorporateAttentionRequiredSiTransactions"
+                >
+                  <div class="aps-h-300">
+                    <app-ag-grid-listing
+                      colDefUrl="payments/transactions/siManagement/private/corporateAttentionRequiredSiTransactionsColDefs"
+                      rowDefUrl="payments/transactions/siManagement/private/getCorporateAttentionRequiredSiTransactionsList"
+                      [rowDefReq]="{
+                        corporateId: siStatus.corporate,
+                        timeDuration: siStatus.timeDuration
+                      }"
+                    ></app-ag-grid-listing>
+                  </div>
+                </app-modal>
+                <div class="text-center">
+                  <app-icon
+                    styleClasses="text-color-warning"
+                    icon="fa-exclamation-triangle"
+                  ></app-icon>
+                  <div
+                    class="text-size-10 text-color-danger text-underline pointer"
+                    (click)="showCorporateAttentionRequiredSiTransactions = true"
+                  >
+                    {{ siStatus.attentionRequired }}
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-9">
+                <aps-custom-select
+                  id="timeDuration"
+                  name="timeDuration"
+                  [value]="siStatus.timeDuration"
+                  [(ngModel)]="siStatus.timeDuration"
+                  [showLabel]="false"
+                  [data]="timeDurationOptions"
+                  (change)="onSiStatusTimeDuration($event)"
+                ></aps-custom-select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-4 p-sm-6 p-col-12">
+      <div class="aps-card aps-h-100p p-p-2">
+        <div class="p-grid">
+          <div class="p-md-5 p-sm-12 p-col-12">
+            <div class="text-size-14 text-semi-bold">
+              {{ 'SI Transaction Status' | apsTranslate }}
+            </div>
+          </div>
+          <div class="p-md-4 p-sm-7 p-col-7">
+            <aps-custom-select
+              id="fromCorporate"
+              name="fromCorporate"
+              [showLabel]="false"
+              dataUrl="setup/corporateOnboarding/corporateMain/private/getAllGroupCorporateList"
+              [(ngModel)]="siTransactionStatus.corporate"
+              [value]="siTransactionStatus.corporate"
+              (change)="onSiTransactionStatusCorporate($event)"
+              *ngIf="isGroupUser"
+            ></aps-custom-select>
+          </div>
+          <div class="p-md-3 p-sm-5 p-col-5">
+            <aps-custom-select
+              id="timeDuration"
+              name="timeDuration"
+              [value]="siTransactionStatus.timeDuration"
+              [(ngModel)]="siTransactionStatus.timeDuration"
+              [showLabel]="false"
+              [data]="timeDurationOptions"
+              (change)="onSiTransactionStatusTimeDuration($event)"
+            ></aps-custom-select>
+          </div>
+          <div class="p-col-4 text-center">
+            <div class="text-size-12 text-bold">
+              {{ 'Processing' }}
+            </div>
+            <div class="text-size-10">{{ siTransactionStatus.processing }}</div>
+          </div>
+          <div class="p-col-4 text-center">
+            <div class="text-size-12 text-bold">
+              {{ 'Paid' }}
+            </div>
+            <div class="text-size-10">{{ siTransactionStatus.paid }}</div>
+          </div>
+          <div class="p-col-4 text-center">
+            <app-modal
+              [(isShow)]="showCorporateFailedSiTransactions"
+              *ngIf="showCorporateFailedSiTransactions"
+              headerText="Failed Transactions"
+              size="md"
+            >
+              <div class="aps-h-300">
+                <app-ag-grid-listing
+                  colDefUrl="payments/transactions/siManagement/private/corporateFailedSiTransactionsColDefs"
+                  rowDefUrl="payments/transactions/siManagement/private/getCorporateFailedSiTransactionsList"
+                  [rowDefReq]="{
+                    corporateId: siTransactionStatus.corporate,
+                    timeDuration: siTransactionStatus.timeDuration
+                  }"
+                ></app-ag-grid-listing>
+              </div>
+            </app-modal>
+            <div class="text-size-12 text-bold">
+              {{ 'Failed' }}
+            </div>
+            <div
+              class="text-size-10 text-underline pointer"
+              (click)="showCorporateFailedSiTransactions = true"
+            >
+              {{ siTransactionStatus.failed }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-4 p-sm-12 p-col-12">
+      <app-insights
+        insightsUrl="dummyServer/json/commons/private/insights/siManagement"
+        [height]="100"
+      ></app-insights>
+    </div>
+  </div>
+</ng-template>

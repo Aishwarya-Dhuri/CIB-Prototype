@@ -1,0 +1,51 @@
+.balance-card-container {
+  padding: 0.25rem 1rem 0.25rem 22px;
+}
+
+.widget-actions {
+  display: inline-block;
+  margin: 0 0.5rem;
+  background-color: var(--background-color-dark-5);
+  border-radius: 5px;
+
+  .action {
+    display: inline-block;
+    color: var(--text-color-dark-shade-1);
+    cursor: pointer;
+
+    i,
+    .app-icon {
+      display: inline-block;
+      padding: 0.3125rem 0.5rem;
+    }
+  }
+
+  .active {
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    color: var(--inverted-text-color);
+  }
+}
+
+.actions {
+  display: inline-block;
+
+  .action {
+    cursor: pointer;
+    display: inline-block;
+    i,
+    .app-icon {
+      color: var(--text-color-dark-shade-1);
+      margin: 0 0.5rem;
+    }
+  }
+}
+
+// .grid-container {
+// }
+
+@media screen and(max-width: 991px) {
+  .balance-card-container {
+    padding: 0.5rem;
+  }
+}

@@ -1,0 +1,577 @@
+<div class="p-grid g-margin-x">
+  <div class="p-md-3 p-sm-12 p-col-12">
+    <div class="aps-card">
+      <div
+        class="step"
+        *ngFor="let step of subSteps; let i = index"
+        [ngClass]="{ 'step-active': parentRef.stepperDetails.currentSubStep === i + 1 }"
+        (click)="parentRef.stepperDetails.currentSubStep = i + 1"
+      >
+        <div class="left-right-container text-size-14 p-pl-3 p-py-4">
+          <div class="left-container">
+            {{ step | apsTranslate }} <sup class="text-color-danger">*</sup>
+          </div>
+
+          <div class="right-container">
+            <app-icon icon="fa-check" styleClasses="text-color-primary" *ngIf="false"></app-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-9 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-100p p-p-2">
+      <form
+        name="form"
+        #form="ngForm"
+        class=""
+        *ngIf="parentRef.stepperDetails.currentSubStep === 1"
+      >
+        <!--structure-details-->
+        <div class="p-grid">
+          <div class="p-md-4 p-col-12 p-sm-12">
+            <aps-custom-select
+              label="{{ 'Structure Type' | apsTranslate }}"
+              id="structureType"
+              name="structureType"
+              [value]="parentRef.mainAccountDetails.structureType"
+              [(ngModel)]="parentRef.mainAccountDetails.structureType"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/structureType"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-md-4 p-col-12 p-sm-12">
+            <aps-form-input
+              label="{{ 'Structure Name' | apsTranslate }}"
+              id="structureName"
+              name="structureName"
+              [(ngModel)]="parentRef.mainAccountDetails.structureName"
+              required
+            ></aps-form-input>
+          </div>
+
+          <div class="p-md-4 p-col-12 p-sm-12">
+            <aps-custom-select
+              label="{{ 'Main Account' | apsTranslate }}"
+              id="mainAccount"
+              name=" "
+              [value]="parentRef.mainAccountDetails.mainAccount"
+              [(ngModel)]="parentRef.mainAccountDetails.mainAccount"
+              dataUrl="setup/corporateOnboarding/corporateMain/private/allAccountList"
+              [reqBody]="{ corporateId: userService.getCorporateId() }"
+              (change)="parentRef.onChangeMainAccount($event)"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-md-4 p-col-12 p-sm-12">
+            <aps-custom-select
+              label="{{ 'Sweep Type' | apsTranslate }}"
+              id="sweepType"
+              name="sweepType"
+              [value]="parentRef.mainAccountDetails.sweepType"
+              [(ngModel)]="parentRef.mainAccountDetails.sweepType"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/sweepType"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-md-4 p-col-12 p-sm-12">
+            <aps-custom-select
+              label="{{ 'Execution Sequence' | apsTranslate }}"
+              id="executionSequence"
+              name="executionSequence"
+              [value]="parentRef.mainAccountDetails.executionSequence"
+              [(ngModel)]="parentRef.mainAccountDetails.executionSequence"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/executionSequence"
+              required
+            ></aps-custom-select>
+          </div>
+        </div>
+      </form>
+
+      <form
+        name="form"
+        #form="ngForm"
+        class=""
+        *ngIf="parentRef.stepperDetails.currentSubStep === 2"
+      >
+        <div class="p-grid">
+          <div class="p-md-5 p-lg-5 p-col-12 p-sm-12">
+            <div class="text-size-12 text-color-light-shade-1 p-mb-1">
+              {{ 'Frequency of execution' | apsTranslate }}
+            </div>
+
+            <p-radioButton
+              class="p-mr-4"
+              id="frequencyOfExecution"
+              name="frequencyOfExecution"
+              value="pre-defined"
+              label="Pre-defined"
+              [(ngModel)]="parentRef.mainAccountDetails.frequencyOfExecution"
+              required
+            ></p-radioButton>
+
+            <p-radioButton
+              class="p-mr-4"
+              id="frequencyOfExecution"
+              name="frequencyOfExecution"
+              value="intraday"
+              label="Intraday"
+              [(ngModel)]="parentRef.mainAccountDetails.frequencyOfExecution"
+              required
+            ></p-radioButton>
+
+            <p-radioButton
+              class="p-mr-4"
+              id="frequencyOfExecution"
+              name="frequencyOfExecution"
+              value="custom"
+              label="Custom"
+              [(ngModel)]="parentRef.mainAccountDetails.frequencyOfExecution"
+              required
+            ></p-radioButton>
+          </div>
+
+          <ng-container *ngIf="parentRef.mainAccountDetails.frequencyOfExecution === 'pre-defined'">
+            <div
+              class="p-lg-4 p-md-4 p-sm-12 p-col-12"
+              *ngFor="let d of parentRef.mainAccountDetails.dates; let i = index"
+            >
+              <app-aps-calender
+                [showIcon]="true"
+                label="{{ 'Date' | apsTranslate }}"
+                id="date-{{ i }}"
+                name="date-{{ i }}"
+                [(ngModel)]="parentRef.mainAccountDetails.dates[i]"
+              ></app-aps-calender>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+              <button
+                type="button"
+                class="btn btn-md btn-primary p-my-2"
+                (click)="addFrequencyPreDefinedDate()"
+              >
+                <app-icon icon="fa-plus" class="p-mr-2"></app-icon>
+                {{ 'ADD MORE' | apsTranslate }}
+              </button>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="parentRef.mainAccountDetails.frequencyOfExecution !== 'pre-defined'">
+            <div class="p-lg-6 p-md-4 p-sm-12 p-col-12">
+              <aps-custom-select
+                label="{{ 'Recurrence Frequency' | apsTranslate }}"
+                id="recurrenceFrequency"
+                name="recurrenceFrequency"
+                dataUrl="lms/corporate/accountStructure/private/dropdown/recurrenceFrequency"
+                [value]="parentRef.mainAccountDetails.recurrenceFrequency"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceFrequency"
+                required
+              ></aps-custom-select>
+            </div>
+
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <aps-form-input
+                label="{{ 'Number of Occurrence' | apsTranslate }}"
+                icon="pi pi-user"
+                id="numberOfOccurrence"
+                name="numberOfOccurrence"
+                [(ngModel)]="parentRef.mainAccountDetails.numberOfOccurrence"
+                required
+              ></aps-form-input>
+            </div>
+
+            <ng-container *ngIf="parentRef.mainAccountDetails.frequencyOfExecution === 'intraday'">
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                <app-aps-calender
+                  [showIcon]="true"
+                  label="{{ 'Start Date & Time' | apsTranslate }}"
+                  showTime="true"
+                  hourFormat="12"
+                  id="startDateTime"
+                  name="startDateTime"
+                  [(ngModel)]="parentRef.mainAccountDetails.startDateTime"
+                  required
+                ></app-aps-calender>
+              </div>
+
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                <app-aps-calender
+                  [showIcon]="true"
+                  label="{{ 'End Date & Time' | apsTranslate }}"
+                  showTime="true"
+                  hourFormat="12"
+                  id="endDateTime"
+                  name="endDateTime"
+                  [(ngModel)]="parentRef.mainAccountDetails.endDateTime"
+                  required
+                ></app-aps-calender>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="parentRef.mainAccountDetails.frequencyOfExecution === 'custom'">
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                <app-aps-calender
+                  [showIcon]="true"
+                  label="{{ 'Start Date' | apsTranslate }}"
+                  id="startDate"
+                  name="startDate"
+                  [(ngModel)]="parentRef.mainAccountDetails.startDate"
+                ></app-aps-calender>
+              </div>
+
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                <app-aps-calender
+                  [showIcon]="true"
+                  label="{{ 'End Date' | apsTranslate }}"
+                  id="endDate"
+                  name="endDate"
+                  [(ngModel)]="parentRef.mainAccountDetails.endDate"
+                  required
+                ></app-aps-calender>
+              </div>
+            </ng-container>
+
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <p-checkbox
+                class="p-mt-3"
+                value="0"
+                label="{{ 'No End Date' | apsTranslate }}"
+                id="noEndDate"
+                name="noEndDate"
+                [(ngModel)]="parentRef.mainAccountDetails.noEndDate"
+              ></p-checkbox>
+            </div>
+
+            <div class="p-col-12">
+              <div class="text-size-12 text-color-light-shade-1 p-mb-2 p-mt-3">
+                {{ 'Recurrence Days' | apsTranslate }}
+              </div>
+
+              <p-checkbox
+                class="p-mr-4"
+                value="Sunday"
+                label="{{ 'Sunday' | apsTranslate }}"
+                id="sunday"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+
+              <p-checkbox
+                class="p-mr-4"
+                value="Monday"
+                label="{{ 'Monday' | apsTranslate }}"
+                id="monday"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+
+              <p-checkbox
+                class="p-mr-4"
+                value="Tuesday"
+                label="{{ 'Tuesday' | apsTranslate }}"
+                id="tuesday"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+
+              <p-checkbox
+                class="p-mr-4"
+                value="Wednesday"
+                label="{{ 'Wednesday' | apsTranslate }}"
+                id="wednesday"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+
+              <p-checkbox
+                class="p-mr-4"
+                value="Thursday"
+                label="{{ 'Thursday' | apsTranslate }}"
+                id="thursday"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+
+              <p-checkbox
+                class="p-mr-4"
+                value="Friday"
+                label="{{ 'Friday' | apsTranslate }}"
+                id="friday"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+
+              <p-checkbox
+                class="p-mr-4"
+                value="Saturday"
+                label="{{ 'Saturday' | apsTranslate }}"
+                id="saturday"
+                name="recurrenceDays"
+                [(ngModel)]="parentRef.mainAccountDetails.recurrenceDays"
+              ></p-checkbox>
+            </div>
+          </ng-container>
+        </div>
+      </form>
+
+      <form
+        name="form"
+        #form="ngForm"
+        class=""
+        *ngIf="parentRef.stepperDetails.currentSubStep === 3"
+      >
+        <div class="p-grid p-py-2">
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'Positive Rate' | apsTranslate }}"
+              id="positiveRate"
+              name="positiveRate"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/positiveRate"
+              [value]="parentRef.mainAccountDetails.positiveRate"
+              [(ngModel)]="parentRef.mainAccountDetails.positiveRate"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'Overdraft Rate' | apsTranslate }}"
+              id="overdraftRate"
+              name="overdraftRate"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/overdraftRate"
+              [value]="parentRef.mainAccountDetails.overdraftRate"
+              [(ngModel)]="parentRef.mainAccountDetails.overdraftRate"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'Lending Rate' | apsTranslate }}"
+              id="landingRate"
+              name="landingRate"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/landingRate"
+              [value]="parentRef.mainAccountDetails.lendingRate"
+              [(ngModel)]="parentRef.mainAccountDetails.lendingRate"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'Borrowing Rate' | apsTranslate }}"
+              id="borrowingRate"
+              name="borrowingRate"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/borrowingRate"
+              [value]="parentRef.mainAccountDetails.borrowingRate"
+              [(ngModel)]="parentRef.mainAccountDetails.borrowingRate"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1 p-mb-2">
+              {{ 'Apply to SubAccount' | apsTranslate }}
+            </div>
+
+            <p-radioButton
+              class="p-mr-4"
+              name="applyToSubAccount"
+              value="Yes"
+              label="{{ 'Yes' | apsTranslate }}"
+              [(ngModel)]="parentRef.mainAccountDetails.applyToSubAccount"
+              required
+            ></p-radioButton>
+
+            <p-radioButton
+              class="p-mr-4"
+              name="applyToSubAccount"
+              value="No"
+              label="{{ 'No' | apsTranslate }}"
+              [(ngModel)]="parentRef.mainAccountDetails.applyToSubAccount"
+              required
+            ></p-radioButton>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-light-shade-1 p-mb-2">
+              {{ 'Selected By' | apsTranslate }}
+            </div>
+
+            <p-radioButton
+              class="p-mr-4"
+              name="selectedBy"
+              value="System"
+              label="{{ 'System' | apsTranslate }}"
+              [(ngModel)]="parentRef.mainAccountDetails.selectedBy"
+              required
+            ></p-radioButton>
+
+            <p-radioButton
+              class="p-mr-4"
+              name="selectedBy"
+              value="Manual"
+              label="{{ 'Manual' | apsTranslate }}"
+              [(ngModel)]="parentRef.mainAccountDetails.selectedBy"
+              required
+            ></p-radioButton>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'PN Generation Frequency' | apsTranslate }}"
+              id="PNGenerationFrequency"
+              name="PNGenerationFrequency"
+              [value]="parentRef.mainAccountDetails.PNGenerationFrequency"
+              [(ngModel)]="parentRef.mainAccountDetails.PNGenerationFrequency"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/PNGenerationFrequency"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'PN Generation Month' | apsTranslate }}"
+              id="PNGenerationMonth"
+              name="PNGenerationMonth"
+              [value]="parentRef.mainAccountDetails.PNGenerationMonth"
+              [(ngModel)]="parentRef.mainAccountDetails.PNGenerationMonth"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/PNGenerationMonth"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'PN Generation Day' | apsTranslate }}"
+              id="PNGenerationDay"
+              name="PNGenerationDay"
+              [value]="parentRef.mainAccountDetails.PNGenerationDay"
+              [(ngModel)]="parentRef.mainAccountDetails.PNGenerationDay"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/PNGenerationDay"
+              required
+            ></aps-custom-select>
+          </div>
+        </div>
+      </form>
+
+      <form
+        name="form"
+        #form="ngForm"
+        class=""
+        *ngIf="parentRef.stepperDetails.currentSubStep === 4"
+      >
+        <div class="p-grid p-py-2">
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-normal">
+              {{ 'Belongs to Cluster Code' | apsTranslate }}
+            </div>
+
+            <div class="text-size-14 text-color-dark-shade-1 p-pt-1">
+              {{ parentRef.mainAccountDetails.belongsToClusterCode }}
+            </div>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'Belongs to Cluster Name' | apsTranslate }}"
+              id="belongsToClusterName"
+              name="belongsToClusterName"
+              [value]="parentRef.mainAccountDetails.belongsToClusterName"
+              [(ngModel)]="parentRef.mainAccountDetails.belongsToClusterName"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/belongsToClusterName"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12"></div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-normal">
+              {{ 'Lead for Cluster Code' | apsTranslate }}
+            </div>
+
+            <div class="text-size-14 text-color-dark-shade-1 p-pt-1">
+              {{ parentRef.mainAccountDetails.leadForClusterCode }}
+            </div>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'Lead for Cluster Name' | apsTranslate }}"
+              id="leadForClusterName"
+              name="leadForClusterName"
+              [value]="parentRef.mainAccountDetails.leadForClusterName"
+              [(ngModel)]="parentRef.mainAccountDetails.leadForClusterName"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/leadForClusterName"
+              required
+            ></aps-custom-select>
+          </div>
+        </div>
+      </form>
+
+      <form
+        name="form"
+        #form="ngForm"
+        class=""
+        *ngIf="parentRef.stepperDetails.currentSubStep === 5"
+      >
+        <div class="p-grid p-py-2">
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'Funding Account' | apsTranslate }}"
+              id="fundingAccount"
+              name="fundingAccount"
+              [value]="parentRef.mainAccountDetails.fundingAccount"
+              [(ngModel)]="parentRef.mainAccountDetails.fundingAccount"
+              dataUrl="setup/corporateOnboarding/corporateMain/private/allAccountList"
+              [reqBody]="{ corporateId: userService.getCorporateId() }"
+              (change)="parentRef.mainAccountDetails.fundingAccountName = $event.displayName"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'On Holiday' | apsTranslate }}"
+              id="onHoliday"
+              name="onHoliday"
+              [value]="parentRef.mainAccountDetails.onHoliday"
+              [(ngModel)]="parentRef.mainAccountDetails.onHoliday"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/onHoliday"
+              required
+            ></aps-custom-select>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <aps-custom-select
+              label="{{ 'Failure Rule' | apsTranslate }}"
+              id="failureRule"
+              name="failureRule"
+              [value]="parentRef.mainAccountDetails.failureRule"
+              [(ngModel)]="parentRef.mainAccountDetails.failureRule"
+              dataUrl="lms/corporate/accountStructure/private/dropdown/failureRule"
+              required
+            ></aps-custom-select>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="aps-card p-mt-3 aps-p-12" *ngIf="parentRef.isEdit">
+  <div class="left-right-container">
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button type="submit" class="btn btn-md btn-primary" (click)="parentRef.submitEditAccount()">
+        SUBMIT
+      </button>
+    </div>
+  </div>
+</div>

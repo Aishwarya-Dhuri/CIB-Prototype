@@ -1,0 +1,18 @@
+.debit-card {
+  width: 3.5rem;
+  height: 2rem;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+.chart-container {
+  width: calc(100vw - 32px) !important;
+}
+.pie-chart-label {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

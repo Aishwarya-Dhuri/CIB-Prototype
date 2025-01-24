@@ -1,0 +1,1010 @@
+<!-- Deal No Modal Start-->
+<app-search-modal
+  header="Deal No"
+  [(isShow)]="isDealNoModalShow"
+  [isMultiSelect]="true"
+  [preSelectedData]="parentRef.formData.exchangeDetails[0].selectedDealData"
+  colDefUrl="trade/importTransactions/requestFinance/private/exchangeDetailsColDefs"
+  rowDefUrl="trade/importTransactions/requestFinance/private/getDealNoDataList"
+  (onSelection)="setDealNoData($event)"
+></app-search-modal>
+<!-- Deal No Modal End-->
+
+<!-- Forward No Modal Start-->
+<app-search-modal
+  header="Forward No"
+  [(isShow)]="isForwardNoModalShow"
+  [isMultiSelect]="true"
+  [preSelectedData]="parentRef.formData.exchangeDetails[0].selectedForwardData"
+  colDefUrl="trade/importTransactions/requestFinance/private/exchangeDetailsColDefs"
+  rowDefUrl="trade/importTransactions/requestFinance/private/getForwardNoDataList"
+  (onSelection)="setForwardNoData($event)"
+></app-search-modal>
+<!--Forward No Modal End-->
+<app-search-modal
+  [(isShow)]="isSearchBuyer"
+  header="Select Buyer"
+  colDefUrl="trade/exportTransactions/requestFinance/private/buyerColDefs"
+  rowDefUrl="trade/exportTransactions/requestFinance/private/buyerData"
+  (onSelection)="onBuyerSelection($event)"
+>
+</app-search-modal>
+
+<app-search-modal
+  [(isShow)]="isSearchLcNumber"
+  header="Select LC Number"
+  colDefUrl="trade/exportTransactions/requestFinance/private/lcNumberColDefs"
+  rowDefUrl="trade/importTransactions/letterOfCredit/private/getAllList"
+  (onSelection)="onLCSelection($event)"
+>
+</app-search-modal>
+
+<div class="container">
+  <form name="form" #form="ngForm">
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Exporter Details
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-3">
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-p-0">
+                <aps-custom-select
+                  name="applicantName"
+                  id="applicantName"
+                  label="{{ 'Applicant Name' | apsTranslate }}"
+                  dataUrl="trade/exportTransactions/requestFinance/private/dropdown/applicantNameDataList"
+                  [value]="parentRef.formData.applicantDetails[0].applicantName"
+                  (change)="changeApplicant($event)"
+                  [(ngModel)]="parentRef.formData.applicantDetails[0].applicantName"
+                  [required]="true"
+                >
+                </aps-custom-select>
+              </div>
+            </div>
+            <div class="p-grid p-px-2 p-pt-0 p-pb-2">
+              <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-pb-0">
+                <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                  <app-review-form-field
+                    label="Name"
+                    [value]="parentRef.formData.applicantDetails[0].applicantName"
+                  ></app-review-form-field>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+                <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                  <app-review-form-field
+                    label="Mobile Number"
+                    [value]="parentRef.formData.applicantDetails[0].applicantMobileNo"
+                  ></app-review-form-field>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+                <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                  <app-review-form-field
+                    label="IE Code"
+                    [value]="parentRef.formData.applicantDetails[0].ieCode"
+                  ></app-review-form-field>
+                </div>
+              </div>
+              <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-pb-0">
+                <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                  <app-review-form-field
+                    label="Address"
+                    [value]="parentRef.formData.applicantDetails[0].applicantAddress"
+                  ></app-review-form-field>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+                <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                  <app-review-form-field
+                    label="Email"
+                    [value]="parentRef.formData.applicantDetails[0].applicantEmail"
+                  ></app-review-form-field>
+                </div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+                <div class="background-color-dark-3 text-size-12 p-px-2 p-py-1 border-radius-4">
+                  <app-review-form-field
+                    label="CIF ID"
+                    [value]="parentRef.formData.applicantDetails[0].cifId"
+                  ></app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                  Limit Details
+                </div>
+              </div>
+              <div class="right-container"></div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                  Exporter {{ parentRef.formData.applicantDetails[0].applicantName }}
+                </div>
+              </div>
+              <div class="right-container">
+                <div class="inline-items p-px-3">
+                  <div class="item p-pr-1">
+                    <div class="text-size-12 text-semi-bold text-color-dark-shade-1 aps-py-12">
+                      Expires On :
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="text-size-12 text-semi-bold text-color-danger aps-py-12">
+                      25-Dec-2022
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-grid p-p-2">
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">Limit ID</div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">Sanctioned Limit</div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">Utilized Limit</div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">Available Limit</div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="parentRef.formData.applicantDetails[0].applicantName">
+              <div class="p-grid p-p-2" *ngFor="let item of limitDetails">
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-semi-bold text-color-dark-shade-1">
+                    {{ item.limitId }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-semi-bold text-color-dark-shade-1">
+                    <app-base-currency [amount]="item.sanctionedLimit"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-semi-bold text-color-dark-shade-1">
+                    <app-base-currency [amount]="item.utilizedLimit"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                  <div class="text-size-12 text-semi-bold text-color-dark-shade-1">
+                    <app-base-currency [amount]="item.availableLimit"></app-base-currency>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                  Packing Credit Details
+                </div>
+              </div>
+              <div class="right-container"></div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-custom-select
+                  name="typeOfPackingCredit"
+                  id="typeOfPackingCredit"
+                  label="{{ 'Type Of Packing Credit' | apsTranslate }}"
+                  dataUrl="trade/exportTransactions/requestFinance/private/dropdown/typeOfPackingCreditDataList"
+                  [value]="parentRef.formData.packingCreditDetails[0].typeOfPackingCredit"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].typeOfPackingCredit"
+                  (change)="onTypeOfPackingCredit()"
+                  [required]="true"
+                >
+                </aps-custom-select>
+              </div>
+            </div>
+            <div
+              class="p-grid p-px-2"
+              *ngIf="
+                parentRef.formData.packingCreditDetails[0].typeOfPackingCredit ==
+                'Proforma Invoice / Purchase Order'
+              "
+            >
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-custom-select
+                  name="exportTransactionType"
+                  id="exportTransactionType"
+                  label="{{ 'Export Transaction Type' | apsTranslate }}"
+                  dataUrl="trade/exportTransactions/requestFinance/private/dropdown/exportTransactionTypeDataList"
+                  [value]="parentRef.formData.packingCreditDetails[0].exportTransactionType"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].exportTransactionType"
+                  [required]="true"
+                >
+                </aps-custom-select>
+              </div>
+              <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+                <p-radioButton
+                  class="p-mr-6 p-py-4"
+                  id="radioBuyer"
+                  name="radioBuyer"
+                  value="Search Using Buyer Code"
+                  label="{{ 'Search Using Buyer Code' | apsTranslate }}"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].radioBuyer"
+                  [required]="true"
+                  (click)="onChangeBuyerSearchType()"
+                ></p-radioButton>
+
+                <p-radioButton
+                  class="p-mr-4 p-py-4"
+                  id="radioBuyer"
+                  name="radioBuyer"
+                  value="Add New Buyer"
+                  label="{{ 'Add New Buyer' | apsTranslate }}"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].radioBuyer"
+                  [required]="true"
+                  (click)="onChangeBuyerSearchType()"
+                ></p-radioButton>
+              </div>
+              <div
+                class="p-col-12 p-md-4 p-lg-4 p-sm-12"
+                *ngIf="
+                  parentRef.formData.packingCreditDetails[0].radioBuyer == 'Search Using Buyer Code'
+                "
+              >
+                <aps-form-input
+                  name="buyerCode"
+                  id="buyerCode"
+                  label="{{ 'Buyer Code' | apsTranslate }}"
+                  [required]="true"
+                  [readonly]="true"
+                  [rightIcon]="'fa-search'"
+                  (onRightIcon)="isSearchBuyer = true"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].buyerCode"
+                >
+                </aps-form-input>
+              </div>
+            </div>
+            <div
+              class="p-grid p-px-2"
+              *ngIf="
+                parentRef.formData.packingCreditDetails[0].typeOfPackingCredit ==
+                  'Proforma Invoice / Purchase Order' &&
+                parentRef.formData.packingCreditDetails[0].radioBuyer ==
+                  'Search Using Buyer Code' &&
+                parentRef.formData.packingCreditDetails[0].buyerDetails[0].buyerCode
+              "
+            >
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Buyer Name"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerName"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Buyer Address"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerAddress"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Country"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].country"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Phone/Mobile"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].mobileNumber"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Email"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].email"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Bank Swift Code"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankSwiftCode"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Bank Name"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankName"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Bank Address"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankAddress"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Buyer Account No"
+                  [value]="
+                    parentRef.formData.packingCreditDetails[0].buyerDetails[0].buyerAccountNo
+                  "
+                ></app-review-form-field>
+              </div>
+            </div>
+
+            <div
+              class="p-grid p-px-2"
+              *ngIf="
+                parentRef.formData.packingCreditDetails[0].typeOfPackingCredit ==
+                  'Proforma Invoice / Purchase Order' &&
+                parentRef.formData.packingCreditDetails[0].radioBuyer == 'Add New Buyer'
+              "
+            >
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="buyerName"
+                  id="buyerName"
+                  label="Buyer Name"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].buyerName"
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="buyerAddress"
+                  id="buyerAddress"
+                  label="Buyer Address"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].buyerAddress"
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="country"
+                  id="country"
+                  label="Country"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].country"
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="mobileNumber"
+                  id="mobileNumber"
+                  label="Phone/Mobile"
+                  [(ngModel)]="
+                    parentRef.formData.packingCreditDetails[0].buyerDetails[0].mobileNumber
+                  "
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="email"
+                  id="email"
+                  label="Email"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].email"
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="bankSwiftCode"
+                  id="bankSwiftCode"
+                  label="Bank Swift Code"
+                  [(ngModel)]="
+                    parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankSwiftCode
+                  "
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+              <!-- <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="buyerName"
+                  id="buyerName"
+                  label="Buyer Name"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankName"
+                  [required]="true"
+                ></aps-form-input>
+              </div> -->
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="bankAddress"
+                  id="bankAddress"
+                  label="Bank Address"
+                  [(ngModel)]="
+                    parentRef.formData.packingCreditDetails[0].buyerDetails[0].bankAddress
+                  "
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="buyerAccountNo"
+                  id="buyerAccountNo"
+                  label="Buyer Account No"
+                  [(ngModel)]="
+                    parentRef.formData.packingCreditDetails[0].buyerDetails[0].buyerAccountNo
+                  "
+                  [required]="true"
+                ></aps-form-input>
+              </div>
+            </div>
+
+            <div
+              class="p-grid p-px-2"
+              *ngIf="
+                parentRef.formData.packingCreditDetails[0].typeOfPackingCredit ==
+                'Proforma Invoice / Purchase Order'
+              "
+            >
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-custom-select
+                  name="invoiceCurrency"
+                  id="invoiceCurrency"
+                  label="{{ 'Invoice / Order Currency' | apsTranslate }}"
+                  dataUrl="setup/generalMasters/currency/private/currencyList"
+                  [value]="parentRef.formData.packingCreditDetails[0].invoiceCurrency"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].invoiceCurrency"
+                  (change)="
+                    parentRef.formData.packingCreditDetails[0].invoiceCurrencyCode =
+                      $event.displayName
+                  "
+                  [required]="true"
+                >
+                </aps-custom-select>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="invoiceAmount"
+                  id="invoiceAmount"
+                  label="{{ 'Invoice / Order Amount' | apsTranslate }}"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].invoiceAmount"
+                  inputType="currencyFormatNotZero"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="invoiceNumber"
+                  id="invoiceNumber"
+                  label="{{ 'Invoice / Order Number' | apsTranslate }}"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].invoiceNumber"
+                  [required]="true"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <app-aps-calender
+                  name="invoiceDate"
+                  id="invoiceDate"
+                  label="{{ 'Invoice / Order Date' | apsTranslate }}"
+                  [showIcon]="true"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].invoiceDate"
+                >
+                </app-aps-calender>
+              </div>
+            </div>
+            <div
+              class="p-grid p-px-2"
+              *ngIf="
+                parentRef.formData.packingCreditDetails[0].typeOfPackingCredit == 'Letter of Credit'
+              "
+            >
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="lcNumber"
+                  id="lcNumber"
+                  label="{{ 'LC Number' | apsTranslate }}"
+                  [required]="true"
+                  [readonly]="true"
+                  [rightIcon]="'fa-search'"
+                  (onRightIcon)="isSearchLcNumber = true"
+                  [(ngModel)]="parentRef.formData.packingCreditDetails[0].lcNumber"
+                >
+                </aps-form-input>
+              </div>
+            </div>
+            <div class="p-grid p-px-2" *ngIf="parentRef.formData.packingCreditDetails[0].lcNumber">
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="LC Issuance Date"
+                  [value]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcIssuanceDate"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="LC Currency"
+                  [value]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcCurrency"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="LC Amount"
+                  [value]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcAmount"
+                  type="baseCurrency"
+                  [baseCurrency]="
+                    parentRef.formData.packingCreditDetails[0].lcDetails[0].lcCurrency
+                  "
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="LC Issuing Bank"
+                  [value]="parentRef.formData.packingCreditDetails[0].lcDetails[0].lcIssuingBank"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="LC Issuing Bank Address"
+                  [value]="
+                    parentRef.formData.packingCreditDetails[0].lcDetails[0].lcIssuingBankAddress
+                  "
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Buyer Name"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerName"
+                ></app-review-form-field>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Buyer Address"
+                  [value]="parentRef.formData.packingCreditDetails[0].buyerAddress"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="p-col-12 p-sm-12"
+        [ngClass]="{ 'p-md-8 p-lg-8': parentRef.formData.isExchangeDetailsShow }"
+      >
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Finance Details
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <app-aps-calender
+                  name="transactionDate"
+                  id="transactionDate"
+                  label="{{ 'Transaction Date' | apsTranslate }}"
+                  [showIcon]="true"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.financeDetails[0].transactionDate"
+                >
+                </app-aps-calender>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-custom-select
+                  name="purposeCode"
+                  id="purposeCode"
+                  label="{{ 'Purpose Code' | apsTranslate }}"
+                  dataUrl="trade/exportTransactions/requestFinance/private/dropdown/purposeCodeDataList"
+                  [value]="parentRef.formData.financeDetails[0].purposeCode"
+                  [(ngModel)]="parentRef.formData.financeDetails[0].purposeCode"
+                  [required]="true"
+                >
+                </aps-custom-select>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-form-input
+                  name="corporateReferenceNo"
+                  id="corporateReferenceNo"
+                  label="{{ 'Corporate Reference No' | apsTranslate }}"
+                  [(ngModel)]="parentRef.formData.financeDetails[0].corporateReferenceNo"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                <div class="inline-items">
+                  <div class="item p-pr-2" style="width: 56px">
+                    <aps-custom-select
+                      name="loanCurrency"
+                      id="loanCurrency"
+                      label="CCY"
+                      dataUrl="setup/generalMasters/currency/private/currencyList"
+                      [value]="parentRef.formData.financeDetails[0].loanCurrency"
+                      (change)="onLoanCurrency($event)"
+                      [(ngModel)]="parentRef.formData.financeDetails[0].loanCurrency"
+                    >
+                    </aps-custom-select>
+                  </div>
+                  <div class="item" style="width: calc(100% - 56px)">
+                    <aps-form-input
+                      name="loanAmount"
+                      id="loanAmount"
+                      label="{{ 'Loan Amount' | apsTranslate }}"
+                      inputType="currencyFormatNotZero"
+                      [required]="true"
+                      [(ngModel)]="parentRef.formData.financeDetails[0].loanAmount"
+                    >
+                    </aps-form-input>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-custom-select
+                  name="accountToBeCredited"
+                  id="accountToBeCredited"
+                  label="{{ 'Account To Be Credited' | apsTranslate }}"
+                  dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                  [value]="parentRef.formData.financeDetails[0].accountToBeCredited"
+                  (change)="onAccountToBeCredited($event)"
+                  [(ngModel)]="parentRef.formData.financeDetails[0].accountToBeCredited"
+                  [required]="true"
+                >
+                </aps-custom-select>
+              </div>
+            </div>
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-form-input
+                  name="loanAppliedFor"
+                  id="loanAppliedFor"
+                  label="{{ 'Loan Applied For' | apsTranslate }}"
+                  inputType="numeric"
+                  maxLength="4"
+                  [(ngModel)]="parentRef.formData.financeDetails[0].loanAppliedFor"
+                  [required]="true"
+                  (change)="
+                    changeLoanAppliedFor(parentRef.formData.financeDetails[0].loanAppliedFor)
+                  "
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-14 text-color-light-shade-1 p-pt-3">
+                  days after Transaction Date
+                </div>
+              </div>
+              <div class="p-col-12 p-md-1 p-lg-1 p-sm-12">
+                <div class="text-size-16 text-color-dark-shade-1 p-pt-3">OR</div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <app-aps-calender
+                  name="selectedDueDate"
+                  id="selectedDueDate"
+                  label="{{ 'Selected Due Date' | apsTranslate }}"
+                  [showIcon]="true"
+                  [required]="true"
+                  (change)="changeDueDate(parentRef.formData.financeDetails[0].selectedDueDate)"
+                  [(ngModel)]="parentRef.formData.financeDetails[0].selectedDueDate"
+                >
+                </app-aps-calender>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12" *ngIf="parentRef.formData.isExchangeDetailsShow">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Exchange Details
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="inline-items">
+              <div class="item p-p-3">
+                <p-checkbox
+                  name="isCard"
+                  [label]="'Card' | apsTranslate"
+                  [binary]="true"
+                  [(ngModel)]="parentRef.formData.exchangeDetails[0].isCard"
+                >
+                </p-checkbox>
+              </div>
+              <div
+                *ngIf="parentRef.formData.exchangeDetails[0].isCard"
+                class="item p-pr-2"
+                style="width: 56px"
+              >
+                <aps-custom-select
+                  name="exchangeCurrency"
+                  id="exchangeCurrency"
+                  label="CCY"
+                  dataUrl="setup/generalMasters/currency/private/currencyList"
+                  [value]="parentRef.formData.exchangeDetails[0].exchangeCurrency"
+                  [(ngModel)]="parentRef.formData.exchangeDetails[0].exchangeCurrency"
+                >
+                </aps-custom-select>
+              </div>
+              <div
+                *ngIf="parentRef.formData.exchangeDetails[0].isCard"
+                class="item"
+                style="width: calc(100% - 160px)"
+              >
+                <aps-form-input
+                  name="exchangeAmount"
+                  id="exchangeAmount"
+                  label="{{ 'Exchange Amount' | apsTranslate }}"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.exchangeDetails[0].exchangeAmount"
+                  inputType="currencyFormatNotZero"
+                >
+                </aps-form-input>
+              </div>
+            </div>
+            <div class="inline-items">
+              <div class="item p-p-3">
+                <p-checkbox
+                  name="isDealNo"
+                  [label]="'Deal No' | apsTranslate"
+                  [(ngModel)]="parentRef.formData.exchangeDetails[0].isDealNo"
+                  [binary]="true"
+                  (click)="onDealSelected()"
+                >
+                </p-checkbox>
+              </div>
+              <div class="item p-p-3" *ngIf="parentRef.formData.exchangeDetails[0].isDealNo">
+                <div
+                  (click)="isDealNoModalShow = true"
+                  class="text-size-14 text-color-primary p-pt-2 text-semi-bold pointer"
+                >
+                  {{ parentRef.formData.exchangeDetails[0].selectedDealNoRows }} Deals Selected
+                </div>
+              </div>
+            </div>
+            <div class="inline-items">
+              <div class="item p-p-3">
+                <p-checkbox
+                  name="isForward"
+                  [label]="'Forward' | apsTranslate"
+                  [(ngModel)]="parentRef.formData.exchangeDetails[0].isForward"
+                  [binary]="true"
+                  (click)="onForwardSelected()"
+                >
+                </p-checkbox>
+              </div>
+              <div class="item p-p-3" *ngIf="parentRef.formData.exchangeDetails[0].isForward">
+                <div
+                  (click)="isForwardNoModalShow = true"
+                  class="text-size-14 text-color-primary p-pt-2 text-semi-bold pointer"
+                >
+                  {{ parentRef.formData.exchangeDetails[0].selectedForwardNoRows }}
+                  Forward Selected
+                </div>
+              </div>
+            </div>
+            <div class="inline-items">
+              <div class="p-px-3">
+                <aps-form-input
+                  name="remarks"
+                  id="remarks"
+                  label="{{ 'Remarks' | apsTranslate }}"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.exchangeDetails[0].remarks"
+                >
+                </aps-form-input>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-8 p-lg-8 p-sm-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Supporting Document
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-2">
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                  {{ 'Document Type' | apsTranslate }}
+                </div>
+              </div>
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                  {{ 'Reference Number' | apsTranslate }}
+                </div>
+              </div>
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                  {{ 'Upload Documents' | apsTranslate }}
+                  <span class="text-size-8 text-color-normal"
+                    >&nbsp;{{ 'Max 10MB each' | apsTranslate }}</span
+                  >
+                </div>
+              </div>
+
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <p-checkbox
+                  class="p-pt-2"
+                  name="orderInvoiceContract"
+                  id="orderInvoiceContract"
+                  label="{{ 'Order / Invoice / Contract Details' | apsTranslate }}"
+                  [binary]="true"
+                  [(ngModel)]="parentRef.formData.supportingDocuments[0].isOrderInvoiceContract"
+                  [required]="true"
+                >
+                </p-checkbox>
+              </div>
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="orderInvoiceContractRefNo"
+                  id="orderInvoiceContractRefNo"
+                  label="{{ 'Enter Ref. Number' | apsTranslate }}"
+                  [(ngModel)]="parentRef.formData.supportingDocuments[0].orderInvoiceContractRefNo"
+                  [required]="parentRef.formData.supportingDocuments[0].isOrderInvoiceContract"
+                  [disabled]="!parentRef.formData.supportingDocuments[0].isOrderInvoiceContract"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <upload-form-control
+                  [hideDragDropContainerOnFIleUpload]="true"
+                  [files]="parentRef.formData.supportingDocuments[0].orderInvoiceContractDocument"
+                  (onUploaded)="
+                    parentRef.formData.supportingDocuments[0].orderInvoiceContractDocument = $event
+                  "
+                  [disabled]="!parentRef.formData.supportingDocuments[0].isOrderInvoiceContract"
+                ></upload-form-control>
+              </div>
+
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <p-checkbox
+                  class="p-pt-2"
+                  name="isInsurancePolicy"
+                  id="isInsurancePolicy"
+                  label="{{ 'Insurance Policy' | apsTranslate }}"
+                  [binary]="true"
+                  [(ngModel)]="parentRef.formData.supportingDocuments[0].isInsurancePolicy"
+                  [required]="true"
+                >
+                </p-checkbox>
+              </div>
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="insurancePolicyRefNo"
+                  id="insurancePolicyRefNo"
+                  label="{{ 'Enter Ref. Number' | apsTranslate }}"
+                  [(ngModel)]="parentRef.formData.supportingDocuments[0].insurancePolicyRefNo"
+                  [required]="parentRef.formData.supportingDocuments[0].isInsurancePolicy"
+                  [disabled]="!parentRef.formData.supportingDocuments[0].isInsurancePolicy"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <upload-form-control
+                  [hideDragDropContainerOnFIleUpload]="true"
+                  [files]="parentRef.formData.supportingDocuments[0].insurancePolicyDocument"
+                  (onUploaded)="
+                    parentRef.formData.supportingDocuments[0].insurancePolicyDocument = $event
+                  "
+                  [disabled]="!parentRef.formData.supportingDocuments[0].isInsurancePolicy"
+                ></upload-form-control>
+              </div>
+
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <p-checkbox
+                  class="p-pt-2"
+                  name="other"
+                  id="other"
+                  label="{{ 'Other' | apsTranslate }}"
+                  [binary]="true"
+                  [(ngModel)]="parentRef.formData.supportingDocuments[0].isOther"
+                  [required]="true"
+                >
+                </p-checkbox>
+              </div>
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <aps-form-input
+                  name="otherRefNo"
+                  id="otherRefNo"
+                  label="{{ 'Enter Ref. Number' | apsTranslate }}"
+                  [(ngModel)]="parentRef.formData.supportingDocuments[0].otherRefNo"
+                  [required]="parentRef.formData.supportingDocuments[0].isOther"
+                  [disabled]="!parentRef.formData.supportingDocuments[0].isOther"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-md-4 p-lg-4 p-sm-12 p-col-12">
+                <upload-form-control
+                  [hideDragDropContainerOnFIleUpload]="true"
+                  [files]="parentRef.formData.supportingDocuments[0].otherDocument"
+                  (onUploaded)="parentRef.formData.supportingDocuments[0].otherDocument = $event"
+                  [disabled]="!parentRef.formData.supportingDocuments[0].isOther"
+                ></upload-form-control>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Finance Summary
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-py-12">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="text-size-14 text-color-light-shade-1">Loan Amount</div>
+                  </div>
+                  <div class="right-container">
+                    <div class="text-size-14 text-semi-bold">
+                      <app-base-currency
+                        [amount]="parentRef.formData.financeDetails[0].loanAmount"
+                        [currency]="this.parentRef.formData.financeDetails[0].loanCurrencyCode"
+                      ></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-py-12">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="text-size-14 text-color-light-shade-1">Interest Rate</div>
+                  </div>
+                  <div class="right-container">
+                    <div class="text-size-14 text-semi-bold">As Per ROI</div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-py-12">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="text-size-14 text-color-light-shade-1">Processing Fees</div>
+                  </div>
+                  <div class="right-container">
+                    <div class="text-size-14 text-semi-bold">Banks SOC</div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-py-12">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="text-size-14 text-color-light-shade-1">Repayment Date</div>
+                  </div>
+                  <div class="right-container">
+                    <div class="text-size-14 text-semi-bold">
+                      {{
+                        parentRef.formData.financeDetails[0].selectedDueDate
+                          ? parentRef.formData.financeDetails[0].selectedDueDate
+                          : '-'
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,82 @@
+.line {
+  stroke: var(--primary-color);
+  stroke-width: 2px;
+}
+
+.line-deactivated {
+  stroke: var(--background-color-dark-6);
+  stroke-width: 2px;
+}
+
+.circle {
+  stroke: var(--primary-color);
+  stroke-width: 2;
+  fill: var(--primary-color);
+}
+
+.circle-deactivated {
+  fill: var(--background-color-dark-5);
+  stroke: var(--background-color-dark-6);
+}
+
+.circle-partially-activated {
+  fill: var(--background-color);
+}
+
+.org-tree-container {
+  height: 2rem;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .org-tree-wrapper {
+    position: relative;
+    vertical-align: top;
+
+    .tree-node {
+      position: relative;
+      display: block;
+      width: 100%;
+
+      .node-branch,
+      .node-branch-divider {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        display: inline-block;
+        vertical-align: top;
+        width: calc(100% - 4px);
+      }
+
+      .node-branch-disabled {
+        border-color: var(--background-color-dark-6);
+      }
+
+      .node-data {
+        position: absolute;
+
+        .header {
+          display: inline-block;
+          padding: 0 4px;
+          font-size: 0.875rem;
+          background-color: var(--background-color);
+          font-weight: bold;
+          color: var(--primary-color);
+        }
+      }
+
+      .node-data-deactivated {
+        .header {
+          color: var(--text-color-dark-shade-1);
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .org-tree-container {
+    height: 3rem;
+    margin: 8px;
+  }
+}

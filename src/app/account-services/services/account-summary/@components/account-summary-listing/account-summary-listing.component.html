@@ -1,0 +1,468 @@
+<div class="aps-card" *ngIf="summary">
+  <app-modal
+    [(isShow)]="isShowMoreOptions"
+    [hideBackdrop]="false"
+    [background]="'rgba(0, 0, 0, 0)'"
+    (onBackdrop)="isShowMoreOptions = false"
+    [customStyles]="moreActionsStyle"
+  >
+    <div class="text-size-12 white-space-nowrap">
+      <div
+        class="p-mb-1 pointer"
+        *ngFor="let action of moreActionsRowData?.actions"
+        (click)="onClickAction(action.method)"
+      >
+        {{ action.label | apsTranslate }}
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showFDAdditionalDetails" headerText="View Account Information" size="md">
+    <div class="p-grid g-margin-x" body>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field label="Branch" [value]="moreActionsRowData?.branch">
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field label="Status" [value]="moreActionsRowData?.status">
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Maturity Instructions"
+          [value]="moreActionsRowData?.maturityInstruction"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field label="CIF Name" [value]="moreActionsRowData?.cifName">
+        </app-review-form-field>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showExternalAccountDetails" headerText="Account Details" size="md">
+    <div class="p-grid g-margin-x" body>
+      <div class="p-md-4 p-sm-6 p-col-12">
+        <app-review-form-field
+          label="Account Number"
+          [value]="moreActionsRowData?.accountNo"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-4 p-sm-6 p-col-12">
+        <app-review-form-field
+          label="Account Name"
+          [value]="moreActionsRowData?.accountName"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12">
+        <div class="text-size-14 py-3">
+          {{ 'Dear Customer' | apsTranslate }},
+          <br />
+          {{ 'Please Find details of your Deposit as mentioned below:' | apsTranslate }}
+        </div>
+      </div>
+      <div class="p-md-4 p-sm-6 p-col-12">
+        <app-review-form-field
+          label="Customer Id"
+          [value]="moreActionsRowData?.id"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-4 p-sm-6 p-col-12">
+        <app-review-form-field
+          label="Bank Name"
+          [value]="moreActionsRowData?.bankName"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-4 p-sm-6 p-col-12">
+        <app-review-form-field
+          label="Deposit Account Currency"
+          [value]="moreActionsRowData?.currency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-4 p-sm-6 p-col-12">
+        <app-review-form-field
+          label="Available Balance"
+          [value]="moreActionsRowData?.availableBalance"
+          type="baseCurrency"
+          [baseCurrency]="moreActionsRowData?.currency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-4 p-sm-6 p-col-12">
+        <app-review-form-field
+          label="Available Balance (Base CCY)"
+          [value]="moreActionsRowData?.availableBalanceBaseCcy"
+          type="baseCurrency"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-4 p-sm-6 p-col-12">
+        <app-review-form-field
+          label="Last Updated Date Time"
+          [value]="moreActionsRowData?.lastUpdatedDateTime"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12">
+        <div class="text-size-12 text-center py-3">
+          {{
+            'This is computer generated advice and does not required a Signature.' | apsTranslate
+          }}
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showContractDetails" headerText="Contract Details" size="md">
+    <div class="p-grid g-margin-x" body>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field label="Repayment Account Number" [value]="moreActionsRowData?.id">
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Available Balance"
+          [value]="moreActionsRowData?.amountDisbursed"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field label="Current Rate of Interest" [value]="'21.5'">
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Penal Interest Rate"
+          [value]="moreActionsRowData?.grantedDate"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Capital Outstanding"
+          [value]="moreActionsRowData?.amountApproved"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Interest Outstanding"
+          [value]="moreActionsRowData?.amountApproved"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Next Capital Due Date"
+          [value]="moreActionsRowData?.maturityDate"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Next Interest Due Date"
+          [value]="moreActionsRowData?.maturityDate"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Next Capital Due Amount"
+          [value]="moreActionsRowData?.maturityAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Next Interest Due Amount"
+          [value]="moreActionsRowData?.outstandingAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Overdue Capital Amount"
+          [value]="moreActionsRowData?.outstandingAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Overdue Interest Amount"
+          [value]="moreActionsRowData?.outstandingAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Overdue Interest Amount"
+          [value]="moreActionsRowData?.outstandingAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Due Penal Interest Amount"
+          [value]="moreActionsRowData?.outstandingAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Payoff amount as of Date"
+          [value]="moreActionsRowData?.maturityDate"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field label="Daily Interest" [value]="'25.5'"> </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Early Settlement Fee"
+          [value]="moreActionsRowData?.overdueAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Recovered Total Capital Amount"
+          [value]="moreActionsRowData?.overdueAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Recovered Total Interest Amount"
+          [value]="moreActionsRowData?.overdueAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+      <div class="p-md-6 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Recovered Penal Interest Amount"
+          [value]="moreActionsRowData?.overdueAmount"
+          type="baseCurrency"
+        >
+        </app-review-form-field>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showRateChangeHistory" headerText="Rate Change History" size="md">
+    <div class="p-grid g-margin-x" body>
+      <div class="p-col-12">
+        <div class="aps-h-200">
+          <app-ag-grid-listing
+            colDefUrl="accountServices/services/accountSummary/private/rateChangeHistoryColDefs"
+            rowDefUrl="accountServices/services/accountSummary/private/rateChangeHistoryData"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showArrearsStatement" headerText="Contract Details" size="md">
+    <div class="p-grid g-margin-x" body>
+      <div class="p-col-12">
+        <div class="aps-h-200">
+          <app-ag-grid-listing
+            colDefUrl="accountServices/services/accountSummary/private/arrearsStatementColDefs"
+            rowDefUrl="accountServices/services/accountSummary/private/arrearsStatementData"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showInterestCalculation" headerText="Contract Details" size="md">
+    <div class="p-grid g-margin-x" body>
+      <div class="p-col-12">
+        <div class="aps-h-200">
+          <app-ag-grid-listing
+            colDefUrl="accountServices/services/accountSummary/private/interestCalculationColDefs"
+            rowDefUrl="accountServices/services/accountSummary/private/interestCalculationData"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-px-3 border-bottom">
+    <div class="left-right-container disable-left-right-container-on-mobile">
+      <div class="left-container aps-pt-12">
+        <div class="inline-items disable-inline-items-on-mobile">
+          <div class="item p-mr-2">
+            <aps-custom-select
+              name="summeryList"
+              id="summeryList"
+              [value]="selectedSummary"
+              label=""
+              [showLabel]="false"
+              [(ngModel)]="selectedSummary"
+              [data]="summaryList"
+              (change)="changeSummarySelect($event.id)"
+            >
+            </aps-custom-select>
+          </div>
+          <div
+            class="item aps-py-2 p-px-2 p-my-1 border-radius-4 background-color-primary-color-transparent-1 p-mx-2"
+          >
+            <span class="text-size-12">{{ 'Total Account' | apsTranslate }}</span>
+            &nbsp;
+            <span class="text-size-14 text-bold">{{ rowData.length }}</span>
+          </div>
+          <div
+            class="item aps-py-2 p-px-2 p-my-1 border-radius-4 background-color-primary-color-transparent-1 p-mx-2"
+            *ngIf="totalAmount"
+          >
+            <span class="text-size-12">{{ totalLabel | apsTranslate }}</span>
+            &nbsp;
+            <span class="inline-block text-size-14 text-bold aps-pt-2">
+              <app-base-currency [amount]="totalAmount"></app-base-currency>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="right-container text-right aps-py-12">
+        <app-grid-listing-tools
+          (changeFloatingFilter)="
+            accountSummaryGrid ? accountSummaryGrid.changeFloatFilter($event) : null
+          "
+          (filterRecords)="accountSummaryGrid ? accountSummaryGrid.onFilter($event) : null"
+          (applyColDefs)="accountSummaryGrid ? accountSummaryGrid.onApplyConfig($event) : null"
+          (changeListingType)="listType = $event"
+          [colDefs]="
+            accountSummaryGrid && accountSummaryGrid.columnDefs ? accountSummaryGrid.columnDefs : []
+          "
+          [gridRef]="accountSummaryGrid"
+          [showSearch]="listType === 'grid' && viewport != 'mobile'"
+          [columnConfig]="listType === 'grid' && viewport != 'mobile'"
+          [showFloatingFilter]="listType === 'grid' && viewport != 'mobile'"
+          [moreOptions]="false"
+          [parentRef]="this"
+          [listingTypes]="viewport != 'mobile'"
+          [listingType]="listType"
+        ></app-grid-listing-tools>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-h-450 overflow-scroll">
+    <ng-container *ngIf="!loading; else loadingData">
+      <ng-container *ngIf="listType === 'grid'">
+        <app-ag-grid-listing
+          *ngIf="selectedSummary != 'debitCard'"
+          [id]="'account-summary'"
+          #accountSummary
+          [gridOptions]="gridOptions"
+          [context]="{ componentParent: this }"
+          [columnDefs]="colDefs"
+          [rowData]="rowData"
+          [supressAutoFit]="true"
+        ></app-ag-grid-listing>
+        <app-ag-grid-listing
+          *ngIf="selectedSummary == 'debitCard'"
+          [id]="'account-summary'"
+          #accountSummary
+          [gridOptions]="debitCardGridOptions"
+          [context]="{ componentParent: this }"
+          [columnDefs]="colDefs"
+          [rowData]="rowData"
+          [supressAutoFit]="true"
+        ></app-ag-grid-listing>
+      </ng-container>
+
+      <div class="card-list border-top" *ngIf="listType === 'card'">
+        <div class="p-grid p-p-2">
+          <div class="p-col-12" *ngFor="let data of cardData; let i = index">
+            <div class="aps-card text-size-12">
+              <div class="card-header">
+                <div class="p-grid">
+                  <div class="p-col-11 p-p-0">
+                    <div class="p-grid">
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div
+                          class="text-size-14 pointer text-bold p-py-2 text-underline"
+                          (click)="onLinkClick(data)"
+                        >
+                          {{ data[colDefs[0].field] }}
+                        </div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">{{ colDefs[1].headerName }}</div>
+                        <div class="">{{ data[colDefs[1].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">{{ colDefs[2].headerName }}</div>
+                        <div class="">{{ data[colDefs[2].field] }}</div>
+                      </div>
+                      <div class="p-md-3 p-sm-12 p-col-12">
+                        <div class="text-bold">{{ colDefs[3].headerName }}</div>
+                        <div class="">{{ data[colDefs[3].field] }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-col-1 p-p-3 text-right">
+                    <app-icon
+                      [icon]="data.isShow ? 'fa-chevron-up' : 'fa-chevron-down'"
+                      styleClasses="text-size-14 pointer"
+                      (click)="data.isShow = !data.isShow"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body border-top" *ngIf="data.isShow">
+                <div class="p-grid">
+                  <div
+                    class="p-md-3 p-sm-12 p-col-12 p-p-0"
+                    *ngFor="let field of colDefs; let i = index"
+                  >
+                    <div class="p-p-2" *ngIf="i >= 4 && colDefs[i].field != 'actions'">
+                      <div class="text-bold">{{ colDefs[i].headerName }}</div>
+                      <div class="">{{ data[colDefs[i].field] }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-right-container p-py-2 p-px-3" *ngIf="listType === 'card'">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-sm btn-tertiary p-mr-3">
+            <app-icon
+              icon="fa-chevron-left"
+              (click)="previous()"
+              [disabled]="this.currentPage <= 1"
+            ></app-icon>
+          </button>
+          <button class="btn btn-sm btn-tertiary">
+            <app-icon
+              icon="fa-chevron-right"
+              (click)="next()"
+              [disabled]="this.currentPage >= this.numberOfPages"
+            ></app-icon>
+          </button>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-template #loadingData>
+      <app-loading-spinner></app-loading-spinner>
+    </ng-template>
+  </div>
+</div>

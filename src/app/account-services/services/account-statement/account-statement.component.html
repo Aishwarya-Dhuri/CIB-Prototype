@@ -1,0 +1,470 @@
+<app-modal [(isShow)]="isDownload" size="sm" headerText="{{ 'Download Options' | apsTranslate }}">
+  <ng-container body [ngTemplateOutlet]="downloadEmailOptionsTemplate"> </ng-container>
+  <div footer>
+    <div class="text-right">
+      <button class="btn btn-md btn-primary" (click)="onDownload()">
+        {{ 'DOWNLOAD' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal [(isShow)]="isEmail" size="sm" headerText="{{ 'Email Options' | apsTranslate }}">
+  <ng-container body [ngTemplateOutlet]="downloadEmailOptionsTemplate"> </ng-container>
+  <div footer>
+    <div class="text-right">
+      <button class="btn btn-md btn-primary" (click)="onEmail()">
+        {{ 'EMAIL' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<ng-template #downloadEmailOptionsTemplate>
+  <div class="p-grid">
+    <div class="p-col-12">
+      <p-radioButton
+        class="p-mr-3"
+        [label]="'PDF' | apsTranslate"
+        name="PDF"
+        id="PDF"
+        value="PDF"
+        [(ngModel)]="downloadOptions"
+      >
+      </p-radioButton>
+      <p-radioButton
+        class="p-mr-3"
+        [label]="'CSV' | apsTranslate"
+        id="CSV"
+        value="CSV"
+        [(ngModel)]="downloadOptions"
+      >
+      </p-radioButton>
+      <p-radioButton
+        class="p-mr-3"
+        [label]="'EXCEL' | apsTranslate"
+        id="EXCEL"
+        value="EXCEL"
+        [(ngModel)]="downloadOptions"
+      >
+      </p-radioButton>
+      <p-radioButton
+        class="p-mr-3"
+        [label]="'XML' | apsTranslate"
+        id="XML"
+        value="XML"
+        [(ngModel)]="downloadOptions"
+      >
+      </p-radioButton>
+      <p-radioButton
+        class="p-mr-3"
+        [label]="'MT940' | apsTranslate"
+        id="MT940"
+        value="MT940"
+        [(ngModel)]="downloadOptions"
+      >
+      </p-radioButton>
+      <p-radioButton
+        class="p-mr-3"
+        [label]="'TEXT' | apsTranslate"
+        id="TEXT"
+        value="TEXT"
+        [(ngModel)]="downloadOptions"
+      >
+      </p-radioButton>
+    </div>
+    <div class="p-col-12">
+      <p-checkbox
+        [binary]="true"
+        NAME="isIncludeAdditionalFields"
+        id="isIncludeAdditionalFields"
+        [(ngModel)]="isIncludeAdditionalFields"
+        label="Include Additional Fields"
+        [disabled]="
+          !(downloadOptions == 'PDF' || downloadOptions == 'EXCEL' || downloadOptions == 'TXT')
+        "
+      ></p-checkbox>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Save/Update Search Criteria -->
+<app-save-criterial-modal
+  #saveCriteria
+  [(isShow)]="isShowSaveSearchCriteriaModal"
+  [(isUpdate)]="isUpdateCriteria"
+  [entityName]="entityName"
+  [(criteria)]="criteriaData"
+  (onSave)="onSavedCriteria()"
+>
+</app-save-criterial-modal>
+
+<div class="container">
+  <div class="p-grid g-margin-x" *ngIf="!loading">
+    <div class="p-col-12 p-md-7 p-sm-12 p-pr-0">
+      <form name="form" #form="ngForm">
+        <div class="aps-card aps-min-h-400">
+          <div class="text-size-16 text-bold p-p-3">{{ 'Search By' | apsTranslate }}</div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-5 p-px-3 p-py-4">
+              <p-radioButton
+                class="p-mr-3"
+                [name]="searchFilters[0].name"
+                value="Account No"
+                [label]="'Account No' | apsTranslate"
+                [(ngModel)]="searchFilters[0].value"
+              >
+              </p-radioButton>
+              <p-radioButton
+                [name]="searchFilters[0].name"
+                value="IBAN"
+                [label]="'IBAN' | apsTranslate"
+                [(ngModel)]="searchFilters[0].value"
+              ></p-radioButton>
+            </div>
+            <div class="p-col-12 p-md-7 p-py-1 p-px-3">
+              <aps-autocomplete
+                *ngIf="searchFilters[0].value == 'Account No'"
+                colDefUrl="commons/private/accountListingColDefs"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                searchParameter="displayName"
+                id="accountNo"
+                name="accountNo"
+                #accountNo="ngModel"
+                [label]="'Account No' | apsTranslate"
+                [(ngModel)]="searchFilters[1].value"
+                [value]="searchFilters[1].value"
+                (change)="onAccountSelected($event)"
+                [required]="true"
+              ></aps-autocomplete>
+
+              <aps-autocomplete
+                *ngIf="searchFilters[0].value == 'IBAN'"
+                colDefUrl="commons/private/accountListingColDefs"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/ibanAccountList"
+                searchParameter="displayName"
+                id="iBan"
+                name="iBan"
+                #iBan="ngModel"
+                [label]="'IBAN' | apsTranslate"
+                [(ngModel)]="searchFilters[2].value"
+                [value]="searchFilters[2].value"
+                (change)="onAccountSelected($event)"
+                [required]="true"
+              ></aps-autocomplete>
+            </div>
+          </div>
+          <div class="text-size-16 text-color-normal text-bold p-px-3 p-py-0">
+            {{ 'Statement Period' | apsTranslate }}
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-5 p-px-3 p-py-4">
+              <p-radioButton
+                class="p-mr-3"
+                [name]="searchFilters[3].name"
+                value="Mini Statement"
+                [label]="'Mini Statement' | apsTranslate"
+                [(ngModel)]="searchFilters[3].value"
+              >
+              </p-radioButton>
+              <div class="text-size-8 text-semi-bold p-pl-4">
+                {{
+                  'Last 10 transactions will be displayed in Mini
+                Statement' | apsTranslate
+                }}
+              </div>
+              <p-radioButton
+                [name]="searchFilters[3].name"
+                value="Date Range"
+                [label]="'Date Range' | apsTranslate"
+                [(ngModel)]="searchFilters[3].value"
+              ></p-radioButton>
+            </div>
+            <div class="p-col-12 p-md-7 p-py-0 p-px-3">
+              <aps-custom-select
+                *ngIf="searchFilters[3].value == 'Date Range'"
+                label="Show Period"
+                [data]="dateRangeOptions"
+                name="dateRange"
+                [(ngModel)]="selectedAccountPeriodOptions"
+                [value]="selectedAccountPeriodOptions"
+                (change)="onChangedateRangeOption($event.id, accountCalender)"
+              >
+              </aps-custom-select>
+
+              <app-review-form-field
+                *ngIf="
+                  searchFilters[3].value == 'Date Range' &&
+                  selectedAccountPeriodOptions != 'Specify Date Range'
+                "
+                label="Selected Date"
+                [value]="accountPeriod"
+              ></app-review-form-field>
+
+              <app-aps-calender
+                *ngIf="
+                  searchFilters[3].value == 'Date Range' &&
+                  selectedAccountPeriodOptions == 'Specify Date Range'
+                "
+                label="Select Period"
+                [showIcon]="true"
+                selectionMode="range"
+                #accountCalender
+                numberOfMonths="2"
+                [(ngModel)]="accountPeriod"
+                name="accountPeriod"
+                (change)="onChangeAccountPeriod()"
+              >
+              </app-aps-calender>
+            </div>
+          </div>
+          <div class="p-p-3 text-right">
+            <button class="btn btn-md btn-tertiary" (click)="isAdvanceSearch = !isAdvanceSearch">
+              <app-icon [icon]="isAdvanceSearch ? 'fa-minus' : 'fa-plus'"></app-icon>
+              {{ 'ADVANCE SEARCH' | apsTranslate }}
+            </button>
+            <button
+              *ngIf="
+                isTransactionTypeDelete || isTransactionAmountDelete || isReferenceNumberDelete
+              "
+              class="btn btn-md btn-tertiary"
+              (click)="optionalSelection.toggle($event)"
+            >
+              <app-icon icon="fa-plus"></app-icon> {{ 'ADD' | apsTranslate }}
+            </button>
+          </div>
+          <p-overlayPanel [dismissable]="false" #optionalSelection>
+            <ng-template pTemplate>
+              <div class="p-grid aps-w-350">
+                <ng-container>
+                  <div class="p-col-12 p-md-12 p-lg-12 p-p-0">
+                    <p-checkbox
+                      *ngIf="isTransactionTypeDelete"
+                      name="transactionType"
+                      value="Transaction Type"
+                      [label]="'Transaction Type' | apsTranslate"
+                      [(ngModel)]="selectedOptions"
+                    >
+                    </p-checkbox>
+                    &nbsp;
+                    <p-checkbox
+                      *ngIf="isTransactionAmountDelete"
+                      name="checkboxTransactionAmount"
+                      value="Transaction Amount"
+                      [label]="'Transaction Amount' | apsTranslate"
+                      [(ngModel)]="selectedOptions"
+                    >
+                    </p-checkbox>
+                    <p-checkbox
+                      *ngIf="isReferenceNumberDelete"
+                      name="checkboxReferenceNumber"
+                      value="Reference Number"
+                      [label]="'Reference Number' | apsTranslate"
+                      [(ngModel)]="selectedOptions"
+                    >
+                    </p-checkbox>
+                  </div>
+                </ng-container>
+                <div class="p-col-12 p-py-0">
+                  <button
+                    class="btn btn-md btn-tertiary float-right"
+                    (click)="add(); optionalSelection.hide($event)"
+                  >
+                    {{ 'ADD' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </ng-template>
+          </p-overlayPanel>
+          <div *ngIf="isAdvanceSearch">
+            <div class="p-grid" *ngIf="!isTransactionTypeDelete">
+              <div class="p-col-12 p-md-3 text-size-14 text-bold p-px-3 p-py-2">
+                {{ 'Transaction Type' | apsTranslate }}
+              </div>
+              <div class="p-col-12 p-md-9 p-py-1">
+                <p-radioButton
+                  class="p-mr-3"
+                  name="All"
+                  value="All"
+                  [label]="'All' | apsTranslate"
+                  [(ngModel)]="searchFilters[5].value"
+                >
+                </p-radioButton>
+                <p-radioButton
+                  class="p-mr-3"
+                  name="Debit"
+                  value="Debit"
+                  [label]="'Debit' | apsTranslate"
+                  [(ngModel)]="searchFilters[5].value"
+                ></p-radioButton>
+                <p-radioButton
+                  class="p-mr-3"
+                  name="Credit"
+                  value="Credit"
+                  [label]="'Credit' | apsTranslate"
+                  [(ngModel)]="searchFilters[5].value"
+                ></p-radioButton>
+                <!-- <app-icon icon="fa-trash-alt" (click)="isTransactionTypeDelete = true"></app-icon> -->
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-sm-12" *ngIf="!isTransactionAmountDelete">
+                <span class="text-size-14 text-bold p-px-2">{{
+                  'Transaction Amount' | apsTranslate
+                }}</span>
+                <div class="p-grid">
+                  <div class="p-col-12 p-md-6 p-px-2 p-py-0">
+                    <aps-form-input
+                      [label]="'Amount From' | apsTranslate"
+                      name="transactionAmountFrom"
+                      inputType="currencyFormatNotZero"
+                      id="transactionAmountFrom"
+                      [(ngModel)]="searchFilters[6].value"
+                      required
+                    >
+                    </aps-form-input>
+                  </div>
+                  <div class="p-col-12 p-md-5 p-sm-12 p-px-2 p-py-0">
+                    <aps-form-input
+                      [label]="'Amount To' | apsTranslate"
+                      name="transactionAmountTo"
+                      inputType="currencyFormatNotZero"
+                      id="transactionAmountTo"
+                      [(ngModel)]="searchFilters[7].value"
+                      required
+                    >
+                    </aps-form-input>
+                  </div>
+                  <div
+                    class="p-col-12 p-md-1 p-sm-12 p-py-4"
+                    [ngClass]="viewPort == 'mobile' ? 'text-center' : ''"
+                  >
+                    <!-- <app-icon icon="fa-trash-alt" (click)="isTransactionAmountDelete = true">
+                    </app-icon> -->
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-6 p-sm-12" *ngIf="!isReferenceNumberDelete">
+                <div class="p-grid">
+                  <div class="p-col-12 p-md-10 p-sm-12 p-py-0 p-mt-4">
+                    <aps-form-input
+                      [label]="'Reference Number' | apsTranslate"
+                      name="referenceNumber"
+                      id="referenceNumber"
+                      [(ngModel)]="searchFilters[8].value"
+                      required
+                    >
+                    </aps-form-input>
+                  </div>
+                  <div
+                    class="p-col-12 p-md-2 p-sm-12 p-py-3 p-mt-4"
+                    [ngClass]="viewPort == 'mobile' ? 'text-center' : ''"
+                  >
+                    <!-- <app-icon icon="fa-trash-alt" (click)="isReferenceNumberDelete = true">
+                    </app-icon> -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <div class="aps-card fixed-bottom-footer p-p-2 p-mt-2">
+        <div class="left-right-container">
+          <div class="left-container">
+            <button
+              class="btn btn-md btn-tertiary p-m-1"
+              (click)="showSaveSearchCriteriaModal()"
+              [disabled]="form.invalid"
+            >
+              <span *ngIf="!isUpdateCriteria">{{ 'SAVE SEARCH CRITERIA' | apsTranslate }}</span>
+              <span *ngIf="isUpdateCriteria">{{ 'UPDATE SEARCH CRITERIA' | apsTranslate }}</span>
+            </button>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-tertiary p-m-1" (click)="resetFilters()">
+              {{ 'RESET' | apsTranslate }}
+            </button>
+            <button
+              class="btn btn-md btn-primary p-m-1"
+              (click)="viewOnScreenClick()"
+              [disabled]="form.invalid"
+            >
+              {{ 'VIEW ON SCREEN' | apsTranslate }}
+            </button>
+            <button
+              class="btn btn-md btn-primary p-m-1"
+              (click)="isEmail = true"
+              [disabled]="form.invalid"
+            >
+              {{ 'EMAIL' | apsTranslate }}
+            </button>
+            <button
+              class="btn btn-md btn-primary p-m-1"
+              (click)="isDownload = true"
+              [disabled]="form.invalid"
+            >
+              {{ 'DOWNLOAD' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-5 p-lg-5">
+      <div class="aps-card aps-h-100p p-px-3 p-pb-3 p-pt-0">
+        <app-nothing-here
+          *ngIf="criteriaList.length == 0"
+          colSize="5"
+          message="Select Search by to view Saved Criteria"
+        ></app-nothing-here>
+        <p-tabView *ngIf="criteriaList.length > 0">
+          <p-tabPanel header="{{ 'Saved Criterion' | apsTranslate }}">
+            <div
+              class="p-px-0 p-pt-3 p-pb-1 border-bottom"
+              *ngFor="let criteria of criteriaList; let i = index"
+            >
+              <div class="left-right-container">
+                <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                  <div class="text-size-12">{{ criteria.name }}</div>
+                  <div class="text-size-10">{{ getCriteriaFilterCount(criteria) }} Parameters</div>
+                </div>
+                <div class="right-container">
+                  <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                    {{ 'Apply' | apsTranslate }}
+                  </button>
+                  <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                    <app-icon
+                      icon="fa-trash-alt"
+                      class="text-size-14 pointer"
+                      (click)="deleteCriteria(criteria)"
+                    >
+                    </app-icon>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+          <p-tabPanel header="{{ 'Recent' | apsTranslate }}">
+            <ng-container *ngFor="let criteria of criteriaList; let i = index">
+              <div class="p-px-0 p-pt-3 p-pb-1 border-bottom" *ngIf="i < 3">
+                <div class="left-right-container">
+                  <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                    <div class="text-size-12">{{ criteria.modifiedSysOn }}</div>
+                    <div class="text-size-10">
+                      {{ getCriteriaFilterCount(criteria) }} Parameters {{ criteria.name }}
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                      {{ 'REUSE' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </div>
+  </div>
+</div>

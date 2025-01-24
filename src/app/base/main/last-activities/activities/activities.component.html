@@ -1,0 +1,10 @@
+<div class="activities">
+  <div class="activity" *ngFor="let menu of frequentlyUsedMenus">
+    <div class="icon">
+      <app-icon icon="fa-clock"></app-icon>
+    </div>
+    <div class="text" (click)="handleFrequentlyUsedMenu(menu)">
+      {{ menu.displayName | apsTranslate }}
+    </div>
+  </div>
+</div>

@@ -1,0 +1,126 @@
+<div class="p-grid g-margin-x" *ngIf="!loading; else loadingTemplate">
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <app-aps-calender
+      id="period"
+      name="period"
+      label="Period - From and To"
+      [showIcon]="true"
+      selectionMode="range"
+      numberOfMonths="2"
+      [(ngModel)]="forecastPeriod"
+    ></app-aps-calender>
+  </div>
+  <div class="p-md-8 p-sm-12 p-col-12 p-p-0"></div>
+
+  <div class="p-md-3 p-sm-12 p-col-12">
+    <div class="aps-card p-px-3 p-py-2">
+      <div class="label-with-icon-container text-size-14 text-color-primary text-bold">
+        <div class="icon"><app-icon icon="fa-chart-area"></app-icon></div>
+        <div class="label">Cash In</div>
+      </div>
+      <div class="p-py-1 text-bold">
+        <app-base-currency
+          [amount]="groupCashflowForecastData.totalCashInFlow"
+          display="code"
+          digitsInfo="1.0-0"
+        >
+        </app-base-currency>
+      </div>
+      <div class="inline-items text-size-12">
+        <div class="item p-mr-1">
+          <div class="label-with-icon-container text-color-success text-bold">
+            <div class="icon"><app-icon icon="fa-arrow-up"></app-icon></div>
+            <div class="label">62.34%</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="text-color-dark-shade-1">From last month</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-3 p-sm-12 p-col-12">
+    <div class="aps-card p-px-3 p-py-2">
+      <div class="label-with-icon-container text-size-14 text-color-primary text-bold">
+        <div class="icon"><app-icon icon="fa-edit"></app-icon></div>
+        <div class="label">Cash Out</div>
+      </div>
+      <div class="p-py-1 text-bold">
+        <app-base-currency
+          [amount]="groupCashflowForecastData.totalCashOutFlow"
+          display="code"
+          digitsInfo="1.0-0"
+        >
+        </app-base-currency>
+      </div>
+      <div class="inline-items text-size-12">
+        <div class="item p-mr-1">
+          <div class="label-with-icon-container text-color-success text-bold">
+            <div class="icon"><app-icon icon="fa-arrow-up"></app-icon></div>
+            <div class="label">47.25%</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="text-color-dark-shade-1">From last month</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-3 p-sm-12 p-col-12">
+    <div class="aps-card p-px-3 p-py-2">
+      <div class="label-with-icon-container text-size-14 text-color-primary text-bold">
+        <div class="icon"><app-icon icon="fa-chart-line"></app-icon></div>
+        <div class="label">Net Flow</div>
+      </div>
+      <div class="p-py-1 text-bold">
+        <app-base-currency
+          [amount]="groupCashflowForecastData.totalNetInFlow"
+          display="code"
+          digitsInfo="1.0-0"
+        >
+        </app-base-currency>
+      </div>
+      <div class="inline-items text-size-12">
+        <div class="item p-mr-1">
+          <div class="label-with-icon-container text-color-success text-bold">
+            <div class="icon"><app-icon icon="fa-arrow-up"></app-icon></div>
+            <div class="label">54.62%</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="text-color-dark-shade-1">From last month</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-3 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-100p p-px-3 p-py-2">
+      <div class="label-with-icon-container text-size-14 text-color-primary text-bold">
+        <div class="icon"><app-icon icon="fa-coins"></app-icon></div>
+        <div class="label">Cash in Hand</div>
+      </div>
+      <div class="p-py-1 text-bold">
+        <app-base-currency amount="1720198" display="code" digitsInfo="1.0-0"> </app-base-currency>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12">
+    <div class="aps-card aps-h-400 p-p-3">
+      <app-select-group-button
+        [options]="options"
+        [selectedOption]="selectedOption"
+        (onSelection)="changePeriodType($event)"
+      ></app-select-group-button>
+
+      <aps-chart [options]="chartDataOptions" *ngIf="!loadingGraph"></aps-chart>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

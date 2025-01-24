@@ -1,0 +1,131 @@
+<div class="container">
+  <div class="aps-card">
+    <form name="userUploadForm" #userUploadForm="ngForm">
+      <div class="aps-card-header">
+        <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+          {{ 'User Upload' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body" *ngIf="stepperDetails.currentStep == 1">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+            <aps-custom-select
+              [label]="'Data Layout' | apsTranslate"
+              name="dataLayoutId"
+              id="dataLayoutId"
+              [(ngModel)]="formData.dataLayoutId"
+              [value]="formData.dataLayoutId"
+              [data]="userUploadList"
+              required
+            >
+            </aps-custom-select>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12 p-mt-2" *ngIf="formData.dataLayoutId">
+            <button class="btn btn-md btn-tertiary" (click)="isLayoutData = true">
+              {{ 'VIEW SAMPLE DATA LAYOUT' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-px-3 p-col-12 p-md-4 p-sm-12">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-2">
+              {{ 'Upload File' | apsTranslate }}
+            </div>
+            <upload-form-control
+              [files]="formData.uploadFile"
+              [hideDragDropContainerOnFIleUpload]="true"
+              (onUploaded)="onFileUploaded($event)"
+            ></upload-form-control>
+          </div>
+        </div>
+      </div>
+      <div
+        class="aps-card-body"
+        *ngIf="stepperDetails.currentStep == stepperDetails.headings.length"
+      >
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <div class="p-p-2">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Uploaded File Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ formData.uploadFile[0].originalFileName }}</div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <div class="p-p-2">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Upload Date Time' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ formData.uploadDateTime }}</div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <div class="p-p-2">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Uploaded By' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ formData.uploadedBy }}</div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <div class="p-p-2">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Upload Status' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ formData.uploadStatus }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <div class="p-p-2">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Data Layout' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ getLayoutById(formData.dataLayoutId) }}</div>
+            </div>
+          </div>
+          <div class="p-mt-2 p-col-12 p-md-4 p-sm-12" *ngIf="formData.dataLayoutId">
+            <button class="btn btn-md btn-tertiary" (click)="isLayoutData = true">
+              {{ 'VIEW SAMPLE DATA LAYOUT' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3" *ngFor="let file of formData.uploadFile">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-2 p-mb-1">
+              {{ 'Upload File' | apsTranslate }}
+            </div>
+            <div class="aps-card">
+              <div class="p-grid">
+                <div class="p-col-2">
+                  <app-icon icon="fa-file" class="p-mt-2"></app-icon>
+                </div>
+                <div class="p-col-10">
+                  <div class="text-size-12 review-file-name">{{ file.originalFileName }}</div>
+                  <div class="text-size-10 text-color-light-shade-1">
+                    {{ (file.size / 1024 / 1024).toFixed(2) }}Mb
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <!-- Form Actions -->
+  <app-stepper-footer class="fixed-bottom-footer-container" [parentRef]="this"></app-stepper-footer>
+
+  <app-modal
+    [(isShow)]="isLayoutData"
+    size="md"
+    headerText="{{ 'Data Layout Mapper' | apsTranslate }}"
+  >
+    <ng-container body>
+      <app-data-layout></app-data-layout>
+    </ng-container>
+    <div footer></div>
+  </app-modal>
+</div>

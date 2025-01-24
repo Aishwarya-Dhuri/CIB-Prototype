@@ -1,0 +1,23 @@
+<ng-container *ngFor="let data of transactionData">
+  <app-transaction-details
+    [data]="data.data"
+    *ngIf="data.type === 'details'"
+  ></app-transaction-details>
+
+  <app-file-details [data]="data.data" *ngIf="data.type === 'files'"></app-file-details>
+
+  <app-maker-checker-details
+    [header]="data.header"
+    [data]="data.data"
+    *ngIf="data.type === 'makerCheckerDetails'"
+  ></app-maker-checker-details>
+
+  <app-grid-details
+    [colDefUrl]="data.colDefUrl"
+    [rowDefUrl]="data.rowDefUrl"
+    (linkClicked)="onLinkClicked($event)"
+    *ngIf="data.type === 'grid'"
+  ></app-grid-details>
+
+  <app-tab-details [data]="data.data" *ngIf="data.type === 'tabs'"></app-tab-details>
+</ng-container>

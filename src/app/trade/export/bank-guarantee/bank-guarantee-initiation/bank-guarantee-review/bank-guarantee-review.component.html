@@ -1,0 +1,638 @@
+<div class="container">
+  <app-modal [(isShow)]="submit">
+    <div body>
+      <div class="text-size-16 text-bold text-color-dark-shade-1">
+        {{ 'Successfully Submitted' | apsTranslate }}
+      </div>
+      <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+        {{ 'Bank Guarantee Repair record has been successfully submitted.' | apsTranslate }}
+      </div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary p-px-3" (click)="cancel()">
+            {{ 'OKAY' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid p-pb-3" *ngIf="parentRef.formData">
+    <div class="p-col-12 p-px-0">
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Bank Guarantee details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(0)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Issuance For' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.transactionDetails[0].issuanceFor }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Type Of Application/Undertaking' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.bankGuaranteeDetails[0].typeOfApplicationOrUndertaking }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Applicable Rule' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.bankGuaranteeDetails[0].applicableRule }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12"
+              *ngIf="parentRef.formData.bankGuaranteeDetails[0].applicableRule == 'OTHR'">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Description' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.bankGuaranteeDetails[0].description }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Advice Mode' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.bankGuaranteeDetails[0].adviceMode }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Corporate Ref No.' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.bankGuaranteeDetails[0].corporateReferenceNo }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Transaction Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.bankGuaranteeDetails[0].transactionDate }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Applicant Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(1)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Name' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].applicantName }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Email' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].applicantEmail }}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12 p-p-0"></div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Mobile Number' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].applicantMobileNo }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Address' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].applicantAddress }}
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="parentRef.formData.applicantDetails[0].onBehalfOf">
+              <div class="p-col-12">
+                <p-checkbox name="onBehalfOf" id="onBehalfOf" label="On behalf of" [binary]="true" [disabled]="true"
+                  [(ngModel)]="parentRef.formData.applicantDetails[0].onBehalfOf">
+                </p-checkbox>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">{{ 'Name' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].name }}
+                </div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Telephone No' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].telephoneNo }}
+                </div>
+              </div>
+              <div class="p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Address' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].address1[0].address }}
+                  <span *ngIf="parentRef.formData.applicantDetails[0].address2[0].show">, {{
+                    parentRef.formData.applicantDetails[0].address2[0].address }}</span>
+                  <span *ngIf="parentRef.formData.applicantDetails[0].address3[0].show">, {{
+                    parentRef.formData.applicantDetails[0].address3[0].address }}</span>
+                </div>
+              </div>
+            </ng-container>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">{{ 'Name For Clarification' | apsTranslate }}</div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].nameForClarification }}
+                </div>
+              </div>
+            </div>
+            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                <div class="text-color-normal">
+                  {{ 'Mobile Number For Clarification' | apsTranslate }}
+                </div>
+                <div class="text-color-dark-shade-1">
+                  {{ parentRef.formData.applicantDetails[0].mobileNumberForClarification }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Beneficiary Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(2)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryName }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">{{ 'Email' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].email }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Bank Swift Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].bankSwiftCode }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Address' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryAddress1[0].address }}
+                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show">,
+                  {{
+                  parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].address
+                  }}</span>
+                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show">,
+                  {{
+                  parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].address
+                  }}</span>
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Country' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].country }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryAccountNumber }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Bank Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryBankName }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Beneficiary Bank Address' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress1[0].address }}
+                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show">,
+                  {{
+                  parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].address
+                  }}</span>
+                <span *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show">,
+                  {{
+                  parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].address
+                  }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Transaction Details' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(3)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Currency' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.transactionDetails[0].currency }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Amount' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.transactionDetails[0].amount }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Effective Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.transactionDetails[0].effectiveDate }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  {{ 'Validity' | apsTranslate }}
+                </div>
+                <p-radioButton class="p-mr-5" name="fixed" id="fixed" value="Fixed" label="Fixed" [required]="true"
+                  (click)="setStepCompleted()" [(ngModel)]="parentRef.formData.transactionDetails[0].validity"
+                  [disabled]="true">
+                </p-radioButton>
+                <p-radioButton name="openEnded" id="openEnded" value="Open Ended" label="Open Ended" [required]="true"
+                  (click)="setStepCompleted()" [(ngModel)]="parentRef.formData.transactionDetails[0].validity"
+                  [disabled]="true">
+                </p-radioButton>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Expiry Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.transactionDetails[0].expiryDate }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12" *ngIf="parentRef.formData.transactionDetails[0].validity == 'Fixed'">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Claim Expiry Date' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.transactionDetails[0].claimExpiryDate }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  {{ 'Guarantee Format' | apsTranslate }}
+                </div>
+                <p-radioButton class="p-mr-5" name="asPerBankFormat" id="asPerBankFormat" value="As Per Bank Format"
+                  label="As Per Bank Format" [required]="true" (click)="setStepCompleted()"
+                  [(ngModel)]="parentRef.formData.transactionDetails[0].guaranteeFormat" [disabled]="true">
+                </p-radioButton>
+                <p-radioButton name="asPerAttachment" id="asPerAttachment" value="As Per Attachment"
+                  label="As Per Attachment" [required]="true" (click)="setStepCompleted()"
+                  [(ngModel)]="parentRef.formData.transactionDetails[0].guaranteeFormat" [disabled]="true">
+                </p-radioButton>
+              </div>
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12" *ngIf="
+                  parentRef.formData.transactionDetails[0].guaranteeFormat == 'As Per Attachment'
+                ">
+                <div class="aps-card p-p-2">
+                  <div class="inline-items">
+                    <div class="item">
+                      <!-- <i class="pi pi-file"></i> -->
+                      <app-icon icon="fa-file"></app-icon>
+                    </div>
+                    <div class="item text-color-normal p-px-2"
+                      *ngIf="parentRef.formData.transactionDetails[0].supportingDocument.length > 0">
+                      <div class="text-size-12">
+                        {{
+                        parentRef.formData.transactionDetails[0].supportingDocument[0].fileName
+                        }}
+                      </div>
+                      <div class="text-size-10">
+                        {{
+                        (
+                        +parentRef.formData.transactionDetails[0].supportingDocument[0]
+                        .fileSize /
+                        1024 /
+                        1024
+                        ).toFixed(2)
+                        }}Mb
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  {{ 'Preferred Language of Guarantee' | apsTranslate }}
+                </div>
+                <p-radioButton class="p-mr-5" name="english" id="english" value="English" label="English"
+                  [required]="true" (click)="setStepCompleted()" [(ngModel)]="
+                    parentRef.formData.transactionDetails[0].preferredLanguageOfGuaranteee
+                  " [disabled]="true">
+                </p-radioButton>
+                <p-radioButton class="p-mr-5" name="local" id="local" value="Local" label="Local" [required]="true"
+                  (click)="setStepCompleted()" [(ngModel)]="
+                    parentRef.formData.transactionDetails[0].preferredLanguageOfGuaranteee
+                  " [disabled]="true">
+                </p-radioButton>
+                <p-radioButton name="bilingual" id="bilingual" value="Bilingual" label="Bilingual (English & Local)"
+                  [required]="true" (click)="setStepCompleted()" [(ngModel)]="
+                    parentRef.formData.transactionDetails[0].preferredLanguageOfGuaranteee
+                  " [disabled]="true">
+                </p-radioButton>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 text-size-14 text-semi-bold text-color-dark-shade-1 p-px-1 p-pt-3">
+            {{ 'Guarantee to be Delivered' | apsTranslate }}
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">{{ 'Name' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.transactionDetails[0].name }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Telephone No' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.transactionDetails[0].telephoneNo }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">{{ 'Id' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.transactionDetails[0].idProof }}
+              </div>
+            </div>
+            <div class="p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Purpose Of Guarantee' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.transactionDetails[0].purposeOfGuarantee }}
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Account Number For Charges' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ parentRef.formData.transactionDetails[0].accountNumberForCharges }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ ' Supporting Documents' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(4)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Document Type' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ ' Reference Number' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                {{ 'Upload Documents' | apsTranslate }}
+              </div>
+            </div>
+            <ng-container *ngIf="parentRef.formData.supportingDocuments[0].bgStandard359">
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <p-checkbox name="bgStandard359" id="bgStandard359" label="BG Standard 359" [binary]="true"
+                  [disabled]="true" [(ngModel)]="parentRef.formData.supportingDocuments[0].bgStandard359">
+                </p-checkbox>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Reference Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.supportingDocuments[0].bgStandard359RefNo }}
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="aps-card p-p-2">
+                  <div class="inline-items">
+                    <div class="item">
+                      <!-- <i class="pi pi-file"></i> -->
+                      <app-icon icon="fa-file"></app-icon>
+                    </div>
+                    <div class="item text-color-normal p-px-2" *ngIf="
+                        parentRef.formData.supportingDocuments[0].bgStandard359Document.length > 0
+                      ">
+                      <div class="text-size-12">
+                        {{
+                        parentRef.formData.supportingDocuments[0].bgStandard359Document[0]
+                        .fileName
+                        }}
+                      </div>
+                      <div class="text-size-10">
+                        {{
+                        (
+                        +parentRef.formData.supportingDocuments[0].bgStandard359Document[0]
+                        .fileSize /
+                        1024 /
+                        1024
+                        ).toFixed(2)
+                        }}Mb
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+                {{ 'Terms and condition' | apsTranslate }}
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon *ngIf="!parentRef.isViewMode" icon="fa-pencil"
+                styleClasses="text-size-16 text-color-dark-shade-1 p-px-3 aps-py-12" (click)="onEdit(5)">
+              </app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body p-p-2 overflow-scroll">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <p-checkbox name="agreeToTermsAndCondition" id="agreeToTermsAndCondition"
+                label="I agree to terms and conditions" [binary]="true" [disabled]="true"
+                [(ngModel)]="parentRef.formData.termsAndCondition[0].agreeToTermsAndCondition">
+              </p-checkbox>
+              <a class="text-size-14 text-bold pointer p-p-1" (click)="isTermsAndCondition = true">Click Here</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-modal [(isShow)]="isTermsAndCondition" size="md">
+    <div header>
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-16 text-semi-bold">{{ 'Terms And Conditions' | apsTranslate }}</div>
+        </div>
+      </div>
+    </div>
+    <div body *ngIf="termsAndCondition.length > 0">
+      <div [innerHtml]="
+          (termsAndCondition && termsAndCondition[0] ? termsAndCondition[0].description : '')
+            | safeHtml
+        "></div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary p-px-3" (click)="isTermsAndCondition = false">
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+</div>

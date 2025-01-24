@@ -1,0 +1,1002 @@
+<div class="container" *ngIf="isLoading">
+  <ng-container *ngIf="!isInititateScreen">
+    <ng-container *ngTemplateOutlet="dashboardTemplate"></ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="isInititateScreen">
+    <div *ngIf="stepperDetails.currentStep === 1">
+      <ng-container *ngTemplateOutlet="step1Template"></ng-container>
+    </div>
+
+    <div *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+      <div class="p-py-3 text-size-16 text-bold">
+        {{ 'lbl_review_details_&_confirm' | translate }}
+      </div>
+      <ng-container *ngIf="!isMultiFundTranfer">
+        <div class="aps-card p-px-3">
+          <ng-container *ngTemplateOutlet="beneficiaryReviewTemplate"></ng-container>
+        </div>
+        <div class="aps-card p-my-3 p-px-3">
+          <ng-container *ngTemplateOutlet="paymentDetailsReviewTemplate"></ng-container>
+        </div>
+        <app-maker-checker-detail classes="p-my-3" [formData]="formData"></app-maker-checker-detail>
+      </ng-container>
+
+      <ng-container *ngIf="isMultiFundTranfer">
+        <div class="p-grid">
+          <div class="p-col-12 p-py-0">
+            <div class="text-semi-bold text-size-16">
+              {{ 'Added Fund Transfers' | translate }}&nbsp;({{ fundTransferList.length }})
+            </div>
+          </div>
+          <div class="p-col-12 border-bottom">
+            <span class="text-size-12 text-light">Total Amount: </span>
+            <span class="text-semi-bold text-size-14 text-color-primary">{{
+              getTotalFundTranferAmount() | currency: currencyName:'code'
+            }}</span>
+            <span class="text-size-12 text-light"
+              >&nbsp;({{ getTotalFundTranferAmount() | numberToWord }})</span
+            >
+          </div>
+        </div>
+
+        <div
+          class="aps-card p-my-3 p-p-3"
+          *ngFor="let fundTransfer of fundTransferList; let i = index"
+        >
+          <div class="p-grid">
+            <div class="p-col-6 p-md-3 p-lg-3 p-p-0">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'lbl_beneficiary_name' | translate }}
+              </div>
+              <div class="text-size-14">{{ fundTransfer.beneficiaryName }}</div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3 p-p-0">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'lbl_beneficiary_account' | translate }}
+              </div>
+              <div class="text-size-14">{{ fundTransfer.paymentRequestDetails[0].accountNo }}</div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3 p-p-0">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'lbl_amount' | translate }}
+              </div>
+              <div class="text-size-14">
+                {{ fundTransfer.payableAmount | currency: currencyName:'code' }}
+              </div>
+            </div>
+            <div class="p-col-6 p-md-3 p-lg-3 p-p-0">
+              <app-icon
+                class="pointer float-right p-m-2"
+                [icon]="fundTransfer.isShowDetails ? 'fa-chevron-up' : 'fa-chevron-down'"
+                (click)="showHideFundTransferDetails(i)"
+              ></app-icon>
+            </div>
+            <ng-container *ngIf="fundTransfer.isShowDetails">
+              <div class="p-col-12 p-mt-2 border-top">
+                <div class="p-px-3">
+                  <ng-container *ngTemplateOutlet="beneficiaryReviewTemplate"></ng-container>
+                </div>
+                <div class="p-my-3 p-px-3">
+                  <ng-container *ngTemplateOutlet="paymentDetailsReviewTemplate"></ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <app-stepper-footer [parentRef]="this" #stepFooter></app-stepper-footer>
+  </ng-container>
+</div>
+
+<ng-template #dashboardTemplate>
+  <!-- Tile button -->
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12">
+      <div class="aps-card p-p-2">
+        <div class="p-grid">
+          <!-- Tile divs -->
+          <div class="p-col-12 p-md-3 p-lg-3">
+            <div
+              class="aps-card primary-button-card aps-h-120 p-p-3 pointer"
+              (click)="isInititateScreen = true"
+            >
+              <div class="p-mb-3 text-color-inverted text-size-16">
+                {{ 'Single Fund Transfer' | translate }}
+              </div>
+              <hr />
+              <div class="text-color-inverted text-size-12">
+                {{
+                  'If you want to initiate single fund Transfer at a time click here' | translate
+                }}
+              </div>
+            </div>
+          </div>
+          <!-- Tile button -->
+          <div class="p-col-12 p-md-3 p-lg-3">
+            <div
+              class="aps-card secondary-button-card aps-h-120 p-p-3 pointer"
+              (click)="isMultiFundTranfer = true; isInititateScreen = true"
+            >
+              <div class="p-mb-3 text-color-primary text-size-16">
+                {{ 'Multiple Fund Transfer' | translate }}
+              </div>
+              <hr class="border-primary" />
+              <div class="text-color-dark-shade-3 text-size-12">
+                {{
+                  'If you want to initiate multiple fund Transfer at a time click here' | translate
+                }}
+              </div>
+            </div>
+          </div>
+          <!-- Insights -->
+          <div class="p-col-12 p-md-6 p-lg-6">
+            <div class="background-color-dark-4 aps-h-120 text-color-dark-shade-1 p-px-3 p-py-2">
+              <div class="text-size-14 text-semi-bold">Insights</div>
+              <div class="aps-h-80 overflow-scroll">
+                <div class="label-with-icon-container p-mt-1" *ngFor="let insight of insights">
+                  <div class="icon">
+                    <app-icon styleClasses="text-size-10" [icon]="insight.icon"></app-icon>
+                  </div>
+                  <div class="label text-size-10 p-pt-1">
+                    {{ insight.label }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-landing-listing [listTypes]="transactionsListTypes"></app-landing-listing>
+</ng-template>
+
+<ng-template #step1Template>
+  <!-- <div class="p-py-3 text-size-16 text-bold">
+    {{ 'lbl_payment_details' | translate }}
+  </div> -->
+  <div *ngIf="isAddNewBeneficiary">
+    <ng-container *ngTemplateOutlet="addNewbeneficiaryTemplate"></ng-container>
+  </div>
+  <ng-container *ngIf="!isAddNewBeneficiary">
+    <form #paymentDetails="ngForm">
+      <div class="p-grid g-margin-x">
+        <div class="p-col-12" [ngClass]="{ 'p-md-8 p-lg-8': isMultiFundTranfer }">
+          <div class="p-grid">
+            <!-- Beneficiary Details Card -->
+            <div class="p-col-12 p-px-0 p-pt-0">
+              <div class="aps-card p-p-2">
+                <div class="p-grid">
+                  <div class="p-col-6 p-p-2">
+                    <div class="text-semi-bold text-size-14 p-py-1">
+                      {{ 'lbl_beneficiary_details' | translate }}
+                    </div>
+                  </div>
+                  <div class="p-col-6 p-p-1">
+                    <button
+                      class="btn btn-md btn-tertiary float-right"
+                      (click)="isAddNewBeneficiary = true"
+                    >
+                      <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+                      {{ 'ADD NEW BENEFICIARY' | translate }}
+                    </button>
+                  </div>
+                  <div class="p-col-12 p-md-4 p-lg-4">
+                    <aps-form-input
+                      id="beneficiaryName"
+                      name="beneficiaryName"
+                      [label]="'lbl_beneficiary_name' | translate"
+                      inputType="alphaNumeric"
+                      rightIcon="fa-search"
+                      (onRightIcon)="isShowBeneficiaryModal = true"
+                      [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryName"
+                      required="true"
+                      disabled="true"
+                    >
+                    </aps-form-input>
+                  </div>
+                  <div
+                    class="p-col-12 p-md-4 p-lg-4 p-py-0"
+                    *ngIf="formData.paymentRequestDetails[0].beneficiaryName"
+                  >
+                    <div
+                      class="text-size-12 text-color-light-shade-2 background-color-disabled p-pt-2 p-px-2"
+                    >
+                      {{ 'lbl_beneficiary_account' | translate }}
+                    </div>
+                    <div class="text-size-14 background-color-disabled p-p-2">
+                      {{ formData.paymentRequestDetails[0].accountNo }}
+                    </div>
+                  </div>
+                  <div
+                    class="p-col-12 p-md-4 p-lg-4 p-py-0"
+                    *ngIf="formData.paymentRequestDetails[0].beneficiaryId"
+                  >
+                    <div
+                      class="text-size-12 text-color-light-shade-2 background-color-disabled p-pt-2 p-px-2"
+                    >
+                      {{ 'lbl_payment_method' | translate }}
+                    </div>
+                    <div class="text-size-14 background-color-disabled p-p-2">
+                      {{ formData.paymentMethodName }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Details Card -->
+            <div class="p-col-12 p-px-0">
+              <div class="aps-card p-p-2">
+                <div class="p-grid">
+                  <div class="p-col-6 p-p-2">
+                    <div class="text-semi-bold text-size-14 p-py-1">
+                      {{ 'lbl_payment_details' | translate }}
+                    </div>
+                  </div>
+                  <div class="p-col-6 p-p-1">
+                    <button
+                      class="btn btn-md btn-tertiary float-right"
+                      (click)="isShowAttachmentModal = true"
+                    >
+                      <app-icon class="p-px-1" icon="fa-paperclip"></app-icon>
+                      {{ 'UPLOAD DOCUMENTS' | translate }}
+                    </button>
+                  </div>
+                  <div class="p-col-12 p-md-4 p-lg-4">
+                    <app-aps-calender
+                      [label]="'lbl_value_date' | translate"
+                      id="valueDate"
+                      name="valueDate"
+                      [(ngModel)]="formData.valueDate"
+                      (blur)="onValueDateChange()"
+                      required="true"
+                    >
+                    </app-aps-calender>
+                  </div>
+                  <div class="p-col-12 p-md-4 p-lg-4">
+                    <aps-custom-select
+                      id="debitAccountId"
+                      name="debitAccountId"
+                      [label]="'lbl_debit_from_account' | translate"
+                      [(ngModel)]="formData.debitAccountId"
+                      (change)="onDebitAccountChange()"
+                      [data]="debitAccountList"
+                      required="true" 
+					  [value]="formData.debitAccountId"
+                    >
+                    </aps-custom-select>
+                  </div>
+                  <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                    <ng-container *ngIf="formData.debitAccountBalance">
+                      <div
+                        class="text-size-12 text-color-light-shade-2 background-color-disabled p-pt-2 p-px-2"
+                      >
+                        {{ 'lbl_account_balance' | translate }}
+                      </div>
+                      <div class="text-size-14 background-color-disabled p-p-2">
+                        {{ formData.debitAccountBalance | currency: currencyName:'code' }}
+                      </div>
+                    </ng-container>
+                  </div>
+                  <div class="p-col-12 p-md-4 p-lg-4">
+                    <div class="p-grid">
+                      <div class="p-col-3 p-p-0">
+                        <aps-custom-select
+                          id="payableCurrencyId"
+                          name="payableCurrencyId"
+                          [(ngModel)]="formData.payableCurrencyId"
+                          (change)="onPayableCurrencyChange()"
+                          [data]="currencyList"
+                        >
+                        </aps-custom-select>
+                      </div>
+                      <div class="p-col-9 p-py-0">
+                        <aps-form-input
+                          id="payableAmount"
+                          name="payableAmount"
+                          label="{{ 'lbl_amount' | translate }}"
+                          minLength="1"
+                          maxLength="16"
+                          placeholder="{{ 'lbl_enter_amount' | translate }}"
+                          inputType="currencyFormatNotZero"
+                          required="true"
+                          [(ngModel)]="formData.payableAmount"
+                          (change)="onPayableAmoutChange()"
+                        >
+                        </aps-form-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                    <div
+                      class="text-size-12 text-color-light-shade-2 background-color-disabled p-pt-2 p-px-2"
+                    >
+                      {{ 'lbl_charges' | translate }}
+                    </div>
+                    <div class="text-size-14 background-color-disabled p-p-2">
+                      {{ formData.debitCurrencyCode }}
+                      {{ getCharges(formData.payableAmount) | currency: '':'' }}
+                    </div>
+                  </div>
+                  <div class="p-col-12 p-md-4 p-lg-4">
+                    <aps-form-input
+                      id="corporateRefNo"
+                      name="corporateRefNo"
+                      label="{{ 'lbl_corporate_reference_no' | translate }}"
+                      minLength="0"
+                      maxLength="35"
+                      placeholder="{{ 'lbl_enter_corporate_reference_no' | translate }}"
+                      inputType="alphaNumeric"
+                      [(ngModel)]="formData.paymentRequestDetails[0].corporateRefNo"
+                      (change)="onCorporateRefNoChange()"
+                    >
+                    </aps-form-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Instructions card -->
+            <div class="p-col-12 p-px-0">
+              <!-- <div class="aps-card p-p-2 aps-min-h-220 aps-h-100p"> -->
+              <div class="aps-card p-p-2">
+                <div class="p-grid">
+                  <div class="p-col-7 p-p-2">
+                    <div class="text-semi-bold text-size-14 p-py-1">
+                      {{ 'lbl_payment_instruction' | translate }}
+                      <sup class="text-color-danger">*</sup>
+                    </div>
+                  </div>
+                  <div class="p-col-5 p-p-1">
+                    <button
+                      class="btn btn-md btn-tertiary float-right"
+                      [disabled]="instructionCount > 3"
+                      (click)="addMoreInstruction()"
+                    >
+                      <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+                      {{ 'lbl_add_more' | translate }}
+                    </button>
+                  </div>
+                  <div class="p-col-12 p-md-6 p-lg-6" *ngIf="instructionCount > 0">
+                    <aps-form-input
+                      id="paymentDetails1"
+                      name="paymentDetails1"
+                      label="{{ 'lbl_payment_instruction' | translate }}"
+                      minLength="1"
+                      maxLength="35"
+                      inputType="alphaNumeric"
+                      placeholder="{{ 'lbl_enter_payment_instruction' | translate }}"
+                      required="true"
+                      [(ngModel)]="formData.paymentRequestDetails[0].paymentDetails1"
+                    >
+                    </aps-form-input>
+                  </div>
+                  <div class="p-col-12 p-md-6 p-lg-6" *ngIf="instructionCount > 1">
+                    <aps-form-input
+                      id="paymentDetails2"
+                      name="paymentDetails2"
+                      label="{{ 'lbl_payment_instruction' | translate }}"
+                      minLength="0"
+                      maxLength="35"
+                      placeholder="{{ 'lbl_enter_payment_instruction' | translate }}"
+                      required="true"
+                      rightIcon="fa-trash-alt"
+                      (onRightIcon)="instructionCount = instructionCount - 1"
+                      inputType="alphaNumeric"
+                      [(ngModel)]="formData.paymentRequestDetails[0].paymentDetails2"
+                    >
+                    </aps-form-input>
+                  </div>
+                  <div class="p-col-12 p-md-6 p-lg-6" *ngIf="instructionCount > 2">
+                    <aps-form-input
+                      id="paymentDetails3"
+                      name="paymentDetails3"
+                      label="{{ 'lbl_payment_instruction' | translate }}"
+                      minLength="0"
+                      maxLength="35"
+                      placeholder="{{ 'lbl_enter_payment_instruction' | translate }}"
+                      required="true"
+                      rightIcon="fa-trash-alt"
+                      (onRightIcon)="instructionCount = instructionCount - 1"
+                      inputType="alphaNumeric"
+                      [(ngModel)]="formData.paymentRequestDetails[0].paymentDetails3"
+                    >
+                    </aps-form-input>
+                  </div>
+                  <div class="p-col-12 p-md-6 p-lg-6" *ngIf="instructionCount > 3">
+                    <aps-form-input
+                      id="paymentDetails4"
+                      name="paymentDetails4"
+                      label="{{ 'lbl_payment_instruction' | translate }}"
+                      minLength="0"
+                      maxLength="35"
+                      placeholder="{{ 'lbl_enter_payment_instruction' | translate }}"
+                      required="true"
+                      rightIcon="fa-trash-alt"
+                      (onRightIcon)="instructionCount = instructionCount - 1"
+                      inputType="alphaNumeric"
+                      [(ngModel)]="formData.paymentRequestDetails[0].paymentDetails4"
+                    >
+                    </aps-form-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="p-col-12 p-px-0" *ngIf="isMultiFundTranfer">
+              <div class="aps-card">
+                <div class="p-grid">
+                  <div class="p-col-12">
+                    <button
+                      class="btn btn-md btn-primary float-right"
+                      [disabled]="paymentDetails.invalid"
+                      (click)="addFundTransfer()"
+                    >
+                      {{ (isFundTransferEdit ? 'UPDATE' : 'ADD') | translate }}
+                    </button>
+                    <button
+                      class="btn btn-md btn-tertiary p-mx-2 float-right"
+                      (click)="resetFormData()"
+                    >
+                      CLEAR
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi Added Funds -->
+        <div class="p-col-12 p-md-4 p-lg-4 p-pb-3" *ngIf="isMultiFundTranfer">
+          <div class="aps-card p-p-2 aps-h-100p">
+            <div class="p-grid">
+              <div class="p-col-12 p-p-2">
+                <div class="text-semi-bold text-size-14 p-py-1">
+                  {{ 'Added Fund Transfers' | translate }}&nbsp;({{ fundTransferList.length }})
+                </div>
+              </div>
+
+              <div class="p-col-12 p-p-2 border-bottom">
+                <span class="text-size-12 text-light">Total Amount: </span>
+                <span class="text-semi-bold text-size-14 text-color-primary">{{
+                  getTotalFundTranferAmount() | currency: currencyName:'code'
+                }}</span>
+                <span class="text-size-12 text-light"
+                  >&nbsp;({{ getTotalFundTranferAmount() | numberToWord }})</span
+                >
+              </div>
+
+              <div class="p-col-12" *ngIf="fundTransferList.length == 0">
+                <app-nothing-here
+                  message="{{ 'No transfers added' | translate }}"
+                  [colSize]="viewport === 'web' ? 7 : 8"
+                >
+                </app-nothing-here>
+              </div>
+
+              <div class="p-col-12" *ngIf="fundTransferList.length > 0">
+                <div
+                  class="p-grid border-bottom"
+                  *ngFor="let fundTransfer of fundTransferList; let i = index"
+                >
+                  <div class="p-col-6 p-md-6 p-lg-6 p-p-0 p-mt-2">
+                    <div class="text-size-14 text-bold text-color-primary">
+                      {{ fundTransfer.beneficiaryName }}
+                    </div>
+                    <div>
+                      <!-- <span class="text-size-12 text-light">{{ 'lbl_beneficiary_account' | translate }}:&nbsp;</span> -->
+                      <span class="text-size-12">{{
+                        fundTransfer.paymentRequestDetails[0].accountNo
+                      }}</span>
+                    </div>
+                    <div>
+                      <!-- <span class="text-size-12 text-light">{{ 'lbl_payment_method' | translate }}:&nbsp;</span> -->
+                      <span class="text-size-12">{{ fundTransfer.paymentMethodName }}</span>
+                    </div>
+                  </div>
+                  <div class="p-col-6 p-md-6 p-lg-6 p-p-0 p-mt-2">
+                    <div class="text-size-14 text-bold float-right">
+                      <span>{{ fundTransfer.payableAmount | currency: currencyName:'code' }}</span>
+                    </div>
+                    <div class="float-right">
+                      <!-- <span class="text-size-12 text-light">{{ 'lbl_debit_from_account' | translate }}:</span> -->
+                      <span class="text-size-12">{{ fundTransfer.debitAccountNo }}</span>
+                    </div>
+                  </div>
+                  <div class="p-col-12 p-pt-0">
+                    <app-icon
+                      class="p-px-2 float-right pointer"
+                      icon="fa-trash-alt"
+                      (click)="deleteFundTransfer(i)"
+                    ></app-icon>
+                    <app-icon
+                      class="p-px-2 float-right pointer"
+                      icon="fa-pencil"
+                      (click)="editFundTransfer(i)"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+</ng-template>
+
+<ng-template #addNewbeneficiaryTemplate>
+  <!-- add New Beneficiary at runtime -->
+  <form #beneficiaryDetails="ngForm">
+    <div class="p-mb-3">
+      <div class="aps-card p-px-3">
+        <div class="p-py-3 text-size-14 text-semi-bold">
+          {{ 'lbl_add_new_beneficiary' | translate }}
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="beneficiaryCode"
+              name="beneficiaryCode"
+              label="{{ 'lbl_beneficiary_code' | translate }}"
+              inputType="noSpaceAlphaNumeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryCode"
+              required="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="beneficiaryName"
+              name="beneficiaryName"
+              label="{{ 'lbl_beneficiary_name' | translate }}"
+              inputType="alphaNumeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryName"
+              required="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-custom-select
+              id="beneficiaryType"
+              name="beneficiaryType"
+              label="{{ 'lbl_beneficiary_type' | translate }}"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryType"
+              [data]="[
+                { displayName: 'Generic', id: 'GENERIC' },
+                { displayName: 'User - Wise', id: 'USERWISE' }
+              ]"
+              required="true"
+            >
+            </aps-custom-select>
+          </div>
+        </div>
+        <div class="p-py-3 text-size-14 text-semi-bold">
+          {{ 'lbl_beneficiary_address' | translate }}
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="pinCode"
+              name="pinCode"
+              label="{{ 'lbl_zip_code' | translate }}"
+              inputType="numeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].pinCode"
+              maxLength="6"
+              required="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="phoneNo"
+              name="phoneNo"
+              label="{{ 'lbl_contact_number' | translate }}"
+              inputType="numeric"
+              [(ngModel)]="formData.paymentRequestDetails[0].phoneNo"
+              required="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="email"
+              name="email"
+              label="{{ 'lbl_email_id' | translate }}"
+              [(ngModel)]="formData.paymentRequestDetails[0].email"
+              required="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0">
+            <aps-form-input
+              id="beneficiaryAddress1"
+              name="beneficiaryAddress1"
+              label="{{ 'lbl_address' | translate }}"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress1"
+              required="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-2 p-lg-2 p-pt-3 p-pb-0">
+            <button
+              class="btn btn-md btn-tertiary float-right"
+              (click)="extraAddressCount = extraAddressCount + 1"
+              [disabled]="extraAddressCount == 2"
+            >
+              <app-icon class="p-px-1" icon="fa-plus"></app-icon>
+              {{ 'lbl_add_more' | translate }}
+            </button>
+          </div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0" *ngIf="extraAddressCount > 0">
+            <aps-form-input
+              id="beneficiaryAddress2"
+              name="beneficiaryAddress2"
+              label="{{ 'lbl_address1' | translate }}"
+              rightIcon="fa-trash-alt"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress2"
+              (onRightIcon)="extraAddressCount = extraAddressCount - 1"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-2 p-lg-2 p-py-0" *ngIf="extraAddressCount > 0"></div>
+          <div class="p-col-12 p-md-10 p-lg-10 p-py-0" *ngIf="extraAddressCount > 1">
+            <aps-form-input
+              id="beneficiaryAddress3"
+              name="beneficiaryAddress3"
+              label="{{ 'lbl_address2' | translate }}"
+              rightIcon="fa-trash-alt"
+              [(ngModel)]="formData.paymentRequestDetails[0].beneficiaryAddress3"
+              (onRightIcon)="extraAddressCount = extraAddressCount - 1"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+        <div class="p-py-3 text-size-14 text-semi-bold">
+          {{ 'lbl_additional_details' | translate }}
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <div class="left-right-container">
+              <div class="left-container p-mt-3">
+                <div
+                  *ngIf="
+                    !formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].bicCodeId
+                  "
+                  class="p-mt-1 text-size-14 text-color-light-shade-3"
+                >
+                  {{ 'lbl_bic_code' | translate }}
+                </div>
+                <div
+                  *ngIf="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].bicCodeId
+                  "
+                  class="p-mt-1 text-size-14 text-semi-bold"
+                >
+                  {{
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].bicCodeId
+                  }}
+                </div>
+              </div>
+              <div class="right-container p-mt-3">
+                <button class="btn btn-md btn-tertiary p-p-1" (click)="isShowBicCodeModal = true">
+                  {{ 'lbl_search_bic_code' | translate }}
+                </button>
+                <app-search-modal
+                  [(isShow)]="isShowBicCodeModal"
+                  header="{{ 'lbl_select_bic_code' | translate }}"
+                  [colDefUrl]="bicCodeColDefUrl"
+                  [rowDefUrl]="bicCodeRowDefUrl"
+                  (onSelection)="onBicCodeSelection($event)"
+                >
+                </app-search-modal>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <aps-form-input
+              id="beneficiaryAccount"
+              name="beneficiaryAccount"
+              label="{{ 'lbl_account_number/iban' | translate }}"
+              inputType="alphaNumeric"
+              [(ngModel)]="
+                formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0]
+                  .beneficiaryAccountNo
+              "
+              required="true"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3 p-px-3">
+        <div class="p-py-3 text-size-14 text-semi-bold">{{ 'lbl_enter_details' | translate }}</div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+            <div class="p-py-1 text-size-14 text-color-light-shade-1">
+              {{ 'lbl_advise_dispatch_details' | translate }}<sup class="text-color-danger">*</sup>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-6 p-p-0">
+                <div class="p-py-2 text-size-12 text-semi-bold">
+                  {{ 'lbl_electronic_mode' | translate }}
+                </div>
+                <p-checkbox
+                  class="p-mx-1"
+                  name="adviseDispatchDetails"
+                  value="E"
+                  label="{{ 'lbl_email' | translate }}"
+                  [(ngModel)]="extraFormData.beneDispatchMode"
+                  (onChange)="OnBeneDispatchModeChange()"
+                ></p-checkbox>
+                <p-checkbox
+                  class="p-mx-1"
+                  name="adviseDispatchDetails"
+                  value="S"
+                  label="{{ 'lbl_sms' | translate }}"
+                  [(ngModel)]="extraFormData.beneDispatchMode"
+                  (onChange)="OnBeneDispatchModeChange()"
+                ></p-checkbox>
+              </div>
+              <div class="p-col-6 p-p-0">
+                <div class="p-py-2 text-size-12 text-semi-bold">
+                  {{ 'lbl_print_mode' | translate }}
+                </div>
+                <p-checkbox
+                  class="p-mx-1"
+                  name="adviseDispatchDetails"
+                  value="M"
+                  label="{{ 'lbl_mail' | translate }}"
+                  [(ngModel)]="extraFormData.beneDispatchMode"
+                  (onChange)="OnBeneDispatchModeChange()"
+                ></p-checkbox>
+                <p-checkbox
+                  class="p-mx-1"
+                  name="adviseDispatchDetails"
+                  value="C"
+                  label="{{ 'lbl_courier' | translate }}"
+                  [(ngModel)]="extraFormData.beneDispatchMode"
+                  (onChange)="OnBeneDispatchModeChange()"
+                ></p-checkbox>
+              </div>
+            </div>
+          </div>
+          <p-divider *ngIf="viewport === 'web'" layout="vertical"></p-divider>
+          <div class="p-col-12 p-md-7 p-lg-7 p-py-0">
+            <div class="p-py-1 text-size-14 text-color-light-shade-1">
+              {{ 'lbl_instrument_details' | translate }}<sup class="text-color-danger">*</sup>
+            </div>
+            <div class="p-grid p-pb-3">
+              <div class="p-col-5 p-p-0">
+                <div class="p-py-2 text-size-12 text-semi-bold">
+                  {{ 'lbl_dispatch_to' | translate }}
+                </div>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="dispatchTo"
+                  value="BENEFICIARY"
+                  label="{{ 'lbl_beneficiary' | translate }}"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].dispatchTo
+                  "
+                >
+                </p-radioButton>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="dispatchTo"
+                  value="CORPORATE"
+                  label="{{ 'lbl_corporate' | translate }}"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0].dispatchTo
+                  "
+                >
+                </p-radioButton>
+              </div>
+              <div class="p-col-7 p-p-0">
+                <div class="p-py-2 text-size-12 text-semi-bold">
+                  {{ 'lbl_dispatch' | translate }}
+                </div>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="instrumentDispatchMode"
+                  value="EMAIL"
+                  label="{{ 'lbl_mail' | translate }}"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0]
+                      .instrumentDispatchMode
+                  "
+                >
+                </p-radioButton>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="instrumentDispatchMode"
+                  value="COURIER"
+                  label="{{ 'lbl_courier' | translate }}"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0]
+                      .instrumentDispatchMode
+                  "
+                >
+                </p-radioButton>
+                <p-radioButton
+                  class="p-mx-1"
+                  name="instrumentDispatchMode"
+                  value="COUNTERCOLLECT"
+                  label="{{ 'lbl_counter_collect' | translate }}"
+                  [(ngModel)]="
+                    formData.paymentRequestDetails[0].paymentRequestAdditionalDetail[0]
+                      .instrumentDispatchMode
+                  "
+                >
+                </p-radioButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-grid p-my-3">
+        <div class="p-col">
+          <button
+            class="p-mx-2 btn btn-md btn-primary float-right"
+            [disabled]="beneficiaryDetails.invalid"
+            (click)="onAddBeneficiary()"
+          >
+            {{ 'lbl_add' | translate }}
+          </button>
+          <button
+            class="p-mx-2 btn btn-md btn-tertiary float-right"
+            (click)="onAddCancelBeneficiary()"
+          >
+            {{ 'lbl_cancel' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #beneficiaryReviewTemplate>
+  <div class="p-py-3 text-size-14 text-semi-bold">
+    {{ 'lbl_beneficiary_details' | translate }}
+    <!-- <app-icon *ngIf="mode != 'VIEW'" icon="fa-pencil" class="float-right pointer" (click)="onEditClick()">
+    </app-icon> -->
+  </div>
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_beneficiary_name' | translate }}
+      </div>
+      <div class="text-size-14">{{ formData.paymentRequestDetails[0].beneficiaryName }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_beneficiary_account' | translate }}
+      </div>
+      <div class="text-size-14">{{ formData.paymentRequestDetails[0].accountNo }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_contact_number' | translate }}
+      </div>
+      <div class="text-size-14">{{ formData.paymentRequestDetails[0].phoneNo }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_payment_method' | translate }}
+      </div>
+      <div class="text-size-14">{{ formData.paymentMethodName }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }"></div>
+  </div>
+</ng-template>
+
+<ng-template #paymentDetailsReviewTemplate>
+  <div class="p-py-3 text-size-14 text-semi-bold">
+    {{ 'lbl_payment_details' | translate }}
+    <!-- <app-icon *ngIf="mode != 'VIEW'" icon="fa-pencil" class="float-right pointer" (click)="onEditClick()">
+    </app-icon> -->
+  </div>
+
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_value_date' | translate }}</div>
+      <div class="text-size-14">{{ formData.valueDate }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_debit_from_account' | translate }}
+      </div>
+      <div class="text-size-14">{{ formData.debitAccountNo }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_account_balance' | translate }}
+      </div>
+      <div class="text-size-14">
+        {{ formData.debitAccountBalance | currency: currencyName:'code' }}
+      </div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_corporate_reference_no' | translate }}
+      </div>
+      <div class="text-size-14">{{ formData.corporateRefNo }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }"></div>
+  </div>
+
+  <div class="p-grid p-pb-2">
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_amount' | translate }}</div>
+      <div class="text-size-14">
+        {{ formData.debitCurrencyCode }} {{ formData.payableAmount | currency: '':'' }}
+      </div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">{{ 'lbl_charges' | translate }}</div>
+      <div class="text-size-14">
+        {{ formData.debitCurrencyCode }} {{ getCharges(formData.payableAmount) | currency: '':'' }}
+      </div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }">
+      <div class="text-size-12 text-color-light-shade-1">
+        {{ 'lbl_payment_instruction' | translate }}
+      </div>
+      <div class="text-size-14">{{ formData.paymentRequestDetails[0].paymentDetails1 }}</div>
+      <div class="text-size-14">{{ formData.paymentRequestDetails[0].paymentDetails2 }}</div>
+      <div class="text-size-14">{{ formData.paymentRequestDetails[0].paymentDetails3 }}</div>
+      <div class="text-size-14">{{ formData.paymentRequestDetails[0].paymentDetails4 }}</div>
+    </div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }"></div>
+    <div [ngClass]="{ 'p-col': viewport === 'web', 'p-col-6': viewport !== 'web' }"></div>
+  </div>
+
+  <div class="p-py-3 text-size-14 text-semi-bold">{{ 'lbl_uploaded_documents' | translate }}</div>
+
+  <div class="p-grid p-pb-2">
+    <div
+      class="p-col-12 p-md-2 p-lg-2 p-pt-0"
+      *ngFor="let file of formData.paymentRequestDetails[0].supportingDocList"
+    >
+      <div class="aps-card">
+        <div class="p-grid">
+          <div class="p-col-2">
+            <app-icon icon="fa-file" class="p-mt-2"></app-icon>
+          </div>
+          <div class="p-col-10">
+            <div class="text-size-12 review-file-name">{{ file.originalFileName }}</div>
+            <div class="text-size-10 text-color-light-shade-1">
+              {{ (file.size / 1024 / 1024).toFixed(2) }}Mb
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Beneficiary Search Modal -->
+<app-search-modal
+  [(isShow)]="isShowBeneficiaryModal"
+  header="{{ 'lbl_select_beneficiary' | translate }}"
+  [colDefUrl]="beneficiaryColDefUrl"
+  [rowDefUrl]="beneficiaryRowDefUrl"
+  (onSelection)="onBeneficiarySelection($event)"
+>
+</app-search-modal>
+
+<!-- Upload Modal -->
+<app-attachment-modal
+  *ngIf="isShowAttachmentModal"
+  [(isShow)]="isShowAttachmentModal"
+  [files]="uploadedFiles"
+  (submit)="onFileUploaded($event)"
+>
+</app-attachment-modal>

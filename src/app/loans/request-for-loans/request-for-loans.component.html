@@ -1,0 +1,118 @@
+<app-modal [(isShow)]="showSampleBill" size="md" headerText="Sample Bill">
+    <div class="sample-bill-container" body>
+        <img class="sample-bill" [src]="getSampleBill()" alt="Sample Bill" />
+    </div>
+</app-modal>
+
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Loan Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3 p-mb-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select name="loanType" id="loanType" label="Loan Type"
+                            dataUrl="loans/loan/requestForLoans/private/dropdown/loanType" (change)="onBiller($event)"
+                            [value]="formData.loanType" [(ngModel)]="formData.loanType"></aps-custom-select>
+                    </div>
+
+                    <div class="p-md-8 p-sm-12 p-col-12"></div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="name" id="name" label="Name" [(ngModel)]="formData.name"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="emailId" id="emailId" label="Email ID"
+                            [(ngModel)]="formData.emailId"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="mobileNo" id="mobileNo" label="Mobile Number"
+                            [(ngModel)]="formData.mobileNo"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select name="state" id="state" label="State"
+                            dataUrl="loans/loan/requestForLoans/private/dropdown/state" (change)="onBiller($event)"
+                            [value]="formData.state" [(ngModel)]="formData.state"></aps-custom-select>
+                    </div>
+
+                    <div class="p-col-12">
+                        <p-checkbox class="p-mr-4" value="checkboxAuthorize"
+                            label="{{ 'I authorize bank and its representatives to call me or send me SMS with reference to this enquiry' | apsTranslate }}"
+                            id="checkboxAuthorize" name="checkboxAuthorize" [binary]="true"
+                            [(ngModel)]="formData.checkboxAuthorize"></p-checkbox>
+                    </div>
+                    <div class="p-col-12">
+                        <p-checkbox class="p-mr-4" value="checkboxConsent"
+                            label="{{ 'I consent to bank to use my data for promotional & Marketing activities' | apsTranslate }}"
+                            id="checkboxConsent" name="checkboxConsent" [binary]="true"
+                            [(ngModel)]="formData.checkboxConsent"></p-checkbox>
+                    </div>
+                    <div class="p-col-12">
+                        <p-checkbox class="p-mr-4" value="checkboxConsentData"
+                            label="{{'I consent to bank to use my data for Analytics' | apsTranslate }}"
+                            id="checkboxConsentData" name="checkboxConsentData" [binary]="true"
+                            [(ngModel)]="formData.checkboxConsentData"></p-checkbox>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Biller Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3 p-mb-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-12 p-sm-12 p-col-6">
+                        <app-review-form-field label="Loan Details" [value]="formData.loanType"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Name" [value]="formData.name"></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Email ID" [value]="formData.emailId"></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Mobile Number"
+                            [value]="formData.mobileNo"></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="State" [value]="formData.state"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-12 p-sm-12 p-col-12">
+                        <p-checkbox class="p-mr-4" value="checkboxAuthorize"
+                            label="{{ 'I authorize bank and its representatives to call me or send me SMS with reference to this enquiry' | apsTranslate }}"
+                            id="checkboxAuthorize" name="checkboxAuthorize" [binary]="true"
+                            [(ngModel)]="formData.checkboxAuthorize" disabled></p-checkbox>
+                    </div>
+                    <div class="p-col-12">
+                        <p-checkbox class="p-mr-4" value="checkboxConsent"
+                            label="{{ 'I consent to bank to use my data for promotional & Marketing activities' | apsTranslate }}"
+                            id="checkboxConsent" name="checkboxConsent" [binary]="true"
+                            [(ngModel)]="formData.checkboxConsent" disabled></p-checkbox>
+                    </div>
+                    <div class="p-col-12">
+                        <p-checkbox class="p-mr-4" value="checkboxConsentData"
+                            label="{{'I consent to bank to use my data for Analytics' | apsTranslate }}"
+                            id="checkboxConsentData" name="checkboxConsentData" [binary]="true"
+                            [(ngModel)]="formData.checkboxConsentData" disabled></p-checkbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

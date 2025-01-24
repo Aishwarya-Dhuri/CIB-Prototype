@@ -1,0 +1,92 @@
+<div class="container p-mt-3">
+  <ng-container>
+    <form #statementDownloadForm="ngForm" name="statementDownloadForm">
+      <div class="aps-card p-my-3 p-p-3 aps-min-h-400">
+        <div class="p-grid">
+          <div class="p-col-12 p-px-0">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-12 p-lg-3 p-p-2">
+                <div class="text-size-12">
+                  {{ 'Credit Card' | apsTranslate }}<span class="text-color-danger">*</span>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12 p-lg-3 p-p-2">
+                <aps-custom-select
+                  (change)="onCreditCardSelection(formData)"
+                  [(ngModel)]="formData.id"
+                  [data]="creditCardDataList"
+                  [showLabel]="false"
+                  id="creditCard"
+                  [label]="'Credit Card' | apsTranslate"
+                  name="creditCard"
+                  required="true"
+                >
+                </aps-custom-select>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-px-0">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-12 p-lg-3 p-p-2">
+                <div class="text-size-12">
+                  {{ 'Statement Period' | apsTranslate }}<span class="text-color-danger">*</span>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12 p-lg-3 p-p-2">
+                <app-aps-calender
+                  #statementPeriod="ngModel"
+                  [(ngModel)]="formData.statementPeriod"
+                  class="acc-st-cal"
+                  [maxDate]="maxDate"
+                  [minDate]="minDate"
+                  [showLabel]="false"
+                  dateFormat="M - yy"
+                  [helpText]="
+                    'Current month and last 5 months statement can be downloaded' | apsTranslate
+                  "
+                  id="statementPeriod"
+                  [label]="'Statement Period' | apsTranslate"
+                  name="statementPeriod"
+                  required="true"
+                  view="month"
+                >
+                </app-aps-calender>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <div class="aps-card steps-footer-container">
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0 p-lg-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <button (click)="onCancelClick()" class="btn btn-md btn-tertiary p-mr-3" type="button">
+              {{ 'CANCEL' | apsTranslate }}
+            </button>
+          </div>
+          <div class="right-container">
+            <button
+              class="btn btn-md btn-primary p-mr-3"
+              [disabled]="statementDownloadForm.invalid"
+              (click)="downloadStatement()"
+              type="button"
+            >
+              {{ 'Download' | apsTranslate }}
+            </button>
+            <button
+              class="btn btn-md btn-primary p-mr-3"
+              [disabled]="statementDownloadForm.invalid"
+              type="button"
+            >
+              {{ 'E-MAIL' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+        <div class="p-grid text-right"></div>
+      </div>
+    </div>
+  </div>
+</div>

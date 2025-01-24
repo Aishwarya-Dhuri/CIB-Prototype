@@ -1,0 +1,12 @@
+<div class="p-py-6 p-px-4 text-center" *ngIf="!loading; else loadingTemplate">
+  <app-icon icon="fa-wifi-slash" styleClasses="text-size-42"></app-icon>
+  <div class="text-size-24 text-bold p-py-3">Server Not Connected</div>
+  <div class="text-size-14">Please connect to Office wifi or VPN to get access of server</div>
+  <button class="btn btn-md btn-primary p-mt-3" (click)="checkServerConnectivity()">
+    Try Again
+  </button>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

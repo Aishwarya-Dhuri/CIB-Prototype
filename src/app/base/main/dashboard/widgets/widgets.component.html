@@ -1,0 +1,17 @@
+<div class="user-widgets-container">
+  <div class="widgets-header">
+    <div class="header-text">
+      <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+      &nbsp;{{ 'Widgets' | apsTranslate }}
+    </div>
+    <div class="header-actions">
+      <div class="action" (click)="closeSidebar()">
+        <app-icon icon="fa-times" class="app-icon"></app-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="widgets">
+    <app-sidebar-charts (saveWidgets)="closeSidebar()"></app-sidebar-charts>
+  </div>
+</div>

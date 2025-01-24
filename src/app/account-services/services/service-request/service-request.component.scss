@@ -1,0 +1,30 @@
+::ng-deep .ag-chart-wrapper {
+  height: 100% !important;
+  direction: ltr !important;
+}
+
+.listing {
+  margin-right: -1rem;
+  margin-left: -1.4rem;
+
+  @media screen and (max-width: 991px) {
+    margin-right: -0.75rem;
+    margin-left: -0.75rem;
+  }
+}
+
+.left-container {
+}
+@media screen and (max-width: 375px) {
+  .aps-card {
+    margin-top: 16px !important;
+  }
+
+  .chart-container {
+    width: calc(100vw - 32px) !important;
+  }
+
+  .f-width {
+    width: 100% !important;
+  }
+}

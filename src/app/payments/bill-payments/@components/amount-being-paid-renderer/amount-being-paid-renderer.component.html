@@ -1,0 +1,14 @@
+<div class="inline-items" *ngIf="cellValue">
+  <div class="item">
+    <div class="text-size-13 text-color-dark-shade-1 p-mr-1">{{ currency }}</div>
+  </div>
+  <div class="item">
+    <input
+      class="input"
+      type="text"
+      (input)="amountChange()"
+      currencyFormatNotZero
+      [(ngModel)]="cellValue"
+    />
+  </div>
+</div>

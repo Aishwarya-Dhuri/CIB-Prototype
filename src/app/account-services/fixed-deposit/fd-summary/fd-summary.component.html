@@ -1,0 +1,310 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal
+      [(isShow)]="isViewStatement"
+      size="lg"
+      headerText="{{ 'View Statement' | apsTranslate }}"
+    >
+      <ng-container header>
+        <div class="p-px-3 left-right-container">
+          <div class="left-container"></div>
+          <div class="right-container aps-py-12">
+            <app-grid-listing-tools
+              (changeFloatingFilter)="viewStatement.changeFloatFilter($event)"
+              (filterRecords)="viewStatement.onFilter($event)"
+              (applyColDefs)="viewStatement.onApplyConfig($event)"
+              [colDefs]="viewStatement.columnDefs"
+              [columnConfig]="false"
+              [moreOptions]="false"
+              [showMail]="true"
+              [showDownload]="true"
+              [showPrint]="true"
+              [showRefresh]="false"
+            >
+            </app-grid-listing-tools>
+          </div>
+        </div>
+      </ng-container>
+      <ng-container body>
+        <div class="aps-h-400">
+          <app-ag-grid-listing
+            id="viewStatement"
+            #viewStatement
+            [colDefUrl]="colDefUrl"
+            [rowDefUrl]="rowDataUrl"
+            [gridOptions]="gridOptions"
+            [supressAutoFit]="true"
+          >
+          </app-ag-grid-listing>
+        </div>
+      </ng-container>
+      <div footer></div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x">
+      <div
+        class="p-lg-4 p-md-4 p-sm-12 p-col-12 pointer"
+        [ngClass]="{ 'p-my-2': viewport !== 'web' }"
+      >
+        <div
+          class="aps-card-primary aps-h-100p p-p-3"
+          routerLink="/accountServices/fixedDeposit/fdInitiation"
+        >
+          <div class="text-size-14 text-bold p-pb-2 border-bottom">
+            {{ 'Initiate New FD' | apsTranslate }}
+          </div>
+          <div class="text-color-primary-light-shade-2 p-mt-2 text-size-12">
+            {{ 'Please click this card to initiate new fix deposit.' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12" [ngClass]="{ 'p-my-2': viewport !== 'web' }">
+        <div class="aps-card aps-h-100p p-py-2 p-px-3">
+          <div class="text-size-14 text-bold">{{ 'FD Summary' | apsTranslate }}</div>
+          <div class="p-grid">
+            <div class="p-col-4 p-p-0"></div>
+            <div class="p-col-4 p-p-0">
+              <div class="text-size-12 text-bold">{{ 'Total' | apsTranslate }}</div>
+            </div>
+            <div class="p-col-4 p-md-4 p-sm-4 p-p-0">
+              <div class="text-size-12 text-bold">{{ 'Current Value' | apsTranslate }}</div>
+            </div>
+          </div>
+          <div class="p-grid" *ngFor="let fs of fdSummaryList">
+            <div class="p-col-4 p-p-0">
+              <div class="p-mt-1 text-size-12 text-semi-bold">{{ fs.displayName }}</div>
+            </div>
+            <div class="p-col-4 p-p-0">
+              <div class="p-mt-1 text-size-12 text-semi-bold">{{ fs.enrichments.total }}</div>
+            </div>
+            <div class="p-col-4 p-p-0">
+              <div class="p-mt-1 text-size-12 text-semi-bold">
+                <app-base-currency [amount]="fs.enrichments.currentValue" digitsInfo="1.0-0">
+                </app-base-currency>
+              </div>
+            </div>
+          </div>
+          <div class="text-size-10 text-semi-bold p-py-2">
+            {{ 'Note' | apsTranslate }} :
+            {{ 'Closed FDs displays the value present at the time of closure.' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12" [ngClass]="{ 'p-my-2': viewport !== 'web' }">
+        <div class="aps-card p-py-2 p-px-3 aps-h-100p">
+          <div class="text-size-14 text-bold">
+            {{ 'Currency wise Ongoing FDs Summary' | apsTranslate }}
+          </div>
+          <div class="p-grid">
+            <div class="p-md-6 p-sm-12 p-col-12 p-p-0">
+              <app-pie-chart [options]="options" webHeight="100" mobileHeight="150"></app-pie-chart>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="inline-items">
+                <div class="item show-on-mobile">
+                  <div class="text-size-12 text-bold p-px-3">{{ 'CCY' | apsTranslate }}</div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">MYR</div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">INR</div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">USD</div>
+                </div>
+                <div class="item">
+                  <div class="text-size-12 text-bold p-px-3">{{ 'Total' | apsTranslate }}</div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">2</div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">10</div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">5</div>
+                </div>
+                <div class="item">
+                  <div class="text-size-12 text-bold p-px-3">
+                    {{ 'Current Value' | apsTranslate }}
+                  </div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">5,000.00</div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">5,00,000.00</div>
+                  <div class="text-size-12 text-semi-bold p-px-3 p-mt-1">7,400.00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-py-3">
+      <div class="inline-items" [ngClass]="{ 'on-mobile': viewport !== 'web' }">
+        <div class="item p-mr-3" *ngFor="let fd of fdSummaryList; let i = index">
+          <div
+            class="aps-card p-p-2 text-size-12 text-color-normal text-semi-bold pointer border"
+            [ngClass]="{
+              'aps-card-primary': selectedFD.enrichments.fdType === fd.enrichments.fdType
+            }"
+            (click)="onSelected(fd)"
+          >
+            {{ fd.displayName }} ({{ fd.enrichments.total }})
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-sm-12 p-p-0">
+        <app-nothing-here *ngIf="fdFilteredDataList.length == 0" colSize="5"></app-nothing-here>
+
+        <div
+          class="border-radius-4 primary-border-1px-on-hover p-mb-2"
+          *ngFor="let fd of fdFilteredDataList; let i = index"
+        >
+          <div class="aps-card">
+            <div class="p-grid p-p-2">
+              <div class="p-md-2 p-sm-6 p-col-6">
+                <div class="text-size-14 text-bold">{{ fd.id }}</div>
+              </div>
+              <div class="p-md-1 p-sm-6 p-col-6">
+                <div class="text-size-14 text-bold">{{ fd.currencyName }}</div>
+              </div>
+              <div class="p-md-2 p-sm-6 p-col-6">
+                <div class="text-size-14 text-bold">{{ fd.productTypeName }}</div>
+              </div>
+              <div class="p-md-2 p-sm-6 p-col-6">
+                <div class="text-size-12 text-bold">
+                  {{ 'Deposit Amount' | apsTranslate }} :
+                  <span class="text-size-12 text-semi-bold">{{ fd.depositAmount }}</span>
+                </div>
+              </div>
+              <div class="p-md-2 p-sm-6 p-col-6">
+                <div class="text-size-12 text-bold">
+                  {{ 'Maturity Amount' | apsTranslate }} :
+                  <span class="text-size-12 text-semi-bold">{{ fd.maturityAmount }}</span>
+                </div>
+              </div>
+              <div class="p-md-2 p-sm-6 p-col-6">
+                <div class="text-size-12 text-bold">
+                  {{ 'Maturity Date' | apsTranslate }} :
+                  <span class="text-size-12 text-semi-bold">{{ fd.maturityDate }}</span>
+                </div>
+              </div>
+              <div class="p-md-1 p-sm-12 p-col-12 text-right">
+                <app-icon
+                  [icon]="fd.isExpand ? 'fa-chevron-up' : 'fa-chevron-down'"
+                  (click)="fd.isExpand = !fd.isExpand"
+                  styleClasses="text-size-14"
+                  class="pointer"
+                >
+                </app-icon>
+              </div>
+            </div>
+            <div class="p-grid border-top" *ngIf="fd.isExpand">
+              <div class="p-md-8 p-sm-12 p-col-12">
+                <div class="p-grid p-py-2">
+                  <div class="p-md-3 p-sm-6 p-col-6">
+                    <app-review-form-field
+                      label="Deposit Start Date"
+                      [value]="fd.depositStartDate"
+                    ></app-review-form-field>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6">
+                    <app-review-form-field
+                      label="Interest Rate"
+                      [value]="fd.interestRate"
+                    ></app-review-form-field>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6">
+                    <app-review-form-field
+                      label="Deposit Tenor"
+                      [value]="fd.tenor"
+                    ></app-review-form-field>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6">
+                    <app-review-form-field
+                      label="Current Balance"
+                      [value]="fd.accountBalance"
+                    ></app-review-form-field>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6">
+                    <app-review-form-field
+                      label="Principal CreditAccount"
+                      [value]="getAccountNameById(fd.principalCreditAccount)"
+                    ></app-review-form-field>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6">
+                    <app-review-form-field
+                      label="Interest Credit Account"
+                      [value]="getAccountNameById(fd.interestCreditAccount)"
+                    ></app-review-form-field>
+                  </div>
+                  <div class="p-md-3 p-sm-6 p-col-6">
+                    <app-review-form-field
+                      label="Branch"
+                      [value]="fd.branch"
+                    ></app-review-form-field>
+                  </div>
+                  <div
+                    class="p-md-3 p-sm-6 p-col-6"
+                    *ngIf="selectedFD.enrichments.fdType == 'closed'"
+                  >
+                    <app-review-form-field
+                      label="FD Closed Date"
+                      [value]="fd.fdClosedDate"
+                    ></app-review-form-field>
+                  </div>
+                  <div class="p-md-6 p-sm-12 p-col-12">
+                    <app-review-form-field
+                      label="Maturity Instructions"
+                      [value]="fd.maturityInstructionsName"
+                    ></app-review-form-field>
+                  </div>
+                </div>
+              </div>
+              <div class="p-md-4 p-sm-12 p-col-12">
+                <div class="aps-h-100p border-left border-on-mobile p-pt-md-4 p-pt-sm-2 p-pt-0">
+                  <div class="p-grid p-p-2">
+                    <div class="p-col-6">
+                      <span
+                        class="text-size-12 text-semi-bold pointer"
+                        (click)="onQuickLinkClick('View Statement')"
+                        >{{ 'View Statement' | apsTranslate }}</span
+                      >
+                    </div>
+                    <div class="p-col-6">
+                      <span
+                        class="text-size-12 text-semi-bold pointer"
+                        (click)="onDownloadFdAdvice()"
+                        >{{ 'Download FD Advice' | apsTranslate }}</span
+                      >
+                    </div>
+                    <div class="p-col-6">
+                      <span
+                        class="text-size-12 text-semi-bold pointer"
+                        (click)="onQuickLinkClick('Early Redemption', fd.id)"
+                        >{{ 'Early Redemption' | apsTranslate }}</span
+                      >
+                    </div>
+                    <div class="p-col-6">
+                      <span class="text-size-12 text-semi-bold pointer">{{
+                        'Inquiry on Loan' | apsTranslate
+                      }}</span>
+                    </div>
+                    <div class="p-col-6">
+                      <span class="text-size-12 text-semi-bold pointer">{{
+                        'Download Interest Certificate' | apsTranslate
+                      }}</span>
+                    </div>
+                    <div class="p-col-6">
+                      <span
+                        class="text-size-12 text-semi-bold pointer"
+                        (click)="onQuickLinkClick('Change Maturity Instructions', fd.id)"
+                        >{{ 'Change Maturity Instructions' | apsTranslate }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

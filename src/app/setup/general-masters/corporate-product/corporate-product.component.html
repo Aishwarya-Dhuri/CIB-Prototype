@@ -1,0 +1,88 @@
+<div class="container">
+  <div class="p-grid p-pb-2" *ngFor="let cg of corporateGroups">
+    <div class="p-md-3 p-sm-12 p-col-12" [ngClass]="viewport === 'web' ? 'p-px-0' : 'p-p-0 p-mt-3'">
+      <div
+        class="aps-card border-2 aps-filled-card-white p-p-3 p-ml-1 pointer"
+        (click)="onCorporateGroup(cg)"
+      >
+        <div class="">
+          <img [src]="cg.groupIcon" alt="" class="img-35-x-27" />
+        </div>
+        <div class="p-pb-3">
+          <div class="text-size-16 text-color-dark-shade-1 text-semi-bold">
+            {{ cg.groupName }}
+          </div>
+        </div>
+
+        <div class="p-grid p-pt-3 text-color-dark-shade-1 border-top">
+          <div class="p-col-6 p-p-0">
+            <div class="text-size-14 text-bold">{{ cg.groupCode }}</div>
+            <div class="text-size-12">Group Code</div>
+          </div>
+          <div class="p-col-6 p-p-0">
+            <div class="text-size-14 text-bold">{{ cg.liabilityId }}</div>
+            <div class="text-size-12">Liability ID</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-8 p-sm-12 p-col-12 p-p-0">
+      <div class="p-grid p-pt-1">
+        <div
+          class="corporates p-md-4 p-sm-12 p-col-12"
+          [ngClass]="viewport === 'web' ? 'p-px-0' : 'p-p-0'"
+          *ngFor="let corporate of getCorporates(cg.corporates)"
+        >
+          <div class="p-grid p-pt-4" *ngIf="viewport === 'web'">
+            <div class="p-col-6 p-px-0 border-top border-right"></div>
+            <div class="p-col-6 p-px-0 border-top"></div>
+          </div>
+
+          <div class="p-grid">
+            <ng-container *ngIf="viewport !== 'web'">
+              <div class="p-col-1 p-px-0 border-right"></div>
+              <div class="p-col-1 p-px-0 p-mt-6 border-top"></div>
+            </ng-container>
+
+            <div [ngClass]="viewport === 'web' ? 'p-col-12 ' : 'p-col-10'" class="p-p-0">
+              <div
+                class="aps-card border-1 p-p-3"
+                [ngClass]="viewport === 'web' ? 'p-ml-3 ' : 'p-mt-3'"
+                (click)="onCorporate(corporate)"
+              >
+                <div class="label-with-icon-container p-pb-2 border-bottom">
+                  <div class="icon">
+                    <img [src]="corporate.corporateIcon" alt="" class="img-35-x-27" />
+                  </div>
+                  <div class="label p-pt-1">
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ corporate.corporateName }}
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-grid text-color-dark-shade-1 p-pt-2">
+                  <div class="p-col-4 p-p-0">
+                    <span
+                      class="background-color-primary-light-shade-2 inline-block border-radius-4 p-px-2 p-py-1 text-size-10 p-mt-1"
+                    >
+                      {{ corporate.corporateId }}
+                    </span>
+                  </div>
+                  <div class="p-col-4 p-p-0">
+                    <div class="text-size-10 text-semi-bold p-mb-1">{{ corporate.category }}</div>
+                    <div class="text-size-10">Category</div>
+                  </div>
+                  <div class="p-col-4 p-p-0">
+                    <div class="text-size-10 text-semi-bold p-mb-1">{{ corporate.accounts }}</div>
+                    <div class="text-size-10">Accounts</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

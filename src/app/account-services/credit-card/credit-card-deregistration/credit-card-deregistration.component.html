@@ -1,0 +1,124 @@
+<div class="container p-mt-3">
+  <!-- Step Tracker -->
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <!-- Step 1 Details -->
+  <ng-container *ngIf="stepperDetails.currentStep == 1">
+    <div class="aps-card p-my-3 p-p-3 aps-min-h-400">
+      <div class="p-grid">
+        <div class="p-col-12 p-px-0">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-3 p-lg-3 p-py-0 p-pl-0">
+              <aps-form-input
+                (onRightIcon)="showCreditCardSearch = true"
+                [(ngModel)]="formData.cardNo"
+                disabled="true"
+                id="creditCard"
+                [label]="'Credit Card' | apsTranslate"
+                name="creditCard"
+                required="true"
+                rightIcon="fa-search"
+              >
+              </aps-form-input>
+              <app-search-modal
+                (onSelection)="onCreditCardSelection($event)"
+                *ngIf="showCreditCardSearch"
+                [(isShow)]="showCreditCardSearch"
+                [colDefUrl]="URLs.CREDICARD_COLDEF_URL"
+                [rowDefUrl]="urls.GET_CREDITCARDS"
+                header="Select Credit Card"
+              >
+              </app-search-modal>
+            </div>
+            <ng-container *ngIf="formData?.cardNo">
+              <div class="p-col-12 p-md-2 p-lg-2 p-py-0">
+                <div
+                  class="text-size-14 text-color-light-shade-2 background-color-disabled p-pt-2 p-px-2"
+                >
+                  {{ 'Card Type' | apsTranslate }}
+                </div>
+                <div class="text-size-14 background-color-disabled p-px-2 p-pb-2">
+                  {{ formData.cardType }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-2 p-lg-2 p-py-0">
+                <div
+                  class="text-size-14 text-color-light-shade-2 background-color-disabled p-pt-2 p-px-2"
+                >
+                  {{ 'Embossed Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14 background-color-disabled p-px-2 p-pb-2">
+                  {{ formData.embossedName }}
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!--Step 2 Details-->
+  <ng-container *ngIf="stepperDetails.currentStep == 2">
+    <div class="aps-card p-my-3">
+      <div class="p-grid">
+        <div class="p-col-12 p-md-9 p-lg-9 p-px-0 p-py-3 aps-h-400 overflow-y-scroll">
+          <div class="p-grid">
+            <div class="p-col-12 p-p-0">
+              <div class="p-grid">
+                <div class="p-col-12 p-md-4 p-lg-4 p-px-3">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Credit Card' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.cardNo }}</div>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4">
+                  <div
+                    class="text-size-14 text-color-light-shade-2 background-color-disabled p-pt-2 p-px-2"
+                  >
+                    {{ 'Card Type' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 background-color-disabled p-px-2 p-pb-2">
+                    {{ formData.cardType }}
+                  </div>
+                </div>
+                <div class="p-col-12 p-md-4 p-lg-4">
+                  <div
+                    class="text-size-14 text-color-light-shade-2 background-color-disabled p-pt-2 p-px-2"
+                  >
+                    {{ 'Embossed Name' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 background-color-disabled p-px-2 p-pb-2">
+                    {{ formData.embossedName }}
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12 p-p-0">
+                <div class="p-grid">
+                  <div class="p-col-12 p-md-4 p-lg-4 p-px-3">
+                    <aps-form-input
+                      (onRightIcon)="viewOtp = !viewOtp"
+                      [(ngModel)]="formData.otp"
+                      [rightIcon]="viewOtp ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                      [type]="viewOtp ? 'text' : 'password'"
+                      id="otp"
+                      inputType="numeric"
+                      [label]="'Enter OTP' | apsTranslate"
+                      name="otp"
+                      required="true"
+                    >
+                    </aps-form-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Structure Preview -->
+    </div>
+  </ng-container>
+
+  <!-- Form Actions -->
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

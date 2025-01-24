@@ -1,0 +1,26 @@
+::ng-deep .ag-chart-wrapper {
+  height: 100% !important;
+  direction: ltr !important;
+}
+
+.chart-container {
+  position: relative;
+
+  .chart-center {
+    position: absolute;
+    left: 8%;
+    width: 25%;
+    text-align: center;
+    @media screen and (max-width: 991px) {
+      left: 15% !important;
+    }
+  }
+
+  .chart-center-value {
+    top: 40%;
+  }
+
+  .chart-center-label {
+    top: 55%;
+  }
+}

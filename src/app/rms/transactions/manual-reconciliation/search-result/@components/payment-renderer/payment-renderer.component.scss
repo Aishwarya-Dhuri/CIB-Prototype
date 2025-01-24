@@ -1,0 +1,22 @@
+.entry-type {
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  font-size: 0.625rem;
+  line-height: 10px;
+  font-weight: 600;
+  border: 1px solid var(--background-color-dark-6);
+  margin-top: 12px;
+}
+
+.manual {
+  border-color: #e39e01;
+  color: #e39e01;
+  padding: 2px 3px;
+}
+
+.system {
+  border-color: #25b1f0;
+  color: #25b1f0;
+  padding: 2px 4px;
+}

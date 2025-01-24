@@ -1,0 +1,199 @@
+<div class="p-grid p-ml-3 p-mr-3">
+  <div class="p-col-12">
+    <div class="card">
+      <div class="aps-h-600">
+        <div class="p-grid">
+          <div class="p-col-6 aps-h-400">
+            <aps-chart #chart [options]="options"></aps-chart>
+          </div>
+          <div class="p-col-6">
+            <button class="btn btn-md p-m-2" (click)="chartElement.changeChartType('pie')">
+              Pie Chart
+            </button>
+            <button class="btn btn-md p-m-2" (click)="chartElement.changeChartType('donut')">
+              Donut Chart
+            </button>
+            <button class="btn btn-md p-m-2" (click)="chartElement.changeChartType('line')">
+              Line Chart
+            </button>
+            <button class="btn btn-md p-m-2" (click)="chartElement.changeChartType('bar')">
+              Bar Chart
+            </button>
+            <button class="btn btn-md p-m-2" (click)="chartElement.changeChartType('groupedBar')">
+              Grouped Bar Chart
+            </button>
+            <button class="btn btn-md p-m-2" (click)="chartElement.changeChartType('column')">
+              Column Chart
+            </button>
+            <button
+              class="btn btn-md p-m-2"
+              (click)="chartElement.changeChartType('groupedColumn')"
+            >
+              Grouped Column Chart
+            </button>
+            <button class="btn btn-md p-m-2" (click)="chartElement.changeChartType('lineColumn')">
+              Line Column Chart
+            </button>
+            <button
+              class="btn btn-md p-m-2"
+              (click)="chartElement.changeChartType('lineGroupedColumn')"
+            >
+              Line Grouped Column Chart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p-toast></p-toast>
+      <h5>Currency - Initiate</h5>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <p-panel header="1.1. Currency Details" styleClass="p-mt-2" [toggleable]="true">
+          <div class="p-grid p-fluid p-inputtext-sm">
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="currencyCode"
+                  type="text"
+                  formControlName="currencyCode"
+                  required
+                />
+                <label for="currencyCode">Currency Code</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="currencyDesc"
+                  type="text"
+                  formControlName="currencyDesc"
+                  required
+                />
+                <label for="currencyDesc">Currency Desc</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="coreCurrencyCode"
+                  type="text"
+                  formControlName="coreCurrencyCode"
+                  required
+                />
+                <label for="coreCurrencyCode">Core Currency Code</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="currencySymbol"
+                  type="text"
+                  formControlName="currencySymbol"
+                  required
+                />
+                <label for="currencySymbol">Currency Symbol</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="currencyDecimal"
+                  type="text"
+                  formControlName="currencyDecimal"
+                  required
+                />
+                <label for="currencyDecimal">Currency Decimal</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <input pInputText id="majorUnit" type="text" formControlName="majorUnit" required />
+                <label for="majorUnit">Major Unit</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <input pInputText id="minorUnit" type="text" formControlName="minorUnit" required />
+                <label for="minorUnit">Minor Unit</label>
+              </span>
+            </div>
+          </div>
+        </p-panel>
+
+        <p-panel header="1.2. Effective Details" styleClass="p-mt-2" [toggleable]="true">
+          <div class="p-grid p-fluid p-inputtext-sm">
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <p-calendar
+                  [showIcon]="true"
+                  dateFormat="dd-M-yy"
+                  [showOtherMonths]="true"
+                  [selectOtherMonths]="true"
+                  [monthNavigator]="true"
+                  [yearNavigator]="true"
+                  dataType="string"
+                  inputId="effectiveFrom"
+                  formControlName="effectiveFrom"
+                  [required]="true"
+                >
+                </p-calendar>
+                <label for="effectiveFrom">Effective From</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6 p-mt-3">
+              <span class="p-float-label">
+                <p-calendar
+                  [showIcon]="true"
+                  dateFormat="dd-M-yy"
+                  [showOtherMonths]="true"
+                  [selectOtherMonths]="true"
+                  [monthNavigator]="true"
+                  [yearNavigator]="true"
+                  dataType="string"
+                  inputId="effectiveTill"
+                  formControlName="effectiveTill"
+                >
+                </p-calendar>
+                <label for="effectiveTill">Effective Till</label>
+              </span>
+            </div>
+          </div>
+        </p-panel>
+
+        <div class="p-grid p-fluid p-mt-4">
+          <div class="p-offset-5 p-col-4 p-md-1">
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Back"
+              class="p-button-outlined p-button-secondary"
+              (click)="goToListing()"
+            ></button>
+          </div>
+          <div class="p-col-4 p-md-1" [hidden]="mode == 'view'">
+            <button
+              pButton
+              pRipple
+              type="submit"
+              label="Submit"
+              class="p-button-raised"
+              [disabled]="!form.valid"
+            ></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

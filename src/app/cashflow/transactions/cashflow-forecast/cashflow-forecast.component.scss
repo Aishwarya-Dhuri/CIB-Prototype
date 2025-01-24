@@ -1,0 +1,30 @@
+.scroll-btn {
+    display: inline-block;
+    vertical-align: top;
+    width: 24px;
+    height: 24px;
+    padding: 1px 6px;
+    background-color: var(--background-color);
+    border-radius: 4px;
+    box-shadow: 0 0 4px var(--background-color-dark-6);
+    cursor: pointer;
+  
+    i,
+    .app-icon {
+      font-size: 0.75rem;
+      color: var(--primary-color);
+    }
+  }
+  
+  .border-2 {
+    border: solid 2px var(--primary-color);
+  }
+  
+  .mt--2 {
+    margin-top: -2px;
+  }
+  
+  .aps-h-272 {
+    height: 272px;
+  }
+  

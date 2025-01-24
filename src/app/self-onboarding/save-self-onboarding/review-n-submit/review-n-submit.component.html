@@ -1,0 +1,485 @@
+<div class="review-n-submit-container p-p-2 p-p-lg-3 aps-shadow">
+  <div class="review-step-container">
+    <div class="review-step-header p-pb-2">
+      <div class="text-color-dark-shade-2 text-semi-bold text-size-16">Company Information</div>
+    </div>
+    <div class="review-step-body">
+      <div
+        class="left-right-container p-mt-2"
+        *ngIf="selfOnboardingService.registrationType === 'existing'"
+      >
+        <div class="left-container">
+          <div class="text-size-14 text-color-normal">Customer ID as per bank records</div>
+        </div>
+        <div class="left-container">
+          <div class="text-size-14 text-semi-bold text-color-dark-shade-2">
+            {{ selfOnboarding.companyInformation[0].customerId }}
+          </div>
+        </div>
+      </div>
+      <div class="left-right-container p-mt-2">
+        <div class="left-container">
+          <div class="text-size-14 text-color-normal">Email ID</div>
+        </div>
+        <div class="left-container">
+          <div class="text-size-14 text-semi-bold text-color-dark-shade-2">
+            {{ selfOnboarding.companyInformation[0].emailId }}
+          </div>
+        </div>
+      </div>
+      <div class="left-right-container p-mt-2">
+        <div class="left-container">
+          <div class="text-size-14 text-color-normal">Registered Mobile Number</div>
+        </div>
+        <div class="left-container">
+          <div class="text-size-14 text-semi-bold text-color-dark-shade-2">
+            {{ selfOnboarding.companyInformation[0].mobileNumber }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="review-step-container">
+    <div class="review-step-header p-pb-2 p-pt-3">
+      <div class="text-color-dark-shade-2 text-bold text-size-16">User Details</div>
+    </div>
+    <div class="review-step-body">
+      <div class="p-grid p-mt-2" *ngIf="selfOnboarding.userDetails.length > 0; else noUserDetails">
+        <div
+          class="p-lg-6 p-md-6 p-sm-12 p-col-12"
+          *ngFor="let u of selfOnboarding.userDetails; let i = index"
+        >
+          <div class="user-card p-shadow-2 p-p-4">
+            <div class="user-container">
+              <div class="user-details p-pb-2">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <div class="image">
+                      <div
+                        class="user p-pt-3 text-center text-bold text-size-16 text-color-primary"
+                      >
+                        {{ getUserInitials(u) | uppercase }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="label text-color-dark-shade-2">
+                    <div class="text-size-14 text-bold">
+                      {{ u.firstName }}&nbsp;{{ u.lastName }}
+                    </div>
+
+                    <div class="text-size-12 text-semi-bold p-mt-1">
+                      <span class="inline-block">{{ u.profile }}</span>
+                      <span class="inline-block text-color-light-shade-1">&nbsp;|&nbsp;</span>
+                      <span class="inline-block">{{ u.accessRole }}</span>
+                    </div>
+
+                    <div class="label-with-icon-container p-mt-1">
+                      <div class="icon pt--1">
+                        <app-icon icon="fa-envelope" styleClasses="text-size-14"></app-icon>
+                      </div>
+
+                      <div class="label text-size-12">{{ u.emailId }}</div>
+                    </div>
+
+                    <div class="label-with-icon-container p-mt-1">
+                      <div class="icon pt--1">
+                        <app-icon icon="fa-phone" styleClasses="text-size-14"></app-icon>
+                      </div>
+
+                      <div class="label text-size-12">{{ u.mobileNumber }}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid g-margin-x p-mt-2 aps-w-100p">
+              <div class="p-col-6">
+                <div class="text-color-dark-shade-2 text-size-14 text-bold">
+                  {{ u.authorizationLogic }}
+                </div>
+                <div class="text-color-dark-shade-2 text-size-12 p-mt-1">Authorization Logic</div>
+              </div>
+
+              <div class="p-col-6" *ngIf="u.authorizationLogic === 'Limited'">
+                <div class="text-color-dark-shade-2 text-size-14 text-bold">
+                  {{ u.authorizationLimit | currency : 'INR' : 'symbol' }}
+                </div>
+                <div class="text-color-dark-shade-2 text-size-12 p-mt-1">Authorization Limit</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noUserDetails>
+        <div class="text-center p-py-6">No Users Added</div>
+      </ng-template>
+    </div>
+  </div>
+
+  <div class="review-step-container">
+    <div class="review-step-header p-pb-2 p-pt-3">
+      <div class="text-color-dark-shade-2 text-bold text-size-16">Product Details</div>
+    </div>
+
+    <div class="review-step-body">
+      <div class="text-size-16 text-bold text-color-dark-shade-2 p-py-2">Selected Plan:</div>
+
+      <div class="aps-card p-p-3">
+        <div class="text-size-14 text-color-normal text-bold">
+          {{ selfOnboarding.productDetails[0].selectedPlan[0].planType }}
+        </div>
+        <div
+          class="text-size-12 p-mt-1"
+          *ngFor="let p of selfOnboarding.productDetails[0].selectedPlan[0].products"
+        >
+          - {{ p.displayName }}
+        </div>
+      </div>
+
+      <div class="text-size-16 text-bold text-color-dark-shade-2 p-pt-4">Selected Products</div>
+
+      <ng-container
+        *ngFor="let p of selfOnboarding.productDetails[0].selectedPlan[0].products; let i = index"
+      >
+        <div
+          class="p-grid"
+          *ngIf="
+            p.displayName !== 'All basic Digital banking features' &&
+            p.displayName !== 'Basic Banking' &&
+            p.displayName !== 'Advanced Banking'
+          "
+        >
+          <div class="p-col-12">
+            <div class="text-size-14">{{ p.displayName }}</div>
+          </div>
+
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+            <aps-custom-select
+              id="authorizationRule-{{ i }}"
+              name="authorizationRule-{{ i }}"
+              label="Authorization Rule"
+              [data]="[
+                { displayName: 'Self Authorization', id: 'self-authorization' },
+                { displayName: 'Auth Matrix', id: 'auth-matrix' },
+                { displayName: 'Maker/Checker', id: 'maker-checker' }
+              ]"
+              [value]="p.authorizationRule"
+              [(ngModel)]="p.authorizationRule"
+              [disabled]="true"
+            ></aps-custom-select>
+          </div>
+
+          <div
+            class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0"
+            *ngIf="p.authorizationRule === 'self-authorization'"
+          >
+            <div class="text-size-12 text-color-normal">Limit</div>
+
+            <div class="p-pt-2">
+              <p-radioButton
+                class="p-mr-3"
+                id="unlimited-{{ i }}"
+                name="limitType-{{ i }}"
+                value="unlimited"
+                label="Unlimited"
+                [(ngModel)]="p.limitType"
+                [disabled]="true"
+              ></p-radioButton>
+
+              <p-radioButton
+                id="set-limit-{{ i }}"
+                name="limitType-{{ i }}"
+                value="set-limit"
+                label="Set Limit"
+                [(ngModel)]="p.limitType"
+                [disabled]="true"
+              ></p-radioButton>
+            </div>
+          </div>
+
+          <div
+            class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0"
+            *ngIf="p.authorizationRule === 'self-authorization' && p.limitType === 'set-limit'"
+          >
+            <aps-form-input
+              id="limit-{{ i }}"
+              name="limit-{{ i }}"
+              label="Limit"
+              inputType="currencyFormatNotZero"
+              [(ngModel)]="p.authenticationLimit"
+              [disabled]="true"
+            ></aps-form-input>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="text-size-16 text-bold text-color-dark-shade-2 p-py-3">Add On Services:</div>
+
+      <div
+        class="aps-card p-p-2 p-mb-3"
+        *ngIf="selfOnboarding.productDetails[0].addOnServices[0].custodianServices[0].show"
+      >
+        <div class="text-size-14 text-color-normal text-bold p-pt-2 p-pb-2">Custodian Services</div>
+      </div>
+
+      <div
+        class="aps-card p-p-2 p-mb-3"
+        *ngIf="selfOnboarding.productDetails[0].addOnServices[0].wealthManagement[0].show"
+      >
+        <div class="text-size-14 text-color-normal text-bold p-pt-2 p-pb-2">Wealth Management</div>
+      </div>
+
+      <div
+        class="aps-card p-p-2 p-mb-3"
+        *ngIf="selfOnboarding.productDetails[0].addOnServices[0].treasuryServices[0].show"
+      >
+        <div class="text-size-14 text-color-normal text-bold p-pt-2 p-pb-2">Treasury Services</div>
+      </div>
+      <div class="aps-card p-p-2 p-mb-3" *ngIf="selfOnboarding.productDetails[0].addOnServices[0].agriGoldloan[0].show">
+        <div class="text-size-14 text-color-normal text-bold p-pt-2 p-pb-2">Agri Gold loan</div>
+      </div>
+      <div class="aps-card p-p-2 p-mb-3" *ngIf="selfOnboarding.productDetails[0].addOnServices[0].capitalLoans[0].show">
+        <div class="text-size-14 text-color-normal text-bold p-pt-2 p-pb-2">Capital Loans</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="review-step-container">
+    <div class="review-step-header p-pb-2">
+      <div class="text-color-dark-shade-2 text-bold text-size-16">
+        {{
+          selfOnboardingService.registrationType === 'existing'
+            ? 'Upload Operating Mandate'
+            : 'Documents Upload'
+        }}
+      </div>
+    </div>
+
+    <div class="review-step-body">
+      <ng-container *ngIf="selfOnboardingService.registrationType !== 'existing'">
+        <div
+          class="document-upload-card p-mt-2"
+          *ngIf="selfOnboarding.documentDetails[0].companyTradeLicense.length > 0"
+        >
+          <div class="document-upload-header text-color-dark-shade-2 text-bold text-size-16">
+            Company Trade License
+          </div>
+
+          <div class="document-upload-body">
+            <div class="show-file-details p-pt-2 p-shadow-2">
+              <div class="label-with-icon-container text-size-12 text-bold text-color-normal">
+                <div class="icon">
+                  <i class="pi pi-file-o"></i>
+                </div>
+                <div class="label">
+                  {{ selfOnboarding.documentDetails[0].companyTradeLicense[0].fileName }} |
+                  <span class="text-size-10 text-light text-color-light-shade-1"
+                    >{{
+                      (
+                        +selfOnboarding.documentDetails[0].companyTradeLicense[0].fileSize /
+                        1024 /
+                        1024
+                      ).toFixed(2)
+                    }}Mb</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="document-upload-card p-pt-2"
+          *ngIf="selfOnboarding.documentDetails[0].memorandumOfAssociation.length > 0"
+        >
+          <div class="document-upload-header text-color-dark-shade-2 text-bold text-size-16">
+            Memorandum of Association
+          </div>
+
+          <div class="document-upload-body">
+            <div class="show-file-details p-mt-2 p-shadow-2">
+              <div class="label-with-icon-container text-size-12 text-bold text-color-normal">
+                <div class="icon">
+                  <i class="pi pi-file-o"></i>
+                </div>
+                <div class="label">
+                  {{ selfOnboarding.documentDetails[0].memorandumOfAssociation[0].fileName }} |
+                  <span class="text-size-10 text-light text-color-light-shade-1"
+                    >{{
+                      (
+                        +selfOnboarding.documentDetails[0].memorandumOfAssociation[0].fileSize /
+                        1024 /
+                        1024
+                      ).toFixed(2)
+                    }}Mb</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="document-upload-card p-pt-2"
+          *ngIf="selfOnboarding.documentDetails[0].shareCertificates.length > 0"
+        >
+          <div class="document-upload-header text-color-dark-shade-2 text-bold text-size-16">
+            Share Certificates
+          </div>
+
+          <div class="document-upload-body">
+            <div class="show-file-details p-mt-2 p-shadow-2">
+              <div class="label-with-icon-container text-size-12 text-bold text-color-normal">
+                <div class="icon">
+                  <i class="pi pi-file-o"></i>
+                </div>
+                <div class="label">
+                  {{ selfOnboarding.documentDetails[0].shareCertificates[0].fileName }} |
+                  <span class="text-size-10 text-light text-color-light-shade-1"
+                    >{{
+                      (
+                        +selfOnboarding.documentDetails[0].shareCertificates[0].fileSize /
+                        1024 /
+                        1024
+                      ).toFixed(2)
+                    }}Mb</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="document-upload-card p-pt-2"
+          *ngIf="selfOnboarding.documentDetails[0].boardOfDirectors.length > 0"
+        >
+          <div class="document-upload-header text-color-dark-shade-2 text-bold text-size-16">
+            Board of Directors
+          </div>
+
+          <div class="document-upload-body">
+            <div class="show-file-details p-mt-2 p-shadow-2">
+              <div class="label-with-icon-container text-size-12 text-bold text-color-normal">
+                <div class="icon">
+                  <i class="pi pi-file-o"></i>
+                </div>
+                <div class="label">
+                  {{ selfOnboarding.documentDetails[0].boardOfDirectors[0].fileName }} |
+                  <span class="text-size-10 text-light text-color-light-shade-1"
+                    >{{
+                      (
+                        +selfOnboarding.documentDetails[0].boardOfDirectors[0].fileSize /
+                        1024 /
+                        1024
+                      ).toFixed(2)
+                    }}Mb</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="document-upload-card p-pt-2"
+          *ngIf="selfOnboarding.documentDetails[0].otherDocuments.length > 0"
+        >
+          <div class="document-upload-header text-color-dark-shade-2 text-bold text-size-16">
+            Other Documents
+          </div>
+
+          <div class="document-upload-body">
+            <div class="show-file-details p-mt-2 p-shadow-2">
+              <div class="label-with-icon-container text-size-12 text-bold text-color-normal">
+                <div class="icon">
+                  <i class="pi pi-file-o"></i>
+                </div>
+                <div class="label">
+                  {{ selfOnboarding.documentDetails[0].otherDocuments[0].fileName }} |
+                  <span class="text-size-10 text-light text-color-light-shade-1"
+                    >{{
+                      (
+                        +selfOnboarding.documentDetails[0].otherDocuments[0].fileSize /
+                        1024 /
+                        1024
+                      ).toFixed(2)
+                    }}Mb</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div
+        class="document-upload-card p-pt-2"
+        *ngIf="selfOnboardingService.registrationType === 'existing'"
+      >
+        <!-- <div class="document-upload-header text-color-dark-shade-2 text-bold text-size-16">
+          Upload Operating Mandate
+        </div> -->
+
+        <div class="document-upload-body">
+          <upload-form-control
+            [files]="selfOnboarding.documentDetails[0].uploadOperatingMandate"
+            (onUploaded)="uploadOperatingMandate($event)"
+          ></upload-form-control>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="p-grid g-margin-x p-pt-3">
+  <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+    <div class="background-color border-radius-5 p-p-3 p-shadow-3">
+      <div class="text-bold text-size-16 text-color-dark-shade-2">Download this Form</div>
+      <div class="btn btn-md btn-secondary text-center p-mt-2" (click)="downloadFormPDF()">
+        <app-icon class="p-mr-2" icon="fa-arrow-to-bottom"></app-icon> DOWNLOAD THIS FORM
+      </div>
+    </div>
+  </div>
+
+  <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+    <div class="background-color border-radius-5 p-p-3 p-shadow-3">
+      <div class="text-bold text-size-16 text-color-dark-shade-2">
+        Please upload the signed copy of the form
+      </div>
+      <!-- <input type="file" class="input pointer" #fileDropRef id="fileDropRef" /> -->
+      <!-- (change)="fileBrowseHandler($event.target.files)" -->
+      <div class="btn btn-md btn-secondary button-upload text-center p-mt-2 upload-container">
+        <input type="file" class="input pointer" #fileDropRef id="fileDropRef"
+          (change)="fileBrowseHandler($event.target.files)" /> Drop your file here to Upload
+      </div>
+    </div>
+  </div>
+
+  <div class="p-col-12">
+    <div class="background-color border-radius-5 p-shadow-3">
+      <div class="p-grid text-color-light-shade-1 text-size-14">
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-p-3">
+          <p-checkbox name="tnc" [binary]="true" id="tnc"></p-checkbox>
+          <label class="" for="tnc" (click)="openLink('Aurionpro_Terms_Conditions.pdf')">
+            &nbsp;I Agree to <span class="link pointer">Terms & Conditions</span>&nbsp;
+            <app-icon class="p-mr-2" icon="fa-arrow-to-bottom"></app-icon>
+          </label>
+        </div>
+        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-p-3">
+          <p-checkbox class="p-mr-2" name="fees" [binary]="true" id="fees"></p-checkbox>
+          <label class="" for="tnc" (click)="openLink('Fees_Structure.pdf')">
+            &nbsp;Read Schedule for the fees&nbsp;
+            <app-icon class="p-mr-2" icon="fa-file"></app-icon>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<br /><br /><br />

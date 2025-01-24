@@ -1,0 +1,74 @@
+<form name="form" #form="ngForm" class="p-grid g-margin-x">
+  <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+    <aps-form-input
+      name="accountNumber"
+      id="accountNumber"
+      label="Account Number"
+      inputType="alphaNumeric"
+      [(ngModel)]="formData.accountNumber"
+      [required]="true"
+    ></aps-form-input>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <p-checkbox
+      name="defaultAccount"
+      id="defaultAccount"
+      label="Default Account"
+      [binary]="true"
+      [(ngModel)]="formData.defaultAccount"
+    ></p-checkbox>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <app-aps-calender
+      name="effectiveFrom"
+      id="effectiveFrom"
+      label="Effective From"
+      [(ngModel)]="formData.effectiveFrom"
+      [required]="true"
+    ></app-aps-calender>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <app-aps-calender
+      name="effectiveTill"
+      id="effectiveTill"
+      label="Effective Till"
+      [(ngModel)]="formData.effectiveTill"
+      [required]="true"
+    ></app-aps-calender>
+  </div>
+  <div class="p-col-12 p-py-0">
+    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+      Beneficiary Advice Dispatch Mode
+    </div>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Electronic Mode</div>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <p-checkbox
+      class="p-mr-3"
+      name="beneficiaryAdviceDispatchMode"
+      label="Email"
+      value="Email"
+      [(ngModel)]="formData.beneficiaryAdviceDispatchMode"
+    ></p-checkbox>
+    <p-checkbox
+      name="beneficiaryAdviceDispatchMode"
+      label="SMS"
+      value="SMS"
+      [(ngModel)]="formData.beneficiaryAdviceDispatchMode"
+    ></p-checkbox>
+  </div>
+  <div class="p-col-12">
+    <div class="left-right-container p-mt-6">
+      <div class="left-container">
+        <button class="btn btn-md btn-tertiary" (click)="cancel.emit()">CANCEL</button>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="add()">
+          {{ account ? 'UPDATE' : 'ADD' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</form>

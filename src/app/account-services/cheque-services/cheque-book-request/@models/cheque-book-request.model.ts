@@ -1,0 +1,26 @@
+export class ChequeBookRequest {
+  constructor(
+    public chequeType: string = '',
+    public accountSelection: string = 'Account No',
+    public accountId: string = '',
+    public accountNo: string = '',
+    public accountName: string = '',
+    public accountTitle: string = '',
+    public totalNoOfBooks: string = '1',
+    public totalNoOfLeaves: string = '25',
+    public deliveryOption: string = '',
+    public branch: string = '',
+    public collectorIdType: string = '',
+    public collectorName: string = '',
+    public collectorIdNumber: string = '',
+    public deliveredTo: string = '',
+    public address1: string = '',
+    public address2: string = '',
+    public address3: string = '',
+    public remarks: string = '',
+    public referenceNo: string = 'Ref001',
+    public requestDate: string = '',
+    public status: string = 'Sent To Bank',
+    public documents: any[] = [],
+  ) {}
+}

@@ -1,0 +1,242 @@
+<div class="container">
+    <ng-container>
+        <div class="p-grid">
+            <ng-container>
+                <div class="p-col-12 p-md-3 p-col-lg-3">
+                    <div class="aps-card aps-filled-card-primary-sm pointer p-px-3 p-py-4 p-mb-4"
+                        (click)="onPaymentMethodWiseClick()"
+                        routerLink="/collection/process/collectionSummary/initiate">
+                        <div class="p-mb-2 text-color-inverted text-size-16 text-center">
+                            {{ 'New Pickup Point Request' | apsTranslate }}
+                        </div>
+                    </div>
+                    <div class="aps-card border-primary-2px pointer p-px-3 p-py-4"
+                        (click)="onCreditAccountSelectionClick()"
+                        routerLink="/collection/process/collectionSummary/initiate">
+                        <div class="text-color-primary text-center text-size-16 p-mb-1">
+                            {{ 'New Pickup Request' | apsTranslate }}
+                        </div>
+                    </div>
+                </div>
+            </ng-container>
+            <div class="p-col-12 p-md-6 p-lg-6 p-mb-2">
+                <div class="aps-card p-py-2 p-px-2 aps-h-100p">
+                    <form #quickPayForm="ngForm">
+                        <div class="p-grid">
+                            <div class="p-col-12 p-md-4 p-lg-4 p-py-0 p-pt-0">
+                                <div class="text-bold text-size-16">{{ 'Quick Request' | apsTranslate }}</div>
+                            </div>
+                            <div class="p-col-12 p-md-8 p-lg-8 p-py-0 p-pt-0">
+                                <div class="left-right-container no-left-right-container-on-mobile">
+                                    <div class="left-container">
+                                        <p-radioButton class="p-mr-3" label="Pickup" value="Pickup" name="Pickup"
+                                            [(ngModel)]="formData.quickReq">
+                                        </p-radioButton>
+                                        <p-radioButton label="Drop" value="drop" name="Drop"
+                                            [(ngModel)]="formData.quickReq"></p-radioButton>
+                                    </div>
+                                    <div class="right-container"> </div>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                <aps-form-input label="Location" id="location" name="location" [required]="true">
+                                </aps-form-input>
+                            </div>
+                            <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                <aps-custom-select label="Product Name" id="productName" name="productName"
+                                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                    [required]="true">
+                                </aps-custom-select>
+                            </div>
+                            <div class="p-col-12 p-md-4 p-lg-4 p-py-0"></div>
+                            <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                <aps-custom-select id="pickupPointCode" name="pickupPointCode" label="Pickup Point Code"
+                                    dataUrl="setup/generalMasters/currency/private/currencyList">
+                                </aps-custom-select>
+                            </div>
+                            <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                <aps-custom-select label="Pickup Point Code" id="pickupPointName" name="pickupPointName"
+                                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                    [required]="true">
+                                </aps-custom-select>
+                            </div>
+                            <div class="p-col-12 p-md-4 p-lg-4">
+                                <div class="text-right">
+                                    <button [disabled]="!quickPayForm.valid" class="btn btn-md btn-primary">
+                                        {{ 'Submit' | apsTranslate }}
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- 
+                            <div class="p-col-12 p-py-0">
+                                
+                            </div> -->
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-mb-2 p-col-12">
+                <div class="aps-card p-py-3 p-py-2 p-px-2 aps-h-100p">
+                    <div
+                        class="background-color-dark-4 aps-min-h-100 aps-h-100p border-radius-4 text-color-dark-shade-1 p-p-3">
+                        <div class="text-size-14 text-semi-bold">Insights</div>
+                        <div class="aps-h-100 overflow-scroll">
+                            <div class="label-with-icon-container p-mt-1" *ngFor="let insight of insights">
+                                <div class="icon">
+                                    <app-icon styleClasses="text-size-13" [icon]="insight.icon"></app-icon>
+                                </div>
+                                <div class="label text-size-13 white-space-normal p-pt-1">
+                                    {{ insight.label }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-grid">
+            <div class="p-col-12 p-md-9 p-col-lg-9">
+                <div class="aps-card p-py-3 p-px-2 aps-h-500p">
+                    <div class="p-col-12 p-pt-0">
+                        <div class="left-right-container">
+                            <div class="left-container">
+                                <div class="text-bold text-size-16">{{ 'Pickup Schedule' | apsTranslate }}</div>
+                            </div>
+                            <div class="right-container">
+                                <button class="btn btn-md btn-tertiary float-right">
+                                    <app-icon class="p-px-2" icon="fa-external-link-square"></app-icon>{{ 'Manage
+                                    Pickup' |
+                                    apsTranslate }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-grid">
+                        <div class="p-md-4 p-col-lg-4 p-p-0">
+                            <div class="aps-card border-primary-2px p-py-3 p-px-2 aps-h-500p">
+                                <p-calendar [(ngModel)]="value" [inline]="true" [showWeek]="true"></p-calendar>
+                            </div>
+                        </div>
+                        <div class="p-md-4 p-col-lg-4 p-p-0">
+                            <div style="height: 100%" class="aps-card aps-h-500p">
+                                <div>
+                                    <div class="p-py-3 p-px-2">Today's Pickup</div>
+                                    <div [ngClass]="
+                                    element.label === cashSummaryData.label
+                                      ? 'background-color-primary-light-shade-2'
+                                      : ''
+                                  " *ngFor="let element of menus" class="p-col-12 p-pt-3 pointer">
+                                        <div class="p-grid" (click)="onParentMenuSelected(element)">
+                                            <div class="p-md-10 p-col-lg-4 p-p-0">
+                                                {{ element.label | apsTranslate }}
+                                            </div>
+                                            <div class="p-md-2 p-col-lg-4 p-p-0">
+                                                <span class="text-size-19">{{ element.count }}</span>
+                                                <app-icon icon="fa-chevron-right"
+                                                    class="p-px-2 text-size-15"></app-icon>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-md-4 p-col-lg-4 p-p-0">
+                            <div style="height: 100%" class="aps-card aps-h-500p">
+                                <div>
+                                    <!-- <div> -->
+                                    <div class="p-py-3 p-px-2">{{ 'Cash Summary' | apsTranslate }}</div>
+                                    <div class="p-grid p-mt-3 p-pb-6 border-bottom">
+                                        <div class="p-col-6 text-center">
+                                            <div class="text-size-16">
+                                                {{cashSummaryData.completed}}
+                                            </div>
+                                            <div class="text-semi-bold text-size-16">{{ 'Completed' | apsTranslate
+                                                }}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-6 text-center">
+                                            <div class="text-size-16">
+                                                {{cashSummaryData.pending}}
+                                            </div>
+                                            <div class="text-semi-bold text-size-16">{{ 'Pending' | apsTranslate }}
+                                            </div>
+                                        </div>
+                                        <div class="p-col-6 text-center">
+                                            <div class="text-size-16">
+                                                {{cashSummaryData.NIL}}
+                                            </div>
+                                            <div class="text-semi-bold text-size-16">{{ 'NIL Pickup' | apsTranslate
+                                                }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div footer class="p-col-12 background-color-primary-light-shade-2 footer-wrapper">
+                                        <div class="p-grid">
+                                            <div class="p-col-6">Total Value</div>
+                                            <div class="p-col-6">AED {{cashSummaryData.total}}</div>
+                                        </div>
+                                    </div>
+                                    <!-- </div> -->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12 p-md-3 p-col-lg-3">
+                <div class="aps-card p-py-3 p-px-1 aps-h-500p">
+                    <div class="p-col-12 p-pt-0">
+                        <div class="text-bold text-size-16">{{ 'Upcoming Pickup' | apsTranslate }}</div>
+                    </div>
+                    <div class=" border-radius-6 text-color-normal text-size-14 p-px-2 aps-py-12 p-mb-1">
+                        <div class="label-with-icon-container">
+                            <div class="icon text-size-14">
+                                <app-icon icon="fa-info-circle" styleClasses="text-size-14"></app-icon>
+                            </div>
+                            <div class="label white-space-normal text-bold text-size-14">
+                                {{ 'Cash Pickup' |apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="label p-py-1 p-px-4">
+                            Schedule at <span class="text-color-primary">10.30 am on 5 July 23</span> Pickup at <span
+                                class="text-color-primary">Standford store</span> by <span
+                                class="text-color-primary">Secure Pvt. ltd.</span>
+                        </div>
+                    </div>
+                    <div class=" border-radius-6 text-color-normal text-size-14 p-px-2 aps-py-12 p-mb-1">
+                        <div class="label-with-icon-container">
+                            <div class="icon text-size-14">
+                                <app-icon icon="fa-info-circle" styleClasses="text-size-14"></app-icon>
+                            </div>
+                            <div class="label white-space-normal text-bold text-size-14">
+                                {{ 'Document Pickup' |apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="label p-py-1 p-px-4">
+                            Schedule at <span class="text-color-primary">10.30 am on 5 July 23</span> Pickup at <span
+                                class="text-color-primary">Standford store</span> by <span
+                                class="text-color-primary">Secure Pvt. ltd.</span>
+                        </div>
+                    </div>
+                    <div class=" border-radius-6 text-color-normal text-size-14 p-px-2 aps-py-12 p-mb-1">
+                        <div class="label-with-icon-container">
+                            <div class="icon text-size-14">
+                                <app-icon icon="fa-info-circle" styleClasses="text-size-14"></app-icon>
+                            </div>
+                            <div class="label white-space-normal text-bold text-size-14">
+                                {{ 'Cash Dilevery' |apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="label p-py-1 p-px-4">
+                            Schedule at <span class="text-color-primary">10.30 am on 5 July 23</span> Pickup at <span
+                                class="text-color-primary">Standford store</span> by <span
+                                class="text-color-primary">Secure Pvt. ltd.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>

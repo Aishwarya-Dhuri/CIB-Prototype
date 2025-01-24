@@ -1,0 +1,207 @@
+.sidebar {
+  position: fixed;
+  width: 600px !important;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  background-color: var(--background-color);
+  border-radius: 10px 0 0 10px;
+  padding: 1rem 1.5rem;
+  height: 100vh;
+
+  .sidebar-header {
+    border-bottom: 1px solid var(--background-color-dark-6);
+  }
+
+  .sidebar-body {
+    margin-bottom: 2.5rem;
+    height: calc(100% - 4.5rem);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    .user-details-form {
+      .form-heading {
+      }
+
+      .form-body {
+        display: block;
+
+        .input-field {
+          display: inline-block;
+          width: 50%;
+          padding: 0.5rem;
+        }
+      }
+    }
+  }
+
+  .sidebar-footer {
+    position: absolute;
+    bottom: 1rem;
+    right: 0;
+    width: 100%;
+  }
+}
+
+.accordion {
+  display: block;
+
+  .accordion-tab {
+    display: block;
+    background-color: var(--background-color);
+    margin: 0.5rem 0;
+    border-radius: 5px;
+    border: 1px solid var(--background-color-dark-4);
+
+    .accordion-tab-header {
+      display: block;
+      width: 100%;
+      padding: 0.5rem;
+    }
+
+    .accordion-tab-body {
+      height: 0;
+      overflow: hidden;
+      -webkit-transition: height 0.25s ease-in-out;
+    }
+
+    .accordion-tab-body-expand {
+      border-top: 1px solid var(--background-color-dark-4);
+      padding: 0.5rem;
+      height: max-content;
+    }
+  }
+}
+
+.payment {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+
+  .payment-list {
+    display: inline-block;
+    width: 12.5rem;
+    vertical-align: top;
+    padding: 0 0.5rem 0 0;
+    border-right: 1px solid var(--background-color-dark-4);
+    white-space: normal;
+
+    .list-item {
+      display: block;
+      padding: 0.5rem;
+    }
+  }
+
+  .payment-details {
+    display: inline-block;
+    vertical-align: top;
+    width: calc(100% - 12.5rem);
+    white-space: normal;
+    word-wrap: normal;
+    word-break: normal;
+  }
+}
+
+.account {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+
+  .account-list {
+    display: inline-block;
+    width: 12.5rem;
+    vertical-align: top;
+    padding: 0 0.5rem 0 0;
+    border-right: 1px solid var(--background-color-dark-4);
+    white-space: normal;
+
+    .list-item {
+      display: block;
+      padding: 0.5rem;
+    }
+  }
+
+  .account-details-wrapper {
+    display: inline-block;
+    vertical-align: top;
+    width: calc(100% - 12.5rem);
+    white-space: normal;
+    word-wrap: normal;
+    word-break: normal;
+    .account-details {
+      border-radius: 10px;
+      border: 1px solid var(--background-color-dark-5);
+      overflow: hidden;
+
+      .account-data {
+        border-bottom: 1px solid var(--background-color-dark-5);
+
+        &:nth-child(odd) {
+          background-color: var(--background-color-dark-4);
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .sidebar {
+    width: 320px !important;
+    padding: 1rem;
+
+    .sidebar-body {
+      margin-bottom: 2.5rem;
+      height: calc(100% - 4.5rem);
+      overflow: scroll;
+
+      .user-details-form {
+        .form-body {
+          .input-field {
+            display: block;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  .payment {
+    .payment-list {
+      display: block;
+      width: 100%;
+      padding: 0 0.5rem 0 0;
+      border: none !important;
+    }
+
+    .payment-details {
+      display: block;
+      width: 100%;
+    }
+  }
+
+  .account {
+    .account-list {
+      display: block;
+      width: 100%;
+      padding: 0 0.5rem 0 0;
+      border: none !important;
+    }
+
+    .account-details-wrapper {
+      width: 100%;
+      display: block;
+    }
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

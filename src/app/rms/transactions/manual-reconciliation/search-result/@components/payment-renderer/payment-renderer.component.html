@@ -1,0 +1,10 @@
+<div class="inline-items">
+  <div class="item p-mr-2">
+    <div class="entry-type" [ngClass]="cellValue.entryType === 'M' ? 'manual' : 'system'">
+      {{ cellValue.entryType }}
+    </div>
+  </div>
+  <div class="item">
+    <app-base-currency [amount]="cellValue.outstandingAmount"></app-base-currency>
+  </div>
+</div>

@@ -1,0 +1,131 @@
+<app-modal
+  *ngIf="subProductType"
+  [(isShow)]="!!subProductType"
+  size="md"
+  (onClose)="subProductType = null"
+  headerText="Sub Product Type Details"
+>
+  <div class="" body>
+    <div class="text-sze-14 text-bold p-mt-3 p-mb-2">
+      {{ subProductType.subProducts.join(', ') }}({{
+        subProductType.records ? subProductType.records : '0'
+      }})
+    </div>
+
+    <div class="aps-card aps-h-120">
+      <app-ag-grid-listing
+        [colDefUrl]="subProductTypeDetailsColDefs"
+        rowDefUrl="accountServices/services/creditLineDetails/private/subProductTypeDetailsData"
+        [rowDefReq]="subProductType"
+        [gridOptions]="{ pagination: false }"
+      ></app-ag-grid-listing>
+    </div>
+  </div>
+
+  <div class="left-right-container p-mt-3" footer>
+    <div class="left-container">
+      <div class="inline-items">
+        <div class="item p-mr-4">
+          <app-icon icon="fa-print" styleClasses="text-size-16"></app-icon>
+        </div>
+        <div class="item p-mr-4">
+          <app-icon icon="fa-arrow-to-bottom" styleClasses="text-size-16"></app-icon>
+        </div>
+        <div class="item">
+          <app-icon icon="fa-envelope" styleClasses="text-size-16"></app-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-container">
+      <div class="btn btn-md btn-primary" (click)="subProductType = null">
+        {{ 'CLOSE' | apsTranslate }}
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal
+  [(isShow)]="isShowMoreOptions"
+  [customStyles]="moreActionsStyle"
+  [showBoxShadow]="true"
+  background="rgba(0, 0, 0, 0)"
+  (onBackdrop)="isShowMoreOptions = false"
+>
+  <div class="text-size-12 white-space-nowrap" body>
+    <div class="p-mb-1 pointer" (click)="isShowMoreOptions = false">Repay Now</div>
+    <div class="p-mb-1 pointer" (click)="isShowMoreOptions = false">Apply Finance</div>
+    <div class="pointer" (click)="isShowMoreOptions = false">Request Enhancement</div>
+  </div>
+</app-modal>
+
+<div class="product-container container p-py-2" *ngIf="product">
+  <div class="aps-card">
+    <div class="p-grid">
+      <div class="p-md-3 p-sm-12 p-col-12 p-px-3 p-pt-3 p-pb-0">
+        <aps-custom-select
+          label="Product"
+          id="product"
+          name="product"
+          [value]="selectedProduct"
+          [(ngModel)]="selectedProduct"
+          [data]="productList"
+          (change)="onProductChanged($event)"
+        ></aps-custom-select>
+      </div>
+      <div
+        class="p-md-3 p-sm-12 p-col-12 p-px-3 p-py-0 p-my-md-3 p-my-sm-0 p-my-0 border-left text-color-dark-shade-1"
+      >
+        <div class="text-size-16 text-bold">{{ 'Total Allocated Limit' | apsTranslate }}</div>
+        <div class="text-size-12 text-semi-bold p-mt-1">
+          <app-base-currency
+            [amount]="product.totalAllocatedLimit"
+            [currency]="currency"
+          ></app-base-currency>
+        </div>
+      </div>
+      <div class="p-md-3 p-sm-12 p-col-12 p-px-3 p-py-md-3 p-py-sm-0 p-py-0">
+        <app-limit-bar
+          [utilized]="product.utilizedLimit"
+          [available]="product.availableLimit"
+          [currency]="currency"
+        ></app-limit-bar>
+      </div>
+      <div class="p-md-3 p-sm-12 p-col-12 p-p-3 overflow-scroll">
+        <div class="text-size-12 text-semi-bold">{{ 'Quick Actions' | apsTranslate }}</div>
+        <div class="inline-items p-mt-md-2 p-mt-sm-0 p-mt-0">
+          <div class="item">
+            <a class="link text-size-12 text-underline p-mr-3" routerLink="">{{
+              'Repay now' | apsTranslate
+            }}</a>
+          </div>
+          <div class="item">
+            <a class="link text-size-12 text-underline p-mr-3" routerLink="">{{
+              'Request enhancement' | apsTranslate
+            }}</a>
+          </div>
+          <div class="item">
+            <a class="link text-size-12 text-underline" routerLink="">{{
+              'Apply finance' | apsTranslate
+            }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-size-16 text-bold text-color-dark-shade-1 p-mt-3 p-mb-2">
+    {{ 'Sub Product Details' | apsTranslate }}
+  </div>
+
+  <div class="aps-card aps-h-250">
+    <app-ag-grid-listing
+      [colDefUrl]="colDefUrl"
+      [rowData]="rowData"
+      [context]="context"
+      [frameworkComponents]="frameworkComponents"
+      [gridOptions]="gridOptions"
+      *ngIf="!loadingData"
+    ></app-ag-grid-listing>
+  </div>
+</div>

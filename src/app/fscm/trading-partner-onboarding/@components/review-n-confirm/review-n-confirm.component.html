@@ -1,0 +1,264 @@
+<div class="review-n-submit-container">
+  <div class="aps-card p-p-3 p-my-3">
+    <div class="left-right-container">
+      <div class="left-container">
+        <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">
+          {{ sellerBuyerData.type }} Details
+        </div>
+      </div>
+      <div class="right-container">
+        <!-- <i class="pi pi-pencil pointer" (click)="edit.emit(1)"></i> -->
+        <app-icon icon="fa-pencil" class="pointer" (click)="edit.emit(1)"></app-icon>
+      </div>
+    </div>
+
+    <div class="p-grid p-flex-column p-flex-md-row">
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Customer Type</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.customerType }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">{{ sellerBuyerData.type }} Code</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.code }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">{{ sellerBuyerData.type }} Name</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.name }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">
+          {{ sellerBuyerData.type }} Name (Local)
+        </div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.nameLocal }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <!-- <div class="text-size-14 text-color-light-shade-1">CBS Segment Code</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.cbsSegmentCode }}</div> -->
+      </div>
+    </div>
+
+    <div class="p-grid p-flex-column p-flex-md-row">
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Tax Identification Number</div>
+        <div class="text-size-16 text-color-dark-shade-1">
+          {{ sellerBuyerData.taxIdentificationNumber }}
+        </div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Tax Branch</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.taxBranch }}</div>
+      </div>
+      <div class="p-col p-p-0"></div>
+      <div class="p-col p-p-0"></div>
+      <div class="p-col p-p-0"></div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0">
+        <div class="text-size-14 text-color-dark-shade-2 text-semi-bold">Uploaded Logo</div>
+        <div class="aps-card file-container p-mt-2 p-p-2">
+          <div class="label-with-icon-container p-mr-6">
+            <div class="icon">
+              <div class="pi pi-file"></div>
+            </div>
+            <div class="label text-color-normal">
+              <div class="text-size-14">
+                {{
+                  sellerBuyerData.logo.length > 0 && sellerBuyerData.logo[0].fileName
+                    ? sellerBuyerData.logo[0].fileName
+                    : 'image.png'
+                }}
+              </div>
+              <div class="text-size-10">3.5 Mb</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-flex-column p-flex-md-row">
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Address 1</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.address1 }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <ng-container *ngIf="sellerBuyerData.address2">
+          <div class="text-size-14 text-color-light-shade-1">Address 2</div>
+          <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.address2 }}</div>
+        </ng-container>
+      </div>
+      <div class="p-col p-px-0">
+        <ng-container *ngIf="sellerBuyerData.address3">
+          <div class="text-size-14 text-color-light-shade-1">Address 3</div>
+          <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.address3 }}</div>
+        </ng-container>
+      </div>
+      <div class="p-col p-p-0"></div>
+      <div class="p-col p-p-0"></div>
+    </div>
+
+    <div class="p-grid p-flex-column p-flex-md-row">
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Location</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.location }}</div>
+      </div>
+    </div>
+
+    <div class="p-grid p-flex-column p-flex-md-row">
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Province</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.province }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Country</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.country }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Postal Code</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.postalCode }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">City</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.city }}</div>
+      </div>
+      <div class="p-col p-p-0"></div>
+    </div>
+
+    <div class="p-grid p-flex-column p-flex-md-row">
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Email ID</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.emailId }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Mobile Number</div>
+        <div class="text-size-16 text-color-dark-shade-1">{{ sellerBuyerData.mobileNumber }}</div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1">Telephone Number</div>
+        <div class="text-size-16 text-color-dark-shade-1">
+          {{ sellerBuyerData.telephoneNumber }}
+        </div>
+      </div>
+      <div class="p-col p-p-0"></div>
+      <div class="p-col p-p-0"></div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0">
+        <div class="text-color-dark-shade-2 text-size-16 test-semi-bold">Contact Details</div>
+      </div>
+      <div class="p-col-12 p-px-0">
+        <div class="p-col-12" *ngIf="sellerBuyerData.contactDetails.length > 0">
+          <div class="ag-grid-listing aps-h-150 border-radius-5">
+            <app-ag-grid-listing
+              id="contactDetails"
+              #contactDetailsGrid
+              [gridOptions]="contactDetailsGridOptions"
+              (actionClicked)="onActionClicked($event)"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-card p-p-3 p-my-3">
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0 p-pt-0">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">Parameters</div>
+          </div>
+          <div class="right-container">
+            <!-- <i class="pi pi-pencil pointer" (click)="edit.emit(2)"></i> -->
+            <app-icon icon="fa-pencil" class="pointer" (click)="edit.emit(2)"></app-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid p-flex-column p-flex-md-row">
+      <div class="p-col p-px-0">
+        <div class="text-size-12 text-color-dark-shade-2 p-mb-2">Security Office</div>
+        <div class="text-size-14 text-color-light-shade-1">Corporate User administration by</div>
+        <div class="text-size-16 text-color-dark-shade-1">
+          {{ sellerBuyerData.parameters[0].securityOfficer[0].corporateUserAdministrationBy }}
+        </div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-12 text-color-dark-shade-2 p-mb-2">
+          Other Parameters Configuration
+        </div>
+        <div class="text-size-14 text-color-light-shade-1">Holiday access</div>
+        <div class="text-size-16 text-color-dark-shade-1">
+          {{ sellerBuyerData.parameters[0].otherParameterConfiguration[0].holidayAccess }}
+        </div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1 p-mt-4">Report Access on holiday</div>
+        <div class="text-size-16 text-color-dark-shade-1">
+          {{ sellerBuyerData.parameters[0].otherParameterConfiguration[0].reportAccessOnHoliday }}
+        </div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1 p-mt-4">Verification required</div>
+        <div class="text-size-16 text-color-dark-shade-1">
+          {{ sellerBuyerData.parameters[0].otherParameterConfiguration[0].verificationRequired }}
+        </div>
+      </div>
+      <div class="p-col p-px-0">
+        <div class="text-size-14 text-color-light-shade-1 p-mt-4">No of verifiers</div>
+        <div class="text-size-16 text-color-dark-shade-1">
+          {{ sellerBuyerData.parameters[0].otherParameterConfiguration[0].noOfVerifiers }}
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0">
+        <div
+          class="p-col-12"
+          *ngIf="
+            sellerBuyerData.parameters[0].isIpMapping === 'Yes' &&
+            sellerBuyerData.parameters[0].ipMapping.length > 0
+          "
+        >
+          <div class="ag-grid-listing aps-h-150 border-radius-5">
+            <app-ag-grid-listing
+              id="ipMappedGrid"
+              #ipMappedGrid
+              [gridOptions]="ipMappingGridOptions"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-card p-p-3 p-my-3">
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0 p-pt-0">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="text-size-16 text-color-dark-shade-2 text-semi-bold">
+              Authorization Rule
+            </div>
+          </div>
+          <div class="right-container">
+            <!-- <i class="pi pi-pencil pointer" (click)="edit.emit(3)"></i> -->
+            <app-icon icon="fa-pencil" class="pointer" (click)="edit.emit(3)"></app-icon>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-px-0" *ngIf="sellerBuyerData.authenticationRules.length > 0">
+        <div class="ag-grid-listing aps-h-150 border-radius-5">
+          <app-ag-grid-listing
+            id="authorizationRulesGrid"
+            #authorizationRulesGrid
+            [gridOptions]="authenticationRuleGridOptions"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

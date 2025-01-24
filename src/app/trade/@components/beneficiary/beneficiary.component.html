@@ -1,0 +1,15 @@
+<div *ngIf="!loading">
+  <app-beneficiary-init #initiate *ngIf="stepperDetails.currentStep < 2" [parentRef]="this">
+  </app-beneficiary-init>
+
+  <app-beneficiary-review
+    #review
+    *ngIf="stepperDetails.currentStep === stepperDetails.headings.length"
+    [parentRef]="this"
+  >
+  </app-beneficiary-review>
+
+  <div class="p-pl-4 p-pr-3">
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </div>
+</div>

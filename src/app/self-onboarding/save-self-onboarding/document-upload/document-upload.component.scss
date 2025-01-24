@@ -1,0 +1,81 @@
+.document-upload-container {
+  display: block;
+  background-color: var(--background-color);
+  border-radius: 5px;
+  overflow: hidden;
+
+  .document-list-container {
+    width: 15rem;
+    display: inline-block;
+    vertical-align: top;
+    border-right: 1px solid var(--background-color-dark-5);
+
+    .list-item {
+      padding: 1rem;
+    }
+
+    .list-item-active {
+      background-color: var(--primary-color);
+      // color: var(--text-color-inverted) !important;
+    }
+  }
+
+  .upload-container {
+    display: inline-block;
+    width: calc(100% - 15rem);
+    vertical-align: top;
+
+    .upload-header {
+      display: block;
+      margin: 0.75rem;
+      width: calc(100% - 1.5rem);
+    }
+
+    .drag-n-drop-container {
+      display: block;
+      width: calc(100% - 1.5rem);
+      border: 2px dotted var(--primary-color);
+      background-color: var(--primary-color-transparent-1);
+      border-radius: 5px;
+      margin: 0.75rem;
+
+      .drag-n-drop {
+        padding: 0.5rem;
+      }
+    }
+
+    input[type='file'] {
+      visibility: hidden;
+      height: 0;
+    }
+
+    .show-file-details {
+      display: block;
+      margin: 0 0.75rem;
+      border-radius: 5px;
+      padding: 0.5rem;
+    }
+  }
+}
+@media screen and (max-width: 991px) {
+  .document-upload-container {
+    .document-list-container {
+      width: 100%;
+      display: block;
+      border: none;
+    }
+
+    .upload-container {
+      display: block;
+      width: 100%;
+    }
+  }
+}
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

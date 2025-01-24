@@ -1,0 +1,28 @@
+<div class="biomatric-container">
+  <div class="main-heading">{{ 'msg_verify_fingerprint' | translate }}</div>
+  <div class="sub-heading">{{ 'msg_put_finger_on_scanner' | translate }}</div>
+
+  <div class="biomatrinc-lock">
+    <img
+      class="image"
+      [ngClass]="{ 'gray-scale': isGray }"
+      src="./../../../../assets/images/img/biomatric.PNG"
+      alt=""
+      (mouseenter)="isMouseHover = true; highlightImage()"
+      (mouseleave)="isMouseHover = false; highlightImage()"
+      (click)="onLogin(1)"
+      (contextmenu)="onLogin(2)"
+    />
+  </div>
+
+  <div class="text-center hide-on-mobile">
+    <p-checkbox
+      id="tnc"
+      name="tnc"
+      label="{{ 'msg_terms_conditions' | translate }}"
+      [binary]="true"
+      (onChange)="termsCondition($event)"
+      [(ngModel)]="acceptTermsConditions"
+    ></p-checkbox>
+  </div>
+</div>

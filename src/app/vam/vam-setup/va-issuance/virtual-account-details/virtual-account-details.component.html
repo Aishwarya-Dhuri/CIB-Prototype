@@ -1,0 +1,151 @@
+<div class="p-mt-3" [ngClass]="{ container: addContainer }">
+  <div *ngIf="vaData">
+    <ng-container>
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+            {{ 'Virtual Account Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Virtual Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.virtualAccountNo }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Currency' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaCurrency || 'INR' }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Virtual Account Description' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaDescription }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Virtual Account Alias Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaAliasName }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Expiry Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaExpiryDate }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Encrichment 1' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.enrichment1 }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Encrichment 2' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.enrichment2 }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+            {{ 'Contact Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-3">
+          <div *ngIf="vaData.vaContactDetList" class="p-grid g-margin-x">
+            <div class="p-col-12 aps-h-200 border-top">
+              <app-ag-grid-listing
+                #vaContactDetailsTable
+                [columnDefs]="contactColDef"
+                [context]="{ componentParent: this }"
+                [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+                [rowData]="vaData.vaContactDetList"
+                id="vaContactDetailsTable"
+              ></app-ag-grid-listing>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container>
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+            {{ 'Limit Arrangement Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Allocated Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaAllocatedLimit }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Limit Replenish Period' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaLimitResetPeriod }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Limit Replenish Day/Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaLimitResetOn }}</div>
+            </div>
+          </div>
+          <div class="p-grid g-margin-x">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Allow Override Limit' | apsTranslate }}
+              </div>
+              <p-inputSwitch [(ngModel)]="vaData.vaAllowOverrideLimit" disabled="true">
+              </p-inputSwitch>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Allow Override in' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaAllowOverrideIn }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12" *ngIf="vaData.vaAdhocLimitInPercent">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Adhoc Limit %' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaAdhocLimitInPercent }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12" *ngIf="vaData.vaAdhocLimit">
+              <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Adhoc Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaData.vaAdhocLimit }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

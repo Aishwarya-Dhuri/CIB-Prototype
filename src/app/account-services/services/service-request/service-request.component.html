@@ -1,0 +1,250 @@
+<div class="container">
+  <ng-container *ngIf="!isLoading; else loadingTemplate">
+    <div class="p-grid g-margin-x">
+      <div class="p-md-3 p-lg-3 p-sm-12 p-py-0 p-mb-2">
+        <div
+          class="aps-card aps-filled-card aps-h-200 p-p-3 text-color-inverted pointer"
+          (click)="navigateToInitiate()"
+        >
+          <div class="text-size-16 text-semi-bold p-pb-3 border-bottom">
+            {{ 'Initiate a new Service Request' | apsTranslate }}
+          </div>
+          <div class="text-size-12 p-pt-3">
+            {{
+              'Please click this card to initiate request of various services like statement request, update customer details etc.'
+                | apsTranslate
+            }}
+          </div>
+        </div>
+      </div>
+      <div class="p-md-9 p-lg-9 p-sm-12 p-py-0 p-mb-2">
+        <div class="aps-card p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-6 p-lg-6 p-sm-12 p-col-12 p-p-0">
+              <div
+                class="p-px-3 p-pt-3 aps-h-100p background-color-dark-3 p-mr-2 fixed-bottom-container"
+              >
+                <div class="text-size-14 text-color-dark-shade-1 text-semi-bold">
+                  {{ 'Track a Service Request' | apsTranslate }}
+                </div>
+                <div class="text-size-12 text-color-normal">
+                  {{
+                    'To view the status of your service request, please enter the respective request SR No. and click TRACK button.'
+                      | apsTranslate
+                  }}
+                </div>
+
+                <div class="p-grid p-pt-5">
+                  <div class="p-lg-9 p-md-8 p-sm-8 p-col-8 p-p-0">
+                    <aps-form-input
+                      label="{{ 'SR Number' | apsTranslate }}"
+                      name="srNo"
+                      id="srNo"
+                      [(ngModel)]="srNo"
+                    ></aps-form-input>
+                  </div>
+                  <div class="p-lg-3 p-md-4 p-sm-4 p-col-4 p-p-3">
+                    <button
+                      class="btn btn-md btn-primary"
+                      [disabled]="!srNo"
+                      (click)="trackRequestInfo()"
+                    >
+                      {{ 'TRACK' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-6 p-lg-6 p-sm-12 p-col-12 p-p-0">
+              <div class="left-right-container p-pb-2 border-bottom">
+                <div class="left-container">
+                  <div class="text-size-14 text-color-dark-shade-1 text-semi-bold p-pt-1">
+                    {{ 'Tracking Information' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="right-container">
+                  <button
+                    class="btn btn-md btn-tertiary"
+                    [disabled]="!trackingInformation"
+                    (click)="viewDetails()"
+                  >
+                    {{ 'VIEW DETAILS' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+
+              <div class="text-size-14 text-center p-py-6" *ngIf="!trackingInformation">
+                {{ 'Nothing here yet' | apsTranslate }}
+              </div>
+              <div
+                class="text-size-14 text-center p-py-6"
+                *ngIf="trackingInformation && !trackingInformation.id"
+              >
+                {{ 'Invalid Tracking ID' | apsTranslate }}
+              </div>
+              <ng-container *ngIf="trackingInformation && trackingInformation.id">
+                <div class="p-grid p-pt-3">
+                  <div class="p-md-4 p-lg-4 p-sm-6 p-col-6 p-p-0">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Request Number' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ trackingInformation.id }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-lg-4 p-sm-6 p-col-6 p-p-0">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'SR Class' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ trackingInformation.srClass }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-lg-4 p-sm-6 p-col-6 p-p-0">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'SR Type' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ trackingInformation.srType }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-grid p-pt-4">
+                  <div class="p-md-4 p-lg-4 p-sm-6 p-col-6 p-p-0">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'SR Sub Type' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ trackingInformation.srSubType }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-lg-4 p-sm-6 p-col-6 p-p-0">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Request Date' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ trackingInformation.modifiedSysOn }}
+                    </div>
+                  </div>
+                  <div class="p-md-4 p-lg-4 p-sm-6 p-col-6 p-p-0">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Status' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14 text-color-dark-shade-1">
+                      {{ trackingInformation.status }}
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card p-mt-2">
+      <div class="aps-card-header p-px-3 aps-py-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="text-size-16 text-semi-bold text-color-dark-shade-1">
+              {{ 'Summary' | apsTranslate }}
+            </div>
+          </div>
+          <div class="right-container">
+            <app-icon
+              class="pointer"
+              [icon]="isExpandSummery ? 'fa-chevron-up' : 'fa-chevron-down'"
+              (click)="isExpandSummery = !isExpandSummery"
+            ></app-icon>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-md-3 p-lg-3 p-sm-12 p-col-12 p-p-3">
+            <div class="background-color-dark-3 text-color-dark-shade-1 p-p-2">
+              <div class="text-size-20 text-bold">
+                {{ serviceRequestDashboardData.totalServiceRequest }}
+              </div>
+              <div class="text-size-16 p-mt-1">{{ 'Total Number of Request' | apsTranslate }}</div>
+            </div>
+          </div>
+          <div class="p-md-9 p-lg-9 p-sm-12 p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-lg-8 p-md-10 p-sm-12 p-col-12 p-p-0">
+                <div class="chart-container">
+                  <app-pie-chart
+                    [options]="chartOptions"
+                    webHeight="100"
+                    mobileHeight="200"
+                  ></app-pie-chart>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-col-12 p-px-3 p-pb-3" *ngIf="isExpandSummery">
+            <div class="aps-card aps-h-400">
+              <div class="aps-card-header">
+                <div class="left-right-container p-px-3">
+                  <div class="left-container">
+                    <div class="inline-items">
+                      <div class="item p-mr-2 p-pt-2">
+                        <aps-custom-select
+                          id="listingTypes"
+                          name="listingTypes"
+                          label=""
+                          [showLabel]="false"
+                          [data]="selectDropdownList"
+                          [value]="selectedListOption.id"
+                          [(ngModel)]="selectedListOption.id"
+                          (change)="selectedListOption = $event.enrichments"
+                        ></aps-custom-select>
+                      </div>
+                      <div class="item p-pt-2">
+                        <p-checkbox
+                          [binary]="true"
+                          [(ngModel)]="isShowOnlyHighPriority"
+                          label="Show Only High Priority"
+                        ></p-checkbox>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="right-container aps-py-12">
+                    <app-grid-listing-tools
+                      (changeFloatingFilter)="
+                        listingGrid ? listingGrid.changeFloatFilter($event) : null
+                      "
+                      (filterRecords)="listingGrid ? listingGrid.onFilter($event) : null"
+                      (applyColDefs)="listingGrid ? listingGrid.onApplyConfig($event) : null"
+                      [colDefs]="listingGrid ? listingGrid.columnDefs : []"
+                      [columnConfig]="true"
+                      [moreOptions]="true"
+                      [showFloatingFilter]="true"
+                      [columnConfig]="true"
+                      [showSearch]="true"
+                    ></app-grid-listing-tools>
+                  </div>
+                </div>
+              </div>
+              <div class="aps-card-body">
+                <app-ag-grid-listing
+                  #listingGrid
+                  [colDefUrl]="selectedListOption.colDefUrl"
+                  [rowDefUrl]="selectedListOption.rowDataUrl"
+                  [gridOptions]="gridOptions"
+                  [frameworkComponents]="frameworkComponents"
+                  [context]="context"
+                ></app-ag-grid-listing>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

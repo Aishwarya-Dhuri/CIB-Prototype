@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <div class="aps-card">
+                <div class="text-size-16 text-bold p-p-3">{{'Manual Forecast Upload' | apsTranslate}}</div>
+                <div class="p-grid p-p-2">
+                    <div class="p-col-12 p-lg-4 p-md-4 p-sm-12">
+                        <aps-custom-select label="Data Layout" name="dataLayoutId" id="dataLayoutId"
+                            [(ngModel)]="formData.dataLayoutId" [value]="formData.dataLayoutId"
+                            dataUrl="accountServices/services/manualForecastUpload/private/dropdown/dataLayoutList"
+                            [required]="true" (change)="formData.dataLayoutDisplayName = $event.displayName">
+                        </aps-custom-select>
+                    </div>
+                    <div class="p-col-12 p-lg-4 p-md-4 p-sm-12">
+                        <upload-form-control isMultiple="true" [files]="formData.fileUpload"
+                            [hideDragDropContainerOnFIleUpload]="true"
+                            (onUploaded)="onFileUploaded($event)"></upload-form-control>
+                    </div>
+                    <div class="p-col-12 p-lg-4 p-md-4 p-sm-12 p-py-3">
+                        <button class="btn btn-md btn-tertiary">{{'VIEW SAMPLE DATA LAYOUT'| apsTranslate}}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12">
+            <div class="aps-card p-p-2">
+                <div class="left-right-container">
+                    <div class="left-container">
+                        <button type="button" class="btn btn-md btn-tertiary" (click)="cancel()">
+                            {{ 'Cancel' | apsTranslate }}
+                        </button>
+                    </div>
+                    <div class="right-container">
+                        <button type="button" class="btn btn-md btn-primary" (click)="onSubmit()">
+                            {{ 'Submit' | apsTranslate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

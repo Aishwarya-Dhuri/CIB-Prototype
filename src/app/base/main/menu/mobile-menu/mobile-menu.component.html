@@ -1,0 +1,45 @@
+<app-mobile-menu [mobileMenus]="mobileSubMenus" (closeMenu)="closeMobileSubMenu()" *ngIf="mobileSubMenus">
+</app-mobile-menu>
+
+<ng-container *ngIf="!mobileSubMenus">
+  <div class="menu-breadcrumb" (click)="closeMobileMenu()">
+    <app-icon icon="fa-angle-left" rtlIcon="fa-angle-right" class="app-icon"></app-icon>
+    {{ mobileMenus.activeMenu | apsTranslate }}
+  </div>
+
+  <div class="menu-wrapper" *ngFor="let menu of mobileMenus.menus; let i = index">
+    <div class="menu" (click)="
+        mobileMenus.isSubMenus
+          ? onMenuClick(menu)
+          : menu.menuLinksDetail
+          ? toggleMobileSubMenu(menu.displayName)
+          : openMobileMenu(menu.displayName, menu.menus ? menu.menus : [])
+      ">
+      <div class="text" [ngClass]="{ 'sub-menu-text': menu.menuLinksDetail }">
+        <div class="left-right-container">
+          <div class="left-container">{{ menu.displayName | apsTranslate }}</div>
+          <div class="right-container">
+            <app-icon icon="{{
+                !menu.menuLinksDetail
+                  ? 'fa-chevron-right'
+                  : menu.displayName === activeMenu
+                  ? 'fa-angle-up'
+                  : 'fa-angle-down'
+              }}" class="app-icon"></app-icon>
+          </div>
+        </div>
+      </div>
+
+      <ng-container *ngIf="menu.menuLinksDetail">
+        <div class="sub-menu" *ngFor="let menu1 of menu.menuLinksDetail.link" [ngClass]="{
+            'sub-menu-expand': menu.displayName === activeMenu
+          }">
+          <div class="text"
+            (click)="handleRoute(menu, menu1.url ? menu1.url : '', menu.displayName + '/' + menu1.displayName)">
+            {{ menu1.displayName | apsTranslate }}
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>

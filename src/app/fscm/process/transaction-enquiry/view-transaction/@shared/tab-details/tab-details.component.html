@@ -1,0 +1,5 @@
+<p-tabView class="">
+  <p-tabPanel *ngFor="let d of data" [header]="d.label">
+    <app-show-details [transactionData]="d.data"></app-show-details>
+  </p-tabPanel>
+</p-tabView>

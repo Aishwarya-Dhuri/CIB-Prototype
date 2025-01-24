@@ -1,0 +1,93 @@
+<div class="container">
+  <ng-container *ngIf="selectedSubEntity">
+    <div class="aps-card">
+      <!--aps-h-200-->
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+          {{ 'Sub Entity' | apsTranslate }} - {{ selectedSubEntity.displayName }}
+        </div>
+      </div>
+      <div class="p-grid p-jc-center">
+        <div
+          *ngIf="subEntityList && selectedSubEntity"
+          class="p-md-3 p-sm-12 p-col-12 p-p-3 border-right"
+        >
+          <aps-custom-select
+            (change)="onSubEntityChange($event)"
+            [(ngModel)]="selectedSubEntityId"
+            [data]="subEntityList"
+            [showLabel]="false"
+            [value]="selectedSubEntityId"
+            id="selectedSubEntity"
+            name="selectedSubEntity"
+            required="true"
+          >
+          </aps-custom-select>
+        </div>
+        <div class="p-md-6 p-sm-12 p-col-12 p-p-0 border-right">
+          <div class="p-pl-3 p-pr-0 p-py-3">
+            <div class="aps-h-100p p-p-3">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Total Allocated Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-20 text-semi-bold p-mt-2">
+                <app-base-currency
+                  [amount]="selectedSubEntity.totalAllocatedLimit"
+                ></app-base-currency>
+
+                <!-- {{ selectedCreditLine.totalAllocatedLimit | currency: 'INR':'code' }} -->
+              </div>
+              <div class="p-mt-2">
+                <app-limit-bar
+                  [utilized]="selectedSubEntity.utilizedLimit"
+                  [available]="selectedSubEntity.subEntityAllocatedLimit"
+                ></app-limit-bar>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-md-3 p-col-12 p-sm-12 p-pl-3 p-pr-0 p-py-0">
+          <div class="text-size-12">{{ 'Quick Actions' | apsTranslate }}</div>
+          <div class="p-grid g-margin-x text-size-14 text-semi-bold pointer">
+            <div class="p-col-12 p-py-1">{{ 'VA POBO Limit Enhancement' | apsTranslate }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card p-my-3">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+          {{ 'Virtual Account Details' | apsTranslate }}
+        </div>
+      </div>
+      <div *ngIf="vaAccountList" class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-col-12 aps-h-200">
+            <app-ag-grid-listing
+              #virtualAccountTable
+              [columnDefs]="virtualAccountColDef"
+              [context]="{ componentParent: this }"
+              [gridOptions]="{ rowModelType: 'clientSide', pagination: false }"
+              [rowData]="vaAccountList"
+              id="virtualAccountTable"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<p-overlayPanel #actions [dismissable]="true">
+  <div class="aps-w-230">
+    <div class="p-grid">
+      <div class="p-col-12 12 text-size-14 pointer border-bottom" (click)="viewMoreDetails()">
+        {{ 'View More Details' | apsTranslate }}
+      </div>
+      <div class="p-col-12 12 text-size-14 pointer" (click)="limitEnhancement()">
+        {{ 'VA POBO Limit Enhancement' | apsTranslate }}
+      </div>
+    </div>
+  </div>
+</p-overlayPanel>

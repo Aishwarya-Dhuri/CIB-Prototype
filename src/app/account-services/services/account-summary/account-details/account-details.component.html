@@ -1,0 +1,285 @@
+<div class="container">
+  <ng-container *ngIf="!loading">
+    <div class="aps-card">
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+          <div class="aps-card aps-filled-card p-p-3 text-color-inverted aps-h-100p">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <img
+                      [src]="
+                        isGroupUser
+                          ? corporate.logo
+                          : 'assets/images/' + accountSummaryService.image
+                      "
+                      alt="Corporate"
+                      class="img-40-x-40"
+                    />
+                  </div>
+
+                  <div class="label">
+                    <div class="text-bold text-size-16">
+                      {{ isGroupUser ? corporate.name : accountSummaryService.name }}
+                    </div>
+                    <div class="label-with-icon-container">
+                      <div class="icon">
+                        <img [src]="country.flag" alt="" class="country-flag-icon" />
+                      </div>
+                      <div class="label text-color-inverted text-size-12">
+                        {{ country.country }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="right-container">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <img src="assets/images/flag/{{ selectedCurrency.flag }}" alt="" class="flag" />
+                  </div>
+                  <div class="label">
+                    <select
+                      class="select-primary text-size-14 text-color-inverted"
+                      name="currency"
+                      id="currency"
+                      (change)="changeCurrency($event.target.value)"
+                      [ngModel]="selectedCurrency.currency"
+                    >
+                      <option *ngFor="let currency of currencies" [value]="currency.currency">
+                        {{ currency.currency }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr class="" />
+
+            <div class="left-right-container text-size-12 p-mb-1">
+              <div class="left-container">{{ summary.displayName | apsTranslate }}</div>
+              <div class="right-container">
+                {{
+                  selectedAccount.cardStatus
+                    ? selectedAccount.cardStatus
+                    : ('Active' | apsTranslate)
+                }}
+              </div>
+            </div>
+
+            <div class="account-dropdown">
+              <select
+                name=""
+                id=""
+                [value]="selectedAccount.accountNo"
+                (change)="changeAccount($event.target.value)"
+                *ngIf="accounts.length > 0"
+              >
+                <option *ngFor="let acc of accounts" [value]="acc.accountNo">
+                  {{ acc.accountNo }}
+                </option>
+              </select>
+              <div class="text-size-14 text-color-invert" *ngIf="selectedAccount?.accountName">
+                {{ selectedAccount.accountName }}
+              </div>
+            </div>
+
+            <div class="left-right-container p-mt-2">
+              <div class="left-container p-mt-1">
+                <div class="text-size-14">
+                  {{
+                    (summary.displayName == 'Credit Card' ? 'Card Limit' : 'Available Balance')
+                      | apsTranslate
+                  }}
+                </div>
+              </div>
+              <div class="right-container">
+                <div class="text-size-20 text-bold">
+                  <app-base-currency
+                    [amount]="
+                      summary.displayName == 'Credit Card'
+                        ? selectedAccount.creditCardLimit
+                        : selectedAccount.availableBalance
+                    "
+                    [currency]="selectedCurrency.currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-5 p-sm-12 p-col-12">
+          <div class="p-grid">
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-p-12">
+                <div class="text-size-20 text-bold p-mb-md-1 p-mb-sm-0 p-mb-0">
+                  <app-base-currency
+                    [amount]="
+                      summary.displayName == 'Credit Card'
+                        ? selectedAccount.availableLimit
+                        : selectedAccount.netBalance
+                    "
+                    [currency]="selectedCurrency.currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">
+                  {{
+                    (summary.displayName == 'Credit Card' ? 'Available Limit' : 'Net Balance')
+                      | apsTranslate
+                  }}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-p-12">
+                <div class="text-size-20 text-bold p-mb-md-1 p-mb-sm-0 p-mb-0">
+                  <app-base-currency
+                    [amount]="
+                      summary.displayName == 'Credit Card'
+                        ? selectedAccount.totalAmountDue
+                        : selectedAccount.ledgerBalance
+                    "
+                    [currency]="selectedCurrency.currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">
+                  {{
+                    (summary.displayName == 'Credit Card' ? 'Total Outstanding' : 'Hold Balance')
+                      | apsTranslate
+                  }}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-p-12">
+                <div class="text-size-20 text-bold p-mb-md-1 p-mb-sm-0 p-mb-0">
+                  <app-base-currency
+                    [amount]="
+                      summary.displayName == 'Credit Card'
+                        ? selectedAccount.totalOutstandingAmount
+                        : selectedAccount.odLimit
+                    "
+                    [currency]="selectedCurrency.currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">
+                  {{
+                    (summary.displayName == 'Credit Card' ? 'Total Amount Due' : 'OD Limit')
+                      | apsTranslate
+                  }}
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 aps-p-12">
+                <div class="text-size-20 text-bold p-mb-md-1 p-mb-sm-0 p-mb-0">
+                  <app-base-currency
+                    [amount]="
+                      summary.displayName == 'Credit Card'
+                        ? selectedAccount.minAmountDue
+                        : selectedAccount.netBalance * 0.45
+                    "
+                    [currency]="selectedCurrency.currency"
+                    digitsInfo="1.0-0"
+                  ></app-base-currency>
+                </div>
+                <div class="text-size-16">
+                  {{
+                    (summary.displayName == 'Credit Card' ? 'Min Amount Due' : 'Funds In Clearing')
+                      | apsTranslate
+                  }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-my-3 p-py-0 p-px-3 border-left">
+          <div class="background-color-primary-light-shade-2 border-radius-4 p-p-3 aps-h-100p">
+            <div class="text-size-12">{{ 'Quick Actions' | apsTranslate }}</div>
+            <div class="p-grid g-margin-x text-size-14 text-semi-bold">
+              <ng-container *ngIf="summary.displayName != 'Credit Card'">
+                <div
+                  class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer"
+                  (click)="onSinglePaymentInitiation()"
+                >
+                  {{ 'Transfer Funds' | apsTranslate }}
+                </div>
+                <div class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer" (click)="onFdInitiation()">
+                  {{ 'Book FD' | apsTranslate }}
+                </div>
+                <div class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer" (click)="onPlaceSI()">
+                  {{ 'Place SI' | apsTranslate }}
+                </div>
+                <div
+                  class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer"
+                  (click)="onChequeBookRequest()"
+                >
+                  {{ 'Cheque Book request' | apsTranslate }}
+                </div>
+                <div class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer">
+                  {{ 'Pay Bill' | apsTranslate }}
+                </div>
+              </ng-container>
+              <ng-container *ngIf="summary.displayName.includes('CASA')">
+                <div
+                  class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer"
+                  (click)="onEmailAccountDetails()"
+                >
+                  {{ 'Email Account Details' | apsTranslate }}
+                </div>
+                <div
+                  class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer"
+                  (click)="onDownloadAccountDetails()"
+                >
+                  {{ 'Download Account Details' | apsTranslate }}
+                </div>
+              </ng-container>
+              <ng-container *ngIf="summary.displayName == 'Credit Card'">
+                <div
+                  class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer"
+                  (click)="onCreditCardStatementDownload()"
+                >
+                  {{ 'Statement Download' | apsTranslate }}
+                </div>
+                <div
+                  class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer"
+                  (click)="onCreditCardPayment()"
+                >
+                  {{ 'Card Payment' | apsTranslate }}
+                </div>
+              </ng-container>
+              <!-- <div class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer">
+                {{ 'Forecast balance' | apsTranslate }}
+              </div>
+              <div class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer">
+                {{ 'Push message' | apsTranslate }}
+              </div>
+              <div class="p-col-6 p-py-md-1 p-py-sm-0 p-py-0 pointer">
+                {{ 'Set alert' | apsTranslate }}
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-py-3">
+      <app-transaction-details-list
+        [account]="selectedAccount"
+        [summaryType]="summary.displayName"
+      ></app-transaction-details-list>
+    </div>
+  </ng-container>
+</div>

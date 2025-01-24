@@ -1,0 +1,158 @@
+<div class="container p-mt-3">
+  <!-- Step Tracker -->
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+  <!-- Step 1 Details -->
+  <ng-container *ngIf="stepperDetails.currentStep == 1">
+    <form #apsform="ngForm" name="apsform">
+      <div class="aps-card p-my-3 p-p-2 aps-min-h-400">
+        <div class="p-grid">
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <aps-form-input
+              (onRightIcon)="showCreditCardSearch = true"
+              [(ngModel)]="formData.cardNo"
+              disabled="true"
+              id="creditCard"
+              [label]="'Credit Card' | apsTranslate"
+              name="creditCard"
+              required="true"
+              rightIcon="fa-search"
+            >
+            </aps-form-input>
+            <app-search-modal
+              (onSelection)="onCreditCardSelection($event)"
+              *ngIf="showCreditCardSearch"
+              [(isShow)]="showCreditCardSearch"
+              [colDefUrl]="URLs.CREDICARD_COLDEF_URL"
+              [rowDefUrl]="URLs.GET_CREDITCARDS"
+              header="Select Credit Card"
+            >
+            </app-search-modal>
+          </div>
+          <ng-container *ngIf="formData?.cardNo">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="background-color-disabled p-p-2">
+                <app-review-form-field
+                  label="Card Type"
+                  [value]="formData.cardType"
+                ></app-review-form-field>
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="background-color-disabled p-p-2">
+                <app-review-form-field
+                  label="Embossed Name"
+                  [value]="formData.embossedName"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <div class="p-grid">
+          <div class="p-md-3 p-sm-12 p-col-12">
+            <aps-custom-select
+              [value]="formData.blockReason"
+              [(ngModel)]="formData.blockReason"
+              dataUrl="accountServices/creditCard/blockCreditCard/private/dropdown/blockReasons"
+              id="blockReason"
+              [label]="'Reason For Block' | apsTranslate"
+              name="blockReason"
+              required="true"
+            >
+            </aps-custom-select>
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+
+  <!--Step 2 Details-->
+  <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+    <div class="aps-card p-my-3 aps-h-400">
+      <div class="p-grid">
+        <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-px-3">
+          <app-review-form-field
+            label="Credit Card"
+            [value]="formData.cardNo"
+          ></app-review-form-field>
+        </div>
+        <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Card Type"
+            [value]="formData.cardType"
+          ></app-review-form-field>
+        </div>
+        <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Embossed Name"
+            [value]="formData.embossedName"
+          ></app-review-form-field>
+        </div>
+        <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-px-3">
+          <app-review-form-field
+            label="Reason For Block"
+            [value]="formData.blockReason"
+          ></app-review-form-field>
+        </div>
+      </div>
+      <!-- Structure Preview -->
+    </div>
+  </ng-container>
+
+  <!-- Form Actions -->
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>
+
+<app-modal
+  (onClose)="goToListing()"
+  [(isShow)]="showSubmitSuccess"
+  headerText="Your card is blocked"
+  size="sm"
+>
+  <ng-container body>
+    <div class="p-grid p-pt-2">
+      <div class="p-col-12">
+        <app-review-form-field label="Card No" [value]="formData.cardNo"></app-review-form-field>
+      </div>
+
+      <div class="p-md-3 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Reference No"
+          [value]="submitResponse?.dataMap?.id"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-3 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Date"
+          [value]="submitResponse?.dataMap?.id | date: 'dd MMM yyyy'"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-3 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Time"
+          [value]="submitResponse?.dataMap?.id | date: 'shortTime'"
+        ></app-review-form-field>
+      </div>
+      <div class="p-md-3 p-sm-12 p-col-12">
+        <app-review-form-field
+          label="Reason For Block"
+          [value]="formData.blockReason"
+        ></app-review-form-field>
+      </div>
+    </div>
+  </ng-container>
+  <div footer>
+    <div class="left-right-container">
+      <div class="left-container p-py-2">
+        <app-icon class="p-px-2" icon="fa-print"></app-icon>
+        <app-icon class="p-px-2" icon="fa-download"></app-icon>
+        <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+      </div>
+      <div class="right-container">
+        <button (click)="goToListing()" class="btn btn-md btn-primary" type="button">
+          {{ 'CLOSE' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</app-modal>

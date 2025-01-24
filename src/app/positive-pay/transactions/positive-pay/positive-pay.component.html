@@ -1,0 +1,301 @@
+<div class="container">
+  <ng-container *ngIf="!loading">
+    <app-modal [(isShow)]="isShowEnrichment" headerText="{{ 'Enrichments' | apsTranslate }}">
+      <div class="p-grid" body>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <div class="text-size-12 text-color-light-shade-1">{{ 'Product' | apsTranslate }}</div>
+          <div class="text-size-14 text-color-dark-shade-1">Tyres</div>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <div class="text-size-12 text-color-light-shade-1">{{ 'Quantity' | apsTranslate }}</div>
+          <div class="text-size-14 text-color-dark-shade-1">10</div>
+        </div>
+      </div>
+      <div class="left-right-container" footer>
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="isShowEnrichment = false">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal
+      [(isShow)]="isViewCheque"
+      headerText="Cheque Details"
+      (onClose)="onCancelViewCheque()"
+      *ngIf="viewCheque"
+    >
+      <div class="p-grid" body>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Cheque No"
+            [value]="viewCheque.chequeNumber"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Cheque Amount"
+            [value]="viewCheque.chequeAmount"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Cheque Date"
+            [value]="viewCheque.chequeDate"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Drawee Name"
+            [value]="viewCheque.draweeName"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="System Date"
+            [value]="viewCheque.modifiedSysOn"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12">
+          <app-review-form-field label="Exception Reason" [value]="''"></app-review-form-field>
+          <!-- viewCheque.exceptionReason -->
+        </div>
+      </div>
+      <div class="left-right-container" footer>
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="onCancelViewCheque()">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal
+      [(isShow)]="isShowCheque"
+      size="md"
+      headerText="{{ 'Cheque - View' | apsTranslate }}"
+    >
+      <div class="" body>
+        <div class="text-size-14 p-pt-2">{{ 'Front Side' | apsTranslate }}</div>
+        <div class="p-ml-6">
+          <img src="./../../../../assets/images/cheque-front.png" alt="Cheque Front" />
+        </div>
+        <div class="text-size-14 p-pt-2">{{ 'Back Side' | apsTranslate }}</div>
+        <div class="p-ml-6">
+          <img src="./../../../../assets/images/cheque-back.png" alt="Cheque Back" />
+        </div>
+      </div>
+      <div class="left-right-container" footer>
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="isShowCheque = false">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal
+      [(isShow)]="isShowInputRemark"
+      headerText="{{
+        ('Enter ' + isApprove ? 'Approval' : 'Disapproval' + ' Remark') | apsTranslate
+      }}"
+    >
+      <div class="" body>
+        <aps-form-input
+          name="remark"
+          id="remark"
+          label="{{ 'Reason' | apsTranslate }}"
+          [(ngModel)]="remarkInput"
+          [required]="true"
+        ></aps-form-input>
+      </div>
+      <div class="left-right-container" footer>
+        <div class="left-container">
+          <button
+            class="btn btn-md btn-tertiary"
+            (click)="isShowInputRemark = false; singleDataForAction = []"
+          >
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+        </div>
+        <div class="right-container">
+          <button
+            class="btn btn-md btn-primary"
+            (click)="isApprove ? onApproved() : onDisapproved()"
+            [disabled]="!remarkInput"
+          >
+            {{ 'SUBMIT' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="p-px-3 aps-py-12">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="inline-items">
+                  <div class="item">
+                    <div class="text-size-14 text-bold">
+                      {{ 'Search By' | apsTranslate }}
+                    </div>
+                  </div>
+                  <ng-container *ngIf="!isShowSearch">
+                    <div class="item p-ml-3" *ngFor="let filter of searchFilters">
+                      <div
+                        class="p-py-1 p-px-2 background-color-primary-light-shade-2 border-radius-4 text-size-12"
+                      >
+                        <span class="inline-block p-mr-2 text-semi-bold">{{ filter.name }}</span>
+                        <span class="inline-block">{{ filter.value }}</span>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+              <div class="right-container">
+                <app-icon
+                  [icon]="isShowSearch ? 'fa-chevron-up' : 'fa-chevron-down'"
+                  class="pointer"
+                  (click)="isShowSearch = !isShowSearch"
+                ></app-icon>
+              </div>
+            </div>
+          </div>
+          <div class="" [apsHide]="!isShowSearch">
+            <app-dynamic-search
+              #dynamicSearch
+              [entityName]="entityName"
+              (onSearch)="getRecords($event)"
+              [isShowSearchByHeader]="false"
+              [isShowPrefillCriteria]="false"
+              mandatoryParametersColSize="4"
+              optionalParametersColSize="4"
+              [isDisplayPrefillCriteriaModal]="false"
+              cardHeight="270"
+              (onFiltersReady)="onDynamicFiltersReady()"
+              (onSaveCriteria)="getCriteriaList()"
+            ></app-dynamic-search>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="inline-items">
+              <div class="item" *ngFor="let tab of tabs; let i = index">
+                <div
+                  class="p-p-2 pointer border background-color border-radius-4 text-size-12"
+                  [ngClass]="{
+                    'background-color-primary text-color-inverted':
+                      activeTab && tab.label == activeTab.label,
+                    'p-mr-3': i < tabs.length - 1
+                  }"
+                  (click)="getData(tab)"
+                >
+                  {{ tab.label | apsTranslate }} ({{ tab.count }})
+                </div>
+              </div>
+              <div class="item p-ml-3" *ngIf="searchFilters.length > 0">
+                <div
+                  class="p-p-2 pointer border border-radius-4 text-size-12"
+                  [ngClass]="{
+                    'background-color-primary text-color-inverted':
+                      'Search Results' == activeTab.label
+                  }"
+                  (click)="getSearchResults()"
+                >
+                  <div class="inline-items">
+                    <div class="item p-mr-2">{{ 'Search Results' | apsTranslate }} (10)</div>
+                    <div class="item">
+                      <app-icon icon="fa-times" class="pointer" (click)="clearSearch()"></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="right-container">
+            <app-grid-listing-tools
+              (changeFloatingFilter)="listing ? listing.changeFloatFilter($event) : null"
+              (filterRecords)="listing ? listing.onFilter($event) : null"
+              (applyColDefs)="listing ? listing.onApplyConfig($event) : null"
+              [colDefs]="listing ? listing.columnDefs : []"
+              [columnConfig]="true"
+              [moreOptions]="true"
+            ></app-grid-listing-tools>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-450">
+          <ng-container *ngIf="!loadingGrid">
+            <app-ag-grid-listing
+              #listing
+              [colDefUrl]="activeTab ? activeTab.colDefsUrl : []"
+              [rowData]="rowData"
+              [gridOptions]="gridOptions"
+              [frameworkComponents]="frameworkComponents"
+              [context]="context"
+              (rowSelected)="onRowSelected($event)"
+            ></app-ag-grid-listing>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="text-size-10"></div>
+        <span class="text-bold inline-item">{{ 'Disclaimer' | apsTranslate }}</span>
+        <div class="inline-block">&nbsp;:&nbsp;</div>
+        <span class="inline-item">
+          {{
+            "Please take appropriate action on the above cheques before 3:00 pm, appropriate action will be automatically initiated by the bank as per bank's policy."
+              | apsTranslate
+          }}
+        </span>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-px-3 aps-py-12">
+          <div class="left-right-container">
+            <div class="left-container">
+              <button class="btn btn-md btn-tertiary">
+                {{ 'CANCEL' | apsTranslate }}
+              </button>
+            </div>
+            <div class="right-container">
+              <div
+                class="inline-block text-size-13 text-semi-bold p-py-2 p-pr-3"
+                *ngIf="dataForAction.length > 0"
+              >
+                {{ dataForAction.length }} CHEQUES SELECTED
+              </div>
+              <button
+                class="btn btn-md btn-secondary p-mr-3"
+                (click)="isApprove = false; isShowInputRemark = true"
+                [disabled]="dataForAction.length == 0"
+              >
+                {{ 'DISAPPROVE' | apsTranslate }}
+              </button>
+              <button
+                class="btn btn-md btn-primary"
+                (click)="isApprove = true; isShowInputRemark = true"
+                [disabled]="dataForAction.length == 0"
+              >
+                {{ 'APPROVE' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

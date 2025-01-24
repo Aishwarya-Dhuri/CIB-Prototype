@@ -1,0 +1,96 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-stepper-header [parentRef]="this"></app-stepper-header>
+
+    <div class="inline-items p-pt-3" *ngIf="stepperDetails.currentStep === 1">
+      <div class="item">
+        <div class="text-size-16 text-bold">{{ 'Access Type' | apsTranslate }}</div>
+      </div>
+      <div class="item p-mx-4">
+        <aps-custom-select
+          name="accessType"
+          id="accessType"
+          [data]="accessTypeList"
+          [(ngModel)]="selectedAccessType"
+          [value]="selectedAccessType"
+          label=""
+          [showLabel]="false"
+          (change)="accessTypeChanged($event)"
+        >
+        </aps-custom-select>
+      </div>
+
+      <div class="item">
+        <app-icon icon="fa-question-circle" class="app-icon"></app-icon>
+      </div>
+    </div>
+
+    <app-account-type-selection
+      *ngIf="
+        ((selectedAccessType === accessTypeList[0].id ||
+          selectedAccessType === accessTypeList[1].id) &&
+          stepperDetails.currentStep === 1) ||
+        ((selectedAccessType === accessTypeList[2].id ||
+          selectedAccessType === accessTypeList[3].id) &&
+          stepperDetails.currentStep === 2)
+      "
+      #accountTypeSelection
+      [parentRef]="this"
+    ></app-account-type-selection>
+
+    <app-account-access-mapping
+      *ngIf="
+        ((selectedAccessType === accessTypeList[0].id ||
+          selectedAccessType === accessTypeList[1].id) &&
+          stepperDetails.currentStep === 2) ||
+        ((selectedAccessType === accessTypeList[2].id ||
+          (selectedAccessType === accessTypeList[3].id && !showTemplates)) &&
+          stepperDetails.currentStep === 1)
+      "
+      #accountAccessMapping
+      [parentRef]="this"
+    ></app-account-access-mapping>
+
+    <app-review-draft
+      *ngIf="stepperDetails.currentStep === stepperDetails.headings.length"
+      [parentRef]="this"
+    >
+    </app-review-draft>
+
+    <app-awa-templates
+      *ngIf="
+        selectedAccessType === accessTypeList[3].id &&
+        stepperDetails.currentStep === 1 &&
+        showTemplates
+      "
+      [parentRef]="this"
+    ></app-awa-templates>
+
+    <div class="p-my-2">
+      <app-stepper-footer
+        [parentRef]="this"
+        *ngIf="!showTemplates"
+        [parentRef]="this"
+      ></app-stepper-footer>
+
+      <div class="aps-card p-px-3 aps-py-12" *ngIf="showTemplates">
+        <div class="left-right-container">
+          <div class="left-container">
+            <button class="btn btn-md btn-tertiary">
+              {{ 'CANCEL' | apsTranslate }}
+            </button>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary" (click)="useThisTemplate()">
+              {{ 'USE THIS TEMPLATE' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

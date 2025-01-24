@@ -1,0 +1,39 @@
+<div class="container">
+    <ng-container *ngIf="!loading; else loadingTemplate">
+        <app-searched-by-view [filters]="filters" (onClear)="onClear()" (onModify)="onModify()"></app-searched-by-view>
+        <div class="p-grid">
+            <div class="p-col-12 p-pl-0 p-pr-0">
+                <div class="aps-card aps-h-400 p-mb-3">
+                    <div class="card-header overflow-visible">
+                        <div class="p-px-3" [ngClass]="{ 'left-right-container': viewPort === 'web' }">
+                            <div class="left-container">
+                                <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                                    {{ 'Transactions' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="right-container aps-py-12">
+                                <app-grid-listing-tools
+                                    (changeFloatingFilter)="consolidatedAccountStatement.changeFloatFilter($event)"
+                                    (filterRecords)="consolidatedAccountStatement.onFilter($event)"
+                                    (applyColDefs)="consolidatedAccountStatement.onApplyConfig($event)"
+                                    [colDefs]="consolidatedAccountStatement.columnDefs" [columnConfig]="true"
+                                    [moreOptions]="true" [showMail]="true" [showDownload]="true" [showPrint]="false"
+                                    [showRefresh]="false">
+                                </app-grid-listing-tools>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aps-card-body">
+                        <app-ag-grid-listing id="consolidatedAccountStatement" #consolidatedAccountStatement
+                            [colDefUrl]="colDefUrl" [rowData]="[]" [gridOptions]="gridOptions">
+                        </app-ag-grid-listing>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+    <app-loading-spinner></app-loading-spinner>
+</ng-template>

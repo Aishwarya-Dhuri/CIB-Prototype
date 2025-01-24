@@ -1,0 +1,1248 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-search-modal [(isShow)]="searchBeneficiary" header="{{ 'lbl_select_beneficiary' | translate }}"
+      colDefUrl="trade/importTransactions/letterOfCredit/private/beneficiaryColDefs"
+      rowDefUrl="trade/importTransactions/letterOfCredit/private/beneficiaryData"
+      (onSelection)="onBeneSelection($event)">
+    </app-search-modal>
+
+    <div class="p-grid g-margin-x p-pb-3">
+      <div class="p-col-12 p-py-1" style="margin-top: -8px !important">
+        <div class="left-right-container">
+          <div class="left-container"></div>
+          <div class="right-container">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="p-px-2 p-py-1 border-radius-4" [ngClass]="
+                    parentRef.stepperDetails.steps[3].stepStatus == 'repair' ||
+                    parentRef.stepperDetails.steps[4].stepStatus == 'repair'
+                      ? 'background-color-warning-light'
+                      : 'background-color-success '
+                  " *ngIf="repair">
+                  <div class="inline-items">
+                    <div class="item p-mr-2">
+                      <app-icon [icon]="
+                          parentRef.stepperDetails.steps[3].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[4].stepStatus == 'repair'
+                            ? 'fa-exclamation-triangle'
+                            : 'fa-check-circle'
+                        " [ngClass]="
+                          parentRef.stepperDetails.steps[3].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[4].stepStatus == 'repair'
+                            ? 'text-color-warning'
+                            : 'text-color-inverted'
+                        " styleClasses="text-size-12"></app-icon>
+                    </div>
+                    <div class="item p-mr-4" style="padding-top: 2px">
+                      <div class="text-size-14 text-semi-bold" [ngClass]="
+                          parentRef.stepperDetails.steps[3].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[4].stepStatus == 'repair'
+                            ? 'text-color-normal'
+                            : 'text-color-inverted'
+                        ">
+                        {{ activeStepIndex == 3 ? '1' : activeStepIndex == 4 ? '2' : '0' }}
+                        {{ 'of' | apsTranslate }} 2 {{ 'Corrections made' | apsTranslate }}
+                      </div>
+                    </div>
+                    <div class="item p-mr-3">
+                      <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right"
+                        styleClasses="text-size-14 text-color-dark-shade-1" (click)="changeRepairStep('previous')">
+                      </app-icon>
+                    </div>
+                    <div class="item p-mr-2">
+                      <app-icon icon="fa-chevron-right" rtlIcon="fa-chevron-left"
+                        styleClasses="text-size-14 text-color-dark-shade-1" (click)="changeRepairStep('next')">
+                      </app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="right-container p-py-1" *ngIf="viewport === 'web'">
+                <div class="inline-items">
+                  <div class="item p-px-2">
+                    <app-icon icon="fa-refresh"></app-icon>
+                  </div>
+                  <div class="item p-px-2 border-right">
+                    <app-icon icon="fa-print"></app-icon>
+                  </div>
+                  <div class="item p-px-2">
+                    <app-icon icon="fa-user"></app-icon>
+                  </div>
+                  <div class="item p-px-2">
+                    <app-icon icon="fa-link"></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-1">
+        <div class="aps-card text-color-dark-shade-1">
+          <div class="left-right-container border-bottom border-radius-4 p-p-3"
+            [ngClass]="{ 'active background-color-warning-light': showBankRemarks }" *ngIf="repair"
+            (click)="showBankRemarks = true">
+            <div class="left-container">
+              <div class="text-size-14 text-color-normal text-semi-bold">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <app-icon iconStyle="fas" icon="fa-circle" styleClasses="text-color-warning text-size-12">
+                    </app-icon>
+                  </div>
+                  <div class="label">Bank Remarks (1)</div>
+                </div>
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon icon="fa-chevron-right" styleClasses="text-size-14"></app-icon>
+            </div>
+          </div>
+        </div>
+
+        <app-stepper-header [parentRef]="parentRef" stepperType="vertical" (stepsReady)="onStepsReady()">
+        </app-stepper-header>
+      </div>
+
+      <div class="p-lg-9 p-md-9 p-sm-12 p-col-12 p-py-1">
+        <div class="aps-card aps-h-600" *ngIf="parentRef.formData">
+          <div class="aps-card-header">
+            <div class="left-right-container p-px-3">
+              <div class="left-container">
+                <div class="text-size-16 text-bold text-color-dark-shade-1 aps-py-12">
+                  {{ showBankRemarks ? 'Bank Remarks' : activeStep?.displayLabel }}
+                </div>
+              </div>
+              <div class="right-container p-py-2"></div>
+            </div>
+          </div>
+
+          <div class="aps-card-body p-p-3" *ngIf="showBankRemarks && repair" (click)="showBankRemarks = false">
+            <div class="left-right-container p-py-2 p-px-3 border-radius-4 background-color-warning-light">
+              <div class="left-container">
+                <div class="text-size-12 text-color-normal">
+                  The mode of shipment shall be by Sea unless otherwise specified by AT & T on the
+                  purchase order. In the absence of specific instructions, seller will select the
+                  surface carrier for shipment.
+                </div>
+              </div>
+              <div class="right-container">
+                <app-icon icon="fa-info-circle" styleClasses="
+              text-color-warning"></app-icon>
+              </div>
+            </div>
+          </div>
+
+          <div class="aps-card-body p-p-2 overflow-scroll" *ngIf="!showBankRemarks">
+            <form name="form1" #form1="ngForm" class="letter-of-credit" [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[0]
+              ">
+              <div class="p-grid">
+                <div class="p-col-12">
+                  <div class="text-size-12 text-color-normal">
+                    {{ 'Type of LC' | apsTranslate }}<span class="text-color-danger">*</span>
+                  </div>
+                  <p-checkbox class="p-mr-4" disabled value="Irrevocable" label="{{ 'Irrevocable' | apsTranslate }}"
+                    id="irrevocable" name="irrevocable" [binary]="true"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].irrevocable"></p-checkbox>
+                  <p-checkbox value="Irrevocable Transferable" label="{{ 'Transferable' | apsTranslate }}"
+                    id="irrevocableTransferable" name="irrevocableTransferable" [binary]="true"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].transferable"></p-checkbox>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input name="proformaInvoiceNo" id="proformaInvoiceNo"
+                    label="{{ 'Proforma Invoice No.' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].proformaInvoiceNo"></aps-form-input>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input name="corporateReferenceNo" id="corporateReferenceNo"
+                    label="{{ 'Corporate Reference No.' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].corporateReferenceNo"></aps-form-input>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <div class="inline-items">
+                    <div class="item p-pr-2" style="width: 56px; padding-top: 22px">
+                      <aps-custom-select name="currency" id="currency" [showLabel]="false" label="CCY" [required]="true"
+                        dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/currency"
+                        [value]="parentRef.formData.letterOfCreditDetails[0].currency" [showLCValue]="'M|32B'"
+                        [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].currency"></aps-custom-select>
+                    </div>
+                    <div class="item" style="width: calc(100% - 56px)">
+                      <aps-form-input name="amount" (blur)="updateNotExceeding()" id="amount" [showLCValue]="'M|32B'"
+                        label="{{ 'Amount' | apsTranslate }}" inputType="currencyFormatNotZero" [required]="true"
+                        [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].amount">
+                      </aps-form-input>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-col-12 p-pt-0">
+                  <div class="background-color-dark-3 text-size-14 border-radius-4 p-px-2 p-py-1">
+                    <div class="text-color-normal">{{ 'Amount In Words' | apsTranslate }}</div>
+                    <div class="text-color-dark-shade-1" *ngIf="parentRef.formData.letterOfCreditDetails[0].amount">
+                      {{ parentRef.formData.letterOfCreditDetails[0].currency }}
+                      &nbsp;
+                      {{ parentRef.formData.letterOfCreditDetails[0].amount | numberToWord }}
+                      &nbsp;Only/-
+                    </div>
+
+                    <br *ngIf="!parentRef.formData.letterOfCreditDetails[0].amount" />
+                  </div>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input name="minimumTolerance" id="minimumTolerance"
+                    label="{{ 'Minimum Tolerance' | apsTranslate }} (%)" maxLength="2" [showLCValue]="'O|39A'"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].minimumTolerance"
+                    [value]="parentRef.formData.letterOfCreditDetails[0].minimumTolerance"></aps-form-input>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input name="maximumTolerance" (blur)="updateNotExceeding()" id="maximumTolerance"
+                    label="{{ 'Maximum Tolerance' | apsTranslate }} (%)" maxLength="2" [showLCValue]="'O|39A'"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].maximumTolerance"
+                    [value]="parentRef.formData.letterOfCreditDetails[0].maximumTolerance"></aps-form-input>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input name="notExceeding" id="notExceeding" label="{{ 'Not Exceeding' | apsTranslate }}"
+                    [value]="parentRef.formData.letterOfCreditDetails[0].notExceeding"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].notExceeding"></aps-form-input>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="expiryDate" id="expiryDate" label="{{ 'Expiry Date' | apsTranslate }}"
+                    [minDate]="getCurrentDate()" [showIcon]="true" [required]="true" [showLCValue]="'M|31D'"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].expiryDate"></app-aps-calender>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="placeOfExpiry" id="placeOfExpiry" label="{{ 'Place of Expiry' | apsTranslate }}"
+                    [required]="true" [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].placeOfExpiry"
+                    [showLCValue]="'M|31D'">
+                  </aps-form-input>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="transactionDate" id="transactionDate"
+                    label="{{ 'Transaction Date' | apsTranslate }}" [minDate]="getCurrentDate()"
+                    [defaultDate]="getCurrentDate()" [showIcon]="true" [required]="true" [showLCValue]="'M|31C'"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].transactionDate"></app-aps-calender>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <app-aps-calender name="effectiveDate" id="effectiveDate"
+                    label="{{ 'Effective Date' | apsTranslate }}" [showIcon]="true"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].effectiveDate"
+                    (change)="onEffectiveDateSelected()"></app-aps-calender>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                  <p-checkbox class="p-mr-4" value="Back to Back LC" label="{{ 'Back to Back LC' | apsTranslate }}"
+                    id="backTobackLc" name="backTobackLc" [binary]="true"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].backToBackLc"></p-checkbox>
+                </div>
+              </div>
+
+              <div class="p-grid" *ngIf="parentRef.formData.letterOfCreditDetails[0].backToBackLc == true">
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="letterofCreditRefNo" id="letterofCreditRefNo"
+                    label="{{ 'Letter Of Credit Ref No' | apsTranslate }}" [required]="true"
+                    [value]="parentRef.formData.letterOfCreditDetails[0].letterofCreditRefNo"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].letterofCreditRefNo"></aps-form-input>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                  <p-checkbox value="Revolving LC" label="{{ 'Revolving LC' | apsTranslate }}" id="revolvingLc"
+                    name="revolvingLc" [binary]="true"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].revolvingLc"></p-checkbox>
+                </div>
+              </div>
+
+              <div class="p-grid" *ngIf="parentRef.formData.letterOfCreditDetails[0].revolvingLc == true">
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <p-radioButton class="p-mr-5" name="cumNoncum" id="cumNoncum" value="Cumulative"
+                    label="{{ 'Cumulative' | apsTranslate }}" [required]="false"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].cumNoncum">
+                  </p-radioButton>
+                  <p-radioButton class="p-mr-5" name="cumNoncum" id="cumNoncum" value="Non Cumulative"
+                    label="{{ 'Non Cumulative' | apsTranslate }}" [required]="false"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].cumNoncum">
+                  </p-radioButton>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="reinstateInState" id="reinstateInState"
+                    label="{{ 'Reinstate in Days' | apsTranslate }}" [required]="false"
+                    [value]="parentRef.formData.letterOfCreditDetails[0].reinstateInState"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].reinstateInState"></aps-form-input>
+                </div>
+
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="maxNoInstallments" id="maxNoInstallments"
+                    label="{{ 'Maximum Number of Installments' | apsTranslate }}" [required]="false"
+                    [value]="parentRef.formData.letterOfCreditDetails[0].maxNoInstallments"
+                    [(ngModel)]="parentRef.formData.letterOfCreditDetails[0].maxNoInstallments"></aps-form-input>
+                </div>
+              </div>
+            </form>
+
+            <form name="form2" #form2="ngForm" class="applicant-details" [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[1]
+              ">
+              <div class="p-grid">
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <div class="text-color-normal">
+                      {{ 'Name' | apsTranslate }}<span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ parentRef.formData.applicantDetails[0].applicantName }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-lg-8 p-md-8 p-sm-12 p-col-12 p-pb-0">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <div class="text-color-normal">
+                      {{ 'Email' | apsTranslate }}<span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ parentRef.formData.applicantDetails[0].applicantEmail }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <div class="text-color-normal">
+                      {{ 'Mobile Number' | apsTranslate }}<span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ parentRef.formData.applicantDetails[0].applicantMobileNo }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-lg-8 p-md-8 p-sm-12 p-col-12 p-pb-0">
+                  <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                    <div class="text-color-normal">
+                      {{ 'Address' | apsTranslate }}<span class="text-color-danger">*</span>
+                    </div>
+                    <div class="text-color-dark-shade-1">
+                      {{ parentRef.formData.applicantDetails[0].applicantAddress }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-12 p-pt-3">
+                  <p-checkbox name="onBehalfOf" id="onBehalfOf" label="On behalf of" [binary]="true"
+                    [(ngModel)]="parentRef.formData.applicantDetails[0].onBehalfOf">
+                  </p-checkbox>
+                </div>
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input name="name" id="name" label="Name"
+                    [(ngModel)]="parentRef.formData.applicantDetails[0].name"
+                    [required]="parentRef.formData.applicantDetails[0].onBehalfOf"
+                    [disabled]="!parentRef.formData.applicantDetails[0].onBehalfOf"></aps-form-input>
+                </div>
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input name="email" id="email" label="{{ 'Email' | apsTranslate }}" email
+                    [(ngModel)]="parentRef.formData.applicantDetails[0].email"
+                    [required]="parentRef.formData.applicantDetails[0].onBehalfOf"
+                    [disabled]="!parentRef.formData.applicantDetails[0].onBehalfOf"></aps-form-input>
+                </div>
+                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                  <aps-form-input name="mobileNumber" id="mobileNumber" label="{{ 'Mobile Number' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.applicantDetails[0].mobileNumber"
+                    [required]="parentRef.formData.applicantDetails[0].onBehalfOf"
+                    [disabled]="!parentRef.formData.applicantDetails[0].onBehalfOf"></aps-form-input>
+                </div>
+
+                <div class="p-col-9 p-py-0">
+                  <div class="p-grid">
+                    <div class="p-col-12 p-p-0" *ngIf="parentRef.formData.applicantDetails[0].address1[0].show">
+                      <aps-form-input name="address1" id="address1" label="{{ 'Address' | apsTranslate }}"
+                        [(ngModel)]="parentRef.formData.applicantDetails[0].address1[0].address"
+                        [required]="parentRef.formData.applicantDetails[0].onBehalfOf"
+                        [disabled]="!parentRef.formData.applicantDetails[0].onBehalfOf"></aps-form-input>
+                    </div>
+                    <div class="p-col-12 p-p-0" *ngIf="parentRef.formData.applicantDetails[0].address2[0].show">
+                      <aps-form-input name="address2" id="address2" label="{{ 'Address' | apsTranslate }}"
+                        [rightIcon]="'fa-trash-alt'" (onRightIcon)="
+                          parentRef.formData.applicantDetails[0].address2[0].show = false
+                        " [(ngModel)]="parentRef.formData.applicantDetails[0].address2[0].address" [required]="
+                          parentRef.formData.applicantDetails[0].onBehalfOf &&
+                          parentRef.formData.applicantDetails[0].address2[0].show
+                        " [disabled]="!parentRef.formData.applicantDetails[0].onBehalfOf"></aps-form-input>
+                    </div>
+                    <div class="p-col-12 p-p-0" *ngIf="parentRef.formData.applicantDetails[0].address3[0].show">
+                      <aps-form-input name="address3" id="address3" label="{{ 'Address' | apsTranslate }}"
+                        [rightIcon]="'fa-trash-alt'" (onRightIcon)="
+                          parentRef.formData.applicantDetails[0].address3[0].show = false
+                        " [(ngModel)]="parentRef.formData.applicantDetails[0].address3[0].address" [required]="
+                          parentRef.formData.applicantDetails[0].onBehalfOf &&
+                          parentRef.formData.applicantDetails[0].address3[0].show
+                        " [disabled]="!parentRef.formData.applicantDetails[0].onBehalfOf"></aps-form-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <button class="btn text-center btn btn-tertiary" (click)="addApplicantDetailsAddress()" [disabled]="
+                      parentRef.formData.applicantDetails[0].address1[0].show &&
+                      parentRef.formData.applicantDetails[0].address2[0].show &&
+                      parentRef.formData.applicantDetails[0].address3[0].show
+                    ">
+                    <app-icon icon="fa-plus"> </app-icon>&nbsp;{{ 'ADDRESS LINE' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </form>
+
+            <form name="form3" #form3="ngForm" class="beneficiary-details" [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[2]
+              ">
+              <div class="p-grid">
+                <div class="p-col-12">
+                  <p-radioButton class="p-mr-6" id="frequencyOfExecution" name="frequencyOfExecution"
+                    value="Search Using Beneficiary Code" label="{{ 'Search Using Beneficiary Code' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution"
+                    (click)="resetBeneficiaryDetails('Search Using Beneficiary Code')" [required]="true">
+                  </p-radioButton>
+
+                  <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                    value="Add New Beneficiary" label="{{ 'Add New Beneficiary' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution"
+                    (click)="resetBeneficiaryDetails('Add New Beneficiary')" [required]="true"></p-radioButton>
+                </div>
+
+                <div class="p-col-12" *ngIf="!parentRef.formData.beneficiaryDetails[0].frequencyOfExecution">
+                  <app-nothing-here colSize="3" message="{{ 'Enter beneficiary details for preview' | apsTranslate }}">
+                  </app-nothing-here>
+                </div>
+
+                <ng-container *ngIf="
+                    parentRef.formData.beneficiaryDetails[0].frequencyOfExecution ===
+                    'Search Using Beneficiary Code'
+                  ">
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <aps-form-input name="beneficiaryCode" id="beneficiaryCode"
+                      label="{{ 'Beneficiary Code' | apsTranslate }}" [required]="true" [rightIcon]="'fa-search'"
+                      [readonly]="true" (onRightIcon)="searchBeneficiary = true"
+                      [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryCode"></aps-form-input>
+                  </div>
+                </ng-container>
+
+                <ng-container *ngIf="
+                    parentRef.formData.beneficiaryDetails[0].frequencyOfExecution ===
+                      'Add New Beneficiary' ||
+                    parentRef.formData.beneficiaryDetails[0].beneficiaryCode
+                  ">
+                  <div class="p-col-12 p-py-0 p-mt-4" *ngIf="
+                      parentRef.formData.beneficiaryDetails[0].frequencyOfExecution ===
+                      'Add New Beneficiary'
+                    ">
+                    <div class="text-size-14 text-color-dark-shade-1 text-semi-bold">
+                      {{ 'Add New Beneficiary' | apsTranslate }}
+                    </div>
+                  </div>
+
+                  <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                    <aps-form-input name="beneficiaryName" id="beneficiaryName"
+                      label="{{ 'Beneficiary Name' | apsTranslate }}" [required]="true"
+                      [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryName"></aps-form-input>
+                  </div>
+                  <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                    <aps-form-input name="email" id="email" label="{{ 'Email' | apsTranslate }}"
+                      [(ngModel)]="parentRef.formData.beneficiaryDetails[0].email" [required]="true"></aps-form-input>
+                  </div>
+                  <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                    <aps-form-input name="bankSwiftCode" id="bankSwiftCode"
+                      label="{{ 'Bank Swift Code' | apsTranslate }}"
+                      [(ngModel)]="parentRef.formData.beneficiaryDetails[0].bankSwiftCode" [required]="true">
+                    </aps-form-input>
+                  </div>
+
+                  <div class="p-col-9 p-py-0">
+                    <div class="p-grid">
+                      <div class="p-col-12 p-p-0">
+                        <aps-form-input name="beneficiaryAddress1" id="beneficiaryAddress1"
+                          label="{{ 'Beneficiary Address' | apsTranslate }}" [(ngModel)]="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryAddress1[0].address
+                          " [required]="true"></aps-form-input>
+                      </div>
+                      <div class="p-col-12 p-p-0"
+                        *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show">
+                        <aps-form-input name="beneficiaryAddress2" id="beneficiaryAddress2"
+                          label="{{ 'Beneficiary Address' | apsTranslate }}" [rightIcon]="'fa-trash-alt'" (onRightIcon)="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show = false
+                          " [(ngModel)]="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].address
+                          "></aps-form-input>
+                      </div>
+                      <div class="p-col-12 p-p-0"
+                        *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show">
+                        <aps-form-input name="beneficiaryAddress3" id="beneficiaryAddress3"
+                          label="{{ 'Beneficiary Address' | apsTranslate }}" [rightIcon]="'fa-trash-alt'" (onRightIcon)="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show = false
+                          " [(ngModel)]="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].address
+                          "></aps-form-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-col-3">
+                    <button class="btn text-center btn btn-tertiary" (click)="addBeneficiaryAddress()" [disabled]="
+                        parentRef.formData.beneficiaryDetails[0].beneficiaryAddress1[0].show &&
+                        parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show &&
+                        parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show
+                      ">
+                      <app-icon icon="fa-plus"> </app-icon>&nbsp;{{ 'ADDRESS LINE' | apsTranslate }}
+                    </button>
+                  </div>
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input name="country" id="country" label="Country" [required]="true"
+                      [(ngModel)]="parentRef.formData.beneficiaryDetails[0].country">
+                    </aps-form-input>
+                  </div>
+                  <div class="p-md-8 p-sm-12 p-col-12 p-p-0"></div>
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input name="beneficiaryAccountNumber" id="beneficiaryAccountNumber"
+                      label="{{ 'Beneficiary Account Number' | apsTranslate }}" [(ngModel)]="
+                        parentRef.formData.beneficiaryDetails[0].beneficiaryAccountNumber
+                      "></aps-form-input>
+                  </div>
+                  <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+                    <aps-form-input name="beneficiaryBankName" id="beneficiaryBankName"
+                      label="{{ 'Beneficiary Bank Name' | apsTranslate }}"
+                      [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryBankName">
+                    </aps-form-input>
+                  </div>
+                  <div class="p-col-9 p-py-0">
+                    <div class="p-grid">
+                      <div class="p-col-12 p-p-0">
+                        <aps-form-input name="beneficiaryBankAddress1" id="beneficiaryBankAddress1"
+                          label="{{ 'Beneficiary Bank Address' | apsTranslate }}" [(ngModel)]="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress1[0]
+                              .address
+                          "></aps-form-input>
+                      </div>
+                      <div class="p-col-12 p-p-0" *ngIf="
+                          parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show
+                        ">
+                        <aps-form-input name="beneficiaryBankAddress2" id="beneficiaryBankAddress2"
+                          label="{{ 'Beneficiary Bank Address' | apsTranslate }}" [(ngModel)]="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0]
+                              .address
+                          " [rightIcon]="'fa-trash-alt'" (onRightIcon)="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show = false
+                          "></aps-form-input>
+                      </div>
+                      <div class="p-col-12 p-p-0" *ngIf="
+                          parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show
+                        ">
+                        <aps-form-input name="beneficiaryBankAddress3" id="beneficiaryBankAddress3"
+                          label="{{ 'Beneficiary Bank Address' | apsTranslate }}" [(ngModel)]="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0]
+                              .address
+                          " [rightIcon]="'fa-trash-alt'" (onRightIcon)="
+                            parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show = false
+                          "></aps-form-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="p-col-3">
+                    <button class="btn text-center btn btn-tertiary" (click)="addBeneficiaryBankAddress()" [disabled]="
+                        parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress1[0].show &&
+                        parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show &&
+                        parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show
+                      ">
+                      <app-icon icon="fa-plus"> </app-icon>&nbsp;{{ 'ADDRESS LINE' | apsTranslate }}
+                    </button>
+                  </div>
+                </ng-container>
+              </div>
+            </form>
+
+            <form name="form4" #form4="ngForm" class="payment-details" [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[3]
+              ">
+              <div class="p-grid">
+                <div class="p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-md-4 p-sm-12 p-col-12 p-pb-0">
+                      <aps-custom-select name="creditAvailableWith" id="creditAvailableWith"
+                        label="{{ 'Credit Available With' | apsTranslate }}" [data]="creditAvailableWithArray"
+                        (change)="onChangeCreditAvail(parentRef.formData.paymentDetails[0].creditAvailableWith)"
+                        [value]="parentRef.formData.paymentDetails[0].creditAvailableWith" [showLCValue]="'41|D'"
+                        [(ngModel)]="parentRef.formData.paymentDetails[0].creditAvailableWith" [required]="true">
+                        <!-- dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/creditAvailableWith" -->
+                      </aps-custom-select>
+                    </div>
+
+                    <ng-container *ngIf="
+                        parentRef.formData.paymentDetails[0].creditAvailableWith === 'Other Bank'
+                      ">
+                      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input name="bankName" id="bankName" label="{{ 'Bank Name' | apsTranslate }}"
+                          [(ngModel)]="parentRef.formData.paymentDetails[0].bankName" [required]="true">
+                        </aps-form-input>
+                      </div>
+
+                      <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input name="bankSwiftCode" id="bankSwiftCode"
+                          label="{{ 'Bank Swift Code' | apsTranslate }}"
+                          [(ngModel)]="parentRef.formData.paymentDetails[0].bankSwiftCode">
+                        </aps-form-input>
+                      </div>
+
+                      <div class="p-col-9 p-py-0">
+                        <div class="p-grid">
+                          <div class="p-col-12 p-p-0">
+                            <aps-form-input name="bankAddress1" id="bankAddress1"
+                              label="{{ 'Bank Address' | apsTranslate }}" [(ngModel)]="
+                                parentRef.formData.paymentDetails[0].bankAddress1[0].address
+                              " [required]="true"></aps-form-input>
+                          </div>
+                          <div class="p-col-12 p-p-0" *ngIf="parentRef.formData.paymentDetails[0].bankAddress2[0].show">
+                            <aps-form-input name="bankAddress2" id="bankAddress2"
+                              label="{{ 'Bank Address' | apsTranslate }}" [(ngModel)]="
+                                parentRef.formData.paymentDetails[0].bankAddress2[0].address
+                              " [required]="true" [rightIcon]="'fa-trash-alt'" (onRightIcon)="
+                                parentRef.formData.paymentDetails[0].bankAddress2[0].show = false
+                              "></aps-form-input>
+                          </div>
+                          <div class="p-col-12 p-p-0" *ngIf="parentRef.formData.paymentDetails[0].bankAddress3[0].show">
+                            <aps-form-input name="bankAddress3" id="bankAddress3"
+                              label="{{ 'Bank Address' | apsTranslate }}" [(ngModel)]="
+                                parentRef.formData.paymentDetails[0].bankAddress3[0].address
+                              " [required]="true" [rightIcon]="'fa-trash-alt'" (onRightIcon)="
+                                parentRef.formData.paymentDetails[0].bankAddress3[0].show = false
+                              "></aps-form-input>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="p-col-3">
+                        <button class="btn text-center btn btn-tertiary" (click)="addPaymentBankAddress()" [disabled]="
+                            parentRef.formData.paymentDetails[0].bankAddress1[0].show &&
+                            parentRef.formData.paymentDetails[0].bankAddress2[0].show &&
+                            parentRef.formData.paymentDetails[0].bankAddress3[0].show
+                          ">
+                          <app-icon icon="fa-plus"> </app-icon>&nbsp;{{
+                          'ADDRESS LINE' | apsTranslate
+                          }}
+                        </button>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <div class="p-col-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                      <aps-custom-select name="creditAvailableBy" id="creditAvailableBy"
+                        label="{{ 'Credit Available By' | apsTranslate }}" [data]="creditAvailableByArray"
+                        [value]="parentRef.formData.paymentDetails[0].creditAvailableBy" [showLCValue]="'41|D'"
+                        [(ngModel)]="parentRef.formData.paymentDetails[0].creditAvailableBy" [required]="true">
+                        <!-- dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/creditAvailableBy" -->
+                      </aps-custom-select>
+                    </div>
+
+                    <div class="p-col-12 p-p-0">
+                      <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                          <div class="text-size-14 text-semi-bold p-mt-2 text-color-normal">
+                            Drafts At<span class="text-color-danger">*</span>
+                          </div>
+                          <p-radioButton class="p-mr-4" id="draftAt" name="draftAt" value="Sight"
+                            label="{{ 'Sight' | apsTranslate }}" [showLCValue]="'42|C'"
+                            [(ngModel)]="parentRef.formData.paymentDetails[0].draftAt" [required]="true">
+                          </p-radioButton>
+
+                          <p-radioButton id="draftAt" name="draftAt" value="Usance"
+                            label="{{ 'Usance' | apsTranslate }}" [showLCValue]="'42|C'"
+                            [(ngModel)]="parentRef.formData.paymentDetails[0].draftAt" [disabled]="
+                              parentRef.formData.paymentDetails[0].creditAvailableBy === 'Payment' ||
+                              parentRef.formData.paymentDetails[0].creditAvailableBy === 'Negotiation (Sight)'
+                            " [required]="true"></p-radioButton>
+                        </div>
+
+                        <ng-container *ngIf="parentRef.formData.paymentDetails[0].draftAt === 'Usance'">
+                          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-form-input name="numberOfDays" id="numberOfDays"
+                              label="{{ 'Number Of Days' | apsTranslate }}" [required]="true"
+                              [(ngModel)]="parentRef.formData.paymentDetails[0].numberOfDays"></aps-form-input>
+                          </div>
+
+                          <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-custom-select name="selectBeforeAfter" id="selectBeforeAfter"
+                              label="{{ 'Select From/After' | apsTranslate }}"
+                              dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/selectBeforeAfter"
+                              [required]="true" [value]="parentRef.formData.paymentDetails[0].selectBeforeAfter"
+                              [(ngModel)]="parentRef.formData.paymentDetails[0].selectBeforeAfter"></aps-custom-select>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+
+                    <ng-container *ngIf="
+                        parentRef.formData.paymentDetails[0].creditAvailableBy === 'Def Payment'
+                      ">
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select name="document" id="document" label="{{ 'Document' | apsTranslate }}"
+                          dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/document"
+                          [value]="parentRef.formData.paymentDetails[0].document"
+                          [(ngModel)]="parentRef.formData.paymentDetails[0].document"></aps-custom-select>
+                      </div>
+
+                      <div class="p-md-4 p-sm-12 p-col-12 p-py-0"
+                        *ngIf="parentRef.formData.paymentDetails[0].document === 'Other'">
+                        <aps-form-input name="documentType" id="documentType"
+                          label="{{ 'Document Type' | apsTranslate }}"
+                          [(ngModel)]="parentRef.formData.paymentDetails[0].documentType" [required]="true">
+                        </aps-form-input>
+                      </div>
+
+                      <div class="p-col-12 p-py-0">
+                        <aps-form-input name="deferredPaymentDetails" id="deferredPaymentDetails"
+                          label="{{ 'Deferred Payment Details' | apsTranslate }}"
+                          [(ngModel)]="parentRef.formData.paymentDetails[0].deferredPaymentDetails" [required]="true">
+                        </aps-form-input>
+                      </div>
+                    </ng-container>
+
+                    <div class="p-col-12 p-py-0" *ngIf="
+                        parentRef.formData.paymentDetails[0].creditAvailableBy === 'Mixed Payment'
+                      ">
+                      <aps-form-input name="mixedPaymentDetails" id="mixedPaymentDetails"
+                        label="{{ 'Mixed Payment Details' | apsTranslate }}"
+                        [(ngModel)]="parentRef.formData.paymentDetails[0].mixedPaymentDetails" [required]="true">
+                      </aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                      <aps-custom-select name="confirmationInstruction" id="confirmationInstruction" [required]="true"
+                        label="{{ 'Confirmation Instruction' | apsTranslate }}" [showLCValue]="'41|D'"
+                        dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/confirmationInstruction"
+                        [value]="parentRef.formData.paymentDetails[0].confirmationInstruction"
+                        [(ngModel)]="parentRef.formData.paymentDetails[0].confirmationInstruction">
+                      </aps-custom-select>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                      <div class="left-right-container border-radius-4 background-color-warning-light p-px-3 p-pt-1"
+                        *ngIf="repair">
+                        <div class="left-container">
+                          <div class="text-size-12 text-color-normal">
+                            {{ 'The account number entered does not exist' | apsTranslate }}
+
+                            <span *ngIf="repairFields.accountNumberForChargesMessage">
+                              {{ 'Please enter a valid account number' | apsTranslate }}.</span>
+                          </div>
+                        </div>
+                        <div class="right-container p-ml-2">
+                          <app-icon icon="fa-ellipsis-h" styleClasses="text-color-warning text-size-14" (click)="
+                              repairFields.accountNumberForChargesMessage =
+                                !repairFields.accountNumberForChargesMessage
+                            "></app-icon>
+                        </div>
+                      </div>
+                      <aps-custom-select name="accountNumberForCharges" id="accountNumberForCharges"
+                        label="{{ 'Account Number For Charges' | apsTranslate }}"
+                        dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/accountNumberForCharges"
+                        [value]="parentRef.formData.paymentDetails[0].accountNumberForCharges"
+                        [(ngModel)]="parentRef.formData.paymentDetails[0].accountNumberForCharges" [required]="true"
+                        [helpText]="repair ? repairFields.accountNumberForCharges : ''">
+                      </aps-custom-select>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                      <aps-custom-select name="accountNumberForSettlement" id="accountNumberForSettlement"
+                        label="{{ 'Account Number For Settlement' | apsTranslate }}"
+                        dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/accountNumberForSettlement"
+                        [required]="true" [value]="parentRef.formData.paymentDetails[0].accountNumberForSettlement"
+                        [(ngModel)]="
+                          parentRef.formData.paymentDetails[0].accountNumberForSettlement
+                        "></aps-custom-select>
+                    </div>
+
+                    <div class="p-col-12">
+                      <div class="p-grid">
+                        <div class="p-col-12 p-p-0">
+                          <div class="text-size-14 text-color-normal text-semi-bold">
+                            {{ 'Charges' | apsTranslate }}
+                          </div>
+                        </div>
+                        <div class="p-col-12 p-p-0 p-mt-2">
+                          <p-radioButton id="charges" name="charges" value="All Charges on Applicant Account"
+                            label="{{ 'All Charges on Applicant Account' | apsTranslate }}" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].chargesType
+                            " [required]="true"></p-radioButton>
+                        </div>
+                        <div class="p-col-12 p-p-0 p-mt-2">
+                          <p-radioButton id="charges" name="charges" value="All Charges on Beneficiary Account"
+                            label="{{ 'All Charges on Beneficiary Account' | apsTranslate }}" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].chargesType
+                            " [required]="true"></p-radioButton>
+                        </div>
+                        <div class="p-col-12 p-p-0 p-mt-2">
+                          <p-radioButton id="charges" name="charges"
+                            value="Applicant Bank Charges are on Applicant Account and Beneficiary Bank Charges are on Beneficiary\'s Account"
+                            label="{{
+                              'Applicant Bank Charges are on Applicant Account and Beneficiary Bank Charges are on Beneficiary\'s Account'
+                                | apsTranslate
+                            }}" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].chargesType
+                            " [required]="true"></p-radioButton>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12 p-p-0 p-mt-2">
+                          <p-radioButton class="inline-block" id="charges" name="charges" value="Other"
+                            label="{{ 'Other (If Any)' | apsTranslate }}" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].chargesType
+                            " [required]="true"></p-radioButton>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12 p-p-0" *ngIf="
+                            parentRef.formData.paymentDetails[0].charges[0].chargesType === 'Other'
+                          ">
+                          <aps-form-input name="chargeDetails" id="chargeDetails"
+                            label="{{ 'Enter Charge Details' | apsTranslate }}" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].chargeDetails
+                            "></aps-form-input>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="p-col-12">
+                      <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-p-0 p-mt-2">
+                          <p-checkbox id="confirmation" name="confirmation" value="Confirmation"
+                            label="{{ 'Confirmation' | apsTranslate }}" [binary]="true" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].confirmation
+                            "></p-checkbox>
+                        </div>
+                        <div class="p-md-8 p-sm-12 p-col-12 p-p-0 p-mt-2"
+                          *ngIf="parentRef.formData.paymentDetails[0].charges[0].confirmation">
+                          <div class="p-grid">
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="confirmationType" name="confirmationType" value="Our"
+                                label="{{ 'Our' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .confirmationBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="confirmationType" name="confirmationType" value="Bene"
+                                label="{{ 'Bene' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .confirmationBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="confirmationType" name="confirmationType" value="Sha"
+                                label="{{ 'Sha' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .confirmationBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-p-0 p-mt-2">
+                          <p-checkbox id="legalization" name="legalization" value="Legalization"
+                            label="{{ 'Legalization' | apsTranslate }}" [binary]="true" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].legalization
+                            "></p-checkbox>
+                        </div>
+                        <div class="p-md-8 p-sm-12 p-col-12 p-p-0 p-mt-2"
+                          *ngIf="parentRef.formData.paymentDetails[0].charges[0].legalization">
+                          <div class="p-grid">
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="legalizationType" name="legalizationType" value="Applicant"
+                                label="{{ 'Applicant' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .legalizationBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="legalizationType" name="legalizationType" value="Not Required"
+                                label="{{ 'Not Required' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .legalizationBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="legalizationType" name="legalizationType" value="Beneficiary"
+                                label="{{ 'Beneficiary' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .legalizationBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-p-0 p-mt-2">
+                          <p-checkbox id="outsideCountry" name="outsideCountry" value="Outside Country"
+                            label="{{ 'Outside Country' | apsTranslate }}" [binary]="true" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].outsideCountry
+                            "></p-checkbox>
+                        </div>
+                        <div class="p-md-8 p-sm-12 p-col-12 p-p-0 p-mt-2"
+                          *ngIf="parentRef.formData.paymentDetails[0].charges[0].outsideCountry">
+                          <div class="p-grid">
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="outsideCountryType" name="outsideCountryType" value="Applicant"
+                                label="{{ 'Applicant' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .outsideCountryBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="outsideCountryType" name="outsideCountryType" value="Not Required"
+                                label="{{ 'Not Required' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .outsideCountryBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="outsideCountryType" name="outsideCountryType" value="Beneficiary"
+                                label="{{ 'Beneficiary' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .outsideCountryBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-p-0 p-mt-2">
+                          <p-checkbox id="amendment" name="amendment" value="Amendment"
+                            label="{{ 'Amendment' | apsTranslate }}" [binary]="true"
+                            [(ngModel)]="parentRef.formData.paymentDetails[0].charges[0].amendment"></p-checkbox>
+                        </div>
+                        <div class="p-md-8 p-sm-12 p-col-12 p-p-0 p-mt-2"
+                          *ngIf="parentRef.formData.paymentDetails[0].charges[0].amendment">
+                          <div class="p-grid">
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="amendmentType" name="amendmentType" value="Applicant"
+                                label="{{ 'Applicant' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0].amendmentBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="amendmentType" name="amendmentType" value="Not Required"
+                                label="{{ 'Not Required' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0].amendmentBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="amendmentType" name="amendmentType" value="Beneficiary"
+                                label="{{ 'Beneficiary' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0].amendmentBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-p-0 p-mt-2">
+                          <p-checkbox id="reimbursement" name="reimbursement" value="Reimbursement"
+                            label="{{ 'Reimbursement' | apsTranslate }}" [binary]="true" [(ngModel)]="
+                              parentRef.formData.paymentDetails[0].charges[0].reimbursement
+                            "></p-checkbox>
+                        </div>
+                        <div class="p-md-8 p-sm-12 p-col-12 p-p-0 p-mt-2"
+                          *ngIf="parentRef.formData.paymentDetails[0].charges[0].reimbursement">
+                          <div class="p-grid">
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="reimbursementType" name="reimbursementType" value="Applicant"
+                                label="{{ 'Applicant' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .reimbursementBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="reimbursementType" name="reimbursementType" value="Not Required"
+                                label="{{ 'Not Required' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .reimbursementBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                            <div class="p-col-3 p-p-0">
+                              <p-radioButton id="reimbursementType" name="reimbursementType" value="Beneficiary"
+                                label="{{ 'Beneficiary' | apsTranslate }}" [(ngModel)]="
+                                  parentRef.formData.paymentDetails[0].charges[0]
+                                    .reimbursementBourneBy
+                                " [required]="true"></p-radioButton>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            <form name="form5" #form5="ngForm" class="shipping-details" [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[4]
+              ">
+              <div class="p-grid p-mt-2">
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="placeOfTakingIncharge" id="placeOfTakingIncharge"
+                    label="{{ 'Place Of Taking Incharge' | apsTranslate }}" [required]="false"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].placeOfTakingIncharge"></aps-form-input>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                    {{ 'Mode Of Shipment' | apsTranslate }}<span class="text-color-danger">*</span>
+                  </div>
+                  <p-radioButton class="p-mr-5" name="modeOfShipment" id="modeOfShipment" value="Sea"
+                    label="{{ 'Sea' | apsTranslate }}" [required]="true"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].modeOfShipment">
+                  </p-radioButton>
+                  <p-radioButton class="p-mr-5" name="modeOfShipment" id="modeOfShipment" value="Land"
+                    label="{{ 'Land' | apsTranslate }}" [required]="true"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].modeOfShipment">
+                  </p-radioButton>
+                  <p-radioButton name="modeOfShipment" id="modeOfShipment" value="Air"
+                    label="{{ 'Air' | apsTranslate }}" [required]="true"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].modeOfShipment">
+                  </p-radioButton>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <div class="left-right-container border-radius-4 background-color-warning-light p-px-3"
+                    *ngIf="repair">
+                    <div class="left-container">
+                      <div class="text-size-12 text-color-normal">
+                        {{ 'Please select Shipping date before 14 OCT 2021' | apsTranslate }}.
+                        <span *ngIf="repairFields.latestDateOfShippingMessage">
+                          {{
+                          'Please select Shipping date before 14 OCT 2021' | apsTranslate
+                          }}.</span>
+                      </div>
+                    </div>
+                    <div class="right-container p-ml-2">
+                      <app-icon icon="fa-ellipsis-h" styleClasses="text-color-warning text-size-14" (click)="
+                          repairFields.latestDateOfShippingMessage =
+                            !repairFields.latestDateOfShippingMessage
+                        "></app-icon>
+                    </div>
+                  </div>
+                  <app-aps-calender name="latestDateOfShipping" id="latestDateOfShipping" [showIcon]="true"
+                    label="Latest Date Of Shipping" [showLCValue]="'O|44C'"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].latestDateOfShipping" [required]="true"
+                    [helpText]="repair ? repairFields.latestDateOfShipping : ''">
+                  </app-aps-calender>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                    {{ 'Partial Shipment' | apsTranslate }}
+                  </div>
+                  <p-radioButton class="p-mr-5" name="partialShipment" id="partialShipment" value="Allowed"
+                    label="{{ 'Allowed' | apsTranslate }}" [showLCValue]="'O|43P'"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].partialShipment"></p-radioButton>
+                  <p-radioButton name="partialShipment" id="partialShipment" value="Not Allowed"
+                    label="{{ 'Not Allowed' | apsTranslate }}" [showLCValue]="'O|43P'"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].partialShipment"></p-radioButton>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                    {{ 'Transhipment' | apsTranslate }}
+                  </div>
+                  <p-radioButton class="p-mr-5" name="transhipment" id="transhipment" value="Allowed"
+                    label="{{ 'Allowed' | apsTranslate }}" [showLCValue]="'O|43T'"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].transhipment"></p-radioButton>
+                  <p-radioButton name="transhipment" id="transhipment" value="Not Allowed"
+                    label="{{ 'Not Allowed' | apsTranslate }}" [showLCValue]="'O|43T'"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].transhipment"></p-radioButton>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="portAirportOfLoading" id="portAirportOfLoading" [required]="true"
+                    label="{{ 'Port/Airport Of Loading' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].portAirportOfLoading"></aps-form-input>
+                </div>
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="portAirportOfDischarge" id="portAirportOfDischarge" [required]="true"
+                    label="{{ 'Port/Airport Of Discharge' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].portAirportOfDischarge"></aps-form-input>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="finalDestination" id="finalDestination"
+                    label="{{ 'Final Destination' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].finalDestination"></aps-form-input>
+                </div>
+
+                <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="periodOfPresentation" id="periodOfPresentation"
+                    label="{{ 'Period Of Presentation' | apsTranslate }}" [required]="true"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].periodOfPresentation"></aps-form-input>
+                </div>
+                <div class="p-col-12 p-py-0">
+                  <aps-form-input name="descriptionOfGoodsServices" id="descriptionOfGoodsServices"
+                    label="{{ 'Description Of Goods/Services' | apsTranslate }}" [required]="true"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].descriptionOfGoodsServices"></aps-form-input>
+                </div>
+                <div class="p-col-12 p-py-0">
+                  <aps-form-input name="shippingMarks" id="shippingMarks" label="{{ 'Shipping Marks' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].shippingMarks">
+                  </aps-form-input>
+                </div>
+
+                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                  <aps-custom-select name="timeOfShipment" id="timeOfShipment"
+                    label="{{ 'Terms Of Shipment' | apsTranslate }}"
+                    dataUrl="trade/importTransactions/letterOfCredit/private/dropdown/timeOfShipment" [required]="true"
+                    [value]="parentRef.formData.shippingDetails[0].timeOfShipment"
+                    [(ngModel)]="parentRef.formData.shippingDetails[0].timeOfShipment"></aps-custom-select>
+                </div>
+              </div>
+            </form>
+
+            <form name="form6" #form6="ngForm" class="supporting-documents" [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[5]
+              ">
+              <div class="p-grid">
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ 'Document Type' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ 'Reference Number' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                    {{ 'Upload Documents' | apsTranslate }}
+                    <span class="text-size-8 text-color-normal">&nbsp;{{ 'Max 10MB each' | apsTranslate }}</span>
+                  </div>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <p-checkbox name="lcIrrevocable" id="lcIrrevocable" label="{{ 'LC Irrevocable' | apsTranslate }}"
+                    [binary]="true" [(ngModel)]="parentRef.formData.supportingDocuments[0].lcIrrevocable"
+                    (onChange)="onCheckedSupportingDocument($event, 'lcIrrevocable')"></p-checkbox>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="lcIrrevocableRefNo" id="lcIrrevocableRefNo"
+                    label="{{ 'Enter Ref. Number' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].lcIrrevocableRefNo"
+                    [required]="parentRef.formData.supportingDocuments[0].lcIrrevocable"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].lcIrrevocable">
+                  </aps-form-input>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <upload-form-control [hideDragDropContainerOnFIleUpload]="true"
+                    [files]="parentRef.formData.supportingDocuments[0].lcIrrevocableDocument" (onUploaded)="
+                      parentRef.formData.supportingDocuments[0].lcIrrevocableDocument = $event
+                    " [disabled]="!parentRef.formData.supportingDocuments[0].lcIrrevocable"></upload-form-control>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <p-checkbox name="proformaInvoice" id="proformaInvoice"
+                    label="{{ 'Proforma Invoice' | apsTranslate }}" [binary]="true"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].proformaInvoice"
+                    (onChange)="onCheckedSupportingDocument($event, 'proformaInvoice')"></p-checkbox>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="proformaInvoiceRefNo" id="proformaInvoiceRefNo"
+                    label="{{ 'Enter Ref. Number' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].proformaInvoiceRefNo"
+                    [required]="parentRef.formData.supportingDocuments[0].proformaInvoice"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].proformaInvoice"></aps-form-input>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <upload-form-control [hideDragDropContainerOnFIleUpload]="true"
+                    [files]="parentRef.formData.supportingDocuments[0].proformaInvoiceDocument" (onUploaded)="
+                      parentRef.formData.supportingDocuments[0].proformaInvoiceDocument = $event
+                    " [disabled]="!parentRef.formData.supportingDocuments[0].proformaInvoice"></upload-form-control>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12"></div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <p-checkbox name="insurancePolicy" id="insurancePolicy"
+                    label="{{ 'Insurance Policy' | apsTranslate }}" [binary]="true"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].insurancePolicy"
+                    (onChange)="onCheckedSupportingDocument($event, 'insurancePolicy')"></p-checkbox>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                  <aps-form-input name="insurancePolicyRefNo" id="insurancePolicyRefNo"
+                    label="{{ 'Enter Ref. Number' | apsTranslate }}"
+                    [(ngModel)]="parentRef.formData.supportingDocuments[0].insurancePolicyRefNo"
+                    [required]="parentRef.formData.supportingDocuments[0].insurancePolicy"
+                    [disabled]="!parentRef.formData.supportingDocuments[0].insurancePolicy"></aps-form-input>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <upload-form-control [hideDragDropContainerOnFIleUpload]="true"
+                    [files]="parentRef.formData.supportingDocuments[0].insurancePolicyDocument" (onUploaded)="
+                      parentRef.formData.supportingDocuments[0].insurancePolicyDocument = $event
+                    " [disabled]="!parentRef.formData.supportingDocuments[0].insurancePolicy"></upload-form-control>
+                </div>
+                <div class="p-md-3 p-sm-12 p-col-12"></div>
+              </div>
+            </form>
+
+            <form name="form7" #form7="ngForm" class="clauses" [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[6]
+              ">
+              <app-clauses productType="LETTEROFCREDIT" [parentRef]="this"></app-clauses>
+            </form>
+
+            <form name="form8" #form8="ngForm" class="terms-and-condition" [apsHide]="
+                activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[7]
+              ">
+              <div class="p-grid" *ngIf="termsAndCondition && termsAndCondition.length > 0; else loadingTemplate">
+                <div class="p-col-12">
+                  <div
+                    class="background-color-dark-3 text-color-dark-shade-1 text-size-14 border-radius-4 p-p-3 aps-h-250 overflow-scroll">
+                    <div [innerHtml]="
+                        (termsAndCondition && termsAndCondition[0]
+                          ? termsAndCondition[0].description
+                          : ''
+                        ) | safeHtml
+                      "></div>
+                  </div>
+                </div>
+                <div class="p-col-12">
+                  <p-checkbox name="agreeToTermsAndCondition" id="agreeToTermsAndCondition"
+                    label="{{ 'I agree to terms and conditions' | apsTranslate }}" [binary]="true"
+                    [(ngModel)]="parentRef.formData.termsAndCondition[0].agreeToTermsAndCondition" [required]="true">
+                  </p-checkbox>
+                </div>
+                <div class="p-col-12">
+                  <aps-form-input name="additionalCondition" id="additionalCondition"
+                    label="{{ 'Additional condition (if any)' | apsTranslate }}."
+                    [(ngModel)]="parentRef.formData.termsAndCondition[0].additionalCondition"></aps-form-input>
+                </div>
+                <div class="p-col-12">
+                  <aps-form-input name="specialCondition" id="specialCondition"
+                    label="{{ 'Special instruction (if any)' | apsTranslate }}."
+                    [(ngModel)]="parentRef.formData.termsAndCondition[0].specialCondition"></aps-form-input>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

@@ -1,0 +1,548 @@
+<app-modal [(isShow)]="showSampleBill" size="md" headerText="Sample Bill">
+    <div class="sample-bill-container" body>
+        <img class="sample-bill" [src]="getSampleBill()" alt="Sample Bill" />
+    </div>
+</app-modal>
+
+<!-- <div class="left-right-container p-mb-2">
+    <div class="left-container">
+        <div class="inline-items">
+        <div class="item p-mr-2">
+          <div class="text-size-16 text-bold">
+            {{ 'Matrix Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="item">
+          <app-icon
+            icon="fa-info-circle"
+            pTooltip="Define you matrix in 3 easy steps or copy from an existing matrix. The Company's Authorization Matrix (Authorization Matrix”) outlines the functional and financial approvals required, and designates team members that are authorized to sign legal documents (“Authorized Signatories”)."
+          ></app-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-container">
+        <div class="inline-items">
+            <div class="item p-mr-3">
+                <div class="btn btn-md btn-tertiary">
+                    <app-icon icon="fa-file" class="p-mr-1"></app-icon>
+                    {{ 'MANUAL ENTRY' | apsTranslate }}
+                </div>
+            </div>
+            <div class="item">
+                <div class="btn btn-md btn-tertiary">
+                    <app-icon icon="fa-copy" class="p-mr-1"></app-icon>
+                    {{ 'SCAN CHEQUE' | apsTranslate }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+
+        <div class="aps-card p-mb-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Cheque Entry Type</div>
+            </div>
+            <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                    <div class="inline-items">
+                        <div class="item p-mr-3">
+                            <div class="btn btn-md btn-secondary" (click)="onClickManualCheque()">
+                                <app-icon icon="fa-file" class="p-mr-1"></app-icon>
+                                {{ 'MANUAL ENTRY' | apsTranslate }}
+                            </div>
+                        </div>
+                        <div class="item">
+                            <div class="btn btn-md btn-secondary" (click)="onClickStartScan()">
+                                <app-icon icon="fa-copy" class="p-mr-1"></app-icon>
+                                {{ 'SCAN CHEQUE' | apsTranslate }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <app-modal [(isShow)]="isShowAccessibilityModal" size="sm">
+                    <div body>
+                        <div class="text-size-16 text-bold text-color-dark-shade-1">Scan Cheque</div>
+                        <!-- <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+                            Please Note: If you choose to hide the accessibility interface, you won't be able to see it
+                            anymore, unless you clear your browsing history and data. Are you sure that you wish to hide
+                            the interface?
+                        </div> -->
+                        <div>
+
+                        </div>
+                        <div>
+                            <div class="p-grid g-margin-x" *ngIf="beforeClick">
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0 text-center">
+                                    <button class="btn btn-md btn-primary p-m-2"
+                                        (click)="beforeClick = false; afterClick = true">START
+                                        SCAN</button>
+                                </div>
+                            </div>
+                            <div class="p-grid g-margin-x" *ngIf="afterClick">
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0 p-my-2">
+                                    <div class="p-py-4"
+                                        style="color:#31708f;background-color: #d9edf7;border-color: #bce8f1;text-align: center;">
+                                        Successfully
+                                        Scanned</div>
+                                </div>
+                            </div>
+                            <div class="p-grid g-margin-x" *ngIf="afterClick">
+                                <div class="p-md-12 p-sm-12 p-col-12 p-py-0 text-center">
+                                    <button class="btn btn-md btn-primary p-m-2">START SCAN</button>
+                                    <button class="btn btn-md btn-primary" (click)="onClickSubmit()">VIEW SCAN
+                                        DETAILS</button>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div>
+                    <!-- <div footer>
+                        <div class="left-right-container p-mt-3">
+                            <div class="left-container"></div>
+                            <div class="right-container">
+                                <button class="btn btn-md btn-primary" (click)="accept()">ACCEPT</button>
+                                &nbsp;
+                                <button class="btn btn-md btn-tertiary" (click)="cancel()">CANCEL</button>
+                            </div>
+                        </div>
+                    </div> -->
+                </app-modal>
+            </div>
+        </div>
+
+        <div class="aps-card p-mb-3" *ngIf="showDepositDetails">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Deposit Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+
+                    <!-- <div class=" p-col-12 p-md-3 p-sm-12">
+
+                        <app-search-modal [(isShow)]="showCorporateModal" [colDefUrl]="corporateSearchColDefUrl"
+                            [rowDefUrl]="corporateSearchRowDefUrl" header="Corporate Details"
+                            (onSelection)="onCorporateSelected($event)">
+                        </app-search-modal>
+                        <aps-form-input (onRightIcon)="showCorporateModal = true" [(ngModel)]="formData.corporateCode"
+                            disabled="true" id="corporateCode" [label]="'Corporate Code' | apsTranslate"
+                            name="corporateCode" required="true" rightIcon="fa-search">
+                        </aps-form-input>
+                    </div>
+                    <div class=" p-col-12 p-md-3 p-lg-3 ">
+                        <div class="p-p-1 background-color-disabled">
+                            <app-review-form-field label="Corporate Name"
+                                [value]="formData.corporateName"></app-review-form-field>
+                        </div>
+                    </div> -->
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-custom-select label="Product" id="product" name="product" [value]="formData.product"
+                            [(ngModel)]="formData.product"
+                            dataUrl="collections/transactions/scanDataEntry/private/dropdown/product" [required]="true">
+                        </aps-custom-select>
+                    </div>
+                    <div class=" p-col-12 p-md-3 p-lg-3">
+                        <div class="text-size-12 text-color-light-shade-2 background-color-disabled p-pt-1 p-px-1">
+                            {{ 'Batch Reference' | apsTranslate }}
+                        </div>
+                        <div class="text-size-14 background-color-disabled p-px-2 p-pb-1">
+                            {{formData.batchReference}}
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <app-aps-calender name="depositDate" id="depositDate" label="Deposit Date"
+                            [(ngModel)]="formData.depositDate" [required]="true"></app-aps-calender>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="depositSlip" id="depositSlip" label="Deposit Slip"
+                            [(ngModel)]="formData.depositSlip" [required]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="depositAmt" id="depositAmt" label="Deposit Amount"
+                            [(ngModel)]="formData.depositAmt" [required]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="noOfCheque" id="noOfCheque" label="Number of Cheque"
+                            [(ngModel)]="formData.noOfCheque" [required]="true"></aps-form-input>
+                    </div>
+                </div>
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <app-search-modal [(isShow)]="showPickupLocationModal" [colDefUrl]="pickupLocSearchColDefUrl"
+                            [rowDefUrl]="pickupLocSearchRowDefUrl" header="Pickup Location Details"
+                            (onSelection)="onPickupLoationSelected($event)">
+                        </app-search-modal>
+                        <aps-form-input (onRightIcon)="showPickupLocationModal = true"
+                            [(ngModel)]="formData.pickupLocationName" disabled="true" id="pickupLocationName"
+                            [label]="'Pickup Location' | apsTranslate" name="pickupLocationName" required="true"
+                            rightIcon="fa-search">
+                        </aps-form-input>
+
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <app-search-modal [(isShow)]="showPickupPointModal" [colDefUrl]="pickupPointSearchColDefUrl"
+                            [rowDefUrl]="pickupPointSearchRowDefUrl" header="Pickup Point Details"
+                            (onSelection)="onPickupPointSelected($event)">
+                        </app-search-modal>
+                        <aps-form-input (onRightIcon)="showPickupPointModal = true"
+                            [(ngModel)]="formData.pickupPointName" disabled="true" id="pickupPointName"
+                            [label]="'Pickup Point' | apsTranslate" name="pickupPointName" required="true"
+                            rightIcon="fa-search">
+                        </aps-form-input>
+
+                    </div>
+
+                </div>
+
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="enrichment1" id="enrichment1" label="Enrichment 1"
+                            [(ngModel)]="formData.enrichment1" [required]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="enrichment2" id="enrichment2" label="Enrichment 2"
+                            [(ngModel)]="formData.enrichment2"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                        <aps-form-input name="enrichment3" id="enrichment3" label="Enrichment 3"
+                            [(ngModel)]="formData.enrichment3"></aps-form-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aps-card p-mb-3" *ngIf="showInstrumentDetails">
+            <div class="aps-card-header p-px-3">
+                <div class="left-right-container">
+                    <div class="left-container aps-py-12">
+                        <div class="text-size-16 text-bold">
+                            Instrument Details
+                        </div>
+                    </div>
+                    <div class="right-container p-py-2" *ngIf="showManualInstrumentDetails">
+                        <button class="btn btn-md btn-primary" (click)="showAddHeaderFields = true">
+                            {{ 'ADD' | apsTranslate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="aps-card-body p-px-2">
+                <div *ngIf="!showAddHeaderFields" class="aps-h-200 p-pt-2">
+                    <app-ag-grid-listing *ngIf="showManualInstrumentDetails" #headerFieldGrid
+                        colDefUrl="collections/transactions/scanDataEntry/private/headerDetailsInitiateColDefs"
+                        [rowData]="formData.headerFields" [context]="{ componentParent: this }"
+                        [gridOptions]="gridOptions"></app-ag-grid-listing>
+
+                    <app-ag-grid-listing *ngIf="!showManualInstrumentDetails" [gridOptions]="gridOptions"
+                        [context]="{ componentParent: this }" [columnDefs]="colDefUrl"
+                        [rowData]="dataUrl"></app-ag-grid-listing>
+                </div>
+
+                <div *ngIf="showAddHeaderFields">
+                    <div class="p-grid g-margin-x" *ngIf="!showManualInstrumentDetails" body>
+                        <div class="p-md-6 p-col-12 p-py-0">
+                            <img class="aps-w-100p h-auto" src="../../../../assets/images/ChequeFront.jpg"
+                                alt="Cheque Image" />
+                        </div>
+                        <div class="p-md-6 p-col-12 p-py-0">
+                            <img class="aps-w-100p h-auto" src="../../../../assets/images/ChequeBack.jpg"
+                                alt="Cheque Image" />
+                        </div>
+
+                    </div>
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="chequeNumber" id="chequeNumber" label="Cheque Number"
+                                [(ngModel)]="headerFieldForm.chequeNumber" [required]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="micrCode" id="micrCode" label="MICR Code"
+                                [(ngModel)]="headerFieldForm.micrCode" [required]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="draweeBank" id="draweeBank" label="Drawee Bank"
+                                [(ngModel)]="headerFieldForm.draweeBank" [required]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="draweeBranch" id="draweeBranch" label="Drawee Branch"
+                                [(ngModel)]="headerFieldForm.draweeBranch" [required]="true"></aps-form-input>
+                        </div>
+                    </div>
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="clrLoc" id="clrLoc" label="Clearing Location"
+                                [(ngModel)]="headerFieldForm.clrLoc" [required]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="chequeAmt" id="chequeAmt" label="Cheque Amount"
+                                [(ngModel)]="headerFieldForm.chequeAmt" [required]="true"></aps-form-input>
+                        </div>
+                        <!-- <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="chequeDate" id="chequeDate" label="Cheque Date"
+                                [(ngModel)]="headerFieldForm.chequeDate" [required]="true"></aps-form-input>
+                        </div> -->
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                            <app-aps-calender name="chequeDate" id="chequeDate" label="Cheque Date"
+                                [(ngModel)]="headerFieldForm.chequeDate" [required]="true"></app-aps-calender>
+                        </div>
+                    </div>
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="corpClientCode" id="corpClientCode" label="Corporate Client Code"
+                                [(ngModel)]="headerFieldForm.corpClientCode" [required]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="corpClientName" id="corpClientName" label="Corporate Client Name"
+                                [(ngModel)]="headerFieldForm.corpClientName" [required]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="payeeName" id="payeeName" label="Payee Name"
+                                [(ngModel)]="headerFieldForm.payeeName" [required]="true"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="payeeAccNo" id="payeeAccNo" label="Payee Account Number"
+                                [(ngModel)]="headerFieldForm.payeeAccNo" [required]="true"></aps-form-input>
+                        </div>
+                    </div>
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="productCode" id="productCode" label="Product Code"
+                                [(ngModel)]="headerFieldForm.productCode"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="productName" id="productName" label="Product Name"
+                                [(ngModel)]="headerFieldForm.productName"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="cleringDays" id="cleringDays" label="Clearing Days"
+                                [(ngModel)]="headerFieldForm.cleringDays"></aps-form-input>
+                        </div>
+                        <div class="p-md-3 p-col-12 p-py-0">
+                            <aps-form-input name="creditDueDate" id="creditDueDate" label="Credit Due Date"
+                                [(ngModel)]="headerFieldForm.creditDueDate" [required]="true"></aps-form-input>
+                        </div>
+                    </div>
+                    <div class="p-grid g-margin-x" footer>
+                        <div class="p-col-12 text-right">
+                            <button class="btn btn-md btn-tertiary p-mr-3" (click)="onCancelHeaderFieldForm()">
+                                {{ 'Cancel' | apsTranslate }}
+                            </button>
+                            <button class="btn btn-md btn-primary" (click)="onAddHeaderFields()"
+                                *ngIf="headerFieldIndex == -1">
+                                {{ 'Add' | apsTranslate }}
+                            </button>
+                            <button class="btn btn-md btn-primary" (click)="onUpdateHeaderField()"
+                                *ngIf="headerFieldIndex != -1">
+                                {{ 'Update' | apsTranslate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Deposit Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3">
+                <div class="p-grid g-margin-x">
+                    <!-- <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Corporate Code"
+                            [value]="formData.corporateCode"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Corporate Name"
+                            [value]="formData.corporateName"></app-review-form-field>
+                    </div> -->
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Product" [value]="formData.product">
+
+                        </app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Batch Reference"
+                            [value]="formData.batchReference"></app-review-form-field>
+                    </div>
+                </div>
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Deposit Date"
+                            [value]="formData.depositDate"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Deposit Slip"
+                            [value]="formData.depositSlip"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Deposit Amount"
+                            [value]="formData.depositAmt"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="No of Chqeue"
+                            [value]="formData.noOfCheque"></app-review-form-field>
+                    </div>
+                </div>
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Pickup Location"
+                            [value]="formData.pickupLocationName"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Pickup Point"
+                            [value]="formData.pickupPointName"></app-review-form-field>
+                    </div>
+                </div>
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Enrichment1"
+                            [value]="formData.enrichment1"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Enrichment2"
+                            [value]="formData.enrichment2"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Enrichment3"
+                            [value]="formData.enrichment3"></app-review-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Instrument Details</div>
+            </div>
+
+            <div class="aps-card-body p-px-2">
+                <div *ngIf="!showViewHeaderFields" class="aps-h-200 p-pt-2">
+                    <app-ag-grid-listing [gridOptions]="gridOptions" [context]="{ componentParent: this }"
+                        [columnDefs]="colDefUrl" [rowData]="dataUrl2"></app-ag-grid-listing>
+                    <!-- <app-ag-grid-listing #headerFieldGrid [columnDefs]="colDefUrl" [rowData]="dataUrl"
+                        [context]="{ componentParent: this }" [gridOptions]="gridOptions"></app-ag-grid-listing> -->
+                </div>
+
+                <div *ngIf="showViewHeaderFields">
+                    <div class="p-grid g-margin-x" body>
+                        <div class="p-md-6 p-col-12 p-py-0">
+                            <img class="aps-w-100p h-auto" src="../../../../assets/images/ChequeFront.jpg"
+                                alt="Cheque Image" />
+                        </div>
+                        <div class="p-md-6 p-col-12 p-py-0">
+                            <img class="aps-w-100p h-auto" src="../../../../assets/images/ChequeBack.jpg"
+                                alt="Cheque Image" />
+                        </div>
+
+                    </div>
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Cheque Number"
+                                [value]="headerFieldForm.chequeNumber"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="MICR Code"
+                                [value]="headerFieldForm.micrCode"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Drawee Bank"
+                                [value]="headerFieldForm.draweeBank"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Drawee Branch"
+                                [value]="headerFieldForm.micrCode"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Clearing Location"
+                                [value]="headerFieldForm.clrLoc"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Cheque Amount"
+                                [value]="headerFieldForm.chequeAmt"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Cheque Date"
+                                [value]="headerFieldForm.chequeDate"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Corporate Client Code"
+                                [value]="headerFieldForm.corpClientCode"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Corporate Client Name"
+                                [value]="headerFieldForm.corpClientName"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Payee Name"
+                                [value]="headerFieldForm.payeeName"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Payee Account Number"
+                                [value]="headerFieldForm.payeeAccNo"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Product Code"
+                                [value]="headerFieldForm.productCode"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Product Name"
+                                [value]="headerFieldForm.productName"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Clearing Days"
+                                [value]="headerFieldForm.cleringDays"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-6 p-col-6">
+                            <app-review-form-field label="Credit Due Date"
+                                [value]="headerFieldForm.creditDueDate"></app-review-form-field>
+                        </div>
+                    </div>
+                    <div class="p-grid g-margin-x" footer>
+                        <div class="p-col-12 text-right">
+                            <!-- <button class="btn btn-md btn-tertiary p-mr-3" (click)="onCancelHeaderFieldForm()">
+                                {{ 'Back' | apsTranslate }}
+                            </button> -->
+                            <button class="btn btn-md btn-primary" (click)="showViewHeaderFields = false"
+                                *ngIf="headerFieldIndex != -1">
+                                {{ 'Back' | apsTranslate }}
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this" *ngIf="showInstrumentDetails"></app-stepper-footer>
+</div>

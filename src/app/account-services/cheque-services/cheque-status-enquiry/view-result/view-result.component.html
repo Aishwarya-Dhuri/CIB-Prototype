@@ -1,0 +1,88 @@
+<div class="container">
+  <ng-container *ngIf="!loading">
+    <app-modal
+      [(isShow)]="isChequeImage"
+      size="md"
+      headerText="{{ 'Cheque Image' | apsTranslate }}"
+    >
+      <ng-container body>
+        <img class="p-p-4" alt="Cheque Image" height="300" width="700" [src]="chequeImageUrl" />
+      </ng-container>
+    </app-modal>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-px-0">
+        <div class="aps-card p-p-3">
+          <div class="p-grid">
+            <div class="p-col-12 p-p-0">
+              <div class="left-right-container p-pb-2">
+                <div class="left-container">
+                  <div class="text-size-16px text-semi-bold">
+                    {{ 'Searched By' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="right-container">
+                  <button class="btn btn-md btn-tertiary p-py-0" (click)="onClearSearchClick()">
+                    {{ 'CLEAR SEARCH' | apsTranslate }}
+                  </button>
+                  <button class="btn btn-md btn-tertiary p-mr-1 p-py-0" (click)="onModifyClick()">
+                    {{ 'MODIFY' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12 p-md-3 p-lg-3" *ngFor="let filter of filters">
+              <app-review-form-field
+                [label]="filter.displayName"
+                [value]="
+                  filter.displayName === 'Cheque Date' ? filter.extraValue : filter.displayValue
+                "
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12 p-p-0">
+        <div class="aps-card">
+          <div class="card-header overflow-visible">
+            <div class="p-px-3" [ngClass]="{ 'left-right-container': viewPort === 'web' }">
+              <div class="left-container">
+                <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                  {{ 'Search Result ' | apsTranslate }}()
+                </div>
+              </div>
+              <div class="right-container aps-py-12">
+                <app-grid-listing-tools
+                  (changeFloatingFilter)="chequeStatusEnquiryGrid.changeFloatFilter($event)"
+                  (filterRecords)="chequeStatusEnquiryGrid.onFilter($event)"
+                  (applyColDefs)="chequeStatusEnquiryGrid.onApplyConfig($event)"
+                  [colDefs]="chequeStatusEnquiryGrid.columnDefs"
+                  [columnConfig]="true"
+                  [moreOptions]="true"
+                  [showMail]="true"
+                  [showDownload]="true"
+                  [showPrint]="true"
+                  [showRefresh]="true"
+                  [showPrint]="false"
+                >
+                </app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="card-body aps-h-400">
+            <app-ag-grid-listing
+              id="chequeStatusEnquiryGrid"
+              #chequeStatusEnquiryGrid
+              [colDefUrl]="colDefUrl"
+              [rowDefUrl]="dataUrl"
+              [gridOptions]="gridOptions"
+            >
+            </app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

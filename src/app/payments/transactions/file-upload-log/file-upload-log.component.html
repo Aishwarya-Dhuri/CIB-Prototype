@@ -1,0 +1,82 @@
+<div class="container">
+  <div class="p-grid">
+    <div class="p-col-7 p-px-1">
+      <!-- <div class="aps-card p-mb-2">
+        <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+          Search Based On
+        </div>
+        <div class="p-grid">
+          <div class="p-col-3 p-py-5 p-px-4">
+            <div class="text-size-14 text-semi-bold">Payment Type</div>
+          </div>
+          <div class="p-col-5">
+            <aps-custom-select
+              label="Payment Type"
+              name="paymentType"
+              id="paymentType"
+              [data]="paymentTypeList"
+              [value]="paymentType"
+              [(ngModel)]="paymentType"
+              [required]="true"
+            >
+            </aps-custom-select>
+          </div>
+        </div>
+      </div> -->
+      <app-dynamic-search
+        #dynamicSearch
+        [isShowSaveSearchCriteria]="false"
+        [isDisplayPrefillCriteriaModal]="false"
+        [isShowPrefillCriteria]="false"
+        [isShowSearchByHeader]="true"
+        entityName="FILEUPLOADLOG"
+        [isOptionalParameterHidden]="true"
+        (onSearch)="getSearchResults($event)"
+        (onFiltersReady)="onDynamicFiltersReady()"
+      >
+      </app-dynamic-search>
+    </div>
+    <div class="p-col-5 p-px-1">
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12 p-px-3">
+                Recent Uploaded List
+              </div>
+            </div>
+            <div class="right-container">
+              <aps-custom-select
+                label="Period"
+                name="period"
+                id="period"
+                [data]="periodList"
+                [value]="period"
+                [(ngModel)]="period"
+              >
+              </aps-custom-select>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-px-3 p-py-3 border-bottom" *ngFor="let item of recentUploadedFile">
+            <div class="text-size-14 text-color-primary text-bold">{{ item.paymentType }}</div>
+            <span class="text-size-12 text-color-dark-shade-1">Batch No :</span
+            ><span class="text-size-12 text-semi-bold border-right-bold p-px-1">{{
+              item.batchNo
+            }}</span>
+            <span class="text-size-12 text-semi-bold border-right-bold p-px-1">{{
+              item.channel
+            }}</span>
+            <span class="text-size-12 text-semi-bold border-right-bold p-px-1">{{
+              item.uploadedDate
+            }}</span>
+            <span class="text-size-12 text-semi-bold border-right-bold p-px-1">{{
+              item.uploadedTime
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

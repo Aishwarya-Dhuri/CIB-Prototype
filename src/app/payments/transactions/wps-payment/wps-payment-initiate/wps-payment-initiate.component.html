@@ -1,0 +1,1247 @@
+<div class="container">
+  <div class="p-grid g-margin-x" *ngIf="!loading">
+    <app-modal
+      [(isShow)]="showSuccessfulModal"
+      size="md"
+      (onClose)="onCLoseSuccessfulModal()"
+      headerText="Your WPS Payment upload file is successfully uploaded."
+    >
+      <div class="p-grid g-margin-x p-py-3" body *ngIf="successData">
+        <div class="p-md-3 p-sm-12 p-col-12">
+          <app-review-form-field
+            label="Reference Number"
+            [value]="successData.id"
+          ></app-review-form-field>
+        </div>
+        <div class="p-md-3 p-sm-12 p-col-12">
+          <app-review-form-field label="Date" [value]="successData.date"></app-review-form-field>
+        </div>
+        <div class="p-md-3 p-sm-12 p-col-12">
+          <app-review-form-field label="Time" [value]="successData.time"></app-review-form-field>
+        </div>
+        <div class="p-md-3 p-sm-12 p-col-12">
+          <app-review-form-field label="MOL ID" [value]="successData.molId"></app-review-form-field>
+        </div>
+      </div>
+
+      <div class="left-right-container" footer>
+        <div class="left-container">
+          <div class="inline-items">
+            <div class="item p-mr-3">
+              <app-icon icon="fa-print"></app-icon>
+            </div>
+            <div class="item p-mr-3">
+              <app-icon icon="fa-download"></app-icon>
+            </div>
+            <div class="item p-mr-3">
+              <app-icon icon="fa-envelope"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="right-container">
+          <button class="btn btn-sm btn-primary" (click)="onCLoseSuccessfulModal()">CLOSE</button>
+        </div>
+      </div>
+    </app-modal>
+
+    <ng-container *ngIf="mode != 'VIEW'">
+      <ng-container *ngIf="formData.initiateType == 'upload'">
+        <app-modal [(isShow)]="isLayoutData" size="md" headerText="Data Layout Mapper">
+          <ng-container body>
+            <app-wps-data-layout></app-wps-data-layout>
+          </ng-container>
+          <div class="left-right-container" footer>
+            <div class="left-container">
+              <div class="inline-items">
+                <div class="item p-mr-3"></div>
+              </div>
+            </div>
+            <div class="right-container">
+              <app-icon class="p-mr-3" icon="fa-download"></app-icon>
+              <button class="btn btn-sm btn-primary" (click)="isLayoutData = false">CLOSE</button>
+            </div>
+          </div>
+        </app-modal>
+
+        <ng-container *ngIf="stepperDetails.currentStep == 1">
+          <div class="p-md-7 p-sm-12 p-col-12">
+            <div class="aps-card aps-h-100p p-p-2">
+              <div class="p-grid">
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <app-aps-calender
+                    name="ValueDate"
+                    id="ValueDate"
+                    label="Value Date"
+                    [(ngModel)]="formData.valueDate"
+                  >
+                  </app-aps-calender>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <aps-custom-select
+                    name="molId"
+                    id="molId"
+                    label="MOL ID"
+                    dataUrl="payment/transactions/wpsRegisteredMol/private/dropdown/getCorporateRegisteredMolList"
+                    (change)="
+                      debitAccountDropdownReqData = { molId: $event.id };
+                      formData.debitFromAccount = '';
+                      formData.accountBalance = ''
+                    "
+                    [(ngModel)]="formData.molId"
+                    [value]="formData.molId"
+                    *ngIf="!isGroupUser"
+                  ></aps-custom-select>
+
+                  <aps-group-select
+                    name="molId"
+                    id="molId"
+                    label="MOL ID"
+                    dataUrl="payment/transactions/wpsRegisteredMol/private/dropdown/getGroupRegisteredMolList"
+                    (change)="
+                      debitAccountDropdownReqData = { molId: $event.id };
+                      formData.debitFromAccount = '';
+                      formData.accountBalance = ''
+                    "
+                    [(ngModel)]="formData.molId"
+                    [value]="formData.molId"
+                    [required]="true"
+                    *ngIf="isGroupUser"
+                  >
+                  </aps-group-select>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <aps-custom-select
+                    name="debitFromAccount"
+                    id="debitFromAccount"
+                    label="Debit From Account"
+                    dataUrl="payment/transactions/wpsRegisteredMol/private/getMolLinkedAccountList"
+                    [reqBody]="debitAccountDropdownReqData"
+                    [(ngModel)]="formData.debitFromAccount"
+                    [value]="formData.debitFromAccount"
+                    (change)="
+                      formData.accountBalance = $event.enrichments.balance;
+                      formData.debitFromAccountNumber = $event.displayName;
+                      formData.debitFromAccountTitle = $event.enrichments.accountTitle
+                    "
+                    [helpText]="formData.accountTitle"
+                  ></aps-custom-select>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-p-0">
+                  <div class="background-color-dark-3 p-m-2 p-p-2" *ngIf="formData.accountBalance">
+                    <div class="text-size-14 text-semi-bold">Account Balance</div>
+                    <div class="text-size-12">
+                      <app-base-currency [amount]="formData.accountBalance"></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <aps-custom-select
+                    name="dataLayout"
+                    id="dataLayout"
+                    label="Data Layout"
+                    dataUrl="payments/transactions/wpsPayment/private/dropdown/dataLayout"
+                    [(ngModel)]="formData.dataLayout"
+                    [value]="formData.dataLayout"
+                  ></aps-custom-select>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+                <div class="p-col-12">
+                  <div class="text-size-14 text-bold">WPS File</div>
+                </div>
+                <div class="p-md-7 p-sm-12 p-col-12">
+                  <upload-form-control
+                    [files]="formData.wpsFile"
+                    (onUploaded)="onFileUpload($event)"
+                    [hideDragDropContainerOnFIleUpload]="true"
+                  ></upload-form-control>
+                </div>
+                <div class="p-md-5 p-sm-12 p-col-12">
+                  <div class="label-with-icon-container">
+                    <div class="icon">
+                      <app-icon
+                        icon="fa-info-circle"
+                        pTooltip="Not Allowed Characters for the file name are ({}[]!@#&*"
+                      ></app-icon>
+                    </div>
+                    <div class="label">
+                      <div class="link pointer text-size-12" (click)="isLayoutData = true">
+                        View Sample Data Layout
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-12">
+                  <p-checkbox
+                    [(ngModel)]="agreeTermsAndConditions"
+                    [binary]="true"
+                    id="tnc"
+                    class="pointer"
+                    label="I agree to the terms and conditions"
+                    labelStyleClass="text-size-14 text-underline pointer"
+                    pTooltip="Click Here"
+                  >
+                  </p-checkbox>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-5 p-sm-12 p-col-12">
+            <div class="aps-card p-p-3">
+              <div class="text-size-14 text-bold">WPS Payment upload Workflow</div>
+              <div class="aps-h-450 overflow-y-scroll overflow-x-hidden p-mt-3 p-p-3">
+                <div class="p-pl-6">
+                  <ng-container *ngTemplateOutlet="workflowTemplate"></ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- <div class="p-col-12" *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+          <div class="aps-card p-p-2">
+            <div class="p-grid">
+              <div class="p-md-3 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Value Date"
+                  [value]="formData.valueDate"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="MOL ID"
+                  [value]="formData.molId"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Debit From Account"
+                  [value]="formData.debitFromAccount"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Account Balance"
+                  [value]="formData.accountBalance"
+                  type="baseCurrency"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-3 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Data Layout"
+                  [value]="formData.dataLayout"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-5 p-sm-6 p-col-6">
+                <app-review-form-field
+                  label="Data LayoutWPS File"
+                  type="file"
+                  [value]="formData.wpsFile[0]"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </ng-container>
+
+      <ng-container *ngIf="formData.initiateType == 'manual'">
+        <app-search-modal
+          [(isShow)]="isShowEdrBicCodeModal || isShowSdrBicCodeModal"
+          header="Select BIC Code"
+          colDefUrl="payments/transactions/wpsPayment/private/bicCodeColDef"
+          rowDefUrl="payments/transactions/wpsPayment/private/bicCodeData"
+          (onSelection)="onBicCodeSelection($event)"
+        >
+        </app-search-modal>
+
+        <app-search-modal
+          [(isShow)]="isShowEmployeeIdModal"
+          header="Select Employee Id"
+          colDefUrl="payments/transactions/wpsPayment/private/employeeColDef"
+          rowDefUrl="payments/transactions/wpsPayment/private/employeeData"
+          (onSelection)="onEmployeeIdSelection($event)"
+        >
+        </app-search-modal>
+
+        <ng-container *ngIf="stepperDetails.currentStep == 1">
+          <div class="p-md-8 p-sm-12 p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="aps-card p-p-3">
+                  <div class="text-size-14 text-bold">SCR</div>
+
+                  <div class="p-grid g-margin-x">
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-aps-calender
+                        id="entryDateAndTime"
+                        name="entryDateAndTime"
+                        label="Entry Date and Time"
+                        [(ngModel)]="formData.entryDateAndTime"
+                        [showTime]="true"
+                        [disabled]="true"
+                      ></app-aps-calender>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-custom-select
+                        name="molId"
+                        id="molId"
+                        label="MOL ID"
+                        dataUrl="payment/transactions/wpsRegisteredMol/private/dropdown/getCorporateRegisteredMolList"
+                        (change)="
+                          debitAccountDropdownReqData = { molId: $event.id };
+                          formData.debitFromAccount = '';
+                          formData.accountBalance = ''
+                        "
+                        [(ngModel)]="formData.molId"
+                        [value]="formData.molId"
+                        *ngIf="!isGroupUser"
+                      ></aps-custom-select>
+
+                      <aps-group-select
+                        name="molId"
+                        id="molId"
+                        label="MOL ID"
+                        dataUrl="payment/transactions/wpsRegisteredMol/private/dropdown/getGroupRegisteredMolList"
+                        (change)="
+                          debitAccountDropdownReqData = { molId: $event.id };
+                          formData.debitFromAccount = '';
+                          formData.accountBalance = ''
+                        "
+                        [(ngModel)]="formData.molId"
+                        [value]="formData.molId"
+                        [required]="true"
+                        *ngIf="isGroupUser"
+                      >
+                      </aps-group-select>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-custom-select
+                        name="debitFromAccount"
+                        id="debitFromAccount"
+                        label="Debit From Account"
+                        [reqBody]="debitAccountDropdownReqData"
+                        [(ngModel)]="formData.debitFromAccount"
+                        [value]="formData.debitFromAccount"
+                        dataUrl="payment/transactions/wpsRegisteredMol/private/getMolLinkedAccountList"
+                        (change)="
+                          formData.accountBalance = $event.enrichments.balance;
+                          formData.debitFromAccountNumber = $event.displayName;
+                          formData.debitFromAccountTitle = $event.enrichments.accountTitle
+                        "
+                        [helpText]="formData.accountTitle"
+                        [required]="true"
+                      ></aps-custom-select>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="routingCodeAgentId"
+                        id="routingCodeAgentId"
+                        label="Routing Code / Agent ID"
+                        [(ngModel)]="formData.routingCodeAgentId"
+                        rightIcon="fa-search"
+                        (onRightIcon)="isShowSdrBicCodeModal = true"
+                        [required]="true"
+                        [readonly]="true"
+                        [disabled]="true"
+                      ></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="payableCurrencyAndSalaryAmount"
+                        id="payableCurrencyAndSalaryAmount"
+                        label="Payable Currency and Total Salary Amount"
+                        [(ngModel)]="formData.payableCurrencyAndSalaryAmount"
+                        [disabled]="true"
+                      ></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-aps-calender
+                        name="salaryMonth"
+                        id="salaryMonth"
+                        label="Salary Month"
+                        [(ngModel)]="formData.salaryMonth"
+                        [monthNavigator]="true"
+                        [yearNavigator]="true"
+                        [disabled]="true"
+                      ></app-aps-calender>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="edrCount"
+                        id="edrCount"
+                        label="EDR Count"
+                        [(ngModel)]="formData.edrCount"
+                        [disabled]="true"
+                      ></aps-form-input>
+                    </div>
+
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="employerReference"
+                        id="employerReference"
+                        label="Employer Reference"
+                        [(ngModel)]="formData.employerReference"
+                      ></aps-form-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12">
+                <div class="aps-card p-p-3">
+                  <div class="text-size-14 text-bold">EDR</div>
+
+                  <div class="p-grid g-margin-x">
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="employeeId"
+                        id="employeeId"
+                        [(ngModel)]="edrForm.employeeId"
+                        label="Employee ID"
+                        rightIcon="fa-search"
+                        (onRightIcon)="isShowEmployeeIdModal = true"
+                        [required]="true"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="creditAccount"
+                        id="creditAccount"
+                        [(ngModel)]="edrForm.creditAccount"
+                        label="Credit Account / IBAN"
+                        [required]="true"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="routingCodeAgentId"
+                        id="routingCodeAgentId"
+                        [(ngModel)]="edrForm.routingCodeAgentId"
+                        label="Routing code / Agent ID"
+                        rightIcon="fa-search"
+                        (onRightIcon)="isShowEdrBicCodeModal = true"
+                        [required]="true"
+                        [readonly]="true"
+                      >
+                      </aps-form-input>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-aps-calender
+                        name="payStartDate"
+                        id="payStartDate"
+                        [minDate]="minDateValue"
+                        [maxDate]="edrForm.payEndDate ? edrForm.payEndDate : maxDateValue"
+                        [(ngModel)]="edrForm.payStartDate"
+                        label="Pay Start Date"
+                        [required]="true"
+                      ></app-aps-calender>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-aps-calender
+                        name="payEndDate"
+                        id="payEndDate"
+                        [minDate]="edrForm.payStartDate ? edrForm.payStartDate : minDateValue"
+                        [maxDate]="maxDateValue"
+                        [(ngModel)]="edrForm.payEndDate"
+                        label="Pay End Date"
+                        [required]="true"
+                      ></app-aps-calender>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="noOfDaysInMonth"
+                        id="noOfDaysInMonth"
+                        [(ngModel)]="edrForm.noOfDaysInMonth"
+                        label="Number of days in a month"
+                        [disabled]="true"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="fixedSalary"
+                        id="fixedSalary"
+                        inputType="currencyFormatNotZero"
+                        [(ngModel)]="edrForm.fixedSalary"
+                        label="Fixed Salary"
+                        [required]="true"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="variableSalary"
+                        id="variableSalary"
+                        inputType="currencyFormatNotZero"
+                        [(ngModel)]="edrForm.variableSalary"
+                        label="Variable Salary"
+                      ></aps-form-input>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <aps-form-input
+                        name="noOfDaysWithUnpaidLeaves"
+                        id="noOfDaysWithUnpaidLeaves"
+                        [(ngModel)]="edrForm.noOfDaysWithUnpaidLeaves"
+                        label="Number of days with unpaid leave"
+                      >
+                      </aps-form-input>
+                    </div>
+                    <ng-container *ngIf="edrForm.variableSalary">
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <aps-form-input
+                          name="housingAllowance"
+                          id="housingAllowance"
+                          inputType="currencyFormatNotZero"
+                          [(ngModel)]="edrForm.housingAllowance"
+                          label="Housing Allowance"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <aps-form-input
+                          name="conveyanceAllowance"
+                          id="conveyanceAllowance"
+                          inputType="currencyFormatNotZero"
+                          [(ngModel)]="edrForm.conveyanceAllowance"
+                          label="Conveyance Allowance"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <aps-form-input
+                          name="medicalAllowance"
+                          id="medicalAllowance"
+                          inputType="currencyFormatNotZero"
+                          [(ngModel)]="edrForm.medicalAllowance"
+                          label="Medical Allowance"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <aps-form-input
+                          name="annualPassageAllowance"
+                          id="annualPassageAllowance"
+                          inputType="currencyFormatNotZero"
+                          [(ngModel)]="edrForm.annualPassageAllowance"
+                          label="Annual Passage Allowance"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <aps-form-input
+                          name="overtimeAllowance"
+                          id="overtimeAllowance"
+                          inputType="currencyFormatNotZero"
+                          [(ngModel)]="edrForm.overtimeAllowance"
+                          label="Overtime Allowance"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <aps-form-input
+                          name="allOtherAllowances"
+                          id="allOtherAllowances"
+                          inputType="currencyFormatNotZero"
+                          [(ngModel)]="edrForm.allOtherAllowances"
+                          label="All Other Allowances"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-4 p-sm-12 p-col-12">
+                        <aps-form-input
+                          name="leaveEncashment"
+                          id="leaveEncashment"
+                          inputType="currencyFormatNotZero"
+                          [(ngModel)]="edrForm.leaveEncashment"
+                          label="Leave Encashment"
+                        ></aps-form-input>
+                      </div>
+                      <div class="p-md-8 p-sm-12 p-col-12 p-p-0"></div>
+                    </ng-container>
+                    <div class="p-md-9 p-sm-12 p-col-12">
+                      <div class="text-size-14">
+                        <span class="text-bold">{{ 'Note' | apsTranslate }}: </span>
+                        {{
+                          'Total amount entered in the above EVP allowances fields should match the Variable Salary amount.'
+                            | apsTranslate
+                        }}
+                      </div>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 text-right">
+                      <button
+                        class="btn btn-md btn-primary"
+                        (click)="editEdrIndex == -1 ? addEdr() : saveEdr()"
+                        [disabled]="validateEdr()"
+                      >
+                        {{ editEdrIndex == -1 ? 'ADD' : ('SAVE' | apsTranslate) }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="aps-card p-p-3 aps-h-100p">
+              <div class="text-size-14 text-bold">
+                {{ 'ADDED EDR' | apsTranslate }} ({{ formData.edrList.length }})
+              </div>
+
+              <div class="text-size-14 p-py-3">
+                {{ 'Total Salary Amount' | apsTranslate }}
+                <span class="text-color-primary">
+                  <app-base-currency [amount]="formData.totalAmount"></app-base-currency>
+                </span>
+                <div class="">({{ formData.totalAmount | numberToWord }})</div>
+              </div>
+
+              <ng-container *ngIf="formData.edrList.length > 0; else nothingHereYetTemplate">
+                <div class="edr-scroll-container p-pr-2">
+                  <div
+                    class="p-py-2 border-bottom"
+                    *ngFor="let edrData of formData.edrList; let i = index"
+                  >
+                    <div class="left-right-container">
+                      <div class="left-container text-color-primary text-semi-bold text-size-14">
+                        {{ edrData.employeeId }}
+                      </div>
+                      <div class="right-container text-semi-bold text-size-14">
+                        {{ edrData.creditAccount }}
+                      </div>
+                    </div>
+
+                    <div class="left-right-container">
+                      <div class="left-container text-semi-bold text-size-14">
+                        <app-base-currency [amount]="edrData.fixedSalary"></app-base-currency>
+                      </div>
+
+                      <div class="right-container text-semi-bold text-size-14">
+                        <app-base-currency [amount]="edrData.variableSalary"></app-base-currency>
+                      </div>
+                    </div>
+
+                    <div class="left-right-container">
+                      <div class="left-container"></div>
+                      <div class="right-container text-semi-bold text-size-14">
+                        <div class="inline-items text-size-14">
+                          <div class="item p-mr-3">
+                            <app-icon
+                              icon="fa-pencil"
+                              styleClasses="pointer"
+                              (click)="editEdr(i)"
+                            ></app-icon>
+                          </div>
+                          <div class="item">
+                            <app-icon
+                              icon="fa-trash-alt"
+                              styleClasses="pointer text-color-danger"
+                              (click)="deleteEdr(i)"
+                            ></app-icon>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+          <div class="p-col-12">
+            <div class="p-grid">
+              <div class="p-col-12">
+                <div class="aps-card p-p-3">
+                  <div class="text-size-14 text-bold">SCR</div>
+
+                  <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                      <app-review-form-field
+                        label="Entry Date and Time"
+                        [value]="formData.entryDateAndTime"
+                      >
+                      </app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                      <app-review-form-field
+                        label="MOL ID"
+                        [value]="formData.molId"
+                      ></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                      <app-review-form-field
+                        label="Debit From Account"
+                        [value]="formData.debitFromAccount"
+                      >
+                      </app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                      <app-review-form-field
+                        label="Routing Code / Agent ID"
+                        [value]="formData.routingCodeAgentId"
+                      >
+                      </app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                      <app-review-form-field
+                        label="Payable Currency and Total Salary Amount"
+                        [value]="formData.payableCurrencyAndSalaryAmount"
+                      ></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                      <app-review-form-field label="Salary Month" [value]="formData.salaryMonth">
+                      </app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                      <app-review-form-field
+                        label="EDR Count"
+                        [value]="formData.edrCount"
+                      ></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                      <app-review-form-field
+                        label="Employer Reference"
+                        [value]="formData.employerReference"
+                      >
+                      </app-review-form-field>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-col-12">
+                <div class="aps-card p-p-3 aps-h-100p">
+                  <div class="text-size-14 text-bold">
+                    ADDED EDR ({{ formData.edrList.length }})
+                  </div>
+
+                  <div class="text-size-14 p-py-3">
+                    Total Salary Amount
+                    <span class="text-color-primary">
+                      <app-base-currency [amount]="formData.totalAmount"></app-base-currency>
+                    </span>
+                    <div class="">({{ formData.totalAmount | numberToWord }})</div>
+                  </div>
+
+                  <ng-container *ngIf="formData.edrList.length > 0; else nothingHereYetTemplate">
+                    <div
+                      class="aps-card p-mb-3"
+                      *ngFor="let edrData of formData.edrList; let i = index"
+                    >
+                      <div class="p-grid">
+                        <div class="p-md-5 p-sm-6 p-col-6 p-p-0">
+                          <div class="p-grid">
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="Employee ID"
+                                [value]="edrData.employeeId"
+                              >
+                              </app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="Credit Account / IBAN"
+                                [value]="edrData.creditAccount"
+                              >
+                              </app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="Pay Start Date"
+                                [value]="edrData.payStartDate"
+                              >
+                              </app-review-form-field>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-md-5 p-sm-12 p-col-6 p-p-0">
+                          <div class="p-grid">
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="Pay End Date"
+                                [value]="edrData.payEndDate"
+                              >
+                              </app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="Fixed Salary Amount"
+                                [value]="edrData.fixedSalary"
+                                type="baseCurrency"
+                              ></app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="Variable Salary Amount"
+                                [value]="edrData.variableSalary"
+                                type="baseCurrency"
+                              ></app-review-form-field>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="p-md-2 p-sm-12 p-col-12 p-py-3" *ngIf="mode !== 'VIEW'">
+                          <div class="left-right-container">
+                            <div class="left-container"></div>
+                            <div class="right-container text-semi-bold text-size-14">
+                              <div class="inline-items text-size-14">
+                                <div class="item p-mr-3">
+                                  <app-icon
+                                    icon="fa-pencil"
+                                    styleClasses="pointer"
+                                    (click)="editEdr(i)"
+                                  ></app-icon>
+                                </div>
+                                <!-- <div class="item p-mr-3">
+                                <app-icon
+                                  icon="fa-trash-alt"
+                                  styleClasses="pointer text-color-danger"
+                                  (click)="deleteEdr(i)"
+                                ></app-icon>
+                              </div> -->
+                                <div class="item">
+                                  <app-icon
+                                    [icon]="edrData.isExpand ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                    styleClasses="pointer"
+                                    (click)="edrData.isExpand = !edrData.isExpand"
+                                  ></app-icon>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-grid border-top" *ngIf="edrData.isExpand">
+                        <div class="p-md-7 p-sm-6 p-col-6 p-p-0">
+                          <div class="p-grid">
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="Routing Code / Agent Id"
+                                [value]="edrData.routingCodeAgentId"
+                              ></app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="No. of Days In Month"
+                                [value]="edrData.noOfDaysInMonth"
+                              >
+                              </app-review-form-field>
+                            </div>
+                            <div class="p-md-4 p-sm-12 p-col-12">
+                              <app-review-form-field
+                                label="No. of Days With Unpaid Leaves"
+                                [value]="edrData.noOfDaysWithUnpaidLeaves"
+                              ></app-review-form-field>
+                            </div>
+                          </div>
+                        </div>
+
+                        <ng-container *ngIf="edrForm.variableSalary && edrForm.variableSalary > 0">
+                          <div class="p-md-5 p-sm-6 p-col-6 p-p-0">
+                            <div class="p-grid">
+                              <div class="p-md-6 p-sm-12 p-col-12">
+                                <app-review-form-field
+                                  label="Housing Allowance"
+                                  [value]="edrData.housingAllowance"
+                                  type="baseCurrency"
+                                ></app-review-form-field>
+                              </div>
+                              <div class="p-md-6 p-sm-12 p-col-12">
+                                <app-review-form-field
+                                  label="Conveyance Allowance"
+                                  [value]="edrData.conveyanceAllowance"
+                                  type="baseCurrency"
+                                ></app-review-form-field>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div class="p-md-7 p-sm-6 p-col-6 p-p-0">
+                            <div class="p-grid">
+                              <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field
+                                  label="Medical Allowance"
+                                  [value]="edrData.medicalAllowance"
+                                  type="baseCurrency"
+                                ></app-review-form-field>
+                              </div>
+                              <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field
+                                  label="Annual Passage Allowance"
+                                  [value]="edrData.annualPassageAllowance"
+                                  type="baseCurrency"
+                                ></app-review-form-field>
+                              </div>
+                              <div class="p-md-4 p-sm-12 p-col-12">
+                                <app-review-form-field
+                                  label="Overtime Allowance"
+                                  [value]="edrData.overtimeAllowance"
+                                  type="baseCurrency"
+                                ></app-review-form-field>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="p-md-5 p-sm-6 p-col-6 p-p-0">
+                            <div class="p-grid">
+                              <div class="p-md-6 p-sm-12 p-col-12">
+                                <app-review-form-field
+                                  label="All Other Allowances"
+                                  [value]="edrData.allOtherAllowances"
+                                  type="baseCurrency"
+                                ></app-review-form-field>
+                              </div>
+                              <div class="p-md-6 p-sm-12 p-col-12">
+                                <app-review-form-field
+                                  label="Leave Encashment"
+                                  [value]="edrData.leaveEncashment"
+                                  type="baseCurrency"
+                                ></app-review-form-field>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="mode == 'VIEW'">
+      <div class="p-col-12 p-p-0">
+        <div class="p-grid">
+          <div class="p-col-12">
+            <div class="aps-card p-p-3">
+              <!-- <div class="text-size-14 text-bold">SCR</div> -->
+              <div class="p-grid g-margin-x">
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="WPS File Name"
+                    [value]="formData.fileName"
+                  ></app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="SIF File Name"
+                    [value]="formData.fileName"
+                  ></app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="Payable Currency and Total Salary Amount"
+                    [value]="formData.payableCurrencyAndSalaryAmount"
+                  ></app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="MOL ID"
+                    [value]="formData.molId"
+                  ></app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="Entry Date and Time"
+                    [value]="formData.entryDateAndTime"
+                  >
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="Debit From Account"
+                    [value]="formData.debitFromAccount"
+                  >
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="Routing Code / Agent ID"
+                    [value]="formData.routingCodeAgentId"
+                  >
+                  </app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="Salary Month"
+                    [value]="formData.salaryMonth"
+                  ></app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="EDR Count"
+                    [value]="formData.edrCount"
+                  ></app-review-form-field>
+                </div>
+
+                <div class="p-md-3 p-sm-6 p-col-6">
+                  <app-review-form-field
+                    label="Employer Reference"
+                    [value]="formData.employerReference"
+                  >
+                  </app-review-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12">
+            <div class="aps-card aps-h-450">
+              <div class="aps-card-header p-px-3 overflow-visible">
+                <div class="left-right-container">
+                  <div class="left-container p-py-2">
+                    <div class="text-size-14">
+                      {{ 'Total Salary Amount' | apsTranslate }}
+                      <span class="text-color-primary">
+                        <app-base-currency [amount]="formData.totalAmount"></app-base-currency>
+                      </span>
+                      <div class="text-size-12">({{ formData.totalAmount | numberToWord }})</div>
+                    </div>
+                  </div>
+                  <div class="right-container aps-py-12">
+                    <app-grid-listing-tools
+                      (changeFloatingFilter)="
+                        edrDataListingGrid ? edrDataListingGrid.changeFloatFilter($event) : null
+                      "
+                      (filterRecords)="
+                        edrDataListingGrid ? edrDataListingGrid.onFilter($event) : null
+                      "
+                      (applyColDefs)="
+                        edrDataListingGrid ? edrDataListingGrid.onApplyConfig($event) : null
+                      "
+                      [colDefs]="edrDataListingGrid ? edrDataListingGrid.columnDefs : []"
+                      [columnConfig]="!!edrDataListingGrid"
+                      [moreOptions]="false"
+                      [showFloatingFilter]="!!edrDataListingGrid"
+                      [columnConfig]="!!edrDataListingGrid"
+                      [showSearch]="!!edrDataListingGrid"
+                      [listingTypes]="true"
+                      [listingType]="listingType"
+                      (changeListingType)="listingType = $event"
+                    ></app-grid-listing-tools>
+                  </div>
+                </div>
+              </div>
+              <div class="aps-card-body" *ngIf="!loadingList; else loadingTemplate">
+                <app-ag-grid-listing
+                  #edrDataListingGrid
+                  [colDefUrl]="edrDataColDefsUrl"
+                  [rowData]="formData.edrList"
+                  [gridOptions]="{ rowModelType: 'clientSide' }"
+                  [apsHide]="listingType == 'card'"
+                  [supressAutoFit]="false"
+                ></app-ag-grid-listing>
+
+                <ng-container>
+                  <div class="card-list border-top" *ngIf="listingType == 'card'">
+                    <div
+                      class="p-grid p-p-2"
+                      *ngIf="
+                        edrDataListingGrid && edrDataListingGrid.columnDefs.length > 0;
+                        else loadingTemplate
+                      "
+                    >
+                      <div
+                        class="p-col-12"
+                        *ngFor="let data of edrDataListingGrid.rowData; let i = index"
+                      >
+                        <div class="aps-card text-size-12">
+                          <div class="card-header">
+                            <div class="p-grid">
+                              <div class="p-col-11 p-p-0">
+                                <div class="p-grid">
+                                  <div class="p-md-2 p-sm-12 p-col-12">
+                                    <div class="text-bold">
+                                      {{ edrDataListingGrid.columnDefs[0].headerName }}
+                                    </div>
+                                    <div class="">
+                                      {{ data[edrDataListingGrid.columnDefs[0].field] }}
+                                    </div>
+                                  </div>
+                                  <div class="p-md-2 p-sm-12 p-col-12">
+                                    <div class="text-bold">
+                                      {{ edrDataListingGrid.columnDefs[1].headerName }}
+                                    </div>
+                                    <div class="">
+                                      {{ data[edrDataListingGrid.columnDefs[1].field] }}
+                                    </div>
+                                  </div>
+                                  <div class="p-md-2 p-sm-12 p-col-12">
+                                    <div class="text-bold">
+                                      {{ edrDataListingGrid.columnDefs[2].headerName }}
+                                    </div>
+                                    <div class="">
+                                      {{ data[edrDataListingGrid.columnDefs[2].field] }}
+                                    </div>
+                                  </div>
+                                  <div class="p-md-2 p-sm-12 p-col-12">
+                                    <div class="text-bold">
+                                      {{ edrDataListingGrid.columnDefs[3].headerName }}
+                                    </div>
+                                    <div class="">
+                                      {{ data[edrDataListingGrid.columnDefs[3].field] }}
+                                    </div>
+                                  </div>
+                                  <div class="p-md-2 p-sm-12 p-col-12">
+                                    <div class="text-bold">
+                                      {{ edrDataListingGrid.columnDefs[4].headerName }}
+                                    </div>
+                                    <div class="">
+                                      {{ data[edrDataListingGrid.columnDefs[4].field] }}
+                                    </div>
+                                  </div>
+                                  <div class="p-md-2 p-sm-12 p-col-12">
+                                    <div class="text-bold">
+                                      {{ edrDataListingGrid.columnDefs[5].headerName }}
+                                    </div>
+                                    <div class="">
+                                      {{ data[edrDataListingGrid.columnDefs[5].field] }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="p-col-1 p-p-3 text-right">
+                                <app-icon
+                                  [icon]="data.isShow ? 'fa-chevron-up' : 'fa-chevron-down'"
+                                  styleClasses="text-size-14 pointer"
+                                  (click)="data.isShow = !data.isShow"
+                                ></app-icon>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="card-body border-top" *ngIf="data.isShow">
+                            <div class="p-grid">
+                              <ng-container
+                                *ngFor="let field of edrDataListingGrid.columnDefs; let i = index"
+                              >
+                                <div
+                                  class="p-md-2 p-sm-12 p-col-12 p-p-0"
+                                  *ngIf="edrDataListingGrid.columnDefs[i].field != 'actions'"
+                                >
+                                  <div class="p-p-2" *ngIf="i >= 6">
+                                    <div class="text-bold">
+                                      {{ edrDataListingGrid.columnDefs[i].headerName }}
+                                    </div>
+                                    <div class="">
+                                      {{
+                                        data[edrDataListingGrid.columnDefs[i].field]
+                                          ? data[edrDataListingGrid.columnDefs[i].field]
+                                          : '-'
+                                      }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="left-right-container p-py-2 p-px-3" *ngIf="listType === 'card'">
+                    <div class="left-container"></div>
+                    <div class="right-container">
+                      <button class="btn btn-sm btn-tertiary p-mr-3">
+                        <app-icon
+                          icon="fa-chevron-left"
+                          (click)="previous()"
+                          [disabled]="this.currentPage <= 1"
+                        >
+                        </app-icon>
+                      </button>
+                      <button class="btn btn-sm btn-tertiary">
+                        <app-icon
+                          icon="fa-chevron-right"
+                          (click)="next()"
+                          [disabled]="this.currentPage >= this.numberOfPages"
+                        ></app-icon>
+                      </button>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="p-col-12" *ngIf="!isViewMode">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>
+
+<ng-template #nothingHereYetTemplate>
+  <app-nothing-here colSize="10"></app-nothing-here>
+</ng-template>
+
+<ng-template #workflowTemplate>
+  <div class="org-tree-container">
+    <ng-container *ngFor="let data of treeData">
+      <div class="org-tree-wrapper" *ngIf="data.type === 'single'">
+        <div class="tree-node" style="height: 100%" *ngFor="let node of data.nodes; let i = index">
+          <div class="node-branch">
+            <svg height="100%" width="100%">
+              <line
+                x1="16"
+                y1="0"
+                x2="16"
+                y2="95%"
+                class="line"
+                [ngClass]="{
+                  'line-deactivated': node.partiallyActive || node.disabled
+                }"
+                *ngIf="!node.isLeafNode"
+              />
+              <circle
+                cx="16"
+                cy="7"
+                r="6"
+                class="circle"
+                [ngClass]="{
+                  'circle-partially-activated': node.partiallyActive,
+                  'circle-deactivated': node.disabled
+                }"
+              />
+            </svg>
+          </div>
+
+          <div
+            class="node-data"
+            [ngClass]="{ 'node-data-deactivated': node.disabled }"
+            style="top: 0px; left: 32px"
+          >
+            <div class=".text-size-16 text-color-dark-shade-1 text-bold">{{ node.header }}</div>
+            <div class="p-pl-5">
+              <div class="text-size-14 text-color-normal">{{ node.subHeader }}</div>
+              <div class="text-size-12 text-color-light-shade-1" *ngFor="let d of node.data">
+                {{ d }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <p class="p-py-6 text-center" *ngIf="!loading && loadingList">
+    {{ 'Loading' | apsTranslate }}...
+  </p>
+</ng-template>

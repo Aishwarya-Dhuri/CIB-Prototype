@@ -1,0 +1,587 @@
+<app-modal
+  [(isShow)]="isFDRedemption"
+  size="md"
+  headerText="{{ 'Your FD Redemption request is Submitted' | apsTranslate }}"
+>
+  <ng-container body>
+    <div class="p-grid">
+      <div class="p-col-12 p-md-3 p-sm-12 p-px-3">
+        <app-review-form-field
+          label="Reference Number"
+          [value]="formData.id"
+        ></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-3 p-sm-12 p-px-3">
+        <app-review-form-field label="Date" [value]="formData.maturityDate"></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-3 p-sm-12 p-px-3">
+        <app-review-form-field label="Time" value="03:32PM"></app-review-form-field>
+      </div>
+      <div class="p-col-12 p-md-3 p-sm-12 p-px-3">
+        <app-review-form-field
+          label="Redemption Amount"
+          [value]="formData.amount"
+          type="baseCurrency"
+          [baseCurrency]="getCurrencyById(formData.amountCurrency)"
+        ></app-review-form-field>
+      </div>
+    </div>
+  </ng-container>
+  <div footer>
+    <div class="left-right-container">
+      <div class="left-container p-py-2">
+        <app-icon class="p-px-2" icon="fa-print"></app-icon>
+        <app-icon class="p-px-2" icon="fa-download"></app-icon>
+        <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+      </div>
+      <div class="right-container">
+        <button type="button" class="btn btn-md btn-primary" (click)="onCloseClick()">
+          {{ 'CLOSE' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal
+  [(isShow)]="isTermsAndCondition"
+  size="sm"
+  headerText="{{ 'Terms And Condition' | apsTranslate }}"
+>
+  <ng-container body> </ng-container>
+  <div footer></div>
+</app-modal>
+
+<div class="container">
+  <form
+    name="earlyRedemptionForm"
+    #earlyRedemptionForm="ngForm"
+    (ngSubmit)="onSubmit(earlyRedemptionForm)"
+    *ngIf="stepperDetails.currentStep == 1"
+  >
+    =
+    <div class="aps-card p-mb-2">
+      <div class="aps-card-header">
+        <div class="text-size-16 text-bold p-px-3 p-py-3">
+          {{ 'Redemption Details' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+            <aps-custom-select
+              [label]="'FD Number' | apsTranslate"
+              name="fdNumber"
+              id="fdNumber"
+              [data]="fdNumberList"
+              #fdNumber="ngModel"
+              [value]="formData.fdNumber"
+              [(ngModel)]="formData.fdNumber"
+              required="true"
+              (change)="fdNumberSelected(formData.fdNumber)"
+            >
+            </aps-custom-select>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+            <aps-custom-select
+              [label]="'FD Product Type' | apsTranslate"
+              name="productTypeId"
+              id="productTypeId"
+              [data]="productTypeList"
+              #productTypeId="ngModel"
+              [value]="formData.productTypeId"
+              [(ngModel)]="formData.productTypeId"
+              required="true"
+              isDisabled="true"
+            ></aps-custom-select>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+            <app-aps-calender
+              [label]="'Maturity Date' | apsTranslate"
+              name="maturityDate"
+              id="maturityDate"
+              showIcon="true"
+              #maturityDate="ngModel"
+              [(ngModel)]="formData.maturityDate"
+              required="true"
+              disabled="true"
+            >
+            </app-aps-calender>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+            <aps-custom-select
+              [label]="'Currency' | apsTranslate"
+              class="p-py-1"
+              id="amountCurrency"
+              name="amountCurrency"
+              [value]="formData.amountCurrency"
+              [(ngModel)]="formData.amountCurrency"
+              [data]="currencyList"
+              isDisabled="true"
+            >
+            </aps-custom-select>
+          </div>
+          <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+            <aps-form-input
+              [label]="'FD Amount' | apsTranslate"
+              id="amount"
+              name="amount"
+              inputType="currencyFormatNotZero"
+              [(ngModel)]="formData.amount"
+              required="true"
+              disabled="true"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+            <aps-custom-select
+              [label]="'Currency' | apsTranslate"
+              class="p-py-1"
+              id="currentBalanceCurrency"
+              name="currentBalanceCurrency"
+              [value]="formData.currentBalanceCurrency"
+              [(ngModel)]="formData.currentBalanceCurrency"
+              [data]="currencyList"
+              isDisabled="true"
+            >
+            </aps-custom-select>
+          </div>
+          <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+            <aps-form-input
+              [label]="'Current Balance' | apsTranslate"
+              id="currentBalance"
+              name="currentBalance"
+              inputType="currencyFormatNotZero"
+              [(ngModel)]="formData.currentBalance"
+              required="true"
+              disabled="true"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-px-3">
+            <div class="text-size-12 text-bold p-p-1">{{ 'Redemption Type' | apsTranslate }}</div>
+            <p-radioButton
+              class="p-mr-3"
+              name="fullAmount"
+              id="fullAmount"
+              [label]="'Full Amount' | apsTranslate"
+              value="Full Amount"
+              [(ngModel)]="formData.redemptionType"
+            >
+            </p-radioButton>
+
+            <p-radioButton
+              name="partialAmount"
+              id="partialAmount"
+              [label]="'Partial Amount' | apsTranslate"
+              value="Partial Amount"
+              [(ngModel)]="formData.redemptionType"
+              (change)="onPartialAmountClick(formData.redemptionType)"
+            >
+            </p-radioButton>
+          </div>
+          <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+            <aps-custom-select
+              [label]="'Currency' | apsTranslate"
+              class="p-py-1"
+              id="redemptionCurrency"
+              name="redemptionCurrency"
+              [value]="formData.redemptionCurrency"
+              [(ngModel)]="formData.redemptionCurrency"
+              [data]="currencyList"
+              [isDisabled]="formData.redemptionType == 'Full Amount'"
+              required="true"
+            >
+            </aps-custom-select>
+          </div>
+          <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+            <aps-form-input
+              [label]="'Redemption Amount' | apsTranslate"
+              id="redemptionAmount"
+              name="redemptionAmount"
+              inputType="currencyFormatNotZero"
+              [(ngModel)]="formData.redemptionAmount"
+              required="true"
+              [disabled]="formData.redemptionType == 'Full Amount'"
+              (change)="validateRedemptionAmount(formData.redemptionAmount)"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+            <app-aps-calender
+              [label]="'Early Redemption Date' | apsTranslate"
+              name="redemptionDate"
+              id="redemptionDate"
+              showIcon="true"
+              #redemptionDate="ngModel"
+              [(ngModel)]="formData.redemptionDate"
+              required="true"
+            >
+            </app-aps-calender>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aps-card p-mb-2">
+      <div class="aps-card-header">
+        <div class="text-size-16 text-bold p-px-3 p-py-3">
+          {{ 'Redemption Credit Account Details' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-px-3">
+            <div class="text-size-12 text-bold p-p-1">{{ 'Credit Account' | apsTranslate }}</div>
+            <p-radioButton
+              class="p-mr-3"
+              name="maturityInstructions"
+              id="maturityInstructions"
+              [label]="'As per Maturity Instructions' | apsTranslate"
+              value="Maturity Instructions"
+              [(ngModel)]="formData.creditAccount"
+              (change)="onCreditAccountClick(formData.creditAccount)"
+            >
+            </p-radioButton>
+
+            <p-radioButton
+              name="otherAccount"
+              id="otherAccount"
+              [label]="'Other Account' | apsTranslate"
+              value="Other Account"
+              [(ngModel)]="formData.creditAccount"
+              (change)="onCreditAccountClick(formData.creditAccount)"
+            >
+            </p-radioButton>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+            <aps-form-input
+              [label]="'Remarks' | apsTranslate"
+              name="remarks"
+              id="remarks"
+              [(ngModel)]="formData.remarks"
+            >
+            </aps-form-input>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div
+            class="p-col-12 p-md-4 p-sm-12 p-px-3"
+            *ngIf="formData.principalCreditMode || formData.creditAccount === 'Other Account'"
+          >
+            <aps-custom-select
+              [label]="'Principal Credit Mode' | apsTranslate"
+              name="principalCreditMode"
+              id="principalCreditMode"
+              [data]="creditModeDataList"
+              #principalCreditMode="ngModel"
+              [value]="formData.principalCreditMode"
+              [(ngModel)]="formData.principalCreditMode"
+              required="true"
+            >
+            </aps-custom-select>
+          </div>
+          <div
+            class="p-col-12 p-md-4 p-sm-12 p-px-3"
+            *ngIf="formData.principalCreditAccount || formData.creditAccount === 'Other Account'"
+          >
+            <aps-custom-select
+              [label]="'Principal Credit Account' | apsTranslate"
+              name="principalCreditAccount"
+              id="principalCreditAccount"
+              [data]="accountList"
+              #principalCreditAccount="ngModel"
+              [value]="formData.principalCreditAccount"
+              [(ngModel)]="formData.principalCreditAccount"
+              required="true"
+            ></aps-custom-select>
+          </div>
+          <div
+            class="p-col-12 p-md-4 p-sm-12 p-px-3"
+            *ngIf="
+              formData.principalPrefferedCurrency || formData.creditAccount === 'Other Account'
+            "
+          >
+            <aps-custom-select
+              [label]="'Principal Preffered Currency' | apsTranslate"
+              id="principalPrefferedCurrency"
+              name="principalPrefferedCurrency"
+              [value]="formData.principalPrefferedCurrency"
+              [(ngModel)]="formData.principalPrefferedCurrency"
+              [data]="currencyList"
+            >
+            </aps-custom-select>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div
+            class="p-col-12 p-md-4 p-sm-12 p-px-3"
+            *ngIf="formData.interestCreditMode || formData.creditAccount === 'Other Account'"
+          >
+            <aps-custom-select
+              [label]="'Interest Credit Mode' | apsTranslate"
+              name="interestCreditMode"
+              id="interestCreditMode"
+              [data]="creditModeDataList"
+              #interestCreditMode="ngModel"
+              [value]="formData.interestCreditMode"
+              [(ngModel)]="formData.interestCreditMode"
+              required="true"
+            >
+            </aps-custom-select>
+          </div>
+          <div
+            class="p-col-12 p-md-4 p-sm-12 p-px-3"
+            *ngIf="formData.interestCreditAccount || formData.creditAccount === 'Other Account'"
+          >
+            <aps-custom-select
+              [label]="'Interest Credit Account' | apsTranslate"
+              name="interestCreditAccount"
+              id="interestCreditAccount"
+              [data]="accountList"
+              #interestCreditAccount="ngModel"
+              [value]="formData.interestCreditAccount"
+              [(ngModel)]="formData.interestCreditAccount"
+              required="true"
+            ></aps-custom-select>
+          </div>
+          <div
+            class="p-col-12 p-md-4 p-sm-12 p-px-3"
+            *ngIf="formData.interestPrefferedCurrency || formData.creditAccount === 'Other Account'"
+          >
+            <aps-custom-select
+              [label]="'Interest Preffered Currency' | apsTranslate"
+              id="interestPrefferedCurrency"
+              name="interestPrefferedCurrency"
+              [value]="formData.interestPrefferedCurrency"
+              [(ngModel)]="formData.interestPrefferedCurrency"
+              [data]="currencyList"
+            >
+            </aps-custom-select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+    <div class="aps-card p-mb-2">
+      <div class="aps-card-header">
+        <div class="text-size-16 text-bold p-px-3 p-py-3">
+          {{ 'Redemption Details' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3">
+            <app-review-form-field
+              label="FD Number"
+              [value]="formData.fdNumber"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3">
+            <app-review-form-field
+              label="FD Product Type"
+              [value]="formData.productTypeName"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3">
+            <app-review-form-field
+              label="Maturity Date"
+              [value]="formData.maturityDate"
+            ></app-review-form-field>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+            <app-review-form-field
+              label="Currency"
+              [value]="getCurrencyById(formData.amountCurrency)"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+            <app-review-form-field
+              label="FD Amount"
+              [value]="formData.amount"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+            <app-review-form-field
+              label="Current Balance"
+              [value]="formData.currentBalance"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+            <app-review-form-field
+              label="Currency"
+              [value]="getCurrencyById(formData.currentBalanceCurrency)"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+            <app-review-form-field
+              label="Current Balance"
+              [value]="formData.currentBalance"
+            ></app-review-form-field>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-px-3">
+            <div class="text-size-12 text-bold p-p-1">{{ 'Redemption Type' | apsTranslate }}</div>
+            <p-radioButton
+              class="p-mr-3"
+              name="fullAmount"
+              id="fullAmount"
+              [label]="'Full Amount' | apsTranslate"
+              styleClasses="text-size-14"
+              value="Full Amount"
+              [(ngModel)]="formData.redemptionType"
+              [disabled]="true"
+            >
+            </p-radioButton>
+
+            <p-radioButton
+              name="partialAmount"
+              id="partialAmount"
+              [label]="'Partial Amount' | apsTranslate"
+              value="Partial Amount"
+              styleClasses="text-size-14"
+              [(ngModel)]="formData.redemptionType"
+              [disabled]="true"
+            >
+            </p-radioButton>
+          </div>
+          <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+            <app-review-form-field
+              label="Currency"
+              [value]="getCurrencyById(formData.redemptionCurrency)"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+            <app-review-form-field
+              label="Redemption Amount"
+              [value]="formData.redemptionAmount"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+            <app-review-form-field
+              label="Early Redemption Date"
+              [value]="formData.redemptionDate"
+            ></app-review-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aps-card p-mb-2">
+      <div class="aps-card-header">
+        <div class="text-size-16 text-bold p-px-3 p-py-3">
+          {{ 'Redemption Credit Account Details' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card-body">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-px-3">
+            <div class="text-size-12 text-bold p-p-1">{{ 'Credit Account' | apsTranslate }}</div>
+            <p-radioButton
+              class="p-mr-3"
+              name="maturityInstructions"
+              id="maturityInstructions"
+              [label]="'As per Maturity Instructions' | apsTranslate"
+              value="Maturity Instructions"
+              styleClasses="text-size-14"
+              [(ngModel)]="formData.creditAccount"
+              [disabled]="true"
+            >
+            </p-radioButton>
+
+            <p-radioButton
+              name="otherAccount"
+              id="otherAccount"
+              [label]="'Other Amount' | apsTranslate"
+              styleClasses="text-size-14"
+              value="Other Amount"
+              [(ngModel)]="formData.creditAccount"
+              [disabled]="true"
+            >
+            </p-radioButton>
+          </div>
+          <div class="p-col-12 p-md-4 p-px-3">
+            <app-review-form-field
+              label="Remarks"
+              [value]="formData.remarks"
+            ></app-review-form-field>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.principalCreditMode">
+            <app-review-form-field
+              label="Principal Credit Mode"
+              [value]="getCreditModeById(formData.principalCreditMode)"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.principalCreditAccount">
+            <app-review-form-field
+              label="Principal Credit Account"
+              [value]="getAccountNameById(formData.principalCreditAccount)"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.principalPrefferedCurrency">
+            <app-review-form-field
+              label="Principal Preffered Currency"
+              [value]="getCurrencyById(formData.principalPrefferedCurrency)"
+            ></app-review-form-field>
+          </div>
+        </div>
+        <div class="p-grid">
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.interestCreditMode">
+            <app-review-form-field
+              label="Interest Credit Mode"
+              [value]="getCreditModeById(formData.interestCreditMode)"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.interestCreditAccount">
+            <app-review-form-field
+              label="Interest Credit Account"
+              [value]="getAccountNameById(formData.interestCreditAccount)"
+            ></app-review-form-field>
+          </div>
+          <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.interestPrefferedCurrency">
+            <app-review-form-field
+              label="Interest Preffered Currency"
+              [value]="getCurrencyById(formData.interestPrefferedCurrency)"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+            <p-checkbox
+              class="p-pr-2 p-py-1 pointer"
+              name="Terms and Condition"
+              id="Terms and Condition"
+              styleClasses="text-size-14"
+              [binary]="true"
+              [(ngModel)]="formData.termsAndCondition"
+              [required]="true"
+              [disabled]="mode == 'VIEW'"
+            >
+            </p-checkbox>
+            <span class="text-size-14 pointer" (click)="isTermsAndCondition = true">{{
+              'Terms and Condition' | apsTranslate
+            }}</span>
+          </div>
+        </div>
+        <div class="p-px-3 p-pb-3">
+          <span class="text-semi-bold text-size-12 text-color-danger"
+            >{{ 'Note' | apsTranslate }}:</span
+          >
+          <span class="text-size-10 text-color-danger"
+            >Early Redemption may involve penalty as per bank's policy hence actual amount credited
+            may differ from the displayed redemption amount. Exchange rate present at the time of
+            redemption will be applied in the case of cross currency redemption.
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Form Actions -->
+  <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

@@ -1,0 +1,33 @@
+<div class="p-grid">
+  <div class="p-col-12 text-semi-bold text-size-16 p-py-3">
+    Learn more about Corporate Internet Banking
+  </div>
+  <div class="p-col-8 p-p-0 aps-h-150">
+    <video controls class="aps-h-100p aps-w-100p" *ngIf="videoList[selectedVideoIndex]">
+      <source [src]="videoList[selectedVideoIndex].url" type="video/mp4" />
+      Your Browser not supported to play Videos
+    </video>
+  </div>
+  <div class="p-col-4 p-p-3 text-semi-bold text-size-14">
+    {{ videoList[selectedVideoIndex].tittle }}
+  </div>
+  <div class="p-col-12">
+    <app-icon
+      class="p-mx-1 border-primary text-color-primary p-px-2 border-radius-4 pointer"
+      icon="fa-chevron-left"
+      (click)="viewVideo(selectedVideoIndex - 1)"
+    >
+    </app-icon>
+    <app-icon
+      class="p-mx-1 border-primary text-color-primary p-px-2 border-radius-4 pointer"
+      icon="fa-chevron-right"
+      (click)="viewVideo(selectedVideoIndex + 1)"
+    >
+    </app-icon>
+    <span class="p-px-3 text-size-14 p-p-3">
+      <span class="inline-block">{{ selectedVideoIndex + 1 }}</span>
+      <span class="inline-block">&nbsp;/&nbsp;</span>
+      <span class="inline-block">{{ videoList.length }}</span>
+    </span>
+  </div>
+</div>

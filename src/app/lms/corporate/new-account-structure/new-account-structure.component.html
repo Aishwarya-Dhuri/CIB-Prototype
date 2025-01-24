@@ -1,0 +1,173 @@
+<app-modal [(isShow)]="actionDialog"
+  headerText="{{ 'Are you sure you want to delete the structure ?' | apsTranslate }}">
+  <div class="p-py-2" body>
+    <div class="text-size-12 text-color-light-shade-3">{{ 'Structure Name' | apsTranslate }}</div>
+    <div class="text-size-14 text-color-dark-shade-1">
+      {{ userService.userDetails.corporateName }}
+    </div>
+  </div>
+
+  <div class="left-right-container" footer>
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="btn btn-md btn-tertiary p-mr-3" (click)="actionDialog = false">
+        {{ 'CANCEL' | apsTranslate }}
+      </button>
+      <button class="btn btn-md btn-primary" (click)="actionDialog = false">
+        {{ 'YES' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<app-modal [(isShow)]="createNewStructureDialog" headerText="{{ 'Create Structure' | apsTranslate }}">
+  <div class="p-grid overflow-hidden" body>
+    <div class="p-col-12 p-p-0 p-mb-2">
+      <p-radioButton label="{{ 'Create a new Structure' | apsTranslate }}" name="structure-creation-type"
+        [(ngModel)]="structureCreationType" value="Create"></p-radioButton>
+    </div>
+
+    <div class="p-col-12 p-p-0">
+      <p-radioButton label="{{ 'Copy from another Structure' | apsTranslate }}" name="structure-creation-type"
+        [(ngModel)]="structureCreationType" value="Copy"></p-radioButton>
+    </div>
+  </div>
+
+  <div class="left-right-container p-pt-3" footer>
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="btn btn-md btn-tertiary p-mr-3" (click)="createNewStructureDialog = false">
+        {{ 'CANCEL' | apsTranslate }}
+      </button>
+      <button class="btn btn-md btn-primary" (click)="onCreateNewStructure()">
+        {{ structureCreationType | uppercase | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<div class="container p-pt-2">
+  <div class="left-right-container">
+    <div class="left-container">
+      <div class="inline-items">
+        <div class="item text-size-14 border-radius-4 p-px-3 p-py-2 p-mr-3 pointer"
+          *ngFor="let curStructure of structures" [ngClass]="
+            curStructure.label === structure.label
+              ? 'text-color-inverted background-color-primary border-primary'
+              : 'text-color-normal background-color border'
+          " (click)="selectStructure(curStructure)">
+          {{ curStructure.label }} ({{ curStructure.count }})
+        </div>
+      </div>
+    </div>
+
+    <div class="right-container">
+      <div class="inline-items">
+        <div class="item">
+          <button type="button" class="btn btn-md btn-tertiary p-mr-3" (click)="createNewStructureDialog = true">
+            <app-icon icon="fa-plus" class="p-mr-2 app-icon"></app-icon>
+            {{ 'CREATE STRUCTURE' | apsTranslate }}
+          </button>
+        </div>
+        <div class="item p-pt-1">
+          <div class="toggle-select-container">
+            <div class="action pointer text-color-dark-shade-1" (click)="onListTypeChange('grid')"
+              [ngClass]="{ active: listType === 'grid' }">
+              <app-icon icon="fa-list" class="app-icon"></app-icon>
+            </div>
+
+            <div class="action pointer text-color-dark-shade-1" (click)="onListTypeChange('card')"
+              [ngClass]="{ active: listType === 'card' }">
+              <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-card aps-h-500 p-mt-3" *ngIf="listType === 'grid'">
+    <div class="aps-card-header">
+      <div class="aps-search-container-2">
+        <input type="text" class="aps-search-input" [(ngModel)]="searchText" (change)="listing.onFilter(searchText)"
+          placeholder="{{ 'Enter keyword to search' | apsTranslate }}" />
+        <div class="search-icon">
+          <app-icon icon="fa-search" class="app-icon"></app-icon>
+        </div>
+      </div>
+    </div>
+
+    <div class="aps-card-body">
+      <app-ag-grid-listing #listing [id]="structure.label" [context]="context" [colDefUrl]="structure.colDefUrl"
+        [rowDefUrl]="structure.rowDataUrl"></app-ag-grid-listing>
+    </div>
+  </div>
+
+  <div class="p-mt-4" *ngIf="listType === 'card'">
+    <div class="aps-search-container-2">
+      <input type="text" class="aps-search-input" placeholder="Enter keyword to search" />
+      <div class="search-icon">
+        <app-icon icon="fa-search" class="app-icon"></app-icon>
+      </div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-sm-12 p-md-3 p-col-lg-3" *ngFor="let card of cardListData">
+        <div class="aps-card aps-h-150 text-size-12 p-p-3">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-14 text-bold">
+                {{ card.structureName }}
+              </div>
+            </div>
+            <div class="right-container">
+              <div class="inline-items">
+                <div class="item p-p-1 pointer" *ngFor="let action of card.actions" (click)="onActionClicked(action)">
+                  <app-icon icon="{{ action.icon }}" class="app-icon"></app-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-pt-1">
+            {{ card.corporateName }}
+          </div>
+          <div class="p-pt-1">
+            {{ card.sweepType }}
+          </div>
+          <div class="p-pt-1">
+            {{ card.mainAccountNumber }}
+          </div>
+
+          <hr class="p-mt-2 p-mb-1" />
+
+          <div class="left-right-container">
+            <div class="left-container">
+              {{ card.structureType }}
+            </div>
+            <div class="right-container">
+              {{ card.frequencyOfExecution }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12 p-p-0" *ngIf="allCardListData.length > 12">
+        <div class="p-grid">
+          <div class="p-col-11 p-p-0"></div>
+          <div class="p-col-1 p-p-0">
+            <div class="p-grid">
+              <div class="p-md-4 p-lg-4 p-col-12 p-sm-12 p-p-0"></div>
+              <div class="p-md-8 p-lg-8 p-col-12 p-sm-12 p-p-0">
+                <app-icon icon="fa-chevron-left" class="p-mr-2 card-navigate-icon" rtlIcon="fa-chevron-right"
+                  (click)="changeCardPage(currentCardPage - 1)"></app-icon>
+                <app-icon icon="fa-chevron-right" class="card-navigate-icon" rtlIcon="fa-chevron-left"
+                  (click)="changeCardPage(currentCardPage + 1)"></app-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

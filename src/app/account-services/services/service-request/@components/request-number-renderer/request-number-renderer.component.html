@@ -1,0 +1,16 @@
+<div class="label-with-icon-container">
+  <div class="icon">
+    <img
+      class="border-radius-50p"
+      src="assets/images/high-priority.png"
+      alt="High Priority"
+      width="8px"
+      height="8px"
+      *ngIf="params.data.highPriority"
+    />
+    <div class="p-p-1" *ngIf="params.data.highPriority"></div>
+  </div>
+  <div class="label">
+    <div class="text-size-12 text-color-dark-shade-1">{{ cellValue }}</div>
+  </div>
+</div>

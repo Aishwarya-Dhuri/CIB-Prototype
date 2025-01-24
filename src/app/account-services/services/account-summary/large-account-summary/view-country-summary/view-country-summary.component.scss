@@ -1,0 +1,25 @@
+.countries-map {
+  display: block;
+  width: 100%;
+
+  .image {
+    width: 100%;
+    height: 100%;
+    background-image: url('./../../../../../../assets/images/map/Map.png');
+    background-position: center;
+    background-size: 100% auto;
+    background-repeat: no-repeat;
+    position: relative;
+
+    .pointer {
+      position: absolute;
+    }
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .mobile-h-100p {
+    height: 100% !important;
+    overflow: auto !important;
+  }
+}

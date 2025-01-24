@@ -1,0 +1,86 @@
+<div class="p-grid g-margin-x">
+  <div class="p-md-8 p-sm-12 p-col-12">
+    <app-dynamic-search
+      #dynamicSearch
+      entityName="LC_AMEND"
+      (onSearch)="search($event)"
+      [isDisplayPrefillCriteriaModal]="false"
+      [isShowSaveSearchCriteria]="false"
+      (onFiltersReady)="onDynamicFiltersReady()"
+    >
+    </app-dynamic-search>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <div class="aps-card text-color-dark-shade-1 aps-h-500 p-px-3 p-pb-3 p-pt-0">
+      <p-tabView>
+        <p-tabPanel header="{{ 'Saved Drafts' | apsTranslate }}">
+          <div class="p-px-0 p-pt-3 p-pb-1 border-bottom" *ngFor="let draft of parentRef.draftList">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold">{{ draft.id }}</div>
+                <div class="text-size-12">
+                  {{ 'Applicant' | apsTranslate }}: {{ draft.applicantName }}
+                </div>
+                <div class="text-size-12">
+                  {{ 'Beneficiary' | apsTranslate }}: {{ draft.beneficiaryName }}
+                </div>
+              </div>
+              <div class="right-container">
+                <div class="text-size-14 text-bold">
+                  <app-base-currency [amount]="draft.amount"></app-base-currency>
+                </div>
+                <div class="text-size-12">
+                  {{ 'Issue Date' | apsTranslate }}: {{ draft.effectiveDate }}
+                </div>
+                <div
+                  class="text-size-12 text-color-danger background-color-danger-light border-radius-4 p-p-1"
+                >
+                  <app-icon
+                    icon="fa-exclamation-triangle"
+                    styleClasses="text-size-12 text-color-danger"
+                  ></app-icon>
+                  {{ 'Expiry Date' | apsTranslate }}: {{ draft.expiryDate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+        <p-tabPanel header="{{ 'Recent Amendments' | apsTranslate }}">
+          <div
+            class="p-px-0 p-pt-3 p-pb-1 border-bottom"
+            *ngFor="let recent of parentRef.recentList"
+          >
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold">{{ recent.id }}</div>
+                <div class="text-size-12">
+                  {{ 'Applicant' | apsTranslate }}: {{ recent.applicantName }}
+                </div>
+                <div class="text-size-12">
+                  {{ 'Beneficiary' | apsTranslate }}: {{ recent.beneficiaryName }}
+                </div>
+              </div>
+              <div class="right-container">
+                <div class="text-size-14 text-bold">
+                  <app-base-currency [amount]="recent.amount"></app-base-currency>
+                </div>
+                <div class="text-size-12">
+                  {{ 'Issue Date' | apsTranslate }}: {{ recent.effectiveDate }}
+                </div>
+                <div
+                  class="text-size-12 text-color-danger background-color-danger-light border-radius-4 p-p-1"
+                >
+                  <app-icon
+                    icon="fa-exclamation-triangle"
+                    styleClasses="text-size-12 text-color-danger"
+                  ></app-icon>
+                  {{ 'Expiry Date' | apsTranslate }}: {{ recent.expiryDate }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</div>

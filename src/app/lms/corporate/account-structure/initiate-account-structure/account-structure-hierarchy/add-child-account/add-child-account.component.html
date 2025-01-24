@@ -1,0 +1,474 @@
+<app-modal
+  [(isShow)]="addInstructions"
+  size="md"
+  headerText="{{ 'New Instruction' | apsTranslate }}"
+>
+  <div body class="p-grid">
+    <div class="p-col-4">
+      <aps-custom-select
+        name="momentType"
+        id="momentType"
+        [(ngModel)]="instructions.momentType"
+        label="{{ 'Movement Type' | apsTranslate }}"
+        [data]="[{ id: 'Intracompany', value: 'Intracompany', displayName: 'Intracompany' }]"
+      ></aps-custom-select>
+    </div>
+    <div class="p-col-4">
+      <aps-custom-select
+        name="momentIn"
+        id="momentIn"
+        [(ngModel)]="instructions.momentIn"
+        label="{{ 'Movement in' | apsTranslate }}"
+        [data]="[{ id: 'Intracompany', value: 'Intracompany', displayName: 'Intracompany' }]"
+      ></aps-custom-select>
+    </div>
+    <div class="p-col-4">
+      <aps-custom-select
+        name="value"
+        id="value"
+        [(ngModel)]="instructions.value"
+        label="{{ 'Value' | apsTranslate }}"
+        [data]="[{ id: 'Intracompany', value: 'Intracompany', displayName: 'Intracompany' }]"
+      ></aps-custom-select>
+    </div>
+    <div class="p-col-4">
+      <aps-custom-select
+        name="accountNo"
+        id="accountNo"
+        [(ngModel)]="instructions.accountNo"
+        label="{{ 'Account No' | apsTranslate }}"
+        [data]="[{ id: 'Intracompany', value: 'Intracompany', displayName: 'Intracompany' }]"
+      ></aps-custom-select>
+    </div>
+    <div class="p-col-4">
+      <aps-custom-select
+        name="priority"
+        id="priority"
+        [(ngModel)]="instructions.priority"
+        label="{{ 'Priority' | apsTranslate }}"
+        [data]="[{ id: 'Intracompany', value: 'Intracompany', displayName: 'Intracompany' }]"
+      ></aps-custom-select>
+    </div>
+    <div class="p-col-4">
+      <aps-custom-select
+        name="narration"
+        id="narration"
+        [(ngModel)]="instructions.narration"
+        label="{{ 'Narration' | apsTranslate }}"
+        [data]="[{ id: 'Intracompany', value: 'Intracompany', displayName: 'Intracompany' }]"
+      ></aps-custom-select>
+    </div>
+    <div class="p-col-12">
+      <aps-form-input
+        name="remark"
+        id="remark"
+        [(ngModel)]="instructions.remark"
+        label="{{ 'Remarks' | apsTranslate }}"
+      ></aps-form-input>
+    </div>
+  </div>
+
+  <div footer class="left-right-container p-pt-4">
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="btn btn-md btn-tertiary p-mr-3" (click)="addInstructions = false">
+        {{ 'CANCEL' | apsTranslate }}
+      </button>
+      <button class="btn btn-md btn-primary" (click)="onAddInstruction()">
+        {{ 'ADD' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<div class="aps-card p-mb-3 p-p-3">
+  <div class="text-size-14 text-color-dark-shade-2">{{ 'Structure Details' | apsTranslate }}</div>
+
+  <div class="p-grid p-flex-column p-flex-md-row p-pt-3">
+    <div class="p-col p-p-0 p-pt-3">
+      <div class="text-size-14 text-color-light-shade-1">{{ 'Corporate Name' | apsTranslate }}</div>
+      <div class="text-size-16 text-color-dark-shade-1">
+        {{ userService.userDetails.corporateName }}
+      </div>
+    </div>
+    <div class="p-col p-p-0 p-pt-3">
+      <div class="text-size-14 text-color-light-shade-1">{{ 'Structure Name' | apsTranslate }}</div>
+      <div class="text-size-16 text-color-dark-shade-1">
+        {{ parentRef.mainAccountDetails.structureName }}
+      </div>
+    </div>
+    <div class="p-col p-p-0 p-pt-3">
+      <div class="text-size-14 text-color-light-shade-1">{{ 'Structure Type' | apsTranslate }}</div>
+      <div class="text-size-16 text-color-dark-shade-1">
+        {{ parentRef.mainAccountDetails.structureType }}
+      </div>
+    </div>
+    <div class="p-col p-p-0 p-pt-3">
+      <div class="text-size-14 text-color-light-shade-1">
+        {{ 'Main Account No' | apsTranslate }}
+      </div>
+      <div class="text-size-16 text-color-dark-shade-1">
+        {{
+          parentRef.rowData.length > 0
+            ? parentRef.rowData[0].accountNo[0]
+            : parentRef.mainAccountDetails.mainAccount
+        }}
+      </div>
+    </div>
+    <div class="p-col p-p-0 p-pt-3">
+      <div class="text-size-14 text-color-light-shade-1">
+        {{ 'Execution Frequency' | apsTranslate }}
+      </div>
+      <div class="text-size-16 text-color-dark-shade-1">
+        {{ parentRef.mainAccountDetails.executionSequence }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-size-16 text-bold">{{ 'Account Details' | apsTranslate }}</div>
+
+<div class="p-grid g-margin-x p-mt-3">
+  <div class="p-md-3 p-sm-12 p-col-12">
+    <div class="aps-card">
+      <div
+        class="step"
+        *ngFor="let step of steps"
+        [ngClass]="{ 'step-active': activeStep.step === step.step }"
+        (click)="activeStep = step"
+      >
+        <div class="left-right-container text-size-14 p-py-4 p-px-3">
+          <div class="left-container">
+            {{ step.label | apsTranslate }}
+          </div>
+
+          <div class="right-container"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-9 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-100p account-details">
+      <div class="p-grid p-py-2" *ngIf="activeStep.step === 1">
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Parent Account' | apsTranslate }}
+          </div>
+          <div class="text-size-14 text-color-dark-shade-1 p-mt-1">
+            {{
+              parentRef.rowData.length > 0
+                ? parentRef.rowData[0].accountNo[0]
+                : parentRef.mainAccountDetails.mainAccount
+            }}
+          </div>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-form-input
+            name="priority"
+            id="priority"
+            label="{{ 'Priority' | apsTranslate }}"
+            [(ngModel)]="parentRef.childAccountDetails.priority"
+            required="true"
+          ></aps-form-input>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="subAccount"
+            id="subAccount"
+            [value]="parentRef.childAccountDetails.subAccount"
+            [(ngModel)]="parentRef.childAccountDetails.subAccount"
+            label="{{ 'Sub Account' | apsTranslate }}"
+            dataUrl="setup/corporateOnboarding/corporateMain/private/allAccountList"
+            [reqBody]="{ corporateId: userService.getCorporateId() }"
+            (change)="parentRef.onChangeChildAccount($event)"
+          ></aps-custom-select>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="accountType"
+            id="accountType"
+            label="{{ 'Account Type' | apsTranslate }}"
+            [value]="parentRef.childAccountDetails.accountType"
+            [(ngModel)]="parentRef.childAccountDetails.accountType"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/accountType"
+          ></aps-custom-select>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="structureType"
+            id="structureType"
+            label="{{ 'Structure Type' | apsTranslate }}"
+            [value]="parentRef.childAccountDetails.structureType"
+            [(ngModel)]="parentRef.childAccountDetails.structureType"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/structureType"
+          ></aps-custom-select>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Selected By' | apsTranslate }}
+          </div>
+          <div class="p-mt-2">
+            <p-radioButton
+              class="p-mr-4"
+              name="selected-by"
+              value="Fixed"
+              label="{{ 'Fixed' | apsTranslate }}"
+              [(ngModel)]="parentRef.childAccountDetails.selectedBy"
+            ></p-radioButton>
+
+            <p-radioButton
+              class="p-mr-4"
+              name="selected-by"
+              value="Percentage"
+              label="{{ 'Percentage' | apsTranslate }}"
+              [(ngModel)]="parentRef.childAccountDetails.selectedBy"
+            ></p-radioButton>
+          </div>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-form-input
+            name="balancePercentage"
+            id="balancePercentage"
+            label="{{ 'Balance Percentage' | apsTranslate }}"
+            [(ngModel)]="parentRef.childAccountDetails.balancePercentage"
+            required="true"
+          ></aps-form-input>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="sweepType"
+            id="sweepType"
+            label="{{ 'Sweep Type' | apsTranslate }}"
+            [value]="parentRef.childAccountDetails.sweepType"
+            [(ngModel)]="parentRef.childAccountDetails.sweepType"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/sweepType"
+          ></aps-custom-select>
+        </div>
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-form-input
+            name="narration"
+            id="narration"
+            label="{{ 'Narration' | apsTranslate }}"
+            [(ngModel)]="parentRef.childAccountDetails.narration"
+            required="true"
+          ></aps-form-input>
+        </div>
+      </div>
+
+      <div class="p-grid p-py-2" *ngIf="activeStep.step === 2">
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="positiveRate"
+            id="positiveRate"
+            label="{{ 'Positive Rate' | apsTranslate }}"
+            [value]="parentRef.childAccountDetails.positiveRate"
+            [(ngModel)]="parentRef.childAccountDetails.positiveRate"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/positiveRate"
+          ></aps-custom-select>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="overdraftRate"
+            id="overdraftRate"
+            label="{{ 'Overdraft Rate' | apsTranslate }}"
+            [value]="parentRef.childAccountDetails.overdraftRate"
+            [(ngModel)]="parentRef.childAccountDetails.overdraftRate"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/overdraftRate"
+          ></aps-custom-select>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="lendingRate"
+            id="lendingRate"
+            label="{{ 'Lending Rate' | apsTranslate }}"
+            [value]="parentRef.childAccountDetails.lendingRate"
+            [(ngModel)]="parentRef.childAccountDetails.lendingRate"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/landingRate"
+          ></aps-custom-select>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="borrowingRate"
+            id="borrowingRate"
+            [value]="parentRef.childAccountDetails.borrowingRate"
+            [(ngModel)]="parentRef.childAccountDetails.borrowingRate"
+            label="{{ 'Borrowing Rate' | apsTranslate }}"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/borrowingRate"
+          ></aps-custom-select>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <div class="text-size-12 text-color-light-shade-1 p-mb-1">
+            {{ 'Apply to SubAccount' | apsTranslate }}
+          </div>
+
+          <p-radioButton
+            class="p-mr-4"
+            name="apply-to-sub-account"
+            value="Yes"
+            label="{{ 'Yes' | apsTranslate }}"
+            [(ngModel)]="parentRef.childAccountDetails.applyToSubAccount"
+          ></p-radioButton>
+
+          <p-radioButton
+            class="p-mr-4"
+            name="apply-to-sub-account"
+            value="No"
+            label="{{ 'No' | apsTranslate }}"
+            [(ngModel)]="parentRef.childAccountDetails.applyToSubAccount"
+          ></p-radioButton>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="pnGenerationFrequency"
+            id="pnGenerationFrequency"
+            [value]="parentRef.childAccountDetails.pnGenerationFrequency"
+            [(ngModel)]="parentRef.childAccountDetails.pnGenerationFrequency"
+            label="{{ 'PN Generation Frequency' | apsTranslate }}"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/PNGenerationFrequency"
+          ></aps-custom-select>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="pnGenerationMonth"
+            id="pnGenerationMonth"
+            [value]="parentRef.childAccountDetails.pnGenerationMonth"
+            [(ngModel)]="parentRef.childAccountDetails.pnGenerationMonth"
+            label="{{ 'PN Generation Month' | apsTranslate }}"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/PNGenerationMonth"
+          ></aps-custom-select>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="pnGenerationDay"
+            id="pnGenerationDay"
+            [value]="parentRef.childAccountDetails.pnGenerationDay"
+            [(ngModel)]="parentRef.childAccountDetails.pnGenerationDay"
+            label="{{ 'PN Generation Day' | apsTranslate }}"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/PNGenerationDay"
+          ></aps-custom-select>
+        </div>
+      </div>
+
+      <div class="p-grid p-py-2" *ngIf="activeStep.step === 3">
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <div class="text-size-14 text-color-normal p-pt-2">
+            {{ 'Belongs to Cluster Code' | apsTranslate }}
+          </div>
+
+          <div class="text-size-14 text-color-dark-shade-1 p-pt-1">
+            {{ parentRef.childAccountDetails.belongsToClusterCode }}
+          </div>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="belongsToClusterName"
+            id="belongsToClusterName"
+            [value]="parentRef.childAccountDetails.belongsToClusterName"
+            [(ngModel)]="parentRef.childAccountDetails.belongsToClusterName"
+            label="{{ 'Belongs to Cluster Name' | apsTranslate }}"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/belongsToClusterName"
+          ></aps-custom-select>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3"></div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <div class="text-size-14 text-color-normal p-pt-2">
+            {{ 'Lead for Cluster Code' | apsTranslate }}
+          </div>
+
+          <div class="text-size-14 text-color-dark-shade-1 p-pt-1">
+            {{ parentRef.childAccountDetails.leadForClusterCode }}
+          </div>
+        </div>
+
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="leadForClusterName"
+            id="leadForClusterName"
+            [value]="parentRef.childAccountDetails.leadForClusterName"
+            [(ngModel)]="parentRef.childAccountDetails.leadForClusterName"
+            label="{{ 'Lead for Cluster Name' | apsTranslate }}"
+            dataUrl="lms/corporate/accountStructure/private/dropdown/leadForClusterName"
+          ></aps-custom-select>
+        </div>
+      </div>
+
+      <div class="p-grid p-py-2" *ngIf="activeStep.step === 4">
+        <div class="p-md-4 p-sm-12 p-col-12 p-px-3">
+          <aps-custom-select
+            name="fundingAccount"
+            id="fundingAccount"
+            [value]="parentRef.childAccountDetails.fundingAccount"
+            [(ngModel)]="parentRef.childAccountDetails.fundingAccount"
+            label="{{ 'Funding Account' | apsTranslate }}"
+            dataUrl="setup/corporateOnboarding/corporateMain/private/allAccountList"
+            [reqBody]="{ corporateId: userService.getCorporateId() }"
+            (change)="parentRef.childAccountDetails.fundingAccountName = $event.displayName"
+          ></aps-custom-select>
+        </div>
+      </div>
+
+      <div class="" *ngIf="activeStep.step === 5">
+        <div class="left-right-container aps-card-header">
+          <div class="left-container p-p-3">
+            <div class="text-size-16 text-color-dark-shade-1 text-bold">
+              {{ 'Instruction' | apsTranslate }}
+            </div>
+          </div>
+          <div class="right-container p-p-2">
+            <button class="btn btn-md btn-tertiary" (click)="addInstructions = true">
+              <app-icon icon="fa-plus" class="text-size-12 p-mr-2"></app-icon>
+              {{ 'ADD NEW INSTRUCTION' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+        <div class="aps-card-body p-pt-3 p-pl-3 p-pr-1">
+          <div class="aps-h-250">
+            <app-ag-grid-listing
+              #instructions
+              id="instructions"
+              [gridOptions]="gridOptions"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="aps-card p-p-3 p-mt-3">
+  <div class="left-right-container">
+    <div class="left-container">
+      <button
+        class="btn btn-md btn-tertiary"
+        (click)="
+          parentRef.isAdvancedChildAccountDetails = false; parentRef.isAddChildAccount = false
+        "
+      >
+        {{ 'CANCEL' | apsTranslate }}
+      </button>
+    </div>
+    <div class="right-container">
+      <button
+        class="btn btn-md btn-secondary p-mr-3"
+        *ngIf="activeStep.step != 1"
+        (click)="previousStep()"
+      >
+        {{ activeStep.step == 1 ? '' : ('PREVIOUS' | apsTranslate) }}
+      </button>
+      <button class="btn btn-md btn-primary" (click)="nextStep()">
+        {{ activeStep.step !== 5 ? 'NEXT' : ('SUBMIT' | apsTranslate) }}
+      </button>
+    </div>
+  </div>
+</div>

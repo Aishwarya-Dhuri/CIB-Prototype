@@ -1,0 +1,60 @@
+<div class="suspend-account-container">
+    <div class="aps-card p-px-3 p-pt-3">
+        <div class="font-size-14 text-bold p-mb-2">
+            {{ 'Structure Details' | apsTranslate }} <span class="text-color-danger">*</span>
+        </div>
+        <div class="p-grid g-margin-x">
+            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                <div class="text-size-12 text-color-light-shade-1">{{ 'Suspend by' | apsTranslate }}</div>
+                <p-radioButton class="p-mr-4" name="suspendBy" id="suspendBy" value="{{ 'Days' | apsTranslate }}"
+                    label="Days" [(ngModel)]="suspendAccount.suspendedBy"></p-radioButton>
+
+                <p-radioButton class="p-mr-4" name="suspendBy" id="suspendBy" value="{{ 'Dates' | apsTranslate }}"
+                    label="Dates" [(ngModel)]="suspendAccount.suspendedBy"></p-radioButton>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                <aps-form-input name="days" id="days" label="{{ 'Days (Calendar Days)' | apsTranslate }}"
+                    [(ngModel)]="suspendAccount.days"></aps-form-input>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                <app-aps-calender label="{{ 'Suspend From' | apsTranslate }}" id="suspendFrom" name="suspendFrom"
+                    [(ngModel)]="suspendAccount.suspendedFrom"></app-aps-calender>
+            </div>
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-0">
+                <app-aps-calender label="{{ 'Suspend Till' | apsTranslate }}" id="suspendTill" name="suspendTill"
+                    [(ngModel)]="suspendAccount.suspendedTill"></app-aps-calender>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12 p-py-0">
+                <aps-form-input label="{{ 'Remark' | apsTranslate }}" id="remark" name="remark"
+                    [(ngModel)]="suspendAccount.remark">
+                </aps-form-input>
+            </div>
+        </div>
+    </div>
+
+    <div class="aps-card aps-h-350 p-my-3">
+        <div class="aps-card-header p-px-3 aps-py-12">
+            <div class="text-bold text-size-16 text-color-dark-shade-1">
+                {{ 'History' | apsTranslate }}
+            </div>
+        </div>
+        <div class="aps-card-body p-pl-2">
+            <app-ag-grid-listing #history id="history" [gridOptions]="gridOptions"></app-ag-grid-listing>
+        </div>
+    </div>
+
+    <div class="aps-card p-px-3 aps-py-12 p-mb-3">
+        <div class="left-right-container">
+            <div class="left-container">
+                <button class="btn btn-md btn-tertiary" (click)="suspend()">
+                    {{ 'CANCEL' | apsTranslate }}
+                </button>
+            </div>
+            <div class="right-container">
+                <button class="btn btn-md btn-primary" (click)="suspend()">
+                    {{ 'SUSPEND' | apsTranslate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

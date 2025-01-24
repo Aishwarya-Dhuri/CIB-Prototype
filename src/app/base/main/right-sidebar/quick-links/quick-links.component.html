@@ -1,0 +1,26 @@
+<div class="user-mails-container">
+  <div class="mails-header">
+    <div class="header-text">
+      <app-icon icon="fa-link"></app-icon>
+      &nbsp; {{ 'Quick Links' | apsTranslate }}
+    </div>
+    <div class="header-actions">
+      <div class="action" (click)="closeSidebar()">
+        <app-icon icon="fa-times"></app-icon>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-links">
+    <div class="quick-link-wrapper">
+      <div class="main-link">{{ 'Payments' | apsTranslate }}</div>
+
+      <div class="links">
+        <div class="link">{{ 'Own Account Transfer' | apsTranslate }}</div>
+        <div class="link">{{ 'Review Listing Page' | apsTranslate }}</div>
+        <div class="link">{{ 'Rejected Listing Page' | apsTranslate }}</div>
+        <div class="link">{{ 'Pending Authorization Listing Page' | apsTranslate }}</div>
+      </div>
+    </div>
+  </div>
+</div>

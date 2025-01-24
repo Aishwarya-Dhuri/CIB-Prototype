@@ -1,0 +1,167 @@
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+
+        <app-search-modal [(isShow)]="showCorporateList" colDefUrl="commons/private/corporateColDefs"
+            rowDefUrl="commons/commonService/private/getCorporates"
+            (onSelection)="onSelectCorporate($event)"></app-search-modal>
+
+        <app-search-modal [(isShow)]="showProductList"
+            colDefUrl="directDebit/transactions/debitInstruction/private/mandateDetailsColDefs"
+            rowDefUrl="directDebit/transactions/debitInstruction/private/mandateDetailsData"
+            (onSelection)="onSelectMandate($event)"></app-search-modal>
+
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Corporate Details</div>
+            </div>
+            <div class="aps-card-body">
+                <div class="p-grid p-px-2">
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="corporateCode" name="corporateCode"
+                            label="{{ 'Corporate Code' | apsTranslate }}" [(ngModel)]="formData.corporateCode"
+                            rightIcon="fa-search" (onRightIcon)="showCorporateList = true" [required]="true"
+                            [readonly]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="corporateName" name="corporateName"
+                            label="{{ 'Corporate Name' | apsTranslate }}" [(ngModel)]="formData.corporateName"
+                            [required]="true" [disabled]="true"></aps-form-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Customer Details</div>
+            </div>
+            <div class="aps-card-body">
+                <div class="p-grid p-px-2">
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="mandateRefNo" name="mandateRefNo"
+                            label="{{ 'Mandate Reference Number' | apsTranslate }}" [(ngModel)]="formData.mandateRefNo"
+                            rightIcon="fa-search" (onRightIcon)="showProductList = true" [required]="true"
+                            [readonly]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="umrn" name="umrn" label="{{ 'UMRN Number' | apsTranslate }}"
+                            [(ngModel)]="formData.umrn" [required]="true" [disabled]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="prodName" name="prodName" label="{{ 'Product Name' | apsTranslate }}"
+                            [(ngModel)]="formData.prodName" [required]="true" [disabled]="true"></aps-form-input>
+                    </div>
+
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="customerName" name="customerName"
+                            label="{{ 'Customer Name' | apsTranslate }}" [(ngModel)]="formData.customerName"
+                            [required]="true" [disabled]="true"></aps-form-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Payment Details</div>
+            </div>
+            <div class="aps-card-body">
+                <div class="p-grid p-px-2">
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="currency" name="currency" label="{{ 'Currency' | apsTranslate }}"
+                            [(ngModel)]="formData.currency" [required]="true" [disabled]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="amount" name="amount" label="{{ 'Amount' | apsTranslate }}"
+                            [(ngModel)]="formData.amount" [required]="true"></aps-form-input>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <app-aps-calender name="paymentDate" id="paymentDate"
+                            label="{{ 'Payment Date' | apsTranslate }}" [(ngModel)]="formData.paymentDate"
+                            [required]="true"></app-aps-calender>
+                    </div>
+                    <div class="p-md-3 p-sm-12 p-col-12 p-pb-0">
+                        <aps-form-input id="remarks" name="remarks" label="{{ 'Remarks' | apsTranslate }}"
+                            [(ngModel)]="formData.remarks"></aps-form-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Corporate Details</div>
+            </div>
+
+            <div class="aps-card-body">
+                <div class="p-grid p-px-2">
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Corporate Code"
+                            [value]="formData.corporateCode"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Corporate Name"
+                            [value]="formData.corporateName"></app-review-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Customer Details</div>
+            </div>
+
+            <div class="aps-card-body">
+                <div class="p-grid p-px-2">
+                    <div class="p-md-3 p-sm-6 p-col-12">
+                        <app-review-form-field label="Mandate Reference Number"
+                            [value]="formData.mandateRefNo"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="UMRN Number" [value]="formData.umrn"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Product Name" [value]="formData.prodName"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Customer Name"
+                            [value]="formData.customerName"></app-review-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="aps-card p-my-3">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Payment Details</div>
+            </div>
+            <div class="aps-card-body">
+                <div class="p-grid p-px-2">
+                    <div class="p-md-3 p-sm-6 p-col-12">
+                        <app-review-form-field label="Currency" [value]="formData.currency"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Amount" [value]="formData.amount"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Payment Date"
+                            [value]="formData.paymentDate"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Remarks" [value]="formData.remarks"></app-review-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

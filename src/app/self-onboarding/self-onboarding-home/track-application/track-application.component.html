@@ -1,0 +1,152 @@
+<div class="track-application-container p-p-3 text-center p-shadow-3">
+  <ng-container *ngIf="!verify; else accept">
+    <div class="p-mt-1">
+      <img src="./../../../../assets/images/status.png" alt="" />
+    </div>
+
+    <div class="text-size-20 text-color-dark-shade-2 text-bold p-mt-3">
+      {{ 'lbl_track_your_application' | translate }}
+    </div>
+
+    <ng-container *ngIf="!appNo">
+      <div class="p-pt-3 p-px-6">
+        <aps-form-input
+          [label]="'lbl_application_number' | translate"
+          id="track-app-no"
+          [(ngModel)]="applicationNumber"
+        ></aps-form-input>
+      </div>
+
+      <div class="p-mt-3">
+        <button
+          type="button"
+          class="btn btn-md btn-secondary"
+          (click)="appNo = true"
+          [disabled]="!applicationNumber"
+        >
+          {{ 'lbl_track' | translate }}
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="appNo && !sendOtp">
+      <div class="p-pt-3 p-px-6">
+        <aps-form-input
+          [label]="'lbl_mobile_number' | translate"
+          id="track-mo-no"
+          maxLength="10"
+          inputType="numeric"
+          [(ngModel)]="mobileNumber"
+        ></aps-form-input>
+      </div>
+
+      <div class="p-mt-3">
+        <button type="button" class="btn btn-md btn-secondary p-mr-3" (click)="cancel()">
+          {{ 'lbl_cancel' | translate }}
+        </button>
+        <button
+          type="button"
+          class="btn btn-md btn-primary"
+          (click)="sendOtp = true"
+          [disabled]="!mobileNumber"
+        >
+          {{ 'lbl_send_otp' | translate }}
+        </button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="appNo && sendOtp">
+      <div class="p-pt-3 p-mx-6">
+        <aps-form-input
+          [label]="'lbl_verify_code' | translate"
+          id="track-verify-code"
+          maxLength="4"
+          inputType="numeric"
+          [(ngModel)]="verifyCode"
+        ></aps-form-input>
+
+        <div class="left-right-container mt--3 text-color-light-shade-1 text-size-14">
+          <div class="left-container">{{ 'lbl_resend_code' | translate }}</div>
+          <div class="left-container">
+            <div class="info-card">
+              <div class="icon">
+                <i class="pi pi-clock text-size-14"></i>
+              </div>
+              <div class="label">00:40</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-mt-3">
+        <button type="button" class="btn btn-md btn-tertiary p-mr-3" (click)="cancel()">
+          {{ 'lbl_cancel' | translate }}
+        </button>
+        <button type="button" class="btn btn-md btn-primary" (click)="onVerify()">
+          {{ 'lbl_verify' | translate }}
+        </button>
+      </div>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #accept>
+  <div class="text-size-16 text-color-dark-shade-2 p-mt-3">
+    <div class="">{{ 'lbl_application_number' | translate }}</div>
+    <div class="p-mt-1">{{ applicationNumber }}</div>
+  </div>
+
+  <div class="text-size-14 p-mt-5">
+    <div class="text-color-dark-shade-2">{{ 'lbl_status' | translate }}</div>
+
+    <div
+      class="icon p-mt-2"
+      [ngClass]="
+        this.selfOnboarding.companyInformation[0].status === 'Registered'
+          ? 'text-color-primary'
+          : this.selfOnboarding.companyInformation[0].status === 'Rejected'
+          ? 'text-color-danger'
+          : 'text-color-warning'
+      "
+    >
+      <div class="file">
+        <i class="fal fa-file-alt"></i>
+        <div
+          class="status"
+          [ngClass]="
+            this.selfOnboarding.companyInformation[0].status === 'Registered'
+              ? 'status-success'
+              : this.selfOnboarding.companyInformation[0].status === 'Rejected'
+              ? 'status-rejected'
+              : 'status-pending'
+          "
+        >
+          <i
+            class="fal"
+            [ngClass]="
+              this.selfOnboarding.companyInformation[0].status === 'Registered'
+                ? 'fa-check'
+                : this.selfOnboarding.companyInformation[0].status === 'Rejected'
+                ? 'fa-times'
+                : 'fa-info'
+            "
+          ></i>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-bold text-color-dark-shade-2 p-mt-1">
+      {{
+        this.selfOnboarding.companyInformation[0].status === 'Registered'
+          ? 'Approved'
+          : this.selfOnboarding.companyInformation[0].status === 'Rejected'
+          ? 'Rejected'
+          : 'Pending'
+      }}
+    </div>
+
+    <div class="pointer text-bold text-color-primary p-mt-6" (click)="cancel()">
+      {{ 'lbl_track_other_application' | translate }}
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,589 @@
+<div class="container">
+  <app-modal [(isShow)]="isShowDebitInstructionsDetails" size="md">
+    <div body>
+      <div class="grid">
+        <div class="p-col-12 p-p-0">
+          <div class="aps-card">
+            <div class="left-right-container card-header overflow-visible">
+              <div class="left-container">
+                <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                  {{ 'Total Debit Instructions' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container aps-py-12">
+                <app-grid-listing-tools (changeFloatingFilter)="totalDebitInstructionGrid.changeFloatFilter($event)"
+                  (filterRecords)="totalDebitInstructionGrid.onFilter($event)"
+                  (applyColDefs)="totalDebitInstructionGrid.onApplyConfig($event)"
+                  [colDefs]="totalDebitInstructionGrid.columnDefs" [columnConfig]="true">
+                </app-grid-listing-tools>
+              </div>
+            </div>
+            <div class="card-body aps-h-400">
+              <app-ag-grid-listing id="totalDebitInstructionGrid" #totalDebitInstructionGrid [colDefUrl]="colDefUrl"
+                [rowDefUrl]="dataUrl" [gridOptions]="gridOptions">
+              </app-ag-grid-listing>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div footer>
+      <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-tertiary" (click)="isShowDebitInstructionsDetails = false">
+            CLOSE
+          </button>
+        </div>
+      </div>
+    </div>
+  </app-modal>
+  <div class="p-grid g-margin-x">
+    <!-- Select Account and Apply New Card -->
+    <div class="p-col-12 p-md-3 p-col-lg-3">
+      <div class="aps-card aps-filled-card-primary-sm p-py-4 p-px-3 p-mb-2">
+        <div class="p-mx-1 text-color-inverted text-size-12">
+          {{ 'Account Number' | apsTranslate }}
+        </div>
+        <select class="select-primary text-size-16 text-color-inverted" name="accountNumber" id="accountNumber"
+          [ngModel]="accountNumber" (change)="onAccountChange(accountNumber)">
+          <option *ngFor="let account of accountList$ | async">
+            {{ account.displayName }}
+          </option>
+        </select>
+        <hr />
+        <div class="text-color-inverted text-size-12 text-semi-bold">
+          {{ 'Total Debit Cards 12' | apsTranslate }}
+        </div>
+      </div>
+      <div (click)="applyNewCard()" class="aps-card p-mt-3 p-px-3 p-py-4 pointer border-primary-2px">
+        <div class="p-mb-3 text-color-primary text-size-16">
+          {{ 'Apply New Debit Card' | apsTranslate }}
+        </div>
+        <hr class="border-color-primary" />
+        <div class="text-color-dark-shade-3 text-size-12">
+          {{ 'Click here to apply new debit card' | apsTranslate }}
+        </div>
+      </div>
+    </div>
+    <!-- Top 5 Card Utilization-->
+    <div class="p-lg-5 p-md-5 p-sm-12 p-col-12">
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header left-right-container">
+          <div class="left-container">
+            <div class="text-size-14 text-bold aps-py-12 p-px-3">
+              {{ 'Top 5 Card Utilization' | apsTranslate }}
+            </div>
+          </div>
+          <div class="left-container p-py-2">
+            <div class="toggle-select-container inline-block p-mx-2">
+              <div class="action pointer text-color-dark-shade-1" (click)="widgetType = 'grid'"
+                [ngClass]="{ active: widgetType === 'grid' }">
+                <app-icon icon="fa-list" class="app-icon"></app-icon>
+              </div>
+              <div class="action pointer text-color-dark-shade-1" (click)="widgetType = 'graph'"
+                [ngClass]="{ active: widgetType === 'graph' }">
+                <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid" *ngIf="widgetType === 'grid'">
+            <div class="p-col-12">
+              <div class="p-grid">
+                <div class="p-col-4 text-center">
+                  <div class="text-size-12 text-bold">{{ 'Card Number' | apsTranslate }}</div>
+                </div>
+                <div class="p-col-4 text-center">
+                  <div class="text-size-12 text-bold">{{ 'Primary Account' | apsTranslate }}</div>
+                </div>
+                <div class="p-col-4 text-center">
+                  <div class="text-size-12 text-bold">
+                    {{ 'Total Amount Debited' | apsTranslate }}
+                  </div>
+                </div>
+              </div>
+              <div *ngFor="
+                  let dc of allDebitCardList | slice: 0:5 | orderBy: 'totalAmountDebited':true
+                " class="p-grid text-size-12 text-center p-pt-2">
+                <div class="p-col-4 p-p-0">
+                  <div class="text-center">{{ dc.cardNumber }}</div>
+                </div>
+                <div class="p-col-4 p-p-0">
+                  <div class="text-center">{{ dc.primaryAccountDisplayName }}</div>
+                </div>
+                <div class="p-col-4 p-p-0">
+                  <app-base-currency [amount]="dc.totalAmountDebited"></app-base-currency>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 text-right">
+              <button type="button" class="btn btn-sm btn-tertiary p-py-0 text-size-13"
+                (click)="viewAllCardUtilizationModal()">
+                {{ 'View All' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+          <div class="p-grid" *ngIf="widgetType === 'graph'">
+            <div class="p-col-12">
+              <app-pie-chart [options]="options" webHeight="200" mobileHeight="300"></app-pie-chart>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Insights-->
+    <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+      <div class="aps-card aps-h-100p">
+        <app-insights height="215" isTransparentBackground="true"
+          insightsUrl="dummyServer/json/commons/private/insights/debitCard">
+        </app-insights>
+      </div>
+    </div>
+  </div>
+  <div class="text-size-16 text-bold text-color-dark-shade-1 p-mt-2">
+    {{ 'Debit Cards' | apsTranslate }} ({{ totalRecords }})
+  </div>
+
+  <div class="p-grid" *ngIf="debitCardData">
+    <div *ngFor="let debitCard of debitCardData" class="p-col-12 p-p-0 p-my-2">
+      <div class="aps-card primary-border-on-hover pointer">
+        <div class="p-grid" (click)="cardClick(debitCard)">
+          <div class="p-lg-2 p-md-2 p-sm-12 p-col-12 text-color-dark-shade-1">
+            <div class="label-with-icon-container">
+              <div class="icon">
+                <div class="debit-card p-my-1">
+                  <img [src]="debitCard.cardImage" alt="card-logo" />
+                </div>
+              </div>
+              <div class="label">
+                <div class="text-size-14 text-semi-bold">
+                  {{ debitCard.cardType }}
+                  <div class="text-size-12" [ngClass]="
+                      debitCard.cardStatus === 'Inactive'
+                        ? 'text-color-danger'
+                        : 'text-color-success'
+                    ">
+                    {{ debitCard.cardStatus }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-lg-7 p-md-7 p-sm-12 p-col-12 p-p-0">
+            <div class="p-grid">
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-14 text-semi-bold">
+                  {{ debitCard.cardNumber }}
+                </div>
+                <div class="text-size-12 text-semi-bold">{{ debitCard.embossedName }}</div>
+              </div>
+
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-14 text-semi-bold text-center">
+                  {{ debitCard.rewardPoints }}
+                </div>
+                <div class="text-size-12 text-center">Reward Points</div>
+              </div>
+
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-14 text-semi-bold text-center">
+                  {{ debitCard.expiryDate }}
+                </div>
+                <div class="text-size-12 text-center">Expiry Date</div>
+              </div>
+              <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-pb-0">
+                <div class="inline-items">
+                  <span class="item text-size-12 text-semi-bold p-pr-4"> Domestic </span>
+                  <span class="item text-size-10 text-semi-bold p-px-1 border-radius-4" [ngClass]="
+                      debitCard.domestic
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.domestic ? 'ON' : 'OFF' }}
+                  </span>
+                </div>
+                <div class="inline-items">
+                  <span class="item text-size-12 text-semi-bold p-pr-2"> International </span>
+                  <span class="item text-size-10 text-semi-bold p-px-1 border-radius-4" [ngClass]="
+                      debitCard.international
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.international ? 'ON' : 'OFF' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-p-0">
+            <div class="left-right-container">
+              <div class="left-container aps-py-12 p-px-2">
+                <button (click)="viewTxnDetails(debitCard)" class="btn btn-md btn-tertiary">
+                  {{ 'VIEW TRANSACTIONS' | apsTranslate }}
+                </button>
+              </div>
+              <div class="right-container p-p-3">
+                <app-icon class="pointer" [icon]="debitCard.isOpen ? 'fa-chevron-up' : 'fa-chevron-down'"
+                  styleClasses="text-size-12"></app-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-grid border-top" *ngIf="debitCard.isOpen">
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="border p-p-2 aps-h-100p">
+              <div class="p-grid g-margin-x">
+                <div class="p-col-3"></div>
+                <div class="p-col-4">
+                  <div class="text-size-12 text-semi-bold">Domestic</div>
+                </div>
+                <div class="p-col-4">
+                  <div class="text-size-12 text-semi-bold">Internation</div>
+                </div>
+              </div>
+              <div class="p-grid g-margin-x">
+                <div class="p-col-3">
+                  <div class="text-size-12 text-semi-bold">
+                    <div class="text-size-12 text-semi-bold">ATM Limit</div>
+                  </div>
+                </div>
+                <div class="p-col-1 p-px-0 p-py-2">
+                  <div class="text-size-12 border-radius-4 p-px-1" [ngClass]="
+                      debitCard.isDomesticAtmLimit
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.isDomesticAtmLimit ? 'ON' : 'OFF' }}
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <app-base-currency [amount]="debitCard.domesticAtmLimit"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-1 p-px-0 p-py-2">
+                  <div class="text-size-12 border-radius-4 p-px-1" [ngClass]="
+                      debitCard.isInternationalAtmLimit
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.isInternationalAtmLimit ? 'ON' : 'OFF' }}
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <app-base-currency [amount]="debitCard.internationalAtmLimit">
+                    </app-base-currency>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid g-margin-x">
+                <div class="p-col-3">
+                  <div class="text-size-12 text-semi-bold">
+                    <div class="text-size-12 text-semi-bold">POS Limit</div>
+                  </div>
+                </div>
+                <div class="p-col-1 p-px-0 p-py-2">
+                  <div class="text-size-12 border-radius-4 p-px-1" [ngClass]="
+                      debitCard.isDomesticPosLimit
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.isDomesticPosLimit ? 'ON' : 'OFF' }}
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <app-base-currency [amount]="debitCard.domesticPosLimit"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-1 p-px-0 p-py-2">
+                  <div class="text-size-12 border-radius-4 p-px-1" [ngClass]="
+                      debitCard.isInternationalPosLimit
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.isInternationalPosLimit ? 'ON' : 'OFF' }}
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <app-base-currency [amount]="debitCard.internationalPosLimit">
+                    </app-base-currency>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid g-margin-x">
+                <div class="p-col-3">
+                  <div class="text-size-12 text-semi-bold">
+                    <div class="text-size-12 text-semi-bold">ECOM Limit</div>
+                  </div>
+                </div>
+                <div class="p-col-1 p-px-0 p-py-2">
+                  <div class="text-size-12 border-radius-4 p-px-1" [ngClass]="
+                      debitCard.isDomesticEcomLimit
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.isDomesticEcomLimit ? 'ON' : 'OFF' }}
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <app-base-currency [amount]="debitCard.domesticEcomLimit"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-1 p-px-0 p-py-2">
+                  <div class="text-size-12 border-radius-4 p-px-1" [ngClass]="
+                      debitCard.isInternationalEcomLimit
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.isInternationalEcomLimit ? 'ON' : 'OFF' }}
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <app-base-currency [amount]="debitCard.internationalEcomLimit">
+                    </app-base-currency>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid g-margin-x">
+                <div class="p-col-3">
+                  <div class="text-size-12 text-semi-bold">
+                    <div class="text-size-12 text-semi-bold">Contactless</div>
+                  </div>
+                </div>
+                <div class="p-col-1 p-px-0 p-py-2">
+                  <div class="text-size-12 border-radius-4 p-px-1" [ngClass]="
+                      debitCard.isDomesticContactlessLimit
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.isDomesticContactlessLimit ? 'ON' : 'OFF' }}
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <app-base-currency [amount]="debitCard.domesticContactlessLimit"></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-col-1 p-px-0 p-py-2">
+                  <div class="text-size-12 border-radius-4 p-px-1" [ngClass]="
+                      debitCard.isInternationalContactlessLimit
+                        ? 'background-color-primary-light-shade-2 text-color-primary'
+                        : 'background-color-dark-5'
+                    ">
+                    {{ debitCard.isInternationalContactlessLimit ? 'ON' : 'OFF' }}
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <app-base-currency [amount]="debitCard.internationalContactlessLimit">
+                    </app-base-currency>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid g-margin-x border-top">
+                <div class="p-col-12 p-col-7 p-lg-7 p-sm-12 p-p-0">
+                  <div class="p-grid">
+                    <div class="p-col-6 text-center">
+                      <div class="text-size-14 text-semi-bold">{{ debitCard.rewardPoints }}</div>
+                      <div class="text-size-12">Reward Points</div>
+                    </div>
+                    <div class="p-col-6 text-center p-px-0">
+                      <app-base-currency class="text-size-14 text-semi-bold" [amount]="debitCard.milestone">
+                      </app-base-currency>
+                      <div class="text-size-12">Milestone</div>
+                    </div>
+                    <div class="p-col-12 text-center">
+                      <div class="inline-items">
+                        <span class="text-size-12 item p-pr-1">From</span>
+                        <span class="text-size-12 text-semi-bold item p-pr-2">{{
+                          debitCard.periodFrom
+                          }}</span>
+                        <span class="text-size-12 item p-pr-1">To</span>
+                        <span class="text-size-12 text-semi-bold item">{{
+                          debitCard.periodTo
+                          }}</span>
+                      </div>
+                      <div class="text-size-12">Period</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-12 p-col-5 p-lg-5 p-sm-12 p-p-0">
+                  <div class="text-size-12 text-semi-bold text-color-primary text-right p-py-1 p-px-2">
+                    Redeem Now
+                  </div>
+                  <div class="position-relative">
+                    <span class="text-size-10 text-bold pie-chart-label">Spends : 90%</span>
+                    <app-pie-chart [options]="chartOptions" webHeight="120" mobileHeight="200"></app-pie-chart>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="aps-card aps-h-100p">
+              <div class="aps-card-header left-right-container">
+                <div class="left-container">
+                  <div class="text-size-14 text-bold aps-py-12 p-px-3">
+                    {{ 'Total Debit Instructions' | apsTranslate }} (5)
+                  </div>
+                </div>
+                <div class="right-container p-p-2">
+                  <button type="button" class="btn btn-sm btn-tertiary text-size-12"
+                    (click)="isShowDebitInstructionsDetails = true">
+                    {{ 'View Details' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+              <div class="aps-card-body p-py-5">
+                <p-carousel [value]="[{}, {}, {}, {}, {}]" [numVisible]="1" [numScroll]="1" [circular]="false"
+                  [responsiveOptions]="responsiveOptions">
+                  <ng-template let-product pTemplate="item">
+                    <div class="p-grid">
+                      <div class="p-col-6">
+                        <div class="text-size-12 text-semi-bold">
+                          {{ 'Utility Distributor' | apsTranslate }}
+                        </div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12">HDFC Life Insurance</div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12 text-semi-bold">
+                          {{ 'Consumer No.' | apsTranslate }}
+                        </div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12">54545454545</div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12 text-semi-bold">
+                          {{ 'Frequency' | apsTranslate }}
+                        </div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12">Monthly</div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12 text-semi-bold">
+                          {{ 'Date / Day' | apsTranslate }}
+                        </div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12">12</div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12 text-semi-bold">
+                          {{ 'Debit Amount' | apsTranslate }}
+                        </div>
+                      </div>
+                      <div class="p-col-6">
+                        <div class="text-size-12">
+                          <app-base-currency amount="3345"></app-base-currency>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-template>
+                </p-carousel>
+              </div>
+            </div>
+          </div>
+          <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="_aps-card border aps-h-100p p-py-4">
+              <div class="p-grid">
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary">
+                    {{ 'Statement Download' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary" (click)="onQuickLinkClick('viewCardDetails', debitCard.id)">
+                    {{ 'View Card Details' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary" (click)="onQuickLinkClick('changePin', debitCard.id)">
+                    {{ 'Change Pin' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary"
+                    (click)="onQuickLinkClick('switchPrimaryAccount', debitCard.id)">
+                    {{ 'Switch Primary Account' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary" (click)="onQuickLinkClick('blockCard', debitCard.id)">
+                    {{ debitCard.isBlockCard ? 'Unblock Card' : 'Block Card' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary" (click)="onQuickLinkClick('activeInactive', debitCard.id)">
+                    {{ 'Card Active / Inactive' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary" (click)="onQuickLinkClick('cardLimitControl', debitCard.id)">
+                    {{ 'Card Limit Control' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary"
+                    (click)="onQuickLinkClick('merchantCardControl', debitCard.id)">
+                    {{ 'Merchant Card Control' | apsTranslate }}
+                  </button>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12 p-py-1">
+                  <button class="btn btn-xsm btn-tertiary" (click)="onQuickLinkClick('reIssueDebitCard', debitCard.id)">
+                    {{ 'Card Re-Issue' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="debitCardData">
+      <div class="p-col-12 p-p-0">
+        <app-pagination [numberOfRecords]="totalRecords" (doPagination)="onPageChange($event)">
+        </app-pagination>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!--Nearest Due Cards Modal Start-->
+<app-modal *ngIf="isCardUtilizationModalShow && allDebitCardList" [(isShow)]="isCardUtilizationModalShow" size="md">
+  <div header class="left-right-container">
+    <div class="left-container">
+      <div class="text-size-14 text-bold text-color-dark-shade-1">
+        {{ 'All Card Utilization' | apsTranslate }}
+      </div>
+    </div>
+    <div class="right-container"></div>
+  </div>
+  <div body class="p-my-3 aps-h-300">
+    <app-ag-grid-listing [colDefUrl]="cardUtilizationColDefsUrl" [rowData]="allDebitCardList"
+      [gridOptions]="{ rowModelType: 'clientSide', pagination: true }">
+    </app-ag-grid-listing>
+  </div>
+  <div footer class="left-right-container">
+    <div class="left-container"></div>
+    <div class="right-container">
+      <button class="btn btn-md btn-primary" (click)="isCardUtilizationModalShow = false">
+        {{ 'CLOSE' | apsTranslate }}
+      </button>
+    </div>
+  </div>
+</app-modal>
+<!--Nearest Due Cards Modal End-->

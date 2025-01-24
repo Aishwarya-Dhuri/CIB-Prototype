@@ -1,0 +1,205 @@
+<div class="statutory-payment-container p-py-2 container text-color-dark-shade-1">
+  <div class="p-grid g-margin-x">
+    <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+      <div class="p-grid">
+        <div class="p-col-12 p-p-0">
+          <div class="text-size-16 text-bold">Initiate</div>
+          <div
+            class="aps-card aps-filled-card-primary-sm aps-h-120 p-mt-2 p-p-3 pointer"
+            routerLink="initiate"
+          >
+            <div class="text-size-14 text-semi-bold">New Statutory Payment</div>
+            <hr class="background-color-primary-light p-my-3" />
+            <div class="text-size-10">Initiate a new statutory/tax payment here.</div>
+          </div>
+        </div>
+        <div class="p-col-12 p-p-0 p-mt-4 p-mb-lg-0 p-mb-sm-3 p-mb-3" *ngIf="statutoryPayment">
+          <app-insights [insights]="statutoryPayment.insights"></app-insights>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-9 p-sm-12 p-col-12 p-py-0">
+      <div class="p-grid" *ngIf="statutoryPayment">
+        <div class="p-col-12 p-p-0">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold">Suggested</div>
+            </div>
+            <div class="right-container"></div>
+          </div>
+
+          <div class="inline-items p-mt-2 p-p-1 aps-w-100p overflow-scroll hide-scroll">
+            <div class="item" *ngFor="let s of statutoryPayment.suggested">
+              <div
+                class="aps-card aps-filled-card-sm aps-h-120 aps-w-300 overflow-hidden p-mr-3 p-p-3"
+              >
+                <div class="label-with-icon-container p-pb-3 border-bottom">
+                  <div class="icon">
+                    <img class="img-22-x-22" [src]="s.logo" alt="" />
+                  </div>
+                  <div class="label white-space-normal">
+                    <div class="text-size-12 text-semi-bold">{{ s.displayName }}</div>
+                  </div>
+                </div>
+
+                <div class="left-right-container p-mt-2">
+                  <div class="left-container">
+                    <div class="label-with-icon-container">
+                      <div class="icon">
+                        <!-- <i class="pi pi-info-circle text-size-12"></i> -->
+                        <app-icon icon="fa-info-circle" class="text-size-12 app-icon"></app-icon>
+                      </div>
+                      <div class="label p-pt-1 white-space-normal">
+                        <div class="text-size-10">{{ s.info }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="right-container p-pt-2 p-mt-1">
+                    <button class="btn btn-xsm btn-tertiary" (click)="onInitiate(s)">
+                      INITIATE
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-p-0 p-mt-3">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold">Drafts</div>
+            </div>
+            <div class="right-container">
+              <div class="inline-items">
+                <div class="item p-pr-3 p-pt-1">
+                  <div class="text-size-12">Showing {{ getNoOfDraftVisibleOnScreen() }} of 5</div>
+                </div>
+                <div class="item p-pr-2">
+                  <div class="scroll-btn" (click)="draftsContainerScrollLeft()">
+                    <app-icon
+                      icon="fa-chevron-left"
+                      class="app-icon"
+                      rtlIcon="fa-chevron-right"
+                    ></app-icon>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="scroll-btn" (click)="draftsContainerScrollRight()">
+                    <app-icon
+                      icon="fa-chevron-right"
+                      class="app-icon"
+                      rtlIcon="fa-chevron-left"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            #draftsContainer
+            class="inline-items p-mt-2 p-p-1 aps-w-100p overflow-scroll hide-scroll"
+          >
+            <div class="item" *ngFor="let draft of statutoryPayment.drafts">
+              <div class="aps-card aps-h-120 aps-w-300 overflow-hidden p-mr-3 p-p-3">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <img class="img-18-x-18" [src]="draft.logo" alt="" />
+                  </div>
+                  <div class="label white-space-normal">
+                    <div class="text-size-10 text-color-normal">{{ draft.shortName }}</div>
+                  </div>
+                </div>
+                <div class="text-size-12 p-pt-2 p-pb-3 text-semi-bold">
+                  {{ draft.fullName }}
+                </div>
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="text-size-10 text-color-normal">{{ draft.date }}</div>
+                  </div>
+                  <div class="right-container">
+                    <button class="btn btn-xsm btn-tertiary">RESUME</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-col-12 p-p-0 p-mt-3">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-bold">Recents</div>
+            </div>
+            <div class="right-container">
+              <div class="inline-items">
+                <div class="item p-pr-3 p-pt-1">
+                  <div class="text-size-12">Showing {{ getNoOfRecentVisibleOnScreen() }} of 5</div>
+                </div>
+                <div class="item p-pr-2">
+                  <div class="scroll-btn" (click)="recentsContainerScrollLeft()">
+                    <app-icon
+                      icon="fa-chevron-left"
+                      class="app-icon"
+                      rtlIcon="fa-chevron-right"
+                    ></app-icon>
+                  </div>
+                </div>
+                <div class="item">
+                  <div class="scroll-btn" (click)="recentsContainerScrollRight()">
+                    <app-icon
+                      icon="fa-chevron-right"
+                      class="app-icon"
+                      rtlIcon="fa-chevron-left"
+                    ></app-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            #recentsContainer
+            class="inline-items p-mt-2 p-p-1 aps-w-100p overflow-scroll hide-scroll"
+          >
+            <div class="item" *ngFor="let recent of statutoryPayment.recents">
+              <div class="aps-card aps-h-120 aps-w-300 overflow-hidden p-mr-3 p-p-3">
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="label-with-icon-container">
+                      <div class="icon">
+                        <img class="img-18-x-18" [src]="recent.logo" [alt]="recent.logo" />
+                      </div>
+                      <div class="label white-space-normal">
+                        <div class="text-size-10 text-color-normal">{{ recent.shortName }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <div
+                      class="text-size-10 background-color-primary-light-shade-2 border-radius-4 p-p-1"
+                    >
+                      <app-base-currency [amount]="recent.amount"></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-size-12 p-pt-2 p-mt-1 p-pb-3 text-semi-bold">
+                  {{ recent.fullName }}
+                </div>
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="text-size-10 text-color-normal">{{ recent.date }}</div>
+                  </div>
+                  <div class="right-container">
+                    <button class="btn btn-xsm btn-tertiary">PAY AGAIN</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,732 @@
+<div class="container">
+    <div class="p-grid g-margin-x">
+        <div class="p-lg-8 p-md-8 p-sm-8 p-col-12 p-p-0">
+            <div class="p-grid">
+                <div class="p-col-12 p-md-6 p-col-lg-6">
+                    <div class="aps-card aps-filled-card-primary-sm pointer p-px-3 p-py-3"
+                        routerLink="/collections/process/scheduledRequest">
+                        <div class="text-color-inverted text-size-16 text-center">
+                            {{ 'New Schedule Request' | apsTranslate }}
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-md-6 p-col-lg-6">
+                    <div class="aps-card border-primary pointer p-px-3 p-py-3"
+                        routerLink="/collections/process/adhocRequest">
+                        <div class="text-color-primary text-size-16 text-center">
+                            {{ 'Adhoc Request' | apsTranslate }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-grid">
+                <div class="p-col-12 p-md-12 p-lg-12 p-mb-2">
+                    <app-backdrop [zIndex]="10" [background]="'rgba(0, 0, 0, 0.5)'"
+                        *ngIf="formData.quickReq"></app-backdrop>
+                    <div class="aps-card p-px-2 p-pt-3" [ngClass]="{'payment-details-container' : formData.quickReq}">
+                        <form #quickPayForm="ngForm">
+                            <div class="p-grid">
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0 p-pt-0">
+                                    <div class="text-bold text-size-16">{{ 'Quick Request' | apsTranslate }}</div>
+                                </div>
+                                <div class="p-col-12 p-md-8 p-lg-8 p-py-0 p-pt-0">
+                                    <div class="left-right-container no-left-right-container-on-mobile">
+                                        <div class="left-container">
+                                            <p-radioButton class="p-mr-3" label="Pickup" value="Pickup" name="Pickup"
+                                                [(ngModel)]="formData.quickReq">
+                                            </p-radioButton>
+                                            <p-radioButton label="Drop" value="drop" name="Drop"
+                                                [(ngModel)]="formData.quickReq"></p-radioButton>
+                                        </div>
+                                        <div class="right-container"></div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                    <aps-custom-select label="Product" id="product" name="product"
+                                        [value]="formData.product" [(ngModel)]="formData.product"
+                                        [disabled]="!formData.quickReq"
+                                        dataUrl="collections/process/scheduledRequest/private/dropdown/product"
+                                        [required]="true">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                    <app-search-modal [(isShow)]="showModal"
+                                        colDefUrl="collections/process/scheduledRequest/private/pickupColDefs"
+                                        rowDefUrl="collections/process/scheduledRequest/private/pickupData"
+                                        header="Pickup Point Name" (onSelection)="onShowModal($event)">
+                                    </app-search-modal>
+                                    <aps-form-input (onRightIcon)="showModal = true"
+                                        [(ngModel)]="formData.pickupPointName" [disabled]="!formData.quickReq"
+                                        id="pickupPointName" [label]="'Pickup Point Name' | apsTranslate"
+                                        name="pickupPointName" rightIcon="fa-search"></aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-md-3 p-lg-3 p-py-0">
+                                    <aps-form-input label="Name" id="name" name="name" [required]="true"
+                                        [(ngModel)]="formData.name" [disabled]="!formData.quickReq">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-col-1 p-md-1 p-lg-1 p-mt-3 p-pl-3">
+                                    <app-icon icon="fa-info-circle" (mouseenter)="fdAmountHover.toggle($event)"
+                                        (mouseleave)="fdAmountHover.toggle($event)"></app-icon>
+                                    <p-overlayPanel [dismissable]="false" #fdAmountHover>
+                                        <ng-template pTemplate>
+                                            <div class="p-col-12 p-p-0">
+                                                <span class="text-size-12 text-semi-bold">Pickup Point Code :</span>
+                                                <span
+                                                    class="text-color-dark-shade-1 text-size-12 p-pl-2">{{formData.pickupPointCode}}</span>
+                                            </div>
+                                            <div class="p-col-12 p-p-0">
+                                                <span class="text-size-12 text-semi-bold">Location :</span>
+                                                <span
+                                                    class="text-color-dark-shade-1 text-size-12 p-pl-2">{{formData.location}}</span>
+                                            </div>
+                                            <div class="p-col-12 p-p-0">
+                                                <span class="text-size-12 text-semi-bold">Address 1 :</span>
+                                                <span
+                                                    class="text-color-dark-shade-1 text-size-12 p-pl-2">{{formData.address1}}</span>
+                                            </div>
+                                            <div class="p-col-12 p-p-0">
+                                                <span class="text-size-12 text-semi-bold">Address 2 :</span>
+                                                <span
+                                                    class="text-color-dark-shade-1 text-size-12 p-pl-2">{{formData.address2}}</span>
+                                            </div>
+                                            <div class="p-col-12 p-p-0">
+                                                <span class="text-size-12 text-semi-bold">Start Date :</span>
+                                                <span
+                                                    class="text-color-dark-shade-1 text-size-12 p-pl-2">{{formData.startDate}}</span>
+                                            </div>
+                                            <div class="p-col-12 p-p-0">
+                                                <span class="text-size-12 text-semi-bold">End Date :</span>
+                                                <span
+                                                    class="text-color-dark-shade-1 text-size-12 p-pl-2">{{formData.endDate}}</span>
+                                            </div>
+                                        </ng-template>
+                                    </p-overlayPanel>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0" *ngIf="formData.quickReq">
+                                    <aps-form-input label="Telephone Number" id="telephoneNumber" name="telephoneNumber"
+                                        [required]="true" [(ngModel)]="formData.telephoneNumber"
+                                        [disabled]="!formData.quickReq">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                    <aps-form-input label="Mobile Number" id="mobileNumber" name="mobileNumber"
+                                        [required]="true" [(ngModel)]="formData.mobileNumber"
+                                        [disabled]="!formData.quickReq">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0" *ngIf="formData.quickReq">
+                                    <aps-form-input label="Email ID" id="emailId" name="emailId" [required]="true"
+                                        [(ngModel)]="formData.emailId" [disabled]="!formData.quickReq">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                    <app-aps-calender name="pickupTime1" id="pickupTime1" label="Pickup Time"
+                                        [timeOnly]="true" [disabled]="!formData.quickReq"
+                                        [(ngModel)]="formData.pickupTime1" rightIcon="fa-trash-alt"
+                                        [required]="true"></app-aps-calender>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                    <aps-custom-select id="pickupType" name="pickupType" label="Pickup Type"
+                                        [(ngModel)]="formData.pickupType" [value]="formData.pickupType"
+                                        [disabled]="!formData.quickReq"
+                                        dataUrl="collections/process/scheduledRequest/private/dropdown/requestFor">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-col-12 p-md-4 p-lg-4 p-py-0" *ngIf="formData.pickupType === 'One Time'">
+                                    <app-aps-calender name="PickupDate" id="PickupDate" label="Pickup Date"
+                                        [(ngModel)]="formData.PickupDate" rightIcon="fa-trash-alt"
+                                        [required]="true"></app-aps-calender>
+                                </div>
+                            </div>
+                            <div class="p-grid" *ngIf="formData.pickupType === 'Recurring'">
+                                <div class="p-col-12">
+                                    <div class="aps-card-header">
+                                        <div class="text-size-16 text-bold p-mt-3">Recurrence Pattern</div>
+                                    </div>
+                                </div>
+                                <div class="p-col-12">
+                                    <p-tabView orientation="left">
+                                        <p-tabPanel [header]="'Daily' | apsTranslate"
+                                            headerStyleClass="text-size-14 text-semi-bold">
+                                            <div class="p-grid">
+                                                <div class="p-col-12 p-py-0">
+                                                    <div class="p-col inline-items p-pb-0">
+                                                        <div class="item">
+                                                            <p-radioButton name="daily" value="dailyEvery" id="option1"
+                                                                [(ngModel)]="formData.daily"></p-radioButton>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">Every</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-form-input [showLabel]="false" name="dailyEvery"
+                                                                id="dailyEvery" [(ngModel)]="formData.dailyEvery">
+                                                            </aps-form-input>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">Days</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="p-col-12 p-py-0 p-mt-0">
+                                                    <div class="p-col inline-items">
+                                                        <div class="item">
+                                                            <p-radioButton name="daily" value="dailyEveryWeekday"
+                                                                [(ngModel)]="formData.daily"
+                                                                id="option2"></p-radioButton>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option2">Every
+                                                                Weekday</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p-tabPanel>
+                                        <p-tabPanel [header]="'Weekly' | apsTranslate"
+                                            headerStyleClass="text-size-14 text-semi-bold">
+                                            <div class="p-grid">
+                                                <div class="p-col-12 p-py-0">
+                                                    <div class="p-col inline-items p-pb-0">
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">Recur
+                                                                every</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-form-input [showLabel]="false" name="weeklyRecurEvery"
+                                                                id="weeklyRecurEvery"
+                                                                [(ngModel)]="formData.weeklyRecurEvery">
+                                                            </aps-form-input>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">Week
+                                                                on</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- <div class="p-col-12 p-py-0 p-mt-0">
+                                                    <div class="p-col inline-items">
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option2">Every Weekday</span>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+                                                <div class="p-col-12 p-py-0 p-mt-0 p-pl-5">
+                                                    <p-checkbox *ngFor="let item of weekList" class="p-mr-3"
+                                                        name="{{item.displayName}}" label="{{item.displayName}}"
+                                                        [binary]="true" [(ngModel)]="item.checked">
+                                                    </p-checkbox>
+                                                </div>
+                                            </div>
+                                        </p-tabPanel>
+                                        <p-tabPanel [header]="'Monthly' | apsTranslate"
+                                            headerStyleClass="text-size-14 text-semi-bold">
+                                            <div class="p-grid">
+                                                <div class="p-col-12 p-py-0">
+                                                    <div class="p-col inline-items p-pb-0">
+                                                        <div class="item">
+                                                            <p-radioButton name="monthly" value="dailyEvery"
+                                                                id="option1"
+                                                                [(ngModel)]="formData.monthly"></p-radioButton>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">Day</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-form-input [showLabel]="false" name="monthlyDay"
+                                                                id="monthlyDay" [(ngModel)]="formData.monthlyDay">
+                                                            </aps-form-input>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">of
+                                                                every</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-form-input [showLabel]="false" name="monthlyOfEvery"
+                                                                id="monthlyOfEvery"
+                                                                [(ngModel)]="formData.monthlyOfEvery">
+                                                            </aps-form-input>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14"
+                                                                for="option1">month(s)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="p-col-12 p-py-0 p-mt-0">
+                                                    <div class="p-col inline-items">
+                                                        <div class="item">
+                                                            <p-radioButton name="monthly" value="dailyEveryWeekday"
+                                                                [(ngModel)]="formData.monthly"
+                                                                id="option2"></p-radioButton>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option2">The</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="week" id="week"
+                                                                [(ngModel)]="formData.week" [value]="formData.week"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/week">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="weekDays"
+                                                                id="weekDays" [(ngModel)]="formData.weekDays"
+                                                                [value]="formData.weekDays"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/weekDays">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option2">of
+                                                                every</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-form-input [showLabel]="false" name="monthlyMonths"
+                                                                id="monthlyMonths" [(ngModel)]="formData.monthlyMonths">
+                                                            </aps-form-input>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14"
+                                                                for="option2">month(s)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p-tabPanel>
+                                        <p-tabPanel [header]="'Quartely' | apsTranslate"
+                                            headerStyleClass="text-size-14 text-semi-bold">
+                                            <div class="p-grid">
+                                                <div class="p-col-12 p-py-0">
+                                                    <div class="p-col inline-items p-pb-0">
+                                                        <div class="item">
+                                                            <p-radioButton name="quarterly" value="quartelyEvery"
+                                                                id="option1"
+                                                                [(ngModel)]="formData.quarterly"></p-radioButton>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">Day</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-form-input [showLabel]="false" name="quarterlyDay"
+                                                                id="quarterlyDay" [(ngModel)]="formData.quarterlyDay">
+                                                            </aps-form-input>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">of every
+                                                                Quarter</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="p-col-12 p-py-0 p-mt-0">
+                                                    <div class="p-col inline-items">
+                                                        <div class="item">
+                                                            <p-radioButton name="quarterly" value="quartelyEveryWeekday"
+                                                                [(ngModel)]="formData.quarterly"
+                                                                id="option2"></p-radioButton>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option2">The</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="week" id="week"
+                                                                [(ngModel)]="formData.week" [value]="formData.week"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/week">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="weekDays"
+                                                                id="weekDays" [(ngModel)]="formData.weekDays"
+                                                                [value]="formData.weekDays"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/weekDays">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option2">of every
+                                                                Quarter</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p-tabPanel>
+                                        <p-tabPanel [header]="'Yearly' | apsTranslate"
+                                            headerStyleClass="text-size-14 text-semi-bold">
+                                            <div class="p-grid">
+                                                <div class="p-col-12 p-py-0">
+                                                    <div class="p-col inline-items p-pb-0 p-pt-0 p-pl-0">
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">Recur
+                                                                every</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-form-input [showLabel]="false" name="yearlyRecur"
+                                                                id="yearlyRecur" [(ngModel)]="formData.yearlyRecur">
+                                                            </aps-form-input>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14"
+                                                                for="option1">year(s)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="p-col-12 p-py-0">
+                                                    <div class="p-col inline-items p-pb-0">
+                                                        <div class="item">
+                                                            <p-radioButton name="quarterly" value="quartelyEvery"
+                                                                id="option1"
+                                                                [(ngModel)]="formData.quarterly"></p-radioButton>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option1">On</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="yearlyMonthsOn"
+                                                                id="yearlyMonthsOn"
+                                                                [(ngModel)]="formData.yearlyMonthsOn"
+                                                                [value]="formData.yearlyMonthsOn"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/yearlyMonths">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="weekDaysOn"
+                                                                id="weekDaysOn" [(ngModel)]="formData.weekDaysOn"
+                                                                [value]="formData.weekDaysOn"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/weekDays">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="p-col-12 p-py-0 p-mt-0">
+                                                    <div class="p-col inline-items">
+                                                        <div class="item">
+                                                            <p-radioButton name="quarterly" value="quartelyEveryWeekday"
+                                                                [(ngModel)]="formData.quarterly"
+                                                                id="option2"></p-radioButton>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option2">On The</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="week" id="week"
+                                                                [(ngModel)]="formData.week" [value]="formData.week"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/week">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="weekDays"
+                                                                id="weekDays" [(ngModel)]="formData.weekDays"
+                                                                [value]="formData.weekDays"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/weekDays">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                        <div class="item p-m-1">
+                                                            <span class="p-m-2 text-size-14" for="option2">of</span>
+                                                        </div>
+                                                        <div class="item p-m-1 width">
+                                                            <aps-custom-select [showLabel]="false" name="yearlyMonths"
+                                                                id="yearlyMonths" [(ngModel)]="formData.yearlyMonths"
+                                                                [value]="formData.yearlyMonths"
+                                                                dataUrl="collections/process/scheduledRequest/private/dropdown/yearlyMonths">
+                                                            </aps-custom-select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </p-tabPanel>
+                                    </p-tabView>
+                                </div>
+                            </div>
+                            <div class="p-grid  p-pt-5" *ngIf="formData.quickReq">
+                                <div class="p-col-12">
+                                    <div class="left-right-container">
+                                        <div class="left-container">
+                                        </div>
+                                        <div class="right-container">
+                                            <button class="btn btn-md btn-tertiary p-mr-3" (click)="onCancel()">
+                                                {{ 'CANCEL' | apsTranslate }}
+                                            </button>
+                                            <button class="btn btn-md btn-primary" (click)="onSubmit()">
+                                                {{ 'Submit' | apsTranslate }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-grid">
+                <div class="p-md-12 p-sm-12 p-col-12 p-py-0">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="inline-items aps-w-100p overflow-scroll">
+                                <div class="item p-mr-3" *ngFor="let pattern of patternList">
+                                    <div class="aps-card p-p-2 text-size-12 text-color-normal text-semi-bold pointer border"
+                                        [ngClass]="{ 'aps-card-primary': pattern.displayName === selectedPattern.displayName }"
+                                        (click)="changePattern(pattern)">
+                                        {{ pattern.displayName }} ({{pattern.count}})
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <div class="inline-items">
+                                <div class="item p-pt-1">
+                                    <div class="toggle-select-container">
+                                        <div class="action pointer text-color-dark-shade-1"
+                                            [ngClass]="{ active: listType === 'grid' }">
+                                            <app-icon icon="fa-list" class="app-icon"></app-icon>
+                                        </div>
+
+                                        <div class="action pointer text-color-dark-shade-1">
+                                            <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="p-grid" *ngIf="selectedPattern.displayName == 'Cash Pickup'">
+                <div class="p-col-12 p-md-12 p-lg-12">
+                    <div class="aps-card p-px-2 height">
+                        <div class="aps-card-header">
+                            <div class="aps-search-container-2">
+                                <input type="text" class="aps-search-input"
+                                    placeholder="{{ 'Enter keyword to search' | apsTranslate }}" />
+                                <div class="search-icon">
+                                    <app-icon icon="fa-search" class="app-icon"></app-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="aps-card-body p-pt-2">
+                            <app-ag-grid-listing [gridOptions]="gridOptions" [context]="{ componentParent: this }"
+                                [columnDefs]="colDefUrl" [rowData]="dataUrl"></app-ag-grid-listing>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-grid" *ngIf="selectedPattern.displayName == 'Cheque Pickup'">
+                <div class="p-col-12 p-md-12 p-lg-12 p-mb-2">
+                    <div class="aps-card p-px-2 aps-h-200">
+                        <div class="aps-card-header">
+                            <div class="aps-search-container-2">
+                                <input type="text" class="aps-search-input"
+                                    placeholder="{{ 'Enter keyword to search' | apsTranslate }}" />
+                                <div class="search-icon">
+                                    <app-icon icon="fa-search" class="app-icon"></app-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="aps-card-body p-pt-2">
+                            <app-ag-grid-listing [gridOptions]="gridOptions" [context]="{ componentParent: this }"
+                                [columnDefs]="colDefUrl" [rowData]="dataUrl"></app-ag-grid-listing>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-grid" *ngIf="selectedPattern.displayName == 'Document Pickup'">
+                <div class="p-col-12 p-md-12 p-lg-12 p-mb-2">
+                    <div class="aps-card p-px-2 aps-h-200">
+                        <div class="aps-card-header">
+                            <div class="aps-search-container-2">
+                                <input type="text" class="aps-search-input"
+                                    placeholder="{{ 'Enter keyword to search' | apsTranslate }}" />
+                                <div class="search-icon">
+                                    <app-icon icon="fa-search" class="app-icon"></app-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="aps-card-body p-pt-2">
+                            <app-ag-grid-listing [gridOptions]="gridOptions" [context]="{ componentParent: this }"
+                                [columnDefs]="colDefUrl" [rowData]="dataUrl"></app-ag-grid-listing>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-grid" *ngIf="selectedPattern.displayName == 'Cash Delivery'">
+                <div class="p-col-12 p-md-12 p-lg-12 p-mb-2">
+                    <div class="aps-card p-px-2 aps-h-200">
+                        <div class="aps-card-header">
+                            <div class="aps-search-container-2">
+                                <input type="text" class="aps-search-input"
+                                    placeholder="{{ 'Enter keyword to search' | apsTranslate }}" />
+                                <div class="search-icon">
+                                    <app-icon icon="fa-search" class="app-icon"></app-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="aps-card-body p-pt-2">
+                            <app-ag-grid-listing [gridOptions]="gridOptions" [context]="{ componentParent: this }"
+                                [columnDefs]="colDefUrl" [rowData]="dataUrl"></app-ag-grid-listing>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="aps-card p-py-1">
+                <p-carousel [value]="products" [numVisible]="1" [numScroll]="1" [circular]="false"
+                    [responsiveOptions]="responsiveOptions">
+                    <ng-template let-product pTemplate="item">
+                        <div class="p-grid">
+                            <div class="p-col-12 p-pb-0">
+                                <div class="text-size-15 text-semi-bold text-center text-color-primary">
+                                    {{product.cashflowDetails}}
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-py-0">
+                                <div class="text-center">
+                                    <div class="inline-block white-space-nowrap" [ngClass]="classes">
+                                        <div class="inline-block">
+                                            <select class="currency-select" [ngClass]="selectStyleClass"
+                                                name="cashSummary" id="cashSummary" [value]="formData.cashSummary"
+                                                [(ngModel)]="formData.cashSummary">
+                                                <option *ngFor="let c of dateList" [value]="c.displayName">
+                                                    {{ c.displayName }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-py-0">
+                                <div class="background-color-dark-4 border-radius-4 p-py-2">
+                                    <div class="left-right-container no-left-right-container-on-mobile">
+                                        <div class="left-container p-pl-4">
+                                            <div class="text-size-12 text-semi-bold">{{product.amount}}</div>
+                                            <div class="text-size-12 text-semi-bold">{{product.totalValue}}</div>
+                                        </div>
+                                        <div class="right-container p-pr-4">
+                                            <div class="text-size-12 text-semi-bold">{{product.count}}</div>
+                                            <div class="text-size-12 text-semi-bold">{{product.totalNo}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-py-0">
+                                <div class="text-size-13 text-center">
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-pl-5">
+                                            <span class="text-bold">101</span>
+                                        </div>
+                                        <div class="p-col-12 p-md-4 p-lg-4">
+                                            <span class="text-bold">20</span>
+                                        </div>
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-pr-5">
+                                            <span class="text-bold">0</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-grid">
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-py-0 p-pl-5">
+                                            <span>Completed</span>
+                                        </div>
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-py-0">
+                                            <span>Pending</span>
+                                        </div>
+                                        <div class="p-col-12 p-md-4 p-lg-4 p-py-0 p-pr-5">
+                                            <span>NIL</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-template>
+                </p-carousel>
+            </div>
+
+            <div class="aps-card p-py-2 p-px-2 p-my-3">
+                <div class="p-mx-4 p-py-2">
+                    <div class="left-right-container no-left-right-container-on-mobile">
+                        <div class="left-container">
+                            <div class="text-size-14 text-semi-bold text-color-primary borderBottom">My Schedule Pick Up
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <div class="text-size-14 text-semi-bold text-color-primary">Reminders</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="label-with-icon-container p-mt-1" *ngFor="let schedule of schedules">
+                        <div class="label text-size-12 white-space-normal p-pt-2">
+                            <div>
+                                <app-icon styleClasses="text-size-13" [icon]="schedule.icon"></app-icon>
+                                <span class="text-bold p-pl-2 text-size-12">{{schedule.label}}</span>
+                            </div>
+                            <div>
+                                <span class="p-pl-4">Schedule at</span>&nbsp;
+                                <span class="text-color-primary">{{ schedule.time}}.</span>&nbsp;
+                                <span>Pickup at</span>&nbsp;
+                                <span class="text-color-primary">{{schedule.address}}</span>&nbsp; <br>
+                                <span class="p-pl-4">by</span>&nbsp;
+                                <span class="text-color-primary">{{schedule.company}}.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="aps-card p-py-2 p-px-2">
+                <div class="background-color-dark-4 border-radius-4 text-color-dark-shade-1 p-p-3">
+                    <div class="text-size-14 text-semi-bold">Insights</div>
+                    <div class="aps-h-120 overflow-x-hidden">
+                        <div class="label-with-icon-container p-mt-1" *ngFor="let insight of insights">
+                            <div class="icon">
+                                <app-icon styleClasses="text-size-13" [icon]="insight.icon"></app-icon>
+                            </div>
+                            <div class="label text-size-12 white-space-normal p-pt-1">
+                                {{ insight.label }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+            <div class="aps-card aps-h-100p">
+                <app-insights height="215" isTransparentBackground="true"
+                    insightsUrl="dummyServer/json/commons/private/insights/debitCard">
+                </app-insights>
+            </div>
+        </div> -->
+    </div>
+</div>
+
+<app-modal [(isShow)]="showSuccessModal" size="sm">
+    <div class="left-right-container p-mt-3">
+        <div class="left-container"></div>
+        <div class="right-container">
+            <app-icon icon="fa-times text-size-16 pointer" (click)="showSuccessModal = false"></app-icon>
+        </div>
+    </div>
+    <div body>
+        <div class="text-size-16 text-bold text-color-dark-shade-1">Hide Accessibility Interface?</div>
+        <div class="text-size-14 text-color-dark-shade-1 p-mt-3">
+            Please Note: If you choose to hide the accessibility interface, you won't be able to see it
+            anymore, unless you clear your browsing history and data. Are you sure that you wish to hide
+            the interface?
+        </div>
+    </div>
+    <div footer>
+        <div class="left-right-container p-mt-3">
+            <div class="left-container"></div>
+            <div class="right-container">
+
+            </div>
+        </div>
+    </div>
+</app-modal>

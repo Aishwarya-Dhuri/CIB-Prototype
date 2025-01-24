@@ -1,0 +1,163 @@
+<div class="container">
+  <div class="aps-card">
+    <div class="p-grid">
+      <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+        <div class="text-size-16 text-bold text-color-dark-shade-1 border-bottom p-px-3 aps-py-12">
+          Corporate Group Details
+        </div>
+        <div class="p-grid p-p-2">
+          <div class="p-md-4 p-col-12 p-sm-12">
+            <div class="label-with-icon-container">
+              <div class="icon">
+                <img [src]="corporateGroup.groupIcon" alt="" class="img-35-x-27" />
+              </div>
+              <div class="label p-pt-1">
+                <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+                  {{ corporateGroup.groupName }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-md-4 text-size-14 p-col-12 p-sm-12">
+            <div class="text-color-light-shade-1">Group Code</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">TOY</div>
+          </div>
+          <div class="p-md-4 text-size-14 p-col-12 p-sm-12">
+            <div class="text-color-light-shade-1">Group Type</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">PTT Public Company Limited</div>
+          </div>
+          <div class="p-md-4 text-size-14 p-col-12 p-sm-12">
+            <div class="text-color-light-shade-1">Group Name</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">{{ corporateGroup.groupName }}</div>
+          </div>
+          <div class="p-md-4 text-size-14 p-col-12 p-sm-12">
+            <div class="text-color-light-shade-1">Liability ID</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">0073712</div>
+          </div>
+          <div class="p-md-4 text-size-14 p-col-12 p-sm-12">
+            <div class="text-color-light-shade-1">Liability Name</div>
+            <div class="text-color-dark-shade-1 text-semi-bold">Ceylon</div>
+          </div>
+        </div>
+      </div>
+      <div class="p-md-5 p-sm-12 p-col-12 p-p-3 border-left">
+        <div
+          class="background-color-dark-4 aps-h-150 border-radius-4 text-color-dark-shade-1 p-p-3"
+        >
+          <div class="text-size-14 text-semi-bold">Insights</div>
+          <div class="aps-h-100 overflow-scroll">
+            <div class="label-with-icon-container p-mt-1" *ngFor="let insight of insights">
+              <div class="icon">
+                <app-icon styleClasses="text-size-14" [icon]="insight.icon"></app-icon>
+              </div>
+              <div class="label text-size-14 white-space-normal p-pt-1">
+                {{ insight.label }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-card text-color-dark-shade-1 p-mt-3">
+    <div class="aps-card-header p-px-3 aps-py-12">
+      <div class="text-size-16 text-bold">Other Details</div>
+    </div>
+    <div class="aps-card-body">
+      <div class="p-grid text-size-14 p-p-2">
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Force Debt</div>
+          <div class="text-semi-bold">Yes</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Allow Runtime Beneficiary</div>
+          <div class="text-semi-bold">Yes</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Beneficiary Auto Authorise</div>
+          <div class="text-semi-bold">Yes</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Send to Bank required</div>
+          <div class="text-semi-bold">Yes</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Account Posting</div>
+          <div class="text-semi-bold">Default</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Currency wise Auth Matrix</div>
+          <div class="text-semi-bold">Yes</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Verification Required</div>
+          <div class="text-semi-bold">Yes</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">No of Verifiers</div>
+          <div class="text-semi-bold">5</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Verification Level</div>
+          <div class="text-semi-bold">Batch</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Effective from</div>
+          <div class="text-semi-bold">10 Oct 2021</div>
+        </div>
+        <div class="p-md-2 p-sm-12 p-col-12">
+          <div class="text-color-light-shade-1">Effective Till</div>
+          <div class="text-semi-bold">10 Nov 2023</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-py-3">
+    <div class="text-size-16 text-bold text-color-dark-shade-1">
+      Subsidiaries ({{ corporateGroup.corporates.length }})
+    </div>
+    <div class="p-grid g-margin-x">
+      <div
+        class="p-md-3 p-sm-12 p-col-12"
+        *ngFor="let corporate of getCorporates(corporateGroup.corporates)"
+      >
+        <div class="aps-card border-1 p-p-3 pointer" (click)="onCorporate(corporate)">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="">
+                <img [src]="corporate.corporateIcon" alt="" class="img-35-x-27" />
+              </div>
+              <div class="p-pb-3">
+                <div class="text-size-16 text-color-dark-shade-1 text-semi-bold">
+                  {{ corporate.corporateName }}
+                </div>
+              </div>
+            </div>
+            <div class="right-container">
+              <div class="p-col-4 p-p-0">
+                <span
+                  class="background-color-primary-light-shade-2 inline-block border-radius-4 p-px-2 p-py-1 text-size-10"
+                >
+                  {{ corporate.corporateId }}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid p-pt-3 text-color-dark-shade-1 border-top">
+            <div class="p-col-6 p-p-0">
+              <div class="text-size-14 text-bold">{{ corporate.category }}</div>
+              <div class="text-size-12">Category</div>
+            </div>
+            <div class="p-col-6 p-p-0">
+              <div class="text-size-14 text-bold">{{ corporate.accounts }}</div>
+              <div class="text-size-12">Accounts</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

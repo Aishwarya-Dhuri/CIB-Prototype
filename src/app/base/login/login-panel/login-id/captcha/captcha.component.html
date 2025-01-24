@@ -1,0 +1,14 @@
+<div class="captcha-container">
+  <div class="captcha-wrapper">
+    <span class="captcha-text">{{ captchaText }}</span>
+
+    <span class="reload-captcha">
+      <!-- <i class="pi pi-refresh" (click)="randomString()"></i> -->
+      <app-icon icon="fa-sync" (click)="randomString()"></app-icon>
+    </span>
+  </div>
+
+  <div class="captcha-input">
+    <input type="text" maxlength="6" />
+  </div>
+</div>

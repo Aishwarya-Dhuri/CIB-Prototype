@@ -1,0 +1,317 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-bold">
+            {{ 'Card Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Credit Card"
+                [value]="formData.cardNo"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Card Type"
+                [value]="formData.cardType"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Embossed Name"
+                [value]="formData.embossedName"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Statement Date"
+                [value]="formData.statementDate"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Payment Due Date"
+                [value]="formData.dueDate"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-bold">
+            {{ 'Auto Pay Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-2">
+          <form #form="ngForm" name="form">
+            <div class="p-grid">
+              <div class="p-col-12 p-pb-0">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Request Type' | apsTranslate }}
+                </div>
+              </div>
+              <div class="p-md-2 p-sm-6 p-col-6">
+                <p-radioButton
+                  [(ngModel)]="formData.requestType"
+                  id="autopay"
+                  [label]="'Set / Edit Auto Pay' | apsTranslate"
+                  name="requestType"
+                  value="Set / Edit Auto Pay"
+                  (onClick)="formData.requestTypeDisplayName = 'Set / Edit Auto Pay'"
+                ></p-radioButton>
+              </div>
+              <div class="p-md-2 p-sm-6 p-col-6">
+                <p-radioButton
+                  [(ngModel)]="formData.requestType"
+                  id="cancelAutoPay"
+                  [label]="'Cancel Auto Pay' | apsTranslate"
+                  name="requestType"
+                  value="Cancel Auto Pay"
+                  [disabled]="this.formData.autoPayStatus === 'Not Registered'"
+                  (onClick)="formData.requestTypeDisplayName = 'Cancel Auto Pay'"
+                ></p-radioButton>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-md-4 p-sm-12 p-col-12 p-pb-0">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Payment Amount' | apsTranslate }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="">
+                  <p-radioButton
+                    [(ngModel)]="formData.paymentAmount"
+                    [disabled]="formData.requestType === 'Cancel Auto Pay'"
+                    id="Minimum Amount Duedue"
+                    [label]="'Minimum Amount Due' | apsTranslate"
+                    name="Minimum Amount DueDue"
+                    value="Minimum Amount Due"
+                    (onClick)="formData.paymentAmountDisplayName = 'Minimum Amount Due'"
+                  ></p-radioButton>
+                </div>
+                <div class="text-size-14 p-mt-2">
+                  <app-base-currency
+                    [amount]="formData.minDueAmount"
+                    [currency]="formData.currency"
+                    *ngIf="formData.paymentAmount == 'Minimum Amount Due'"
+                  ></app-base-currency>
+                </div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="">
+                  <p-radioButton
+                    [(ngModel)]="formData.paymentAmount"
+                    [disabled]="formData.requestType === 'Cancel Auto Pay'"
+                    id="totalamountdue"
+                    [label]="'Total Amount Due' | apsTranslate"
+                    name="totalAmountDue"
+                    value="Total Amount Due"
+                    (onClick)="formData.paymentAmountDisplayName = 'Total Amount Due'"
+                  ></p-radioButton>
+                </div>
+                <div class="text-size-14 p-mt-2">
+                  <app-base-currency
+                    [amount]="formData.outStandingAmount"
+                    [currency]="formData.currency"
+                    *ngIf="formData.paymentAmount == 'Total Amount Due'"
+                  ></app-base-currency>
+                </div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <p-radioButton
+                  [(ngModel)]="formData.paymentAmount"
+                  [disabled]="formData.requestType === 'Cancel Auto Pay'"
+                  id="otherAmount"
+                  [label]="'Other Amount' | apsTranslate"
+                  name="otherAmount"
+                  value="Other Amount"
+                  (onClick)="resetOtherAmount(); formData.paymentAmountDisplayName = 'Other Amount'"
+                ></p-radioButton>
+
+                <div class="p-grid g-margin-x" *ngIf="formData.paymentAmount === 'Other Amount'">
+                  <div class="p-col-2">
+                    <div class="text-size-16">{{ formData.currency || 'INR' }}</div>
+                  </div>
+                  <div class="p-col-10">
+                    <aps-form-input
+                      [(ngModel)]="formData.payableAmount"
+                      [required]="formData.paymentAmount === 'Other Amount'"
+                      [showLabel]="false"
+                      [value]="formData.payableAmount"
+                      id="payableAmount"
+                      inputType="currencyFormatNotZero"
+                      maxLength="16"
+                      minLength="1"
+                      name="payableAmount"
+                    >
+                    </aps-form-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="accounts && accounts.length > 0">
+                <aps-custom-select
+                  [(ngModel)]="formData.debitAccount"
+                  [data]="accounts"
+                  [value]="formData.debitAccount"
+                  (change)="onChangeDebitAccount()"
+                  id="debitAccount"
+                  [label]="'Debit Account' | apsTranslate"
+                  name="debitAccount"
+                  [disabled]="formData.requestType === 'Cancel Auto Pay'"
+                ></aps-custom-select>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="daysList">
+                <aps-custom-select
+                  [(ngModel)]="formData.payDay"
+                  [data]="daysList"
+                  [value]="formData.payDay"
+                  (change)="onChangePayDay()"
+                  id="payDay"
+                  [label]="'Pay Day' | apsTranslate"
+                  name="payDay"
+                ></aps-custom-select>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="ifHolidayList">
+                <aps-custom-select
+                  [(ngModel)]="formData.ifHoliday"
+                  (change)="onChangeIfHoliday()"
+                  [data]="ifHolidayList"
+                  [value]="formData.ifHoliday"
+                  id="ifHoliday"
+                  [label]="'If Holiday' | apsTranslate"
+                  name="ifHoliday"
+                ></aps-custom-select>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="p-col-12 p-py-0"></div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === this.stepperDetails.headings.length">
+      <div class="aps-card">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-bold">
+            {{ 'Card Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Credit Card"
+                [value]="formData.cardNo"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Card Type"
+                [value]="formData.cardType"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Embossed Name"
+                [value]="formData.embossedName"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Statement Date"
+                [value]="formData.statementDate"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Payment Due Date"
+                [value]="formData.dueDate"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="aps-card p-my-3">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-bold">
+            {{ 'Auto Pay Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-12 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Request Type"
+                [value]="formData.requestTypeDisplayName"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-12 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Payment Amount"
+                [value]="
+                  formData.paymentAmount != 'Other Amount'
+                    ? formData.paymentAmountDisplayName
+                    : formData.payableAmount
+                "
+                [type]="formData.paymentAmount != 'Other Amount' ? 'text' : 'baseCurrency'"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Debit Account"
+                [value]="formData.debitAccountNo"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Pay Day"
+                [value]="formData.payDayData"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="If Holiday"
+                [value]="formData.ifHolidayData"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

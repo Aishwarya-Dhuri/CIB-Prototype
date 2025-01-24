@@ -1,0 +1,41 @@
+<div class="label-with-icon-container p-px-2" *ngFor="let item of clausesDataList; let i = index">
+  <div class="p-grid">
+    <div class="p-col-12 p-md-11 p-lg-11 p-sm-12">
+      <div class="icon">
+        <p-checkbox
+          name="clauses{{ i }}"
+          id="clauses{{ i }}"
+          [binary]="true"
+          [(ngModel)]="item.isClausesCheck"
+          [required]="true"
+          (click)="parentRef.setStepCompleted(); onClauseClick(i)"
+          [disabled]="
+            parentRef.parentRef.mode == 'VIEW' ||
+            parentRef.parentRef.stepperDetails.currentStep ==
+              parentRef.parentRef.stepperDetails.headings.length
+          "
+        >
+        </p-checkbox>
+      </div>
+      <div class="label p-py-1">
+        <div class="text-size-16">
+          {{ item.DOCUMENTMAPPINGCLAUSETEXT | tagToBlankSpace }}
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="
+        item.isClausesCheck &&
+        parentRef.parentRef.mode != 'VIEW' &&
+        parentRef.parentRef.stepperDetails.currentStep !=
+          parentRef.parentRef.stepperDetails.headings.length
+      "
+      class="p-col-12 p-md-1 p-lg-1 p-sm-12 text-center p-p-3"
+    >
+      <app-icon icon="fa-pencil" class="pointer" (click)="onClauseEdit(i)"></app-icon>
+    </div>
+  </div>
+</div>
+<ng-container *ngFor="let clause of clausesDataList; let i = index">
+  <app-clauses-modal [parentRef]="this" [clause]="clause" [index]="i"></app-clauses-modal>
+</ng-container>

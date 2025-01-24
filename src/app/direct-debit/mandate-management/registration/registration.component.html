@@ -1,0 +1,739 @@
+<div class="container" *ngIf="!loading">
+  <div class="p-grid g-margin-x">
+
+    <app-modal [(isShow)]="isSuppdoc" size="md" headerText="{{ 'Supporting Documents' | apsTranslate }}">
+      <ng-container body>
+        <img class="p-p-4" alt="Supporting Documents" height="300" width="785"
+          src="assets/MMS-CREATE-INDB-INDBH2H-25062023-526954_front.jpg" />
+      </ng-container>
+    </app-modal>
+
+    <app-modal [(isShow)]="isMandateUpload" size="md" headerText="{{ 'Mandate Upload' | apsTranslate }}">
+      <ng-container body>
+        <img class="p-p-4" alt="Supporting Documents" height="300" width="785" src="assets/mandateImage.png" />
+      </ng-container>
+    </app-modal>
+
+    <app-modal [(isShow)]="isOtherUpload" size="md" headerText="{{ 'Other Documents' | apsTranslate }}">
+      <ng-container body>
+        <img class="p-p-4" alt="Other Documents" height="300" width="785" src="assets/mandateImage.png" />
+      </ng-container>
+    </app-modal>
+
+
+    <div class="p-col-12">
+      <app-stepper-header [parentRef]="this"></app-stepper-header>
+    </div>
+
+    <div class="p-col-12">
+      <div class="text-siz e-16 text-bold">
+        <span *ngIf="mode !== 'VIEW'">
+          {{ stepperDetails.headings[stepperDetails.currentStep - 1] | apsTranslate }}
+        </span>
+        <span *ngIf="mode === 'VIEW'">
+          {{ 'Mandate Management - View' | apsTranslate }}
+        </span>
+      </div>
+    </div>
+
+    <ng-container *ngIf="stepperDetails.currentStep == 1">
+      <app-search-modal [(isShow)]="showCorporateList" colDefUrl="commons/private/corporateColDefs"
+        rowDefUrl="commons/commonService/private/getCorporates"
+        (onSelection)="onSelectCorporate($event)"></app-search-modal>
+
+      <app-search-modal [(isShow)]="showProductList" colDefUrl="commons/private/productColDefs"
+        rowDefUrl="commons/commonService/private/getProducts"
+        (onSelection)="onSelectProduct($event)"></app-search-modal>
+
+      <div class="p-col-12">
+        <div class="aps-card p-px-2 p-pt-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Product Details' | apsTranslate }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="loginType === 'group'">
+              <aps-form-input id="corporateCode" name="corporateCode" label="{{ 'Corporate Code' | apsTranslate }}"
+                [(ngModel)]="formData.corporateCode" rightIcon="fa-search" (onRightIcon)="showCorporateList = true"
+                [required]="true" [readonly]="true"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="loginType === 'group'">
+              <aps-form-input id="corporateName" name="corporateName" label="{{ 'Corporate Name' | apsTranslate }}"
+                [(ngModel)]="formData.corporateName" [required]="true" [disabled]="true"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="loginType != 'group'">
+              <app-review-form-field label="Corporate Code" [value]="corporateCode"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="loginType != 'group'">
+              <app-review-form-field label="Corporate Name" [value]="corporateName"></app-review-form-field>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="productCode" name="productCode" label="{{ 'Product Code' | apsTranslate }}"
+                [(ngModel)]="formData.productCode" rightIcon="fa-search" (onRightIcon)="showProductList = true"
+                [required]="true" [readonly]="true"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="productName" name="productName" label="{{ 'Product Name' | apsTranslate }}"
+                [(ngModel)]="formData.productName" [required]="true" [disabled]="true"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="utilityCode" name="utilityCode" label="{{ 'Utility Code' | apsTranslate }}"
+                [(ngModel)]="formData.utilityCode" [required]="true"></aps-form-input>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-12 p-sm-12 p-col-12">
+        <div class="aps-card p-px-2 p-pt-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Payer Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="customerNo" name="customerNo" label="{{ 'Customer No / ID' | apsTranslate }}"
+                [(ngModel)]="formData.customerNo" [required]="true" inputType="numeric"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="legalId" name="legalId" label="{{ 'Legal ID' | apsTranslate }}"
+                [(ngModel)]="formData.legalId" inputType="numeric"></aps-form-input>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="payerName" name="payerName" label="{{ 'Payer Name' | apsTranslate }}"
+                [(ngModel)]="formData.payerName" [required]="true"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="payerEmailId" name="payerEmailId" [required]="true"
+                label="{{ 'Email ID' | apsTranslate }}" [(ngModel)]="formData.payerEmailId"
+                inputType="email"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="payerMobileNo" [required]="true" name="payerMobileNo"
+                label="{{ 'Mobile Number' | apsTranslate }}" [(ngModel)]="formData.payerMobileNo"
+                inputType="numeric"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12 p-p-0"></div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="address1" name="address1" label="{{ 'Address 1' | apsTranslate }}"
+                [(ngModel)]="formData.address1"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="address2" name="address2" label="{{ 'Address 2' | apsTranslate }}"
+                [(ngModel)]="formData.address2"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="address3" name="address3" label="{{ 'Address 3' | apsTranslate }}"
+                [(ngModel)]="formData.address3"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12 p-p-0"></div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input name="payerSortCode" id="payerSortCode" label="IFSC Code"
+                [(ngModel)]="formData.payerSortCode" rightIcon="fa-search" (onRightIcon)="showBicCodeModal = true"
+                [disabled]="true"></aps-form-input>
+            </div>
+
+            <!-- <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-custom-select id="payerBank" name="payerBank" label="{{ 'Payer Bank' | apsTranslate }}"
+                [(ngModel)]="formData.payerBank" [value]="formData.payerBank"
+                dataUrl="directDebit/mandateManagement/registration/private/dropdown/payerBank"
+                [required]="true"></aps-custom-select>
+            </div> -->
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="payerBank" name="payerBank" [value]="formData.payerBank"
+                label="{{ 'Payer Bank' | apsTranslate }}" [(ngModel)]="formData.payerBank" [disabled]="true"
+                [required]="true"></aps-form-input>
+            </div>
+
+            <app-search-modal [(isShow)]="showBicCodeModal" colDefUrl="commons/private/ifscColDefs"
+              rowDefUrl="commons/private/ifscCodeData" headerText="SWIFT BIC Code" (onSelection)="onSelectIfsc($event)">
+            </app-search-modal>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="payerAccountNumber" name="payerAccountNumber"
+                label="{{ 'Payer Account Number' | apsTranslate }}" [(ngModel)]="formData.payerAccountNumber"
+                [required]="true"></aps-form-input>
+            </div>
+
+
+            <!-- <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-form-input id="payerSortCode" name="payerSortCode" label="{{ 'IFSC Code' | apsTranslate }}"
+                [(ngModel)]="formData.payerSortCode" rightIcon="fa-search" (onRightIcon)="showIFSCList = true"
+                [required]="true" [readonly]="true"></aps-form-input>
+            </div> -->
+
+            <!-- ----------------------------Original Code End---------------------------- -->
+            <!-- <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-custom-select id="payerAccountNumber" name="payerAccountNumber"
+                label="{{ 'Account Number' | apsTranslate }}"
+                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                [(ngModel)]="formData.payerAccountNumber" [value]="formData.payerAccountNumber"
+                [required]="true"></aps-custom-select>
+            </div> -->
+            <!-- ----------------------------Original Code End---------------------------- -->
+
+            <!-- <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-form-input id="payerSortCode" name="payerSortCode" label="{{ 'IFSC Code' | apsTranslate }}"
+                [(ngModel)]="formData.payerSortCode" [required]="true"></aps-form-input>
+            </div> -->
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-12 p-sm-12 p-col-12">
+        <div class="aps-card p-p-3 aps-h-100p">
+          <div class="p-grid">
+
+            <div class="p-col-4">
+              <div class="text-size-14 text-bold p-mb-3">
+                {{ 'Supporting Documents' | apsTranslate }}
+              </div>
+              <upload-form-control [files]="formData.supportingDocuments" [isMultiple]="true"></upload-form-control>
+            </div>
+
+            <div class="p-col-4">
+              <div class="text-size-14 text-bold p-mb-3">
+                {{ 'Mandate Upload' | apsTranslate }}
+              </div>
+              <upload-form-control [files]="formData.mandateUpload" [isMultiple]="true"></upload-form-control>
+              <div class="text-size-10">Acceptable Formats: TIF & JPEG.&nbsp; Maximum size: 100KB each</div>
+            </div>
+
+
+            <div class="p-col-4">
+              <div class="text-size-14 text-bold p-mb-3">
+                {{ 'Others Documents' | apsTranslate }}
+              </div>
+              <upload-form-control [files]="formData.otherDocuments" [isMultiple]="true"></upload-form-control>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep == 2">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <!-- <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-custom-select name="paymentMandate" id="paymentMandate"
+                label="{{ 'Mandate Frequency' | apsTranslate }}"
+                dataUrl="directDebit/mandateManagement/registration/private/dropdown/frequencies"
+                [value]="formData.paymentMandate" [(ngModel)]="formData.paymentMandate"
+                (change)="onChangeSIMandateFrequency($event)" [required]="true"></aps-custom-select>
+            </div> -->
+            <!-- <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-custom-select name="days" id="days" label="{{ 'Days' | apsTranslate }}"
+                dataUrl="directDebit/mandateManagement/registration/private/dropdown/days"
+                [value]="formData.paymentMandateDays" [(ngModel)]="formData.paymentMandateDays"
+                *ngIf="formData.paymentMandate == 'weekly'" [required]="true"></aps-custom-select>
+
+              <aps-custom-select name="days" id="days" label="{{ 'Date' | apsTranslate }}"
+                [value]="formData.paymentMandateDays" [(ngModel)]="formData.paymentMandateDays"
+                dataUrl="directDebit/mandateManagement/registration/private/dropdown/months"
+                *ngIf="formData.paymentMandate == 'monthly'" [required]="true"></aps-custom-select>
+
+              <aps-custom-select name="days" id="days" label="{{ 'Quarters' | apsTranslate }}"
+                dataUrl="directDebit/mandateManagement/registration/private/dropdown/quaters"
+                [value]="formData.paymentMandateDays" [(ngModel)]="formData.paymentMandateDays"
+                *ngIf="formData.paymentMandate == 'quaterly'" [required]="true"></aps-custom-select>
+
+              <aps-custom-select name="days" id="days" label="{{ 'Years' | apsTranslate }}"
+                dataUrl="directDebit/mandateManagement/registration/private/dropdown/years"
+                [value]="formData.paymentMandateDays" [(ngModel)]="formData.paymentMandateDays"
+                *ngIf="formData.paymentMandate == 'yearly'" [required]="true"></aps-custom-select>
+            </div> -->
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-aps-calender name="mandateStartDate" id="mandateStartDate"
+                label="{{ 'Mandate Start Date' | apsTranslate }}" [(ngModel)]="formData.mandateStartDate"
+                [required]="true"></app-aps-calender>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-aps-calender name="mandateEndDate" id="mandateEndDate" [disabled]="formData.mandateUntillCancelled"
+                label="{{ 'Mandate End Date' | apsTranslate }}" [(ngModel)]="formData.mandateEndDate"
+                [minDate]="formData.mandateStartDate"></app-aps-calender>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div style="padding-top: 12px;">
+                <p-checkbox class="p-mr-12" label="{{ 'Until Cancelled' | apsTranslate }}" id="mandateUntillCancelled"
+                  name="mandateUntillCancelled" [binary]="true" (onChange)="onCheckboxCheck($event)"
+                  [(ngModel)]="formData.mandateUntillCancelled"></p-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Amount Type' | apsTranslate }}
+              </div>
+              <p-radioButton class="p-mr-3" name="amountType" id="fixed" value="Fixed"
+                (click)="onChangeAmountType(formData.amountType)" label="{{ 'Fixed' | apsTranslate }}"
+                [(ngModel)]="formData.amountType"></p-radioButton>
+              <p-radioButton class="p-mr-3" name="amountType" id="variable" value="Variable"
+                label="{{ 'Variable' | apsTranslate }}" [(ngModel)]="formData.amountType"
+                (click)="onChangeAmountType(formData.amountType)"
+                (onChange)="formData.mandateType = 'File Upload'; formData.amount = ''"></p-radioButton>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-custom-select name="days" id="days" label="{{ 'Currency Code' | apsTranslate }}"
+                dataUrl="directDebit/mandateManagement/registration/private/dropdown/currencyCode"
+                [value]="formData.currencyCode" [(ngModel)]="formData.currencyCode"
+                [required]="true"></aps-custom-select>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.amountType == 'Fixed'">
+              <aps-form-input id="amount" name="amount" label="{{ 'Amount' | apsTranslate }}"
+                [(ngModel)]="formData.amount" [required]="true" inputType="currencyFormatNotZero"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.amountType == 'Variable'">
+              <aps-form-input id="variableAmount" name="variableAmount" label="{{ 'Variable Amount' | apsTranslate }}"
+                [(ngModel)]="formData.variableAmount" [required]="true"
+                [helpText]="'Max Upto 1,00,000.00' | apsTranslate" inputType="currencyFormatNotZero"></aps-form-input>
+            </div>
+
+
+
+
+
+            <!-- <ng-container *ngIf="formData.amountType == 'Variable'">
+              <div class="p-md-9 p-sm-12 p-col-12 p-p-0">
+                <div class="p-grid">
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-3">
+                    <p-radioButton class="" name="variableAmountType" id="variableAmountType" value="Max Upto"
+                      label="{{ 'Max Upto' | apsTranslate }}" [(ngModel)]="formData.variableAmountType"></p-radioButton>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <aps-form-input id="maxUpto" name="maxUpto" label="{{ 'Max Upto' | apsTranslate }}"
+                      [(ngModel)]="formData.maxUpto" [required]="formData.variableAmountType == 'Max Upto'"
+                      [disabled]="formData.variableAmountType != 'Max Upto'"
+                      inputType="currencyFormatNotZero"></aps-form-input>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12 p-py-3">
+                    <p-radioButton class="" name="variableAmountType" id="variableAmountType" value="In Multiply"
+                      label="{{ 'In Multiple' | apsTranslate }}"
+                      [(ngModel)]="formData.variableAmountType"></p-radioButton>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <aps-form-input id="inMultiply" name="inMultiply" label="{{ 'In Multiple' | apsTranslate }}"
+                      [(ngModel)]="formData.inMultiply" [required]="formData.variableAmountType == 'In Multiply'"
+                      [disabled]="formData.variableAmountType != 'In Multiply'"></aps-form-input>
+                  </div>
+
+                  <div class="p-md-4 p-sm-12 p-col-12">
+                    <aps-form-input id="notAbove" name="notAbove" label="{{ 'Not Above' | apsTranslate }}"
+                      [(ngModel)]="formData.notAbove" [required]="formData.variableAmountType == 'In Multiply'"
+                      [disabled]="formData.variableAmountType != 'In Multiply'"
+                      inputType="currencyFormatNotZero"></aps-form-input>
+                  </div>
+                </div>
+              </div>
+            </ng-container> -->
+
+
+          </div>
+
+
+
+
+
+
+
+
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-13 text-color-normal">
+                {{ 'How would you like to process the Mandate?' | apsTranslate }}
+              </div>
+
+              <p-radioButton class="p-mr-3" id="standingInstruction" name="mandateType"
+                [(ngModel)]="formData.mandateType" value="Standing Instruction"
+                label="{{ 'Standing Instruction' | apsTranslate }}"
+                [disabled]="formData.amountType != 'Fixed'"></p-radioButton>
+
+              <p-radioButton id="fileUpload" name="mandateType" [(ngModel)]="formData.mandateType" value="File Upload"
+                label="{{ 'File Upload' | apsTranslate }}"></p-radioButton>
+            </div>
+
+            <ng-container *ngIf="formData.mandateType == 'Standing Instruction'">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <aps-custom-select name="frequency" id="frequency" label="{{ 'SI Frequency' | apsTranslate }}"
+                  dataUrl="directDebit/mandateManagement/registration/private/dropdown/mandateFrequency"
+                  [value]="formData.mandateFrequency" [(ngModel)]="formData.mandateFrequency"
+                  (change)="onChangeMandateFrequency($event)" [required]="true"></aps-custom-select>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Weekly'">
+                <aps-custom-select name="days" id="days" label="{{ 'Days' | apsTranslate }}"
+                  dataUrl="directDebit/mandateManagement/registration/private/dropdown/days"
+                  [value]="formData.mandateDays" [(ngModel)]="formData.mandateDays"
+                  [required]="true"></aps-custom-select>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Monthly'">
+                <!-- <aps-custom-select name="days" id="days" label="{{ 'Date' | apsTranslate }}"
+                  [value]="formData.mandateDays" [(ngModel)]="formData.mandateDays"
+                  dataUrl="directDebit/mandateManagement/registration/private/dropdown/months"
+                  *ngIf="formData.mandateFrequency == 'monthly'" [required]="true"></aps-custom-select> -->
+                <app-aps-calender name="monthDate" id="monthDate" label="{{ 'Date' | apsTranslate }}"
+                  [(ngModel)]="formData.monthDate" [required]="true"></app-aps-calender>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Quaterly'">
+                <aps-custom-select name="days" id="days" label="{{ 'Quarters' | apsTranslate }}"
+                  dataUrl="directDebit/mandateManagement/registration/private/dropdown/quaters"
+                  [value]="formData.mandateDays" [(ngModel)]="formData.mandateDays"
+                  [required]="true"></aps-custom-select>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Quaterly'">
+                <app-aps-calender name="quarterDate" id="quarterDate" label="{{ 'Date' | apsTranslate }}"
+                  [(ngModel)]="formData.quarterDate" [required]="true"></app-aps-calender>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Yearly'">
+                <!-- <aps-custom-select name="days" id="days" label="{{ 'Years' | apsTranslate }}"
+                  dataUrl="directDebit/mandateManagement/registration/private/dropdown/years"
+                  [value]="formData.mandateDays" [(ngModel)]="formData.mandateDays"
+                  [required]="true"></aps-custom-select> -->
+                <app-aps-calender name="yearDate" id="yearDate" label="{{ 'Date' | apsTranslate }}"
+                  [(ngModel)]="formData.yearDate" [required]="true"></app-aps-calender>
+              </div>
+
+
+              <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+              <div class="p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'If Holiday' | apsTranslate }}
+                </div>
+                <!-- <p-radioButton class="p-mr-3" name="mandateIfHoliday" id="prepone" value="Prepone"
+                  label="{{ 'Prepone' | apsTranslate }}" [(ngModel)]="formData.mandateIfHoliday"></p-radioButton> -->
+
+                <p-radioButton class="p-mr-3" name="mandateIfHoliday" id="postpone" value="Postpone"
+                  label="{{ 'Postpone' | apsTranslate }}" [(ngModel)]="formData.mandateIfHoliday"></p-radioButton>
+
+                <p-radioButton name="mandateIfHoliday" id="process" value="process"
+                  label="{{ 'Process' | apsTranslate }}" [(ngModel)]="formData.mandateIfHoliday"></p-radioButton>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep == 3">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="loanNumber" name="loanNumber" label="{{ 'Reference 1' | apsTranslate }}"
+                [(ngModel)]="formData.loanNumber"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="loanAccountNumber" name="loanAccountNumber" label="{{ 'Reference 2' | apsTranslate }}"
+                [(ngModel)]="formData.loanAccountNumber"></aps-form-input>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12 p-p-0"></div>
+
+            <!-- <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="enrichmentProductCode" name="enrichmentProductCode"
+                label="{{ 'Product Code' | apsTranslate }}"
+                [(ngModel)]="formData.enrichmentProductCode"></aps-form-input>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <aps-form-input id="relationshipManager" name="relationshipManager"
+                label="{{ 'Relationship Manager' | apsTranslate }}"
+                [(ngModel)]="formData.relationshipManager"></aps-form-input>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <div class="p-md-5 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2 aps-h-100p">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Product Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <app-review-form-field label="Corporate Code" [value]="corporateCode"></app-review-form-field>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <app-review-form-field label="Corporate Name" [value]="corporateName"></app-review-form-field>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <app-review-form-field label="Product Code" [value]="formData.productCode"></app-review-form-field>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <app-review-form-field label="Product Name" [value]="formData.productName"></app-review-form-field>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <app-review-form-field label="Utility Code" [value]="formData.utilityCode"></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-7 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Payer Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Customer No / ID" [value]="formData.customerNo"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Legal ID" [value]="formData.legalId"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Payer Name" [value]="formData.payerName"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Email ID" [value]="formData.payerEmailId"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Mobile Number" [value]="formData.payerMobileNo"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Address 1" [value]="formData.address1"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Address 2" [value]="formData.address2"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Address 3" [value]="formData.address3"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="IFSC Code" [value]="formData.payerSortCode"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Payer Bank" [value]="formData.payerBank"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field label="Payer Account Number"
+                [value]="formData.payerAccountNumber"></app-review-form-field>
+            </div>
+
+            <!--Supporting Doc-->
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Supporting Document' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.supportingDocuments.length == 0">
+              {{ 'No Supporting Documents Available' | apsTranslate }}
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of formData.supportingDocuments">
+              <div class="aps-card p-p-2">
+                <div class="label-with-icon-container" (click)="isSuppdoc = true">
+                  <div class="icon">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="label">
+                    <div class="text-size-12">
+                      {{ document.fileName }}
+                    </div>
+                    <div class="text-size-10 text-color-normal">
+                      {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--Mandate Upload-->
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Mandate Upload' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.mandateUpload.length == 0">
+              {{ 'No Mandate Upload Available' | apsTranslate }}
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of formData.mandateUpload">
+              <div class="aps-card p-p-2">
+                <div class="label-with-icon-container" (click)="isMandateUpload = true">
+                  <div class="icon">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="label">
+                    <div class="text-size-12">
+                      {{ document.fileName }}
+                    </div>
+                    <div class="text-size-10 text-color-normal">
+                      {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!--Other Documents-->
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Other Document' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.otherDocuments.length == 0">
+              {{ 'No Other Documents Available' | apsTranslate }}
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of formData.otherDocuments">
+              <div class="aps-card p-p-2">
+                <div class="label-with-icon-container" (click)="isOtherUpload = true">
+                  <div class="icon">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="label">
+                    <div class="text-size-12">
+                      {{ document.fileName }}
+                    </div>
+                    <div class="text-size-10 text-color-normal">
+                      {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Payment Setup' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Mandate Start Date"
+                [value]="formData.mandateStartDate"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Mandate End Date" [value]="formData.mandateEndDate"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Until Cancelled"
+                [value]="formData.mandateUntillCancelled"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Amount Type" [value]="formData.amountType"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Currency Code" [value]="formData.currencyCode"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.amountType == 'Fixed'">
+              <app-review-form-field label="Amount" [value]="formData.amount"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.amountType == 'Variable'">
+              <app-review-form-field label="Variable Amount" [value]="formData.variableAmount"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Mandate Type" [value]="formData.mandateType"></app-review-form-field>
+            </div>
+
+            <ng-container *ngIf="formData.mandateType == 'Standing Instruction'">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field label="SI Frequency" [value]="formData.mandateFrequency"></app-review-form-field>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ng-if="formData.mandateFrequency === 'weekly'">
+                <app-review-form-field label="Days" [value]="formData.mandateDays"></app-review-form-field>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ng-if="formData.mandateFrequency === 'monthly'">
+                <app-review-form-field label="Date" [value]="formData.monthDate"></app-review-form-field>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ng-if="formData.mandateFrequency === 'quaterly'">
+                <app-review-form-field label="Quarters" [value]="formData.mandateDays"></app-review-form-field>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ng-if="formData.mandateFrequency === 'quaterly'">
+                <app-review-form-field label="Date" [value]="formData.quarterDate"></app-review-form-field>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12" *ng-if="formData.mandateFrequency === 'yearly'">
+                <app-review-form-field label="Date" [value]="formData.yearDate"></app-review-form-field>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12"></div>
+              <div class="p-md-3 p-sm-12 p-col-12"></div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <app-review-form-field label="If Holiday" [value]="formData.mandateIfHoliday"></app-review-form-field>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Enrichment Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Reference 1" [value]="formData.loanNumber"></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <app-review-form-field label="Reference 2" [value]="formData.loanAccountNumber"></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>

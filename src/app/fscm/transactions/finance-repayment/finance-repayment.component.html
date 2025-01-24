@@ -1,0 +1,575 @@
+<div class="container">
+  <!-- Filters Screen -->
+  <div class="p-grid g-margin-x" *ngIf="currentScreen == 'FILTERS'">
+    <!-- Dynamic Filters -->
+    <div class="p-col-12 p-md-7 p-lg-7 p-pl-0">
+      <app-dynamic-search #dynamicSearch entityName="FINANCEREPAYMENT" (onSearch)="getRecords($event)"
+        (onFiltersReady)="onDynamicFiltersReady()">
+      </app-dynamic-search>
+    </div>
+
+    <!-- Due Invoices -->
+    <div class="p-col-12 p-md-5 p-lg-5">
+      <div class="aps-card p-mb-3 p-p-3">
+        <div class="p-grid border-bottom">
+          <div class="p-col-9 p-p-0">
+            <div class="p-mt-1 text-size-16 text-bold">Due Invoices</div>
+          </div>
+          <div class="p-col-3 p-p-0">
+            <aps-custom-select id="duration" name="duration" [(ngModel)]="dueInvoiceDuration"
+              (change)="onChangeDueInvoiceDuration()" [showLabel]="false" [data]="[
+                { id: 'weeks', displayName: 'This Week' },
+                { id: 'days', displayName: 'Today' },
+                { id: 'months', displayName: 'This Month' }
+              ]">
+            </aps-custom-select>
+          </div>
+        </div>
+        <div class="overdue-container">
+          <div class="p-grid p-py-3 border-bottom" *ngFor="let invoice of dueInvoiceList"
+            (mouseenter)="overDueActions.show($event, actions)" (mouseleave)="overDueActions.hide($event, actions)">
+            <div class="p-col-5 p-md-6 p-lg-6 p-p-0">
+              <div class="text-size-14 text-bold text-color-primary">{{ invoice.number }}</div>
+              <div>
+                <span class="text-size-12 text-light">Buyer:&nbsp;</span>
+                <span class="text-size-12">{{ invoice.sellerBuyerName }}</span>
+              </div>
+              <div>
+                <span class="text-size-12 text-light">Finance Date:&nbsp;</span>
+                <span class="text-size-12">{{ invoice.financeAppliedDate }}</span>
+              </div>
+            </div>
+            <div class="p-col-7 p-md-6 p-lg-6 p-py-0 p-px-1">
+              <div class="text-size-14 text-bold float-right">
+                <app-base-currency [amount]="invoice.amount" showFlag="true" flagStyleClass="flag"
+                  [currency]="invoice.currencyName"></app-base-currency>
+                <div #actions></div>
+              </div>
+              <div class="float-right">
+                <span class="text-size-12 text-light">Maturity Date:</span>
+                <span class="text-size-12">{{ invoice.maturityDate }}</span>
+              </div>
+              <div class="text-size-12 float-right">
+                <span class="p-px-1" [ngClass]="{
+                    'background-color-warning-light text-color-warning': invoice.status == 'Normal',
+                    'background-color-danger-light text-color-danger': invoice.status == 'Overdue'
+                  }">
+                  <app-icon class="text-size-10" icon="fa-exclamation-triangle"></app-icon>
+                  Overdue by&nbsp;{{ invoice.dueInDays }}&nbsp;days
+                </span>
+              </div>
+              <p-overlayPanel [dismissable]="true" #overDueActions>
+                <ng-template pTemplate>
+                  <span *ngFor="let action of invoice.actions | orderBy: 'index':false; let i = index">
+                    <button type="button" *ngIf="action.type === 'BUTTON'"
+                      class="btn btn-md float-right p-ml-2 grid-row-text-size" [ngClass]="action.class"
+                      (click)="invokeActionMethod(invoice, action)">
+                      <app-icon class="mr-2" [icon]="action.icon" *ngIf="action.icon"></app-icon>{{ action.displayName
+                      }}
+                    </button>
+
+                    <span class="p-ml-2 pointer p-mt-2 inline-block" *ngIf="action.type === 'ICON'">
+                      <app-icon [icon]="action.icon" (click)="invokeActionMethod(invoice, action)"></app-icon>
+                    </span>
+                  </span>
+                </ng-template>
+              </p-overlayPanel>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Listing Screen -->
+  <div class="p-grid" *ngIf="currentScreen == 'LISTING'">
+    <!-- Searched Filters View -->
+    <div class="p-col-12 p-p-0">
+      <app-searched-by-view [filters]="selectedFilters" (onClear)="selectedFilters = []; currentScreen = 'FILTERS'"
+        (onModify)="currentScreen = 'FILTERS'"></app-searched-by-view>
+    </div>
+
+    <!-- Search Listing -->
+    <div class="p-col-12 p-p-0 p-mt-3">
+      <div class="aps-card aps-h-400">
+        <div class="aps-card-header overflow-visible p-px-3 p-py-2">
+          <div class="left-right-container">
+            <div class="left-container">
+              <div class="text-size-16 text-color-dark-shade-1 text-bold">Invoices List</div>
+            </div>
+            <div class="right-container">
+              <app-grid-listing-tools [showSearch]="false" [showRefresh]="false" [showMail]="false"
+                [showDownload]="false" [columnConfig]="true"
+                (changeFloatingFilter)="searchResults.changeFloatFilter($event)"
+                (applyColDefs)="searchResults.onApplyConfig($event)" [colDefs]="searchResults.columnDefs">
+              </app-grid-listing-tools>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <app-ag-grid-listing id="searchDetails" #searchResults entityName="INVOICEENTRY" [gridOptions]="gridOptions"
+            [frameworkComponents]="frameworkComponents" [colDefUrl]="searchColDefUrl" [rowDefUrl]="searchRowDefUrl"
+            supressAutoFit="true" (rowSelected)="onSearchResultRowSelected($event)">
+          </app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search Actions -->
+    <div class="p-col-12 p-p-0 p-my-3">
+      <div class="aps-card p-p-3">
+        <div class="left-right-container">
+          <div class="left-container p-pt-2">
+            <ng-container *ngTemplateOutlet="selectedInvoiceTotalPayableTemplate"></ng-container>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-tertiary p-mx-2" (click)="currentScreen = 'FILTERS'">
+              CANCEL
+            </button>
+            <button class="btn btn-md btn-primary float-right p-mx-2" *ngIf="currentScreen == 'LISTING'"
+              [disabled]="selectedInvoices.length == 0" (click)="rePay(selectedInvoices)">
+              REPAY FINANCE
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Repay Finance Screen -->
+  <div *ngIf="currentScreen == 'REPAY'">
+    <!-- step headers -->
+    <div class="step-tracker-container">
+      <app-stepper-header [parentRef]="this"></app-stepper-header>
+    </div>
+
+    <!-- Sponsor and Seller Details -->
+    <ng-container *ngTemplateOutlet="rePayHeaderCardTemplate"></ng-container>
+
+    <!-- Steps Details -->
+    <div class="aps-min-h-300">
+      <div class="p-grid">
+        <!-- Step 1 - Invoice Details -->
+        <ng-container *ngIf="stepperDetails.currentStep == 1">
+          <ng-container *ngTemplateOutlet="invoicesTemplate"></ng-container>
+        </ng-container>
+
+        <!-- Step 2 - Payment Details Step -->
+        <ng-container *ngIf="stepperDetails.currentStep == 2">
+          <div class="p-col-12 aps-card p-mt-3 p-p-1 aps-min-h-300">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-3 p-lg-3">
+                <app-aps-calender label="Payment Date" id="paymentDate" name="paymentDate" showIcon="true"
+                  [(ngModel)]="formData.paymentDate" required="true">
+                </app-aps-calender>
+              </div>
+              <div class="p-col-12 p-md-9 p-lg-9">
+                <div class="text-size-12 text-color-light-shade-1">
+                  Payment Method <sup class="text-color-danger">*</sup>
+                </div>
+                <p-radioButton class="p-mr-2" name="paymentMethod" value="Fund Transfer" label="Fund Transfer"
+                  [(ngModel)]="formData.paymentMethod"></p-radioButton>
+                <p-radioButton class="p-mx-2" name="paymentMethod" value="Credit Card" label="Credit Card"
+                  [(ngModel)]="formData.paymentMethod"></p-radioButton>
+                <p-radioButton class="p-mx-2" name="paymentMethod" value="Debit Card" label="Debit Card"
+                  [(ngModel)]="formData.paymentMethod"></p-radioButton>
+                <p-radioButton class="p-mx-2" name="paymentMethod" value="Cheque" label="Cheque"
+                  [(ngModel)]="formData.paymentMethod"></p-radioButton>
+                <p-radioButton class="p-mx-2" name="paymentMethod" value="Demand Draft" label="Demand Draft"
+                  [(ngModel)]="formData.paymentMethod"></p-radioButton>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3" *ngIf="formData.paymentMethod == 'Fund Transfer'">
+                <aps-custom-select id="debitAccount" name="debitAccount" label="Debit Account"
+                  (change)="onAccountSelection()" [(ngModel)]="formData.debitAccountId" [data]="accountNoList"
+                  required="true">
+                </aps-custom-select>
+              </div>
+              <div class="p-col-12 p-md-9 p-lg-9"
+                *ngIf="formData.paymentMethod == 'Fund Transfer' && !formData.debitAccountId"></div>
+              <div class="p-col-12 p-md-9 p-lg-9"
+                *ngIf="formData.paymentMethod == 'Fund Transfer' && formData.debitAccountId">
+                <div class="text-size-12 text-color-light-shade-1">Account Balance</div>
+                <div class="text-size-14">
+                  <app-base-currency [amount]="formData.accountBalance"
+                    [currency]="formData.currencyName"></app-base-currency>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3" *ngIf="
+                  formData.paymentMethod == 'Credit Card' || formData.paymentMethod == 'Debit Card'
+                ">
+                <aps-form-input id="nameOnCard" label="Name on Card" name="nameOnCard" maxLength="25"
+                  [(ngModel)]="formData.nameOnCard" required="true">
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3" *ngIf="
+                  formData.paymentMethod == 'Credit Card' || formData.paymentMethod == 'Debit Card'
+                ">
+                <aps-form-input id="cardNumber" label="Card Number" name="cardNumber" inputType="numeric" maxLength="16"
+                  [(ngModel)]="formData.cardNumber" required="true">
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3" *ngIf="
+                  formData.paymentMethod == 'Credit Card' || formData.paymentMethod == 'Debit Card'
+                ">
+                <aps-form-input id="cvvNumber" label="CVV" name="cvvNumber" type="password" maxLength="3"
+                  [(ngModel)]="formData.cvvNumber" required="true">
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3" *ngIf="
+                  formData.paymentMethod == 'Credit Card' || formData.paymentMethod == 'Debit Card'
+                ">
+                <app-aps-calender label="Expiry Date" id="expiryDate" name="expiryDate" dateFormat="M-yy" view="month"
+                  [(ngModel)]="formData.expiryDate" required="true">
+                </app-aps-calender>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3" *ngIf="formData.paymentMethod == 'Cheque'">
+                <aps-form-input id="chequeNumber" label="Cheque No" name="chequeNumber" maxLength="25"
+                  [(ngModel)]="formData.chequeNumber" required="true">
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3" *ngIf="formData.paymentMethod == 'Demand Draft'">
+                <aps-form-input id="draftNo" label="Draft No" name="draftNo" maxLength="25"
+                  [(ngModel)]="formData.draftNo" required="true">
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-9 p-lg-9" *ngIf="
+                  formData.paymentMethod == 'Cheque' || formData.paymentMethod == 'Demand Draft'
+                "></div>
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-12 text-color-light-shade-1">Exchange Details</div>
+                <p-radioButton class="p-mr-2" name="exchangeDetails" value="CARD" label="Card"
+                  [(ngModel)]="formData.exchangeDetails"></p-radioButton>
+                <p-radioButton class="p-mx-2" name="exchangeDetails" value="DEALNO" label="Deal No"
+                  [(ngModel)]="formData.exchangeDetails"></p-radioButton>
+              </div>
+              <div class="p-col-6 p-md-9 p-lg-9" *ngIf="formData.exchangeDetails == 'CARD'">
+                <div class="text-size-12 text-color-light-shade-1">FX Rate</div>
+                <div class="text-size-14">{{ formData.fxRate }}</div>
+              </div>
+              <div class="p-col-6 p-md-9 p-lg-9" *ngIf="formData.exchangeDetails != 'CARD'"></div>
+              <div class="p-col-12 p-md-3 p-lg-3" *ngIf="formData.exchangeDetails == 'DEALNO'">
+                <aps-form-input id="dealNo" label="Deal No" name="dealNo" maxLength="25" [(ngModel)]="formData.dealNo"
+                  required="true">
+                </aps-form-input>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- Review Step -->
+        <ng-container *ngIf="stepperDetails.currentStep == 3">
+          <div class="p-col-12 p-p-0">
+            <div class="p-grid">
+              <!-- invoices -->
+              <div class="p-col-12 p-md-8 p-lg-8 p-pl-0 p-py-0 p-mt-3 p-pr-2">
+                <div class="text-size-14 text-bold">
+                  <span class="inline-block">Invoices&nbsp;</span>
+                  <span class="inline-block">({{ formData.invoices.length }})</span>
+                </div>
+                <div class="p-grid">
+                  <ng-container *ngTemplateOutlet="invoicesTemplate"></ng-container>
+                </div>
+              </div>
+
+              <!-- payment details -->
+              <div class="p-col-12 p-md-4 p-lg-4 p-pr-0 p-py-0 p-mt-3 p-pl-2">
+                <div class="text-size-14 text-bold">Payment Details</div>
+                <div class="aps-card p-mt-3 aps-h-300">
+                  <div class="p-grid">
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3 p-pt-3">
+                      <div class="text-size-12 text-color-light-shade-1">Payment Date</div>
+                      <div class="text-size-14 text-color-dark-shade-1">
+                        {{ formData.paymentDate }}
+                      </div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3 p-pt-3">
+                      <div class="text-size-12 text-color-light-shade-1">Payment method</div>
+                      <div class="text-size-14 text-color-dark-shade-1">
+                        {{ formData.paymentMethod }}
+                      </div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3" *ngIf="formData.paymentMethod == 'Fund Transfer'">
+                      <div class="text-size-12 text-color-light-shade-1">Debit Account</div>
+                      <div class="text-size-14 text-color-dark-shade-1">
+                        {{ formData.debitAccountNo }}
+                      </div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3" *ngIf="formData.paymentMethod == 'Fund Transfer'">
+                      <div class="text-size-12 text-color-light-shade-1">Account Balance</div>
+                      <div class="text-size-14 text-color-dark-shade-1">
+                        <app-base-currency [amount]="formData.accountBalance"
+                          [currency]="formData.currencyName"></app-base-currency>
+                      </div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3" *ngIf="
+                        formData.paymentMethod == 'Credit Card' ||
+                        formData.paymentMethod == 'Debit Card'
+                      ">
+                      <div class="text-size-12 text-color-light-shade-1">Name on Card</div>
+                      <div class="text-size-14 text-color-dark-shade-1">
+                        {{ formData.nameOnCard }}
+                      </div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3" *ngIf="
+                        formData.paymentMethod == 'Credit Card' ||
+                        formData.paymentMethod == 'Debit Card'
+                      ">
+                      <div class="text-size-12 text-color-light-shade-1">Card Number</div>
+                      <div class="text-size-14 text-color-dark-shade-1">
+                        {{ formData.cardNumber }}
+                      </div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3" *ngIf="formData.paymentMethod == 'Cheque'">
+                      <div class="text-size-12 text-color-light-shade-1">Cheque No</div>
+                      <div class="text-size-14 text-color-dark-shade-1">
+                        {{ formData.chequeNumber }}
+                      </div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3" *ngIf="formData.paymentMethod == 'Demand Draft'">
+                      <div class="text-size-12 text-color-light-shade-1">Draft No</div>
+                      <div class="text-size-14 text-color-dark-shade-1">{{ formData.draftNo }}</div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3 p-pb-3" *ngIf="formData.exchangeDetails == 'CARD'">
+                      <div class="text-size-12 text-color-light-shade-1">FX Rate</div>
+                      <div class="text-size-14 text-color-dark-shade-1">{{ formData.fxRate }}</div>
+                    </div>
+                    <div class="p-col-6 p-md-6 p-lg-6 p-px-3 p-pb-3" *ngIf="formData.exchangeDetails == 'DEALNO'">
+                      <div class="text-size-12 text-color-light-shade-1">Deal No</div>
+                      <div class="text-size-14 text-color-dark-shade-1">{{ formData.dealNo }}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="aps-card p-p-3">
+                  <span class="text-size-14 text-semi-bold p-px-2 inline-block">Total Payable&nbsp;:&nbsp;</span>
+                  <span class="text-size-14 text-bold inline-block">
+                    <app-base-currency [amount]="getTotalPayable()"
+                      [currency]="formData.currencyName"></app-base-currency>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- footer actions -->
+    <app-stepper-footer [parentRef]="this">
+      <div class="inline-block p-pt-2" left-content>
+        <ng-container *ngTemplateOutlet="selectedInvoiceTotalPayableTemplate"></ng-container>
+      </div>
+    </app-stepper-footer>
+
+    <ng-template #rePayHeaderCardTemplate>
+      <div class="p-grid">
+        <div class="p-col-12 p-p-0 p-mt-3 border-primary border-radius-4">
+          <div class="aps-card p-p-3">
+            <div class="p-grid">
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-14 text-color-light-shade-1">Sponsor Code</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.applicantCode }}</div>
+              </div>
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-14 text-color-light-shade-1">Sponsor Name</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.applicantName }}</div>
+              </div>
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-14 text-color-light-shade-1">Seller/Buyer Code</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.sellerBuyerCode }}
+                </div>
+              </div>
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-14 text-color-light-shade-1">Seller/Buyer Name</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.sellerBuyerName }}
+                </div>
+              </div>
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-14 text-color-light-shade-1">Sponsor A/C No</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.sponsorAccountNo }}
+                </div>
+              </div>
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-14 text-color-light-shade-1">Sponsor Interest A/C No</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.sponsorIntrestAccountNo }}
+                </div>
+              </div>
+              <div class="p-col-6 p-md-3 p-lg-3">
+                <div class="text-size-14 text-color-light-shade-1">Seller Interest A/C No</div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.sellerIntrestAccountNo }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+
+  <ng-template #selectedInvoiceTotalPayableTemplate>
+    <span class="border-right text-size-14 text-semi-bold p-px-2 p-mx-2">
+      {{ currentScreen == 'LISTING' ? selectedInvoices.length : formData.invoices.length }} Invoices
+      Selected
+    </span>
+    <app-base-currency [amount]="getTotalPayable()" showFlag="true" flagStyleClass="flag"
+      [currency]="getTotalPayableCurrency()">
+    </app-base-currency>
+  </ng-template>
+
+  <ng-template #invoicesTemplate>
+    <!-- invoices -->
+    <ng-container *ngIf="formData && formData.invoices">
+      <div class="p-col-12 aps-card p-mt-3 p-p-3" *ngFor="let invoice of formData.invoices; let i = index"
+        [ngClass]="{ 'border-primary': invoice.focused && !isOpenConfirm }" (mouseover)="invoice.focused = true"
+        (mouseout)="invoice.focused = false">
+        <div class="p-grid">
+          <div class="p-col-6 p-p-0" [ngClass]="{
+              'p-md-2 p-lg-2': stepperDetails.currentStep == 1,
+              'p-md-3 p-lg-3': stepperDetails.currentStep != 1 || isOpenConfirm
+            }">
+            <div class="text-size-14 text-bold">{{ invoice.number }}</div>
+            <div>
+              <span class="text-size-12 p-mr-1" [ngClass]="{
+                  'background-color-success-light text-color-success': invoice.status == 'Normal',
+                  'background-color-danger-light text-color-danger': invoice.status == 'Overdue'
+                }">
+                {{ invoice.status }}
+              </span>
+              <span class="border-right p-mx-1"></span>
+              <span class="text-size-12">{{ invoice.dueDate }}</span>
+            </div>
+          </div>
+          <div class="p-col-6 p-p-0" [ngClass]="{ 'p-md-2 p-lg-2': !isOpenConfirm, 'p-md-3 p-lg-3': isOpenConfirm }">
+            <div class="text-size-12 text-color-light-shade-1">Invoice Amount</div>
+            <div class="text-size-14">
+              <app-base-currency [amount]="invoice.amount" [currency]="invoice.currencyName"></app-base-currency>
+            </div>
+          </div>
+          <div class="p-col-6 p-p-0" [ngClass]="{ 'p-md-2 p-lg-2': !isOpenConfirm, 'p-md-3 p-lg-3': isOpenConfirm }">
+            <div class="text-size-12 text-color-light-shade-1">Repayment Amount</div>
+            <div class="text-size-14">
+              <app-base-currency [amount]="invoice.repaymentAmt" [currency]="invoice.currencyName"></app-base-currency>
+            </div>
+          </div>
+          <div class="p-col-6 p-md-3 p-lg-3 p-p-0" *ngIf="stepperDetails.currentStep == 1">
+            <aps-form-input [id]="'amountBeingPaid' + i" label="Amount being paid" [name]="'amountBeingPaid' + i"
+              inputType="currencyFormatNotZero" [(ngModel)]="invoice.amountBeingPaid" required="true">
+            </aps-form-input>
+          </div>
+          <div class="p-col-6 p-md-3 p-lg-3 p-p-0" *ngIf="stepperDetails.currentStep != 1">
+            <div class="text-size-12 text-color-light-shade-1">Amount being paid</div>
+            <div class="text-size-14">
+              <app-base-currency [amount]="invoice.amountBeingPaid"
+                [currency]="invoice.currencyName"></app-base-currency>
+            </div>
+          </div>
+          <div class="p-col-12 p-p-0" *ngIf="!isOpenConfirm" [ngClass]="{
+              'p-md-3 p-lg-3': stepperDetails.currentStep == 1,
+              'p-md-2 p-lg-2': stepperDetails.currentStep != 1
+            }">
+            <app-icon class="pointer float-right p-mx-2 p-my-3"
+              [icon]="invoice.showDetails ? 'fa-chevron-up' : 'fa-chevron-down'"
+              (click)="showHideInvoiceDetails(i)"></app-icon>
+            <app-icon *ngIf="stepperDetails.currentStep == 1" class="pointer float-right p-mx-2 p-my-3"
+              icon="fa-trash-alt" (click)="deleteInvoice(i)"></app-icon>
+            <app-icon class="pointer text-color-primary float-right p-mx-2 p-my-3" icon="fa-eye"
+              (click)="viewInvoice(invoice.mstId)"></app-icon>
+          </div>
+          <ng-container *ngIf="invoice.showDetails">
+            <div class="p-col-12 p-px-0 p-pt-3 p-pb-0 p-mt-3 border-top">
+              <div class="text-size-14 text-bold">Finance Details</div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+              <div class="text-size-12 text-color-light-shade-1">Finance Amount</div>
+              <div class="text-size-14">
+                <app-base-currency [amount]="invoice.financeProcessedAmt"
+                  [currency]="invoice.currencyName"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+              <div class="text-size-12 text-color-light-shade-1">Maturity Due Date</div>
+              <div class="text-size-14">{{ invoice.maturityDate }}</div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+              <div class="text-size-12 text-color-light-shade-1">Repaid Amount</div>
+              <div class="text-size-14">
+                <app-base-currency [amount]="invoice.recoverdAmt" [currency]="invoice.currencyName"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+              <div class="text-size-12 text-color-light-shade-1">Outstanding Principal</div>
+              <div class="text-size-14">
+                <app-base-currency [amount]="invoice.principalAmt"
+                  [currency]="invoice.currencyName"></app-base-currency>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+              <div class="text-size-12 text-color-light-shade-1">Outstanding Interest</div>
+              <div class="text-size-14">
+                <app-base-currency [amount]="invoice.intrestAmt" [currency]="invoice.currencyName"></app-base-currency>
+                &nbsp;+&nbsp;
+                <span class="text-color-danger">
+                  <app-base-currency [amount]="invoice.penalIntrestAmt"
+                    [currency]="invoice.currencyName"></app-base-currency>
+                </span>
+              </div>
+            </div>
+            <div class="p-col-6 p-md-2 p-lg-2 p-p-0 p-mt-3">
+              <div class="text-size-12 text-color-light-shade-1">Margin to be Release</div>
+              <div class="text-size-14">
+                <app-base-currency [amount]="invoice.marginAmt" [currency]="invoice.currencyName"></app-base-currency>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </ng-container>
+  </ng-template>
+
+  <!-- Confirm Popup Modal -->
+  <app-modal [(isShow)]="isOpenConfirm" *ngIf="isOpenConfirm" size="md"
+    headerText="The finance repayment is successfully initiated" (onClose)="navigateToListing()">
+    <div body class="p-grid">
+      <div class="p-col-12 p-p-3 p-mt-3">
+        <div body class="p-grid">
+          <div class="p-col-6 p-md-3 p-lg-3 p-px-0">
+            <div class="text-size-12 text-color-light-shade-1">Batch No</div>
+            <div class="text-size-14">{{ confirmData.batchNo }}</div>
+          </div>
+          <div class="p-col-6 p-md-3 p-lg-3 p-px-0">
+            <div class="text-size-12 text-color-light-shade-1">Date</div>
+            <div class="text-size-14">{{ confirmData.date }}</div>
+          </div>
+          <div class="p-col-6 p-md-3 p-lg-3 p-px-0">
+            <div class="text-size-12 text-color-light-shade-1">Time</div>
+            <div class="text-size-14">{{ confirmData.time }}</div>
+          </div>
+          <div class="p-col-6 p-md-3 p-lg-3 p-px-0">
+            <div class="text-size-12 text-color-light-shade-1">Total Amount Paid</div>
+            <div class="text-size-14">
+              <app-base-currency [amount]="getTotalPayable()" [currency]="formData.currencyName"></app-base-currency>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-p-0">
+        <div class="p-grid">
+          <ng-container *ngTemplateOutlet="invoicesTemplate"></ng-container>
+        </div>
+      </div>
+    </div>
+    <div footer class="left-right-container p-mt-3">
+      <div class="left-container p-mt-1">
+        <span class="p-p-2"><app-icon class="pointer text-size-18" icon="fa-copy"></app-icon></span>
+        <span class="p-p-2"><app-icon class="pointer text-size-18" icon="fa-share-alt"></app-icon></span>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="navigateToListing()">CLOSE</button>
+      </div>
+    </div>
+  </app-modal>
+</div>

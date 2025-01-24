@@ -1,0 +1,35 @@
+<div class="aps-card aps-h-400">
+    <div class="aps-card-header">
+      <app-header-with-search
+        heading="{{ 'Select Structure' | apsTranslate }}"
+        (search)="copyStructure.onFilter($event)"
+      ></app-header-with-search>
+    </div>
+  
+    <div class="aps-card-body">
+      <app-ag-grid-listing
+        id="copy-structure"
+        #copyStructure
+        [colDefUrl]="colDefUrl"
+        [rowDefUrl]="rowDefUrl"
+        [gridOptions]="gridOptions"
+        (rowSelected)="gridRowSelected($event)"
+      ></app-ag-grid-listing>
+    </div>
+  </div>
+  
+  <div class="aps-card aps-p-12 p-mt-3">
+    <div class="left-right-container">
+      <div class="left-container"></div>
+  
+      <div class="right-container">
+        <button
+          class="btn btn-md btn-primary"
+          (click)="parentRef.selectStructure(selectedStrictureId)"
+        >
+          {{ 'NEXT' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </div>
+  

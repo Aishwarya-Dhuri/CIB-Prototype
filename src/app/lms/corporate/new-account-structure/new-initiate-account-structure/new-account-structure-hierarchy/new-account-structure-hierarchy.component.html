@@ -1,0 +1,155 @@
+<app-modal [(isShow)]="parentRef.isAddChildAccount" size="md" headerText="{{ 'Add a Child Account' | apsTranslate }}">
+    <div body class="">
+        <div class="p-grid">
+            <div class="p-col-6 p-py-1">
+                <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Parent Account' | apsTranslate }}
+                </div>
+                <div class="text-size-12 text-color-dark-shade-1">
+                    {{
+                    parentRef.parentAccount
+                    ? parentRef.parentAccount.accountNo[0]
+                    : parentRef.mainAccount
+                    ? parentRef.mainAccount.accountNo[0]
+                    : ''
+                    }}
+                </div>
+            </div>
+            <div class="p-col-6 p-py-1" *ngIf="parentRef.mainAccountDetails.executionSequence == 'Priority'"></div>
+            <div class="p-col-6 p-py-1" *ngIf="parentRef.mainAccountDetails.executionSequence == 'Priority'">
+                <aps-form-input name="priority" id="priority" label="{{ 'Priority' | apsTranslate }}"
+                    [(ngModel)]="parentRef.childAccountDetails.priority"></aps-form-input>
+            </div>
+            <div class="p-col-6 p-py-1">
+                <!-- [data]="parentRef.subAccountData" -->
+                <aps-custom-select name="subAccount" id="subAccount" label="{{ 'Sub Account' | apsTranslate }}"
+                    dataUrl="setup/corporateOnboarding/corporateMain/private/allAccountList"
+                    [reqBody]="{ corporateId: userService.getCorporateId() }"
+                    [value]="parentRef.childAccountDetails.subAccount"
+                    [(ngModel)]="parentRef.childAccountDetails.subAccount"
+                    (change)="parentRef.onChangeChildAccount($event)"></aps-custom-select>
+            </div>
+            <div class="p-col-6 p-py-1">
+                <aps-custom-select name="accountType" id="accountType" label="{{ 'Account Type' | apsTranslate }}"
+                    [value]="parentRef.childAccountDetails.accountType"
+                    (change)="parentRef.onChangeAccountType(parentRef.childAccountDetails.accountType)"
+                    [(ngModel)]="parentRef.childAccountDetails.accountType"
+                    dataUrl="lms/corporate/newAccountStructure/private/dropdown/accountType"></aps-custom-select>
+            </div>
+        </div>
+
+        <div class="left-right-container p-pt-4">
+            <div class="left-container">
+                <button class="btn btn-md btn-tertiary p-mr-3" (click)="
+            parentRef.isAdvancedChildAccountDetails = true; parentRef.isAddChildAccount = false
+          ">
+                    {{ 'GO TO ADVANCED DETAILS' | apsTranslate }}
+                </button>
+            </div>
+            <div class="right-container">
+                <button class="btn btn-md btn-tertiary p-mr-3"
+                    (click)="parentRef.isAddChildAccount = false; parentRef.parentAccount = null">
+                    {{ 'CANCEL' | apsTranslate }}
+                </button>
+                <button class="btn btn-md btn-primary" (click)="parentRef.addChildAccount()">
+                    {{ 'SUBMIT' | apsTranslate }}
+                </button>
+            </div>
+        </div>
+    </div>
+</app-modal>
+
+<div class="aps-card p-mb-3 p-p-3">
+    <div class="text-size-16 text-bold text-color-dark-shade-2">
+        {{ 'Structure Details' | apsTranslate }}
+    </div>
+
+    <div class="p-grid p-flex-column p-flex-md-row p-pt-3">
+        <div class="p-col p-p-0 p-pt-3">
+            <div class="text-size-12 text-color-light-shade-1">{{ 'Corporate Name' | apsTranslate }}</div>
+            <div class="text-size-16 text-color-dark-shade-1">
+                {{ userService.userDetails.corporateName }}
+            </div>
+        </div>
+        <div class="p-col p-p-0 p-pt-3">
+            <div class="text-size-12 text-color-light-shade-1">{{ 'Structure Name' | apsTranslate }}</div>
+            <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.structureName }}
+            </div>
+        </div>
+        <div class="p-col p-p-0 p-pt-3">
+            <div class="text-size-12 text-color-light-shade-1">{{ 'Structure Type' | apsTranslate }}</div>
+            <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.structureType }}
+            </div>
+        </div>
+        <div class="p-col p-p-0 p-pt-3">
+            <div class="text-size-12 text-color-light-shade-1">
+                {{ 'Main Account No' | apsTranslate }}
+            </div>
+            <div class="text-size-16 text-color-dark-shade-1">
+                {{
+                parentRef.rowData.length > 0
+                ? parentRef.rowData[0].accountNo[0]
+                : parentRef.mainAccountDetails.mainAccount
+                }}
+            </div>
+        </div>
+        <div class="p-col p-p-0 p-pt-3">
+            <div class="text-size-14 text-color-light-shade-1">
+                {{ 'Execution Frequency' | apsTranslate }}
+            </div>
+            <div class="text-size-16 text-color-dark-shade-1">
+                {{ parentRef.mainAccountDetails.executionSequence }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="aps-card aps-h-500 p-mb-3">
+    <div class="aps-card-header background-color-primary aps-py-12 p-px-3">
+        <div class="left-right-container">
+            <div class="left-container"></div>
+            <div class="right-container">
+                <div class="toggle-select-container">
+                    <div class="action pointer text-color-dark-shade-1" [ngClass]="{ active: treeType === 'grid' }"
+                        (click)="treeType = 'grid'">
+                        <app-icon icon="fa-list" class="app-icon"></app-icon>
+                    </div>
+                    <div class="action pointer text-color-dark-shade-1" [ngClass]="{ active: treeType === 'tree' }"
+                        (click)="treeType = 'tree'">
+                        <app-icon icon="fa-sitemap" class="app-icon"></app-icon>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="aps-card-body position-relative">
+        <app-ag-grid-listing *ngIf="treeType === 'grid'" id="structure-hirarchy" #newStructureHierarchy
+            [columnDefs]="colDefs" [rowData]="parentRef.rowData" [gridOptions]="gridOptions"
+            [context]="parentRef.context" (gridReady)="refreshStructureHierarchyGrid()"
+            (rowDragEnd)="parentRef.onRowDragged($event)"></app-ag-grid-listing>
+
+        <div class="tree-account-details-container" *ngIf="treeType === 'tree' && treeNode">
+            <div class="aps-card account-container">
+                <div class="account-header background-color-dark-9 text-color-inverted p-py-2 p-px-3">
+                    <div class="left-right-container">
+                        <div class="left-container">{{ 'Account Details' | apsTranslate }}</div>
+                        <div class="right-container pointer" (click)="treeNode = null">
+                            <app-icon icon="fa-times"></app-icon>
+                        </div>
+                    </div>
+                </div>
+                <div class="account-body">
+                    <div class="account-details background-color-dark-5 text-color-dark-shade-1 p-py-2 p-px-3">
+                        <div class="text-size-14">Internal -Current Account</div>
+                        <div class="text-size-12 text-color-normal p-mt-1">ZBA | Priority-1</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <app-tree-structure-hierarchy [treeStructureHierarchy]="parentRef.accountStructureHierarchyTreeData"
+            *ngIf="treeType === 'tree'" (nodeSelected)="selectedTreeNode($event)"></app-tree-structure-hierarchy>
+    </div>
+</div>

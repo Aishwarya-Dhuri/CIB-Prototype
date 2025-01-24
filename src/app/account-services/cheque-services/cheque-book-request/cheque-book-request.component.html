@@ -1,0 +1,648 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal
+      *ngIf="isShowDocumentUpload"
+      [(isShow)]="isShowDocumentUpload"
+      headerText="{{ 'Upload Documents' | apsTranslate }}"
+      (onClose)="onSubmit(false)"
+    >
+      <div class="p-grid" body>
+        <!-- <div class="p-col-12 p-p-0 p-my-3 text-size-16">
+          Upload the email with invoice or other invoice documents. Max.10Mb each
+        </div> -->
+        <div class="p-col-12 p-p-0">
+          <upload-form-control
+            isMultiple="true"
+            [files]="formData.documents"
+            (onUploaded)="onFileUploaded($event)"
+          ></upload-form-control>
+        </div>
+      </div>
+      <div class="p-grid" footer>
+        <div class="p-col-12 p-p-0 p-mt-3">
+          <button
+            class="btn btn-md btn-primary float-right"
+            [disabled]="formData.documents.length == 0"
+            (click)="onDocumentUpload($event)"
+          >
+            {{ 'UPLOAD FILE' | apsTranslate }}
+          </button>
+          <button
+            class="btn btn-md btn-tertiary p-mx-2 float-right"
+            [disabled]="formData.documents.length == 0"
+            (click)="reset()"
+          >
+            CLEAR
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal [(isShow)]="isSubmitAck" size="md">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="text-size-20 text-bold">
+            {{ 'Request is successfully initiated' | apsTranslate }}
+          </div>
+        </div>
+        <div class="right-container">
+          <app-icon icon="fa-times" styleClasses="pointer" (click)="cancel()"></app-icon>
+        </div>
+      </div>
+
+      <div class="p-grid border-bottom text-size-14 p-pt-3">
+        <div class="p-col-12 p-p-0 p-mb-3">
+          <div class="text-color-light-shade-1">{{ 'SR Number' | apsTranslate }}</div>
+          <div class="">{{ formData.id }}</div>
+        </div>
+        <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0 p-mb-3 p-l-0">
+          <div class="text-color-light-shade-1">{{ 'Date' | apsTranslate }}</div>
+          <div class="">{{ formData.date }}</div>
+        </div>
+        <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0 p-mb-3">
+          <div class="text-color-light-shade-1">{{ 'Time' | apsTranslate }}</div>
+          <div class="">{{ '03:32 PM' }}</div>
+        </div>
+        <div class="p-md-4 p-lg-4 p-sm-12 p-col-12 p-p-0 p-mb-3">
+          <div class="text-color-light-shade-1">{{ 'SR Sub Type' | apsTranslate }}</div>
+          <div class="">{{ formData.chequeType }}</div>
+        </div>
+      </div>
+
+      <div class="left-right-container p-mt-3">
+        <div class="left-container">
+          <div class="inline-items p-pt-2">
+            <div class="item p-mr-3">
+              <app-icon icon="fa-arrow-to-bottom"></app-icon>
+            </div>
+            <div class="item p-mr-3">
+              <app-icon icon="fa-print"></app-icon>
+            </div>
+            <div class="item">
+              <app-icon icon="fa-envelope"></app-icon>
+            </div>
+          </div>
+        </div>
+        <div class="right-container">
+          <button class="btn btn-md btn-primary" (click)="cancel()">
+            {{ 'CLOSE' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+
+    <form name="chequeBookRequestForm" #chequeBookRequestForm="ngForm">
+      <div class="p-grid" *ngIf="stepperDetails.currentStep == 1">
+        <div class="p-co l-12 p-md-4 p-sm-12 p-pr-1 p-pl-0">
+          <div class="aps-card aps-h-100p">
+            <div class="aps-card-header">
+              <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">Request Details</div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid">
+                <div class="p-col-12 p-md-12 p-sm-12 p-px-3">
+                  <aps-custom-select
+                    label="Cheque Type"
+                    name="chequeType"
+                    id="chequeType"
+                    [(ngModel)]="formData.chequeType"
+                    [value]="formData.chequeType"
+                    dataUrl="accountServices/chequeServices/chequeBookRequest/private/dropdown/chequeTypeDataList"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div class="p-col-12 p-md-12 p-sm-12 p-px-3">
+                  <div class="p-col-12 text-size-14 text-semi-bold">Account Selection</div>
+                  <p-radioButton
+                    class="p-mr-3"
+                    name="accountNo"
+                    id="accountNo"
+                    label="Account No."
+                    value="Account No"
+                    [(ngModel)]="formData.accountSelection"
+                    (onClick)="onAccountTypeSelection('Account No')"
+                  ></p-radioButton>
+
+                  <p-radioButton
+                    name="IBAN"
+                    id="IBAN"
+                    label="IBAN"
+                    value="IBAN"
+                    [(ngModel)]="formData.accountSelection"
+                    (onClick)="onAccountTypeSelection('IBAN')"
+                  ></p-radioButton>
+                </div>
+                <div
+                  *ngIf="formData.accountSelection == 'IBAN'"
+                  class="p-col-12 p-md-12 p-sm-12 p-px-3"
+                >
+                  <aps-custom-select
+                    label="IBAN"
+                    name="IBAN"
+                    id="IBAN"
+                    [(ngModel)]="formData.accountId"
+                    [value]="formData.accountId"
+                    dataUrl="setup/corporateOnboarding/corporateMain/private/ibanAccountList"
+                    (change)="onAccountSelected($event)"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div
+                  *ngIf="formData.accountSelection == 'Account No'"
+                  class="p-col-12 p-md-12 p-sm-12 p-px-3"
+                >
+                  <aps-custom-select
+                    label="Account No"
+                    name="accountId"
+                    id="accountId"
+                    [(ngModel)]="formData.accountId"
+                    [value]="formData.accountId"
+                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                    (change)="onAccountSelected($event)"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div class="p-col-12 p-md-12 p-sm-12 p-px-3">
+                  <aps-form-input
+                    label="Account Title"
+                    name="accountTitle"
+                    id="accountTitle"
+                    [(ngModel)]="formData.accountTitle"
+                    [disabled]="true"
+                    [required]="true"
+                  >
+                  </aps-form-input>
+                </div>
+                <div class="p-col-12 p-md-12 p-sm-12 p-px-3">
+                  <aps-custom-select
+                    label="Total No Of Books"
+                    name="totalNoOfBooks"
+                    id="totalNoOfBooks"
+                    [(ngModel)]="formData.totalNoOfBooks"
+                    [value]="formData.totalNoOfBooks"
+                    dataUrl="accountServices/chequeServices/chequeBookRequest/private/dropdown/totalNoOfBooksDataList"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div class="p-col-12 p-md-12 p-sm-12 p-px-3">
+                  <aps-custom-select
+                    label="Total No Of Leaves"
+                    name="totalNoOfLeaves"
+                    id="totalNoOfLeaves"
+                    [(ngModel)]="formData.totalNoOfLeaves"
+                    [value]="formData.totalNoOfLeaves"
+                    dataUrl="accountServices/chequeServices/chequeBookRequest/private/dropdown/totalNoOfLeavesDataList"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12 p-md-8 p-sm-12 p-pr-0 p-pl-1">
+          <div class="aps-card p-mb-2">
+            <div class="aps-card-header">
+              <div class="p-grid">
+                <div class="p-col-6">
+                  <div class="p-col-12 text-size-16 text-semi-bold">Delivery Details</div>
+                </div>
+                <div class="p-col-6 p-px-3 p-py-2">
+                  <div class="inline-items float-right">
+                    <div class="item">
+                      <div
+                        class="text-size-10 background-color-primary-light-shade-2 border-radius-4 pointer p-p-1 p-mt-1 p-mr-2"
+                        (click)="viewDocuments = true"
+                        *ngIf="formData.documents.length > 0"
+                      >
+                        {{ this.formData.documents.length }} Uploaded
+                      </div>
+                    </div>
+                    <div class="item">
+                      <button
+                        type="button"
+                        class="btn btn-md btn-tertiary"
+                        (click)="showDocumentUploadModal()"
+                      >
+                        <app-icon styleClasses="text-color-primary" icon="fa-upload" class="p-mr-2">
+                        </app-icon>
+                        UPLOAD DOCUMENT
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="aps-card-body">
+              <div class="p-grid">
+                <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                  <aps-custom-select
+                    label="Delivery Options"
+                    name="deliveryOption"
+                    id="deliveryOption"
+                    [(ngModel)]="formData.deliveryOption"
+                    [value]="formData.deliveryOption"
+                    dataUrl="accountServices/chequeServices/chequeBookRequest/private/dropdown/deliveryOptionsDataList"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div
+                  class="p-col-12 p-md-6 p-sm-12 p-px-3"
+                  *ngIf="formData.deliveryOption === 'Branch'"
+                >
+                  <aps-custom-select
+                    label="Branch"
+                    name="branch"
+                    id="branch"
+                    [(ngModel)]="formData.branch"
+                    [value]="formData.branch"
+                    dataUrl="accountServices/chequeServices/chequeBookRequest/private/dropdown/branchDataList"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+              </div>
+              <div class="p-grid" *ngIf="formData.deliveryOption === 'Branch'">
+                <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                  <aps-custom-select
+                    label="Collector Id Type"
+                    name="collectorIdType"
+                    id="collectorIdType"
+                    [(ngModel)]="formData.collectorIdType"
+                    [value]="formData.collectorIdType"
+                    dataUrl="accountServices/chequeServices/chequeBookRequest/private/dropdown/collectorIdTypeDataList"
+                    [required]="true"
+                  >
+                  </aps-custom-select>
+                </div>
+
+                <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                  <aps-form-input
+                    label="Collector Name"
+                    name="collectorName"
+                    id="collectorName"
+                    [(ngModel)]="formData.collectorName"
+                    inputType="alphaNumeric"
+                    [required]="true"
+                  >
+                  </aps-form-input>
+                </div>
+
+                <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                  <aps-form-input
+                    label="Collector ID No."
+                    name="collectorIdNumber"
+                    id="collectorIdNumber"
+                    [(ngModel)]="formData.collectorIdNumber"
+                    inputType="alphaNumeric"
+                    [required]="true"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+
+              <div class="p-grid">
+                <ng-container *ngIf="formData.deliveryOption == 'Courier'">
+                  <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                    <p-radioButton
+                      class="p-mr-3"
+                      name="deliveredTo"
+                      id="deliveredTo"
+                      [label]="'Corporates Registered Address' | apsTranslate"
+                      value="Corporates Registered Address"
+                      [(ngModel)]="formData.deliveredTo"
+                    >
+                    </p-radioButton>
+
+                    <p-radioButton
+                      name="deliveredTo"
+                      id="deliveredTo"
+                      [label]="'Other' | apsTranslate"
+                      value="Other"
+                      [(ngModel)]="formData.deliveredTo"
+                    ></p-radioButton>
+                  </div>
+                  <div class="p-col-12 p-px-3" *ngIf="formData.deliveredTo == 'Other'">
+                    <div class="p-grid">
+                      <div class="p-col-9 p-py-0">
+                        <div class="p-grid">
+                          <div class="p-col-12 p-p-0">
+                            <aps-form-input
+                              name="address1"
+                              id="address1"
+                              label="{{ 'Address 1' | apsTranslate }}"
+                              [(ngModel)]="formData.address1"
+                              [required]="true"
+                            ></aps-form-input>
+                          </div>
+                          <div class="p-col-12 p-p-0" *ngIf="addressLine2">
+                            <aps-form-input
+                              name="address2"
+                              id="address2"
+                              label="{{ 'Address 2' | apsTranslate }}"
+                              [(ngModel)]="formData.address2"
+                              [rightIcon]="'fa-trash-alt'"
+                              (onRightIcon)="deleteAddressLine(2)"
+                              [required]="true"
+                            ></aps-form-input>
+                          </div>
+                          <div class="p-col-12 p-p-0" *ngIf="addressLine3">
+                            <aps-form-input
+                              name="address3"
+                              id="address3"
+                              label="{{ 'Address 3' | apsTranslate }}"
+                              [(ngModel)]="formData.address3"
+                              [rightIcon]="'fa-trash-alt'"
+                              (onRightIcon)="deleteAddressLine(3)"
+                              [required]="true"
+                            ></aps-form-input>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="p-col-3">
+                        <button
+                          class="btn text-center btn-sm btn-tertiary"
+                          (click)="addressLine2 ? (addressLine3 = true) : (addressLine2 = true)"
+                          [disabled]="addressLine2 && addressLine3"
+                        >
+                          <app-icon icon="fa-plus"> </app-icon>&nbsp;{{ 'ADD MORE' | apsTranslate }}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+
+                <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                  <aps-form-input
+                    label="Remarks"
+                    name="remarks"
+                    id="remarks"
+                    [(ngModel)]="formData.remarks"
+                    [required]="true"
+                  >
+                  </aps-form-input>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card">
+            <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">Cheque Specimen</div>
+            <div class="p-px-5 p-py-3">
+              <img
+                [ngClass]="viewport == 'mobile' ? 'img-mobile' : 'img-web'"
+                [src]="chequeImageUrl"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div class="p-grid" *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <div class="p-col-12 p-md-4 p-sm-12 p-pr-1 p-pl-0">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header">
+            <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+              {{ 'Request Details' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid">
+              <div class="p-px-3 p-col-12 p-md-12 p-sm-12">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Cheque Type' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.chequeType }}</div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-12 p-sm-12 p-px-3">
+                <div class="p-col-12 text-size-14 text-semi-bold">
+                  {{ 'Account Selection' | apsTranslate }}
+                </div>
+                <p-radioButton
+                  class="p-mr-3"
+                  name="accountNo"
+                  id="accountNo"
+                  [label]="'Account No.' | apsTranslate"
+                  value="Account No"
+                  [(ngModel)]="formData.accountSelection"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+
+                <p-radioButton
+                  name="IBAN"
+                  id="IBAN"
+                  [label]="'IBAN' | apsTranslate"
+                  value="IBAN"
+                  [(ngModel)]="formData.accountSelection"
+                  [disabled]="true"
+                ></p-radioButton>
+              </div>
+              <div class="p-px-3 p-col-12 p-md-12 p-sm-12">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'IBAN' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.accountNo }}</div>
+                </div>
+              </div>
+              <div class="p-px-3 p-col-12 p-md-12 p-sm-12">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Account Title' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.accountTitle }}</div>
+                </div>
+              </div>
+              <div class="p-px-3 p-col-12 p-md-12 p-sm-12">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Total No Of Books' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">
+                    {{ formData.totalNoOfBooks }}
+                  </div>
+                </div>
+              </div>
+              <div class="p-px-3 p-col-12 p-md-12 p-sm-12">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Total No Of Leaves' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">
+                    {{ formData.totalNoOfLeaves }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-8 p-sm-12 p-pr-0 p-pl-1">
+        <div class="aps-card p-mb-2">
+          <div class="aps-card-header">
+            <div class="p-grid">
+              <div class="p-col-6">
+                <div class="p-col-12 text-size-16 text-semi-bold">
+                  {{ 'Delivery Details' | apsTranslate }}
+                </div>
+              </div>
+              <div class="p-col-6 p-px-3 p-py-2">
+                <div class="inline-items float-right">
+                  <div class="item">
+                    <div
+                      class="text-size-10 background-color-primary-light-shade-2 border-radius-4 pointer p-p-1 p-mt-1 p-mr-2"
+                      (click)="viewDocuments = true"
+                      *ngIf="formData.documents.length > 0"
+                    >
+                      {{ this.formData.documents.length }} {{ 'Uploaded' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="item">
+                    <button
+                      type="button"
+                      class="btn btn-md btn-tertiary"
+                      (click)="showDocumentUploadModal()"
+                    >
+                      <app-icon styleClasses="text-color-primary" icon="fa-upload" class="p-mr-2">
+                      </app-icon>
+                      {{ ' UPLOAD DOCUMENT' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Delivery Options' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">
+                    {{ formData.deliveryOption }}
+                  </div>
+                </div>
+              </div>
+              <div
+                class="p-col-12 p-md-6 p-sm-12 p-px-3"
+                *ngIf="formData.deliveryOption == 'Branch'"
+              >
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Branch' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.branch }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Collector Id Type' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">
+                    {{ formData.collectorIdType }}
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Collector Name' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.collectorName }}</div>
+                </div>
+              </div>
+
+              <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Collector Id Number' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.collectorIdNumber }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-grid">
+              <ng-container *ngIf="formData.deliveryOption == 'Courier'">
+                <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                  <p-radioButton
+                    class="p-mr-3"
+                    name="deliveredTo"
+                    id="deliveredTo"
+                    [label]="'Corporates Registered Address' | apsTranslate"
+                    value="Corporates Registered Address"
+                    [(ngModel)]="formData.deliveredTo"
+                    [disabled]="true"
+                  >
+                  </p-radioButton>
+
+                  <p-radioButton
+                    name="deliveredTo"
+                    id="deliveredTo"
+                    [label]="'Other' | apsTranslate"
+                    value="Other"
+                    [(ngModel)]="formData.deliveredTo"
+                    [disabled]="true"
+                  ></p-radioButton>
+                </div>
+                <div class="p-col-12 p-px-3" *ngIf="formData.deliveredTo == 'Other'">
+                  <div class="p-p-2">
+                    <div class="text-size-12 text-color-light-shade-1">
+                      {{ 'Address' | apsTranslate }}
+                    </div>
+                    <div class="text-size-14">
+                      {{
+                        formData.address1 +
+                          (formData.address2 ? ', ' + formData.address2 : '') +
+                          (formData.address3 ? ', ' + formData.address3 : '')
+                      }}
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+
+              <div class="p-col-12 p-md-6 p-sm-12 p-px-3">
+                <div class="p-p-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Remarks' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ formData.remarks }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card">
+          <div class="p-col-12 p-px-3 p-py-3 text-size-16 text-semi-bold">
+            {{ 'Cheque Specimen' | apsTranslate }}
+          </div>
+          <div class="p-px-5 p-py-3">
+            <img
+              [ngClass]="viewport == 'mobile' ? 'img-mobile' : 'img-web'"
+              [src]="chequeImageUrl"
+              alt=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Form Actions -->
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate> <app-loading-spinner></app-loading-spinner> </ng-template>

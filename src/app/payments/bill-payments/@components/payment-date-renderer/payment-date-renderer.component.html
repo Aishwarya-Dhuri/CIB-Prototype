@@ -1,0 +1,9 @@
+<div class="inline-items" *ngIf="cellValue">
+  <div class="item">
+    <input class="input" type="text" (input)="dateChange()" [(ngModel)]="cellValue" />
+  </div>
+  <div class="item">
+    <!-- <i class="pi pi-calendar text-size-14"></i> -->
+    <app-icon icon="fa-calendar" styleClasses="text-size-14"></app-icon>
+  </div>
+</div>

@@ -1,0 +1,103 @@
+<div class="view-transactions p-px-3 p-py-4">
+  <span class="p-p-1 p-mx-1 border-primary border-radius-4 pointer" (click)="backToSearch()">
+    <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right" class="app-icon"></app-icon>
+  </span>
+  <div class="text-size-16 text-color-dark-shade-1 text-bold inline-block">
+    Cash Deposit Details
+  </div>
+
+  <br />
+
+  <div class="aps-card p-px-3 p-mt-3">
+    <div class="p-grid p-mt-3">
+      <div class="p-py-3 text-size-14 text-semi-bold">Batch Details</div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          <div class="inline-items">
+            <div class="item">Value Date</div>
+          </div>
+        </div>
+        <div class="text-size-14">02-Nov-2016</div>
+      </div>
+
+      <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          <div class="inline-items">
+            <div class="item">Pickup Location</div>
+          </div>
+        </div>
+        <div class="text-size-14">Phuket</div>
+      </div>
+
+      <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          <div class="inline-items">
+            <div class="item">Pickup Point</div>
+          </div>
+        </div>
+        <div class="text-size-14">Pattaya</div>
+      </div>
+
+      <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          <div class="inline-items">
+            <div class="item">DS Number</div>
+          </div>
+        </div>
+        <div class="text-size-14">2005</div>
+      </div>
+
+      <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          <div class="inline-items">
+            <div class="item">DS Amount</div>
+          </div>
+        </div>
+        <div class="text-size-14">INR</div>
+      </div>
+
+      <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+        <div class="text-size-12 text-color-light-shade-1">
+          <div class="inline-items">
+            <div class="item">Batch Reference</div>
+          </div>
+        </div>
+        <div class="text-size-14">500</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aps-card p-px-3 p-mt-3">
+    <div class="p-grid p-mt-3">
+      <div class="p-py-3 text-size-14 text-semi-bold">Denominations Details</div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-md-6 p-lg-6 p-sm-12 aps-h-500 overflow-y-hidden">
+        <div class="p-py-3 text-size-14 text-semi-bold">Notes</div>
+
+        <app-ag-grid-listing
+          [gridOptions]="gridOptions"
+          [context]="{ componentParent: this }"
+          [columnDefs]="colDefUrl"
+          [rowData]="dataUrl"
+        ></app-ag-grid-listing>
+      </div>
+
+      <div class="p-md-6 p-lg-6 p-sm-12 aps-h-500 overflow-y-hidden">
+        <div class="p-py-3 text-size-14 text-semi-bold">Coins</div>
+        <app-ag-grid-listing
+          [gridOptions]="gridOptions"
+          [context]="{ componentParent: this }"
+          [columnDefs]="coinscolDefUrl"
+          [rowData]="coinsdataUrl"
+        ></app-ag-grid-listing>
+      </div>
+
+      <div class="p-py-3 text-size-14 text-semi-bold">Total Amount:25000</div>
+    </div>
+  </div>
+</div>

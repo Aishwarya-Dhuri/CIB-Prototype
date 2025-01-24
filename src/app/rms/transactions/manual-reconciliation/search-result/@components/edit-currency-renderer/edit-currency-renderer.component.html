@@ -1,0 +1,19 @@
+<div class="inline-items">
+  <div class="item">
+    <div class="text-size-12 text-color-dark-shade-1 p-mr-1">{{ cellValue.currencyName }}</div>
+  </div>
+  <div class="item">
+    <input
+      *ngIf="cellValue.module == 'payment'"
+      type="text"
+      (input)="amountChange()"
+      [(ngModel)]="cellValue.outstandingAmount"
+    />
+    <input
+      *ngIf="cellValue.module == 'invoice'"
+      type="text"
+      (input)="amountChange()"
+      [(ngModel)]="cellValue.amount"
+    />
+  </div>
+</div>

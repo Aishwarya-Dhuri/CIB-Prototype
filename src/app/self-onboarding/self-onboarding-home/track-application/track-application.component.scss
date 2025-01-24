@@ -1,0 +1,62 @@
+.track-application-container {
+  border-radius: 5px;
+  background: url('./../../../../assets/images/mask/mask-group-3.png'), var(--background-color);
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 20rem;
+
+  .mt--3 {
+    margin-top: -16px !important;
+  }
+
+  .icon {
+    position: relative;
+    .file {
+      height: 56px;
+      display: inline-block;
+      position: relative;
+      font-size: 3rem;
+      line-height: 48px;
+
+      .status {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        background-color: var(--background-color);
+        border-radius: 50%;
+        border: 2px solid var(--primary-color);
+        right: -8px;
+        bottom: 0;
+        padding: 4px;
+        font-size: 0.75rem;
+        line-height: 12px;
+      }
+
+      .status-success {
+        border-color: var(--primary-color);
+      }
+
+      .status-rejected {
+        border-color: var(--color-error);
+      }
+
+      .status-pending {
+        border-color: var(--color-warning);
+      }
+    }
+  }
+
+  img {
+    height: 5rem;
+    width: auto;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

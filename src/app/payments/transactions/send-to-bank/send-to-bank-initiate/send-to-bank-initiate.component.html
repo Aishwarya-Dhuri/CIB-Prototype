@@ -1,0 +1,410 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal size="md" headerText="Batch Transaction Details" [(isShow)]="showBatchTransactions">
+      <div body class="aps-h-400 p-mt-3">
+        <app-ag-grid-listing
+          [columnDefs]="transactionColDefs"
+          [rowData]="transactionRowData"
+          [gridOptions]="{ rowModelType: 'clientSide' }"
+        ></app-ag-grid-listing>
+      </div>
+    </app-modal>
+
+    <!-- for singlePayment -->
+    <app-modal [(isShow)]="showSinglePayment" size="lg" headerText="Single Payment">
+      <div class="aps-h-500">
+        <app-large-single-payment-initiate
+          [isViewMode]="true"
+          *ngIf="showSinglePayment"
+        ></app-large-single-payment-initiate>
+      </div>
+    </app-modal>
+
+    <!-- for bulkPayment -->
+    <app-modal [(isShow)]="showBulkPayment" size="lg" headerText="Bulk Payment">
+      <div class="aps-h-500">
+        <app-bulk-payment-request
+          [isViewMode]="true"
+          *ngIf="showBulkPayment"
+        ></app-bulk-payment-request>
+      </div>
+    </app-modal>
+
+    <!-- for billPayment -->
+    <app-modal [(isShow)]="showBillPayment" size="lg" headerText="Bill Payments">
+      <div class="aps-h-500">
+        <!-- <app-wps-payment-initiate
+          [isViewMode]="true"
+          *ngIf="showBillPayment"
+        ></app-wps-payment-initiate> -->
+      </div>
+    </app-modal>
+
+    <!-- for fdInitiation -->
+    <app-modal [(isShow)]="showFdInitiation" size="lg" headerText="FD Initiation">
+      <div class="aps-h-500">
+        <app-fd-initiation [isViewMode]="true" *ngIf="showFdInitiation"></app-fd-initiation>
+      </div>
+    </app-modal>
+
+    <!-- for wpsPayment -->
+    <app-modal [(isShow)]="showWpsPayment" size="lg" headerText="WPS Payments">
+      <div class="aps-h-500">
+        <app-wps-payment-initiate
+          [isViewMode]="true"
+          *ngIf="showWpsPayment"
+        ></app-wps-payment-initiate>
+      </div>
+    </app-modal>
+
+    <div class="p-grid g-margin-x">
+      <div [ngClass]="isGroupUser ? 'p-md-9' : 'p-md-8'" class="p-sm-12 p-col-12 p-p-0">
+        <div class="p-grid">
+          <div [ngClass]="isGroupUser ? 'p-md-6' : 'p-md-7'" class="p-sm-12 p-col-12">
+            <div class="aps-card p-p-2 aps-h-100p">
+              <div class="p-grid">
+                <div class="p-md-5 p-sm-12 p-col-12 p-pb-0">
+                  <div class="text-size-14 text-bold">
+                    {{ 'Initiation Summary' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="p-md-7 p-sm-12 p-col-12 text-right p-pb-0">
+                  <div class="inline-items">
+                    <div class="item p-mr-2" *ngIf="isGroupUser">
+                      <aps-custom-select
+                        name="corporate"
+                        id="corporate"
+                        [showLabel]="false"
+                        dataUrl="setup/corporateOnboarding/corporateMain/private/getAllGroupCorporateList"
+                        (change)="onChangeCorporate($event)"
+                        [(ngModel)]="corporate"
+                        [value]="corporate"
+                      ></aps-custom-select>
+                    </div>
+                    <div class="item">
+                      <app-currency-select-dropdown
+                        [selectedCurrency]="chartCurrency"
+                        (currencyChanged)="chartCurrency = $event.displayName"
+                      ></app-currency-select-dropdown>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-12 p-pt-0">
+                  <p-radioButton
+                    name="rightsAccess"
+                    class="p-mr-3"
+                    id="withRightsAccess"
+                    label="With Rights Access"
+                    value="With Rights Access"
+                    [(ngModel)]="rightsAccess"
+                    (onClick)="onChangeRightAccess()"
+                  ></p-radioButton>
+                  <p-radioButton
+                    name="rightsAccess"
+                    id="withoutRightsAccess"
+                    label="Without Rights Access"
+                    value="Without Rights Access"
+                    [(ngModel)]="rightsAccess"
+                    (onClick)="onChangeRightAccess()"
+                  ></p-radioButton>
+                </div>
+                <div class="p-md-6 col-sm-12 p-col-12 p-pt-5">
+                  <app-pie-chart
+                    [options]="options"
+                    webHeight="100"
+                    mobileHeight="200"
+                  ></app-pie-chart>
+                </div>
+                <div class="p-md-2 col-sm-6 p-col-6">
+                  <div class="text-size-12 text-semi-bold text-center p-pt-1">
+                    {{ 'Total Records' | apsTranslate }}
+                  </div>
+                  <div class="text-size-10 text-center p-pt-1" *ngFor="let data of options.data">
+                    {{ data.records }}
+                  </div>
+                </div>
+                <div class="p-md-2 col-sm-6 p-col-6">
+                  <div class="text-size-12 text-semi-bold text-center p-pt-1">
+                    {{ 'Total Amount' | apsTranslate }}
+                  </div>
+                  <div class="text-size-10 text-center p-pt-1" *ngFor="let data of options.data">
+                    <app-base-currency
+                      [amount]="data.amount"
+                      [currency]="chartCurrency"
+                      display="symbol"
+                    ></app-base-currency>
+                  </div>
+                </div>
+                <div class="p-md-2 col-sm-6 p-col-6">
+                  <div class="text-size-12 text-semi-bold text-center p-pt-1">
+                    {{ 'Critical Records' | apsTranslate }}
+                  </div>
+                  <div class="text-size-10 text-center p-pt-1" *ngFor="let data of options.data">
+                    {{ data.criticalRecords }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div [ngClass]="isGroupUser ? 'p-md-6' : 'p-md-5'" class="p-sm-12 p-col-12">
+            <div class="aps-card aps-h-100p" *ngIf="isGroupUser">
+              <app-modal [(isShow)]="showAccountDebitDetails" headerText="All Debits" size="md">
+                <div class="aps-h-300" *ngIf="showAccountDebitDetails">
+                  <app-ag-grid-listing
+                    colDefUrl="payments/transactions/sendToBank/private/colDefs"
+                    rowDefUrl="payments/transactions/sendToBank/private/getGroupCorporateAccountDetails"
+                  ></app-ag-grid-listing>
+                </div>
+              </app-modal>
+
+              <div class="left-right-container aps-py-12 p-px-3 border-bottom">
+                <div class="left-container">
+                  <div class="text-size-14 text-bold p-pt-1">
+                    {{ 'Top 5 Debits' | apsTranslate }}
+                  </div>
+                </div>
+                <div class="left-container">
+                  <div class="inline-items">
+                    <div class="item p-mr-2 p-pt-1">
+                      <app-icon class="text-color-warning" icon="fa-exclamation-triangle"></app-icon
+                      >&nbsp;
+                      <span class="text-color-danger">({{ '5' }})</span>
+                    </div>
+                    <div class="item">
+                      <button
+                        class="btn btn-sm btn-secondary"
+                        (click)="showAccountDebitDetails = true"
+                      >
+                        {{ 'VIEW ALL' | apsTranslate }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="p-grid p-px-2 p-pt-2">
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <div class="text-bold">{{ 'Corporate' | apsTranslate }}</div>
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <div class="text-bold">{{ 'Account No.' | apsTranslate }}</div>
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <div class="text-bold">{{ 'Total Debit Amount' | apsTranslate }}</div>
+                  </div>
+                </div>
+                <div class="p-col-3">
+                  <div class="text-size-12">
+                    <div class="text-bold">{{ 'Available Balance' | apsTranslate }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-grid p-px-2" *ngFor="let topDetail of topFiveDetails">
+                <div class="p-col-3 p-py-1">
+                  <div class="text-size-12">
+                    <div class="white-space-nowrap">
+                      {{ topDetail.corporateName }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-3 p-py-1">
+                  <div class="text-size-12">
+                    <div class="white-space-nowrap">
+                      {{ topDetail.accountName }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-3 p-py-1">
+                  <div class="text-size-12">
+                    <div class="white-space-nowrap">
+                      <app-base-currency
+                        [amount]="topDetail.debitBalance"
+                        [currency]="topDetail.currency"
+                      ></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-col-3 p-py-1">
+                  <div class="text-size-12">
+                    <div class="white-space-nowrap">
+                      <app-base-currency
+                        [amount]="topDetail.balance"
+                        [currency]="topDetail.currency"
+                      ></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="aps-card aps-h-100p" *ngIf="!isGroupUser">
+              <div class="p-grid p-p-2">
+                <div class="p-col-12 p-py-1">
+                  <div class="text-size-14 text-bold p-pt-1">
+                    {{ 'Pending for Action' | apsTranslate }}
+                  </div>
+                </div>
+
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 p-p-2">
+                    <div class="text-size-14 p-pb-2">{{ totalRecords }}</div>
+                    <div class="text-size-14 text-semi-bold">
+                      {{ 'Total Records' | apsTranslate }}
+                    </div>
+                  </div>
+                </div>
+                <div class="p-md-6 p-sm-12 p-col-12">
+                  <div class="background-color-dark-3 p-p-2">
+                    <div class="text-size-14 p-pb-2">{{ criticalRecords }}</div>
+                    <div class="text-size-14 text-semi-bold">{{ 'Critical' | apsTranslate }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div [ngClass]="isGroupUser ? 'p-md-3' : 'p-md-4'" class="p-sm-12 p-col-12">
+        <app-insights
+          insightsUrl="dummyServer/json/commons/private/insights/sendToBank"
+          [height]="163"
+        ></app-insights>
+      </div>
+
+      <!-- <div class="p-md-3 p-sm-12 p-col-12">
+        <div class="aps-card-primary aps-h-100p p-p-3 pointer" (click)="onActionListClick()">
+          <div class="text-size-16 text-bold">{{ 'Actioned List' | apsTranslate }}</div>
+          <div class="p-py-3">
+            <hr />
+          </div>
+          <div class="text-size-14">
+            {{ 'Click here to navigate to the Actioned listing page' | apsTranslate }}
+          </div>
+        </div>
+      </div> -->
+
+      <div class="p-col-12">
+        <div class="left-right-container">
+          <div class="left-container">
+            <div class="inline-items aps-w-100p overflow-scroll">
+              <div class="item p-mr-3" *ngFor="let l of listingTypes">
+                <div
+                  class="aps-card p-p-2 text-size-12 text-color-normal text-semi-bold pointer border"
+                  [ngClass]="{ 'aps-card-primary': activeListing.id === l.id }"
+                  (click)="changeActiveListing(l)"
+                >
+                  {{ l.displayName }}
+                  <span>
+                    ({{
+                      rightsAccessForListing == 'With Rights Access'
+                        ? l.WithRightsAccessCount
+                        : l.WithoutRightsAccessCount
+                    }})
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right-container">
+            <button class="btn btn-md btn-primary" (click)="onActionListClick()">
+              {{ 'Released / Rejected Entries' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="p-grid p-px-2">
+            <div class="p-md-3 p-sm-12 p-col-12 p-pb-0 p-pt-3">
+              <aps-custom-select
+                [showLabel]="false"
+                [data]="[
+                  { id: 'With Rights Access', displayName: 'Show With Rights Access' },
+                  { id: 'Without Rights Access', displayName: 'Show Without Rights Access' }
+                ]"
+                [(ngModel)]="rightsAccessForListing"
+                [value]="rightsAccessForListing"
+              ></aps-custom-select>
+            </div>
+            <div class="p-md-9 p-sm-12 p-col-12 p-py-3">
+              <div class="left-right-container p-px-3">
+                <div class="left-container"></div>
+                <div class="right-container">
+                  <app-grid-listing-tools
+                    (changeFloatingFilter)="sendToBankInitGrid.changeFloatFilter($event)"
+                    (filterRecords)="sendToBankInitGrid.onFilter($event)"
+                    (applyColDefs)="sendToBankInitGrid.onApplyConfig($event)"
+                    [colDefs]="sendToBankInitGrid.columnDefs"
+                    [columnConfig]="true"
+                    [moreOptions]="false"
+                  ></app-grid-listing-tools>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12 aps-h-400 border-top">
+              <app-ag-grid-listing
+                id="sendToBankInitGrid"
+                #sendToBankInitGrid
+                [colDefUrl]="activeListing.colDefsUrl"
+                [rowDefUrl]="activeListing.rowDefUrl"
+                [rowDefReq]="{
+                  rightsAccess: rightsAccessForListing,
+                  listingTypeId: activeListing.id,
+                  listingType: activeListing.displayName
+                }"
+                [frameworkComponents]="frameworkComponents"
+                [gridOptions]="{
+                  rowSelection: 'multiple',
+                  suppressRowClickSelection: true,
+                  masterDetail: true,
+                  detailCellRenderer: detailCellRenderer,
+                  detailRowHeight: 64
+                }"
+                [context]="{ componentParent: this }"
+                (rowSelected)="rowSelected($event)"
+              ></app-ag-grid-listing>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card" *ngIf="selectedRowIds.length > 0">
+          <div class="p-grid">
+            <div class="p-md-6 p-sm-12 p-col-12 p-px-3 p-py-2">
+              <span class="text-size-14 inline-block text-bold p-py-2">
+                {{ selectedRowIds.length }} {{ 'rows Selected' | apsTranslate }}
+              </span>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12 p-px-3 p-py-2">
+              <div class="left-right-container">
+                <div class="left-container"></div>
+                <div class="right-container">
+                  <button class="btn btn-md btn-primary p-mr-3" (click)="onAthorizedAllClick()">
+                    {{ 'SEND TO BANK' | apsTranslate }}
+                  </button>
+
+                  <button class="btn btn-md btn-tertiary" (click)="onRejectAllClick()">
+                    {{ 'REJECT' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

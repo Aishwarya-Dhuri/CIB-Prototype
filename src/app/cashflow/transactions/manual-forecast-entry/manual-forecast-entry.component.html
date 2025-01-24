@@ -1,0 +1,222 @@
+<div class="container">
+    <div class="aps-card">
+        <div class="aps-card-header">
+            <div class="p-col-12 p-px-3 text-size-16 text-semi-bold aps-py-12">
+                {{ 'Manual Forecast Entry' | apsTranslate }}
+            </div>
+        </div>
+
+        <div class="aps-card-body p-px-2" *ngIf="stepperDetails.currentStep == 1">
+            <form name="ManualForecastForm" #ManualForecastForm="ngForm">
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-3 p-sm-12">
+                        <aps-custom-select name="forecastingAs" label="Forecasting As" id="forecastingAs"
+                            dataUrl="cashflow/transactions/manualForecastEntry/private/dropdown/forecastingAsList"
+                            [(ngModel)]="formData.forecastAs" (change)="onForecastingChange($event)"
+                            [value]="formData.forecastAs">
+                        </aps-custom-select>
+                    </div>
+
+                    <div class="p-col-12 p-md-3 p-sm-12">
+                        <aps-custom-select name="entryType" label="Entry Type" id="entryType"
+                            dataUrl="cashflow/transactions/manualForecastEntry/private/dropdown/entryTypeList"
+                            [(ngModel)]="formData.entryType" [value]="formData.entryType">
+                        </aps-custom-select>
+                    </div>
+
+                    <div class="p-col-12 p-md-3 p-sm-12">
+                        <aps-form-input name="narration" id="narration" label="Narration" inputType="alphaNumeric"
+                            maxlength="50" [required]="true" [(ngModel)]="formData.narration">
+                        </aps-form-input>
+                    </div>
+
+                    <div class="p-col-12 p-md-3 p-sm-12">
+                        <div class="text-size-12 text-color-normal p-mb-2">
+                            {{ 'Lock Record in Cash Flow' | apsTranslate }}
+                        </div>
+                        <p-inputSwitch [(ngModel)]="formData.lockRecord" name="lockRecord"></p-inputSwitch>
+                    </div>
+
+                </div>
+
+                <div class="p-grid">
+                    <div class="p-md-6">
+                        <aps-form-input name="description" id="description" label="Description" inputType="alphaNumeric"
+                            maxlength="100" [required]="true" [(ngModel)]="formData.description">
+                        </aps-form-input>
+                    </div>
+                    <div class="p-md-3">
+                        <aps-form-input name="benificiary" id="benificiary" label="Beneficiary/Payer"
+                            inputType="alphaNumeric" maxlength="50" [required]="true"
+                            [(ngModel)]="formData.benificiary">
+                        </aps-form-input>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-3 p-sm-12">
+                        <aps-custom-select name="mode" label="Mode" id="mode"
+                            dataUrl="cashflow/transactions/manualForecastEntry/private/dropdown/modeList"
+                            [(ngModel)]="formData.mode" [value]="formData.mode">
+                        </aps-custom-select>
+                    </div>
+                    <div class="p-col-12 p-md-3 p-sm-12">
+                        <aps-custom-select name="accountType" label="Account Type" id="accountType"
+                            dataUrl="cashflow/transactions/manualForecastEntry/private/dropdown/accountTypeList"
+                            [(ngModel)]="formData.accountType" (change)="onChangeAccountType($event)"
+                            [value]="formData.accountType">
+                        </aps-custom-select>
+                    </div>
+                    <div class="p-col-12 p-md-3 p-sm-12">
+                        <aps-custom-select name="accountNumber" label="Account Number" id="accountNumber"
+                            dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                            [(ngModel)]="formData.accountNumber" [value]="formData.accountNumber">
+                        </aps-custom-select>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-md-1">
+                        <aps-custom-select name="forecastedAmountCCY" label="CCY" id="forecastedAmountCCY"
+                            dataUrl="setup/generalMasters/currency/private/currencyList"
+                            [(ngModel)]="formData.forecastedAmountCCY" [value]="formData.forecastedAmountCCY">
+                        </aps-custom-select>
+                    </div>
+                    <div class="p-md-2">
+                        <aps-form-input name="forecastedAmount" id="forecastedAmount" label="Forecasted Amount"
+                            inputType="currencyFormatNotZero" [required]="true" [(ngModel)]="formData.forecastedAmount">
+                        </aps-form-input>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-3 p-sm-12" *ngIf="formData.entryType == 'One Time'">
+                        <app-aps-calender name="valueDate" id="valueDate" label="{{ 'Value Date' | apsTranslate }}"
+                            [minDate]="getCurrentDate()" [showIcon]="true" [required]="true"
+                            [(ngModel)]="formData.valueDate"></app-aps-calender>
+                    </div>
+                    <div class="p-col-12 p-md-3 p-sm-12" *ngIf="formData.entryType == 'Recurring'">
+                        <app-aps-calender name="recurringFrom" id="recurringFrom"
+                            label="{{ 'Recurring From' | apsTranslate }}" [minDate]="getCurrentDate()" [showIcon]="true"
+                            [required]="true" (change)="setRecurringToMaxDate(formData.recurringFrom)"
+                            [(ngModel)]="formData.recurringFrom"></app-aps-calender>
+                    </div>
+                    <div class="p-col-12 p-md-3 p-sm-12" *ngIf="formData.entryType == 'Recurring'">
+                        <app-aps-calender name="recurringTo" id="recurringTo"
+                            label="{{ 'Recurring To' | apsTranslate }}" [minDate]="formData.recurringFrom"
+                            [maxDate]="tempDate" [showIcon]="true" [required]="true"
+                            [(ngModel)]="formData.recurringTo"></app-aps-calender>
+                    </div>
+                </div>
+                <div class="p-grid">
+                    <div class="p-col-12 p-md-3 p-sm-12" *ngIf="formData.entryType == 'Recurring'">
+                        <aps-custom-select name="recurrencePattern" label="Recurrence Pattern" id="recurrencePattern"
+                            dataUrl="cashflow/transactions/manualForecastEntry/private/dropdown/recurrencePatternList"
+                            [(ngModel)]="formData.recurrencePattern" [value]="formData.recurrencePattern">
+                        </aps-custom-select>
+                    </div>
+                    <div class="p-col-12 p-md-3 p-sm-12" *ngIf="formData.recurrencePattern == 'Daily'">
+                        <aps-custom-select name="eodBod" label="EOD/BOD" id="eodBod"
+                            dataUrl="cashflow/transactions/manualForecastEntry/private/dropdown/eodBodList"
+                            [(ngModel)]="formData.eodBod" [value]="formData.eodBod">
+                        </aps-custom-select>
+                    </div>
+                    <div class="p-col-12 p-md-3 p-sm-12" *ngIf="formData.recurrencePattern == 'Weekly'">
+                        <aps-custom-select name="days" label="Days" id="days"
+                            dataUrl="cashflow/transactions/manualForecastEntry/private/dropdown/dayList"
+                            [(ngModel)]="formData.days" [value]="formData.days">
+                        </aps-custom-select>
+                    </div>
+                    <div class="p-col-12 p-md-3 p-sm-12" *ngIf="formData.recurrencePattern == 'Monthly'">
+                        <app-aps-calender name="date" id="date" label="{{ 'Date' | apsTranslate }}"
+                            [minDate]="getCurrentDate()" [showIcon]="true" [required]="true"
+                            [(ngModel)]="formData.date"></app-aps-calender>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="aps-card-body p-px-2" *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+            <div class="p-grid">
+                <div class="p-md-3">
+                    <app-review-form-field label="Forecasting As" [value]="formData.forecastAs"></app-review-form-field>
+                </div>
+                <div class="p-md-3">
+                    <app-review-form-field label="Entry Type" [value]="formData.entryType"></app-review-form-field>
+                </div>
+                <div class="p-md-3">
+                    <app-review-form-field label="Narration" [value]="formData.narration"></app-review-form-field>
+                </div>
+                <div class="p-md-3">
+                    <app-review-form-field label="Lock Record" [value]="formData.lockRecord"></app-review-form-field>
+                </div>
+            </div>
+
+            <div class="p-grid">
+                <div class="p-md-6">
+                    <app-review-form-field label="Description" [value]="formData.description"></app-review-form-field>
+                </div>
+                <div class="p-md-3">
+                    <app-review-form-field label="Benificiary/Payers"
+                        [value]="formData.benificiary"></app-review-form-field>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-md-3">
+                    <app-review-form-field label="Mode" [value]="formData.mode"></app-review-form-field>
+                </div>
+                <div class="p-md-3">
+                    <app-review-form-field label="Account Type" [value]="formData.accountType"></app-review-form-field>
+                </div>
+                <div class="p-md-3">
+                    <app-review-form-field label="Account Number"
+                        [value]="formData.accountNumber"></app-review-form-field>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-md-3">
+                    <app-review-form-field label="CCY" [value]="formData.forecastedAmountCCY"></app-review-form-field>
+                </div>
+                <div class="p-md-3">
+                    <app-review-form-field label="Forecasted Amount"
+                        [value]="formData.forecastedAmount"></app-review-form-field>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-md-3" *ngIf="formData.entryType == 'One Time'">
+                    <app-review-form-field label="Value Date" [value]="formData.valueDate"></app-review-form-field>
+                </div>
+                <div class="p-md-3" *ngIf="formData.entryType == 'Recurring'">
+                    <app-review-form-field label="Recurring From"
+                        [value]="formData.recurringFrom"></app-review-form-field>
+                </div>
+                <div class="p-md-3" *ngIf="formData.entryType == 'Recurring'">
+                    <app-review-form-field label="Recurring To" [value]="formData.recurringTo"></app-review-form-field>
+                </div>
+                <div class="p-md-3" *ngIf="formData.entryType == 'Recurring'">
+                    <app-review-form-field label="Recurring Pattern"
+                        [value]="formData.recurrencePattern"></app-review-form-field>
+                </div>
+            </div>
+            <div class="p-grid">
+                <div class="p-md-3" *ngIf="formData.recurrencePattern == 'Daily'">
+                    <app-review-form-field label="EOD/BOD" [value]="formData.eodBod"></app-review-form-field>
+                </div>
+                <div class="p-md-3" *ngIf="formData.recurrencePattern == 'Weekly'">
+                    <app-review-form-field label="Days" [value]="formData.days"></app-review-form-field>
+                </div>
+                <div class="p-md-3" *ngIf="formData.recurrencePattern == 'Monthly'">
+                    <app-review-form-field label="Date" [value]="formData.date"></app-review-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="p-grid g-margin-x">
+        <div class="p-col-12">
+            <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+        </div>
+    </div>
+</div>
+
+
+<ng-template #loadingTemplate>
+    <app-loading-spinner></app-loading-spinner>
+</ng-template>

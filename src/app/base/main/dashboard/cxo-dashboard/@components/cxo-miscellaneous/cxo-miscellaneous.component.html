@@ -1,0 +1,71 @@
+<div class="p-grid g-margin-x" *ngIf="!loading; else loadingTemplate">
+  <div class="p-md-3 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-100p">
+      <div
+        class="text-size-14 border-bottom text-semi-bold pointer p-px-3 p-py-2"
+        *ngFor="let tab of tabs"
+        [ngClass]="{ 'text-color-primary border-primary border-radius-4': selectedTab == tab }"
+        (click)="selectedTab = tab"
+      >
+        {{ tab }}
+      </div>
+    </div>
+  </div>
+  <div class="p-md-9 p-sm-12 p-col-12">
+    <div
+      class="aps-card p-p-3 aps-h-500 overflow-y-scroll overflow-x-hiddeen"
+      *ngIf="selectedTab == tabs[0]"
+    >
+      <div class="p-mb-2" *ngFor="let data of overduePayablesData">
+        <div class="left-right-container background-color-dark-3 text-size-14 p-px-3 p-py-2">
+          <div class="left-container">{{ data.product }}</div>
+          <div class="right-container">
+            <app-icon
+              class="pointer"
+              [icon]="data.isExpand ? 'fa-chevron-up' : 'fa-chevron-down'"
+              (click)="data.isExpand = !data.isExpand"
+            ></app-icon>
+          </div>
+        </div>
+        <div class="aps-h-200" *ngIf="data.isExpand">
+          <app-ag-grid-listing
+            [colDefUrl]="overduePayablesColDefUrl"
+            [rowData]="data.rowData"
+            [gridOptions]="gridOptions"
+            [context]="context"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="aps-card p-p-3 aps-h-500 overflow-y-scroll overflow-x-hiddeen"
+      *ngIf="selectedTab == tabs[1]"
+    >
+      <div class="p-mb-2" *ngFor="let data of highValueTransactionsData">
+        <div class="left-right-container background-color-dark-3 text-size-14 p-px-3 p-py-2">
+          <div class="left-container">{{ data.product }}</div>
+          <div class="right-container">
+            <app-icon
+              class="pointer"
+              [icon]="data.isExpand ? 'fa-chevron-up' : 'fa-chevron-down'"
+              (click)="data.isExpand = !data.isExpand"
+            ></app-icon>
+          </div>
+        </div>
+        <div class="aps-h-200" *ngIf="data.isExpand">
+          <app-ag-grid-listing
+            [colDefUrl]="highValueTransactionsColDefUrl"
+            [rowData]="data.rowData"
+            [gridOptions]="gridOptions"
+            [context]="context"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

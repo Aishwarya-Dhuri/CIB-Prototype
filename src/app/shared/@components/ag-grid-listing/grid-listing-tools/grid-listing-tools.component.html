@@ -1,0 +1,122 @@
+<app-backdrop
+  [background]="'rgba(0, 0, 0, 0)'"
+  [zIndex]="5"
+  (close)="
+    columnConfiguration
+      ? (columnConfiguration = false)
+      : showMoreOptions
+      ? (showMoreOptions = false)
+      : (downloadOptions = false)
+  "
+  *ngIf="downloadOptions || showMoreOptions || columnConfiguration"
+></app-backdrop>
+
+<div class="ag-grid-listing-tools">
+  <div class="select-all-container" *ngIf="showSelectAll">
+    <p-checkbox
+      label="Select All Records"
+      labelStyleClass="text-size-12"
+      [binary]="true"
+      [(ngModel)]="selectAll"
+      (click)="selectAllRecords()"
+    ></p-checkbox>
+  </div>
+  <div
+    class="aps-search-container-1"
+    [ngClass]="{ 'search-container-mobile': viewport !== 'web' }"
+    *ngIf="showSearch"
+  >
+    <input
+      type="text"
+      [(ngModel)]="filterValue"
+      class="input-search"
+      (input)="onFilterRecords()"
+      [placeholder]="'Enter keyword to search' | apsTranslate"
+    />
+    <div class="icon">
+      <app-icon icon="fa-search" class="app-icon"></app-icon>
+    </div>
+  </div>
+
+  <div class="icon-container" (click)="onRefresh()" *ngIf="showRefresh">
+    <app-icon icon="fa-refresh" class="app-icon"></app-icon>
+  </div>
+
+  <div class="icon-container" (click)="onRefresh()" *ngIf="showPrint">
+    <app-icon icon="fa-print" class="app-icon"></app-icon>
+  </div>
+
+  <div
+    class="icon-container"
+    (click)="onChangeFloatFilter(!floatingFilter)"
+    *ngIf="showFloatingFilter && viewport == 'web'"
+  >
+    <app-icon
+      [icon]="!floatingFilter ? 'fa-search-plus' : 'fa-times'"
+      class="app-icon pointer"
+    ></app-icon>
+  </div>
+
+  <ng-container *ngIf="label">
+    <div class="divider-v"></div>
+
+    <div class="label pointer" [routerLink]="redirectUrl">{{ label }}</div>
+  </ng-container>
+
+  <div class="divider-v" *ngIf="columnConfig || showMail || downloadOptions || moreOptions"></div>
+
+  <div
+    class="icon-container"
+    (click)="columnConfiguration = true"
+    *ngIf="columnConfig && viewport == 'web'"
+  >
+    <app-icon icon="fa-sliders-v" class="app-icon"></app-icon>
+
+    <div class="column-configuration-container" *ngIf="columnConfiguration">
+      <app-column-configuration
+        class="fade-in-animation"
+        [columnDefs]="colDefs"
+        (applyColDefs)="applyColDefs.emit($event)"
+      ></app-column-configuration>
+    </div>
+  </div>
+  <div class="icon-container" *ngIf="showMail">
+    <app-icon icon="fa-envelope" class="app-icon"></app-icon>
+  </div>
+  <div class="icon-container" (click)="downloadOptions = !downloadOptions" *ngIf="showDownload">
+    <app-icon icon="fa-arrow-to-bottom" class="app-icon"></app-icon>
+
+    <div class="download-options-container" *ngIf="downloadOptions">
+      <app-download-options class="fade-in-animation" [gridRef]="gridRef"></app-download-options>
+    </div>
+  </div>
+  <div class="icon-container" (click)="showMoreOptions = !showMoreOptions" *ngIf="moreOptions">
+    <app-icon icon="fa-ellipsis-v" class="app-icon"></app-icon>
+
+    <div class="download-options-container" *ngIf="showMoreOptions">
+      <app-listing-more-options
+        [parentRef]="parentRef"
+        [optionList]="optionList"
+        [gridRef]="gridRef"
+        class="fade-in-animation"
+      ></app-listing-more-options>
+    </div>
+  </div>
+
+  <div class="toggle-select-container p-ml-2" *ngIf="listingTypes">
+    <div
+      class="action pointer text-color-dark-shade-1"
+      (click)="onListTypeChange('grid')"
+      [ngClass]="{ active: listingType === 'grid' }"
+    >
+      <app-icon icon="fa-list" class="app-icon"></app-icon>
+    </div>
+    <div
+      class="action pointer text-color-dark-shade-1"
+      (click)="onListTypeChange('card')"
+      [ngClass]="{ active: listingType === 'card' }"
+    >
+      <app-icon icon="fa-th-large" class="app-icon"></app-icon>
+    </div>
+  </div>
+</div>

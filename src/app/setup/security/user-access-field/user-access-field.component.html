@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="p-grid g-margin-x" *ngIf="!loading">
+    <div class="p-col-12">
+      <div class="aps-card">
+        <div class="aps-card-header aps-py-12 p-px-3">
+          <div class="text-bold">Field Access</div>
+        </div>
+        <div class="aps-card-body">
+          <div class="aps-h-400">
+            <app-ag-grid-listing
+              colDefUrl="setup/security/userFieldAccess/private/cibUserAccessFieldsColDefs"
+              [rowData]="formData.corporateUserAccessFields"
+              [gridOptions]="gridOptions"
+              [frameworkComponents]="frameworkComponents"
+              [context]="{ componentParent: this }"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+    </div>
+  </div>
+</div>

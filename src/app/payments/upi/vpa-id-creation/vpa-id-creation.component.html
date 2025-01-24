@@ -1,0 +1,78 @@
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+        <form #apsform="ngForm" name="apsform">
+            <div class="aps-card">
+                <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Account Details</div>
+                </div>
+
+                <div class="aps-card-body p-p-3 p-mb-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <aps-custom-select name="account" id="account" label="Account Number"
+                                dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                [value]="formData.accountNo" [(ngModel)]="formData.accountNo" [required]="true">
+                            </aps-custom-select>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0" *ngIf="formData.accountNo">
+                            <aps-form-input name="accountName" id="accountName" label="Account Name"
+                                [(ngModel)]="formData.accountName" disabled [required]="true"></aps-form-input>
+                        </div>
+                    </div>
+
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                            <div class="inline-items">
+                                <div class="item" style="width: calc(100% - 25px)">
+                                    <aps-form-input name="upiId" id="upiId" label="UPI ID" inputType="upiId"
+                                        [(ngModel)]="formData.upiId" [required]="true" [disabled]="!formData.accountNo"
+                                        [required]="true"></aps-form-input>
+                                </div>
+                                <div class="item p-py-3 p-px-2" style="width: 40px">
+                                    <app-icon icon="fa-info-circle" pTooltip="Info" class="text-size-18">
+                                    </app-icon>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                            <button class="btn btn-md btn-primary" (click)="validateOTP()" [disabled]="!formData.upiId">
+                                {{ 'Validate' | apsTranslate }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Account Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3 p-mb-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Account Number"
+                            [value]="formData.accountNo"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="Account Name"
+                            [value]="formData.accountName"></app-review-form-field>
+                    </div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6"></div>
+
+                    <div class="p-md-4 p-sm-6 p-col-6">
+                        <app-review-form-field label="UPI ID" [value]="formData.upiId"></app-review-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

@@ -1,0 +1,216 @@
+<div class="container">
+  <form name="form" #form="ngForm">
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Beneficiary Details
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Code' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryCode }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryName }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Type' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryType }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  Beneficiary Location
+                </div>
+                <p-radioButton
+                  class="p-mr-5"
+                  name="local"
+                  id="local"
+                  value="Local"
+                  label="Local"
+                  [disabled]="true"
+                  [(ngModel)]="parentRef.formData.beneficiaryLocation"
+                >
+                </p-radioButton>
+                <p-radioButton
+                  name="international"
+                  id="international"
+                  value="International"
+                  label="International"
+                  [disabled]="true"
+                  [(ngModel)]="parentRef.formData.beneficiaryLocation"
+                >
+                </p-radioButton>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12 p-py-0">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Address' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryAddress1[0].address }}
+                </div>
+              </div>
+              <div
+                class="p-col-12 p-md-4 p-lg-3 p-sm-12 p-py-0"
+                *ngIf="parentRef.formData.beneficiaryAddress2[0].show"
+              >
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Address' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryAddress2[0].address }}
+                </div>
+              </div>
+              <div
+                class="p-col-12 p-md-4 p-lg-4 p-sm-12 p-py-0"
+                *ngIf="parentRef.formData.beneficiaryAddress3[0].show"
+              >
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Address' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryAddress3[0].address }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Country' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.country }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Pin Code' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.pinCode }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Mobile Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.mobileNumber }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Emailr' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.email }}
+                </div>
+              </div>
+            </div>
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Effective From' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.effectiveFrom }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Effective Till' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.effectiveTill }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Beneficiary Bank Details
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Bank Swift Code' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.bankSwiftCode }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Account Number' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryAccountNumber }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Bank Name' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryBankName }}
+                </div>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-3 p-sm-12 p-py-0">
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Bank Address' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryBankAddress1[0].address }}
+                </div>
+              </div>
+              <div
+                class="p-col-12 p-md-4 p-lg-3 p-sm-12 p-py-0"
+                *ngIf="parentRef.formData.beneficiaryBankAddress2[0].show"
+              >
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Bank Address2' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryBankAddress2[0].address }}
+                </div>
+              </div>
+              <div
+                class="p-col-12 p-md-4 p-lg-3 p-sm-12 p-py-0"
+                *ngIf="parentRef.formData.beneficiaryBankAddress3[0].show"
+              >
+                <div class="text-size-12 text-color-light-shade-1">
+                  {{ 'Beneficiary Bank Address3' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ parentRef.formData.beneficiaryBankAddress3[0].address }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

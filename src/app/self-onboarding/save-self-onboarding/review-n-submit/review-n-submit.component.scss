@@ -1,0 +1,160 @@
+input {
+  opacity: 0;
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.button-upload {
+  background-color: var(--primary-color-transparent-1);
+  color: var(--text-color);
+  font-size: 0.75rem;
+  padding-top: 9px;
+  padding-bottom: 8px;
+  border-style: dashed;
+}
+
+.review-n-submit-container {
+  display: block;
+  background-color: var(--background-color);
+  border-radius: 5px;
+  height: 22.5rem;
+  overflow: scroll;
+
+  .review-step-container {
+    .review-step-header {
+      border-bottom: 1px solid var(--background-color-dark-5);
+    }
+
+    .review-step-body {
+      .user-card {
+        border-radius: 5px;
+        background: url('./../../../../assets/images/mask/mask-group-3.png'),
+          var(--background-color);
+        background-repeat: no-repeat;
+        background-position: center;
+        border: 1px solid transparent;
+        transition: all 0.25s;
+
+        .user-container {
+          .user-details {
+            display: inline-block;
+            border-bottom: 1px solid var(--background-color-dark-7);
+            width: calc(100% - 3rem);
+
+            .image {
+              width: 48px;
+              height: 48px;
+              border-radius: 50%;
+              background-color: var(--primary-color-light-shade-1);
+
+              .user {
+                line-height: 16px;
+              }
+            }
+          }
+
+          .pt--1 {
+            padding-top: -4px;
+          }
+        }
+
+        &:hover {
+          border: 1px solid var(--primary-color);
+          .user-container {
+            .user-action {
+              opacity: 1;
+            }
+          }
+        }
+      }
+
+      .product-card {
+        .product-card-header {
+        }
+
+        .product-card-body {
+          .account-payments {
+            border-radius: 10px;
+            border: 1px solid var(--background-color-dark-5);
+            overflow: hidden;
+
+            .account-payments-data {
+              border-bottom: 1px solid var(--background-color-dark-5);
+              background-color: var(--background-color);
+
+              // &:nth-child(odd) {
+              // }
+
+              &:last-child {
+                border-bottom: none;
+              }
+            }
+          }
+
+          .other-services {
+            .enabled {
+              padding: 0.125rem 0.25rem;
+              border-radius: 3px;
+              background-color: var(--primary-color-transparent-1);
+              color: var(--primary-color);
+            }
+
+            .disabled {
+              padding: 0.125rem 0.25rem;
+              border-radius: 3px;
+              background-color: var(--background-color-dark-5);
+              color: var(--text-color-dark-shade-1);
+            }
+          }
+        }
+      }
+
+      .document-upload-card {
+        .document-upload-header {
+        }
+
+        .document-upload-body {
+          .show-file-details {
+            display: block;
+            border-radius: 5px;
+            padding: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}
+
+.upload-container {
+  width: 100%;
+  height: 37px;
+  text-align: center;
+  border: dashed 1px var(--primary-color);
+  background-color: var(--primary-color-light-shade-2);
+  position: relative;
+  //padding: 1rem;
+  border-radius: 4px;
+
+  .input {
+    opacity: 0;
+    position: absolute;
+    // z-index: 2;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+}

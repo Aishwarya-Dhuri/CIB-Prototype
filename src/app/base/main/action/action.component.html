@@ -1,0 +1,76 @@
+<ng-container *ngIf="showActionContainer">
+  <app-modal [(isShow)]="showQuickLinks" headerText="Favourites">
+    <div class="p-grid g-margin-x" body>
+      <div class="p-col-12 border-bottom">
+        <aps-form-input id="favouriteName" name="favouriteName" label="Favourite Name"
+          [(ngModel)]="favouriteName"></aps-form-input>
+      </div>
+    </div>
+
+    <div class="p-grid g-margin-x" footer>
+      <div class="p-col-12 text-right">
+        <button class="btn btn-md btn-primary" [disabled]="!favouriteName" (click)="saveFavourite()">
+          {{ 'Submit' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-backdrop [background]="'rgba(0, 0, 0, 0)'" [zIndex]="5" (close)="relationshipManager = false"
+    *ngIf="relationshipManager"></app-backdrop>
+
+  <div class="left-right-container" *ngIf="actions">
+    <div class="left-container">
+      <div class="back-btn" *ngIf="actions.backBtn" (click)="back()">
+        <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right" class="app-icon"></app-icon>
+      </div>
+
+      <!--
+        <div class="heading">
+          {{ actions.heading | apsTranslate }}
+        </div>
+      -->
+    </div>
+    <div class="right-container p-pt-1">
+      <div class="action-wrapper">
+        <div class="sub-heading pointer" *ngIf="actions.subHeading" (click)="onLinkClick()">
+          {{ actions.subHeading | apsTranslate }}
+        </div>
+
+        <ng-container [ngTemplateOutlet]="actions.extraActionTemplateRef"
+          *ngIf="actions.extraActionTemplateRef"></ng-container>
+
+        <div class="actions">
+          <div class="action" *ngIf="actions.refresh">
+            <app-icon icon="fa-sync" class="app-icon"></app-icon>
+          </div>
+          <div class="action" *ngIf="actions.download">
+            <app-icon icon="fa-arrow-to-bottom" class="app-icon"></app-icon>
+          </div>
+          <div class="action" *ngIf="actions.print">
+            <app-icon icon="fa-print" class="app-icon"></app-icon>
+          </div>
+        </div>
+        <div class="actions">
+          <div class="action" *ngIf="actions.relationshipManager">
+            <app-icon icon="fa-user" class="app-icon" (click)="relationshipManager = !relationshipManager"></app-icon>
+            <div class="relationship-manager-container" *ngIf="relationshipManager">
+              <app-relationship-manager class="fade-in-animation"></app-relationship-manager>
+            </div>
+          </div>
+          <div class="action" (click)="openQuickLinksSidebar()" *ngIf="actions.quickLinks">
+            <app-icon icon="fa-link" class="app-icon"></app-icon>
+          </div>
+          <div class="action" *ngIf="actions.favourite"
+            (click)="isFavourite ? removeFavourite() : (showQuickLinks = true)" [title]="'Favourite' | apsTranslate">
+            <app-icon icon="fa-star" class="app-icon" styleClasses="text-color-primary"
+              [iconStyle]="isFavourite ? 'fas ' : 'fal'"></app-icon>
+          </div>
+          <div class="action" *ngIf="actions.help" [title]="'Help' | apsTranslate">
+            <app-icon icon="fa-question-square" class="app-icon"></app-icon>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

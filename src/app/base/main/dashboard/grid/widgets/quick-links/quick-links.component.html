@@ -1,0 +1,20 @@
+<div class="p-p-3">
+  <div class="p-grid g-margin-x quick-link-container p-jc-center">
+    <div class="p-col-6 p-md-4 p-lg-4" *ngFor="let link of quickLinkCards">
+      <div
+        class="aps-card quick-link position-relative aps-min-h-80 overflow-hidden pointer"
+        (click)="routeTo(link.routeUrl)"
+      >
+        <div class="link-background">
+          <app-icon [icon]="link.icon"></app-icon>
+        </div>
+        <div class="text-center p-mt-2 link-icon">
+          <app-icon [icon]="link.icon"></app-icon>
+        </div>
+        <div class="text-center text-size-14 text-semi-bold link-text border-bottom p-py-2">
+          {{ link.displayName }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

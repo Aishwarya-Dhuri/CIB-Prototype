@@ -1,0 +1,23 @@
+<div class="user-tasks-container">
+    <div class="tasks-header">
+        <div class="header-text">
+            <app-icon icon="fa-external-link" class="app-icon"></app-icon>
+            <span class="p-mt-1">{{ 'Important Links' | apsTranslate }}</span>
+        </div>
+        <div class="header-actions">
+            <div class="action p-mt-1" (click)="closeSidebar()">
+                <app-icon icon="fa-times" class="app-icon"></app-icon>
+            </div>
+        </div>
+    </div>
+
+    <div class="countries">
+        <div class="country-wrapper" style="border-bottom: 1px solid var(--background-color-dark-6);"
+            *ngFor="let link of links">
+            <div class="country">
+                <img src="{{link.url}}" alt="" class="p-mt-1" />
+                <span class="text  no-underline-on-hover pointer" (click)="onClick(link)">{{link.name}}</span>
+            </div>
+        </div>
+    </div>
+</div>

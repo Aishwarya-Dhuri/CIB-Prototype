@@ -1,0 +1,95 @@
+<form class="mpin-form" [formGroup]="mpinForm">
+  <div class="form-data">
+    <div class="main-text">{{ 'msg_enter_mpin' | translate }}</div>
+  </div>
+
+  <div class="form-data">
+    <span class="input-field p-input-icon-left">
+      <i class="fal fa-user"></i>
+      <input
+        type="text"
+        autocomplete="username"
+        pInputText
+        formControlName="userName"
+        [placeholder]="'msg_user_id' | translate"
+        [ngClass]="{
+          'ng-dirty ng-invalid':
+            mpinForm.get('userName').touched && mpinForm.get('userName').invalid
+        }"
+      />
+    </span>
+    <span
+      class="error-message"
+      *ngIf="mpinForm.get('userName').touched && mpinForm.get('userName').invalid"
+      >{{ 'err_user_id' | translate }}</span
+    >
+  </div>
+
+  <div class="form-data">
+    <span class="input-field p-input-icon-left p-input-icon-right">
+      <i class="fal fa-lock"></i>
+      <input
+        [type]="viewPassword ? 'text' : 'password'"
+        autocomplete="current-password"
+        pInputText
+        [placeholder]="'msg_mpin' | translate"
+        formControlName="mpin"
+        [ngClass]="{
+          'ng-dirty ng-invalid': mpinForm.get('mpin').touched && mpinForm.get('mpin').invalid
+        }" minlength="4"
+      />
+      <i
+        class="pi"
+        [ngClass]="viewPassword ? ' pi-eye-slash' : ' pi-eye'"
+        (click)="viewPassword = !viewPassword"
+      ></i>
+    </span>
+    <span
+      class="error-message"
+      *ngIf="mpinForm.get('mpin').touched && mpinForm.get('mpin').invalid"
+      >{{ 'err_mpin' | translate }}</span
+    >
+  </div>
+
+  <div class="form-data">
+    <div class="links left-right-container">
+      <div class="left-container">
+        <a class="link reset-mpin" routerLink=""
+          >{{ 'msg_reset' | translate }} {{ 'msg_mpin' | translate }}</a
+        >
+      </div>
+      <div class="right-container">
+        <div class="keyboard">
+          <div class="icon">
+            <!-- <i class="fal fa-keyboard"></i> -->
+            <app-icon icon="fa-keyboard" class="app-icon"></app-icon>
+          </div>
+          <div class="label">{{ 'msg_virtual_keyboard' | translate }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-data p-mb-5">
+    <div class="p-field-checkbox aps-checkbox">
+      <p-checkbox formControlName="acceptTermsConditions" [binary]="true"></p-checkbox>
+      <label for="tc">&nbsp;{{ 'msg_terms_conditions' | translate }}</label>
+    </div>
+  </div>
+
+  <div class="form-data p-mt-5">
+    <button [disabled]="mpinForm.get('mpin').invalid"
+      pButton
+      pRipple
+      type="submit"
+      [label]="'msg_proceed' | translate"
+	  (click)="proceedLogin(1)"
+      class="aps-w-100p background-color-secondary-light-shade-3"
+      
+    ></button>
+  </div>
+</form>
+
+<div class="text-semi-bold text-size-14 text-center aps-mb-20">
+  {{ 'msg_reset' | translate | uppercase }}
+</div>

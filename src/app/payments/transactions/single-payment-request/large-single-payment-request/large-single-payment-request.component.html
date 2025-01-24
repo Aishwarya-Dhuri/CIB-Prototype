@@ -1,0 +1,347 @@
+<div class="container">
+  <!-- Tile buttons Overall and Quick Pay -->
+  <app-modal [(isShow)]="showQuickPayModal" size="md">
+    <div class="aps-h-280 overflow-scroll">
+      <ng-container *ngTemplateOutlet="quickPayTemplate"></ng-container>
+    </div>
+  </app-modal>
+
+  <!-- For Corporate User -->
+  <div class="p-grid g-margin-x" *ngIf="!isGroupUser">
+    <!-- Tile divs -->
+    <div class="p-col-12 p-md-3 p-col-lg-3 hide-on-mobile">
+      <div class="aps-card payment-method-wise-divbtn" (click)="onPaymentMethodWiseClick()">
+        <div class="p-mb-3 text-color-inverted text-size-16">
+          {{ 'Payment Method Wise' | apsTranslate }}
+        </div>
+        <hr />
+        <div class="text-color-inverted text-size-12">
+          {{ 'if you know the payment method then please click here to initiate' | apsTranslate }}
+        </div>
+      </div>
+      <div class="aps-card beneficiary-wise-divbtn" (click)="onBeneficiartWiseClick()">
+        <div class="p-mb-3 text-color-primary text-size-16">
+          {{ 'Beneficiary Wise Payment' | apsTranslate }}
+        </div>
+        <hr class="divider" />
+        <div class="text-color-dark-shade-3 text-size-12">
+          {{ 'if you know the beneficiary then please click here to initiate' | apsTranslate }}
+        </div>
+      </div>
+    </div>
+    <!-- Overall Card -->
+    <div class="p-col-12 p-md-3 p-col-lg-3 hide-on-mobile">
+      <div class="aps-card p-p-3 aps-h-100p">
+        <div>
+          <div class="text-bold text-color-dark-shade-1">
+            {{ 'Overall Transactions (This Week)' | apsTranslate }}
+          </div>
+          <div class="p-grid p-mt-3 p-pb-5 border-bottom">
+            <div class="p-col-6">
+              <div class="text-bold text-size-14">
+                {{ overallCardData.totalValue | currency: currencyName:'code':'1.0-0' }}
+              </div>
+              <div class="text-size-12">{{ 'Total Value' | apsTranslate }}</div>
+            </div>
+            <div class="p-col-6">
+              <div class="text-bold text-size-14">{{ overallCardData.totalNumber }}</div>
+              <div class="text-size-12">{{ 'Total Number' | apsTranslate }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="p-mt-5">
+          <div class="text-bold text-color-dark-shade-1">
+            {{ 'Transaction Status (This Week)' | apsTranslate }}
+          </div>
+          <div class="p-grid p-mt-3">
+            <div class="p-col-4">
+              <div class="text-bold text-size-14">{{ overallCardData.completed }}</div>
+              <div class="text-size-12">{{ 'Completed' | apsTranslate }}</div>
+            </div>
+            <div class="p-col-4">
+              <div class="text-bold text-size-14">{{ overallCardData.pending }}</div>
+              <div class="text-size-12">{{ 'Pending' | apsTranslate }}</div>
+            </div>
+            <div class="p-col-4">
+              <div class="text-bold text-size-14">{{ overallCardData.rejected }}</div>
+              <div class="text-size-12">{{ 'Rejected' | apsTranslate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Quick Pay -->
+    <div class="p-col-12 p-md-6 p-lg-6">
+      <div class="aps-card p-p-3 aps-h-100p hide-on-mobile">
+        <ng-container *ngTemplateOutlet="quickPayTemplate"></ng-container>
+      </div>
+      <div class="show-on-mobile" *ngIf="false">
+        <div class="aps-card aps-filled-card-primary-sm shadow-2 p-p-3" (click)="showQuickPayModal = true">
+          {{ 'Quick Pay' | apsTranslate }}
+        </div>
+        <div class="aps-card aps-filled-card-sm border-primary shadow-2 p-my-3 p-p-3"
+          (click)="onPaymentMethodWiseClick()">
+          {{ 'Initiate Payment Method Wise' | apsTranslate }}
+        </div>
+        <div class="aps-card aps-filled-card-primary-sm shadow-2 p-p-3" (click)="onBeneficiartWiseClick()">
+          {{ 'Initiate Beneficiary Wise Payment' | apsTranslate }}
+        </div>
+      </div>
+      <div class="show-on-mobile" *ngIf="true">
+        <div class="aps-card aps-filled-card-sm border-primary shadow-2 p-px-3 p-py-5"
+          (click)="showQuickPayModal = true">
+          {{ 'Quick Pay' | apsTranslate }}
+        </div>
+        <div class="aps-card aps-filled-card-primary-sm shadow-2 p-my-3 p-px-3 p-py-5"
+          (click)="onPaymentMethodWiseClick()">
+          {{ 'Initiate Payment Method Wise' | apsTranslate }}
+        </div>
+        <div class="aps-card aps-filled-card-sm border-primary shadow-2 p-px-3 p-py-5"
+          (click)="onBeneficiartWiseClick()">
+          {{ 'Initiate Beneficiary Wise Payment' | apsTranslate }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- For Group User -->
+  <div class="p-grid g-margin-x" *ngIf="isGroupUser">
+    <app-modal [(isShow)]="showCorporateAccounts" size="md" headerText="Corporate Accounts"
+      *ngIf="showCorporateAccounts">
+      <div class="aps-h-400">
+        <app-ag-grid-listing id="corporateAccountsGrid"
+          colDefUrl="payments/transactions/ownAccountTransfer/private/corporateAccountsColDefs"
+          [rowData]="corporateAccountsData" [gridOptions]="corporateAccountGridOptions">
+        </app-ag-grid-listing>
+      </div>
+    </app-modal>
+    <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+      <div class="aps-card aps-filled-card-primary-sm aps-h-150 p-p-3">
+        <div class="left-right-container p-mb-2">
+          <div class="left-container">
+            <div class="text-size-16">{{ groupData?.groupName }}</div>
+            <div class="inline-items text-size-12">
+              <div class="item text-underline pointer" (click)="showCorporateAccounts = true">
+                {{ groupData?.corporates }} {{ 'Corporates' | apsTranslate }}
+              </div>
+              <div class="item p-mx-2">|</div>
+              <div class="item">{{ groupData?.totalAccounts }} {{ 'Accounts' | apsTranslate }}</div>
+            </div>
+          </div>
+          <div class="right-container">
+            <app-currency-select-dropdown selectStyleClass="select-primary"></app-currency-select-dropdown>
+          </div>
+        </div>
+        <div class="background-color-primary-light text-size-14 p-p-2">
+          <div class="p-mb-2">
+            <span class="text-bold">{{ 'Group Balance' | apsTranslate }}</span>
+            &nbsp;
+            <app-base-currency [amount]="groupData?.overallBalance"></app-base-currency>
+          </div>
+          <div class="">
+            <span class="text-bold">{{ 'Available Limit' | apsTranslate }}</span>
+            &nbsp;
+            <app-base-currency [amount]="groupData?.overallLimit"></app-base-currency>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+      <div class="p-grid">
+        <div class="p-col-12 p-px-0 p-pb-1 p-pt-0">
+          <div class="aps-card p-p-2 pointer primary-border-1px-on-hover text-color-primary-hover"
+            (click)="onPaymentMethodWiseClick()">
+            <div class="text-size-16 text-semi-bold">
+              {{ 'Payment Method Wise' | apsTranslate }}
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12 p-px-0 p-py-2">
+          <div class="aps-card p-p-2 pointer primary-border-1px-on-hover text-color-primary-hover"
+            (click)="onBeneficiartWiseClick()">
+            <div class="text-size-16 text-semi-bold">
+              {{ 'Beneficiary Wise Payment' | apsTranslate }}
+            </div>
+          </div>
+        </div>
+        <div class="p-col-12 p-px-0 p-pb-0 p-pt-1">
+          <div class="aps-card p-p-2 pointer primary-border-1px-on-hover text-color-primary-hover"
+            (click)="showQuickPayModal = true">
+            <div class="text-size-16 text-semi-bold">
+              {{ 'Quick Pay (IFT)' | apsTranslate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-6 p-lg-6 p-sm-12">
+      <div class="aps-card aps-h-100p">
+        <app-insights height="100"
+          insightsUrl="dummyServer/json/commons/private/insights/largeSinglePaymentRequestGroup">
+        </app-insights>
+      </div>
+    </div>
+  </div>
+
+  <app-landing-listing *ngIf="transactionsListTypes.length > 0" [listTypes]="transactionsListTypes">
+  </app-landing-listing>
+</div>
+
+<ng-template #quickPayTemplate>
+  <div class="p-pb-2 border-bottom hide-on-mobile">
+    <div class="text-bold text-size-16">{{ 'Quick Pay - IFT' | apsTranslate }}</div>
+  </div>
+  <form #quickPayForm="ngForm">
+    <div class="p-grid">
+      <div class="p-col-12 p-md-6 p-lg-6 p-pb-0 p-pt-md-2 p-pt-0">
+        <aps-custom-select id="debitAccount" name="debitAccount" label="Debit Account"
+          [(ngModel)]="quickPay.debitAccountId" (focusout)="onDebitAccountSelection($event)"
+          dataUrl="setup/corporateOnboarding/corporateMain/private/accountList" [reqBody]="debitAccountReqBody"
+          [required]="true" *ngIf="!isGroupUser">
+        </aps-custom-select>
+        <aps-group-select label="Debit Account" id="debitAccount" name="debitAccount"
+          [(ngModel)]="quickPay.debitAccount" [value]="quickPay.debitAccount"
+          dataUrl="setup/corporateOnboarding/corporateMain/private/groupAccountList" [required]="true"
+          (change)="onDebitAccountSelection($event)" *ngIf="isGroupUser">
+        </aps-group-select>
+      </div>
+      <div class="p-col-4 p-md-2 p-col-lg-2 p-pb-0 p-pt-md-2 p-pt-0">
+        <aps-custom-select id="currencyId" name="currencyId" label="CCY" [(ngModel)]="quickPay.currencyId"
+          dataUrl="setup/generalMasters/currency/private/currencyList" [required]="true">
+        </aps-custom-select>
+      </div>
+      <div class="p-col-8 p-md-4 p-col-lg-4 p-pb-0 p-pt-md-2 p-pt-0">
+        <aps-form-input label="Amount" id="amount" name="amount" inputType="currencyFormatNotZero"
+          [(ngModel)]="quickPay.amount" [required]="true">
+        </aps-form-input>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-12 p-md-6 p-lg-6 p-py-0">
+        <div class="text-size-14 p-p-2 text-color-light-shade-3" *ngIf="!quickPay.beneficiaryName">
+          {{ 'Beneficiary Name' | apsTranslate }}
+        </div>
+        <div class="text-bold text-size-14 p-p-2 p-py-0" *ngIf="quickPay.beneficiaryName">
+          {{ quickPay.beneficiaryName }}
+        </div>
+      </div>
+      <div class="p-col-12 p-md-6 p-lg-6 p-py-0">
+        <button class="btn btn-md btn-tertiary float-right" (click)="isShowBeneficiaryModal = true">
+          <span *ngIf="!quickPay.beneficiaryName">SELECT </span>
+          <span *ngIf="quickPay.beneficiaryName">CHANGE </span>
+          <span>BENEFICIARY</span>
+        </button>
+        <app-search-modal [(isShow)]="isShowBeneficiaryModal" header="{{ 'Select Beneficiary' | apsTranslate }}"
+          [colDefUrl]="beneficiaryColDefUrl" [rowDefUrl]="beneficiaryRowDefUrl" (onSelection)="onBeneSelection($event)">
+        </app-search-modal>
+      </div>
+    </div>
+    <div class="p-grid">
+      <div class="p-col-12 p-md-6 p-lg-6 p-py-0">
+        <aps-form-input label="Credit Account" id="creditAccount" name="creditAccount"
+          [(ngModel)]="quickPay.creditAccount" disabled="true" [required]="true">
+        </aps-form-input>
+      </div>
+      <!-- <div class="p-col-12 p-md-6 p-lg-6 p-py-0">
+        <aps-form-input label="Payment Method" id="paymentMethod" name="paymentMethod"
+          [(ngModel)]="quickPay.paymentMethod" disabled="true" [required]="true">
+        </aps-form-input>
+      </div> -->
+    </div>
+    <!-- quick pay action -->
+    <div class="p-grid">
+      <div class="p-col-12 p-pb-0">
+        <div class="float-right">
+          <button *ngIf="isGroupUser" class="btn btn-md btn-tertiary p-mr-2" (click)="showQuickPayModal = false">
+            {{ 'CANCEL' | apsTranslate }}
+          </button>
+          <button [disabled]="!quickPayForm.valid" class="btn btn-md btn-primary" (click)="onQuickPaySubmit()">
+            {{ 'Pay' | apsTranslate }}
+          </button>
+          <!-- Quick pay Success Modal -->
+          <app-modal [(isShow)]="isShowQuickPaySuccess" size="sm"
+            [headerText]="'Payment has been initiated' | apsTranslate">
+            <ng-container body>
+              <div class="p-grid" id="quickPayResponse">
+                <div class="p-col-12 p-p-1">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Reference No' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">3456576856</div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Date' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">16 Sep 2021</div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Time' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">10:10 AM</div>
+                </div>
+                <div class="p-col-12 p-p-1 border-bottom">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Debit Account' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14 p-mb-2">{{ quickPay.debitAccount }}</div>
+                </div>
+              </div>
+              <div class="p-grid">
+                <div class="p-col-12 p-p-1 p-mt-2">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Beneficiary Name' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ quickPay.beneficiaryName }}</div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Beneficiary Code' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ quickPay.beneficiaryCode }}</div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Account Number' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ quickPay.creditAccount }}</div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Payment Method' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">{{ quickPay.paymentMethod }}</div>
+                </div>
+                <div class="p-col-12 p-md-6 p-lg-6 p-p-1">
+                  <div class="text-size-12 text-color-light-shade-1">
+                    {{ 'Payable Amount' | apsTranslate }}
+                  </div>
+                  <div class="text-size-14">
+                    <app-base-currency [amount]="quickPay.amount" [currency]="quickPay.currencyName">
+                    </app-base-currency>
+                  </div>
+                </div>
+              </div>
+            </ng-container>
+            <div class="left-right-container p-mt-2 p-pt-2 border-top" footer>
+              <div class="left-container p-mt-1">
+                <span class="p-p-2">
+                  <app-icon icon="fa-copy" class="pointer text-size-18" (click)="copy()"></app-icon>
+                </span>
+                <span class="p-p-2">
+                  <app-icon icon="fa-share-alt" class="pointer text-size-18"></app-icon>
+                </span>
+              </div>
+              <div class="right-container">
+                <button class="btn btn-md btn-primary" (click)="isShowQuickPaySuccess = false; resetQuickPayForm()">
+                  {{ 'Done' | apsTranslate }}
+                </button>
+              </div>
+            </div>
+          </app-modal>
+        </div>
+      </div>
+    </div>
+  </form>
+</ng-template>

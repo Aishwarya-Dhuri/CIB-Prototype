@@ -1,0 +1,438 @@
+<div class="container" *ngIf="!loading">
+  <div class="p-grid g-margin-x">
+    <div class="p-col-12" *ngIf="currentScreen == 'FILTERS'">
+      <app-dynamic-search #dynamicSearch entityName="DIRECT_DEBIT_MANDATE" (onSearch)="getRecords($event)"
+        [isShowSearchByHeader]="true" [isShowPrefillCriteria]="false" [isDisplayPrefillCriteriaModal]="false"
+        optionalParametersColSize="4" (onFiltersReady)="onDynamicFiltersReady()">
+      </app-dynamic-search>
+    </div>
+
+    <app-modal [(isShow)]="isSuppdoc" size="md" headerText="{{ 'Supporting Documents' | apsTranslate }}">
+      <ng-container body>
+        <img class="p-p-4" alt="Supporting Documents" height="300" width="785"
+          src="assets/MMS-CREATE-INDB-INDBH2H-25062023-526954_front.jpg" />
+      </ng-container>
+    </app-modal>
+
+    <app-modal [(isShow)]="isMandateUpload" size="md" headerText="{{ 'Mandate Upload' | apsTranslate }}">
+      <ng-container body>
+        <img class="p-p-4" alt="Supporting Documents" height="300" width="785" src="assets/mandateImage.png" />
+      </ng-container>
+    </app-modal>
+
+    <ng-container *ngIf="currentScreen == 'SEARCH_RESULTS'">
+      <div class="p-col-12">
+        <app-searched-by-view [filters]="selectedFilters" (onClear)="selectedFilters = []; currentScreen = 'FILTERS'"
+          (onModify)="currentScreen = 'FILTERS'"></app-searched-by-view>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header aps-py-12 p-px-3 overflow-visible">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="text-size-14 text-bold">{{ 'Search Results' | apsTranslate }}</div>
+              </div>
+              <div class="right-container">
+                <app-grid-listing-tools (changeFloatingFilter)="searchResultGrid?.changeFloatFilter($event)"
+                  (filterRecords)="searchResultGrid?.onFilter($event)"
+                  (applyColDefs)="searchResultGrid?.onApplyConfig($event)"
+                  [colDefs]="searchResultGrid?.columnDefs ? searchResultGrid.columnDefs : []" [columnConfig]="true"
+                  [moreOptions]="true">
+                </app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing #searchResultGrid id="searchResultGrid" [colDefUrl]="colDefUrl" [rowData]="rowData"
+              [supressAutoFit]="true" [context]="context" [frameworkComponents]="frameworkComponents"
+              [gridOptions]="gridOptions"></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="currentScreen == 'VIEW'">
+      <div class="p-md-5 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2 aps-h-100p">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Product Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Corporate Code' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.corporateCode }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Corporate Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.corporateName }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Product Code' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.productCode }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Product Name' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.productName }}</div>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Utility Code' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.utilityCode }}</div>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Customer No/ ID' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.customerNo }}</div>
+            </div>
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Legal ID' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.legalId }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-md-7 p-sm-12 p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Payer Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Payer Name' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerName }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Email ID' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerEmailId }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Mobile Number' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerMobileNo }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Address 1' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.address1 }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Address 2' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.address2 }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Address 3' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.address3 }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'IFSC Code' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerBank }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Payer Bank' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.payerSortCode }}</div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Payer Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.payerAccountNumber }}
+              </div>
+            </div>
+
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Supporting Document' | apsTranslate }}</div>
+            </div>
+
+            <!-- <div class="p-col-12" *ngIf="formData.supportingDocuments.length == 0">
+              <div class="text-size-14 text-color-dark-shade-1">{{ 'No Supporting Documents Available' | apsTranslate }}</div> 
+            </div> -->
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="aps-card p-p-2">
+                <div class="label-with-icon-container" (click)="isSuppdoc = true">
+                  <div class="icon">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="label">
+                    <div class="text-size-12">
+                      MMS-CREATE-INDB-INDBH2H-25062023-526954_front.tiff
+                    </div>
+                    <div class="text-size-10 text-color-normal">
+                      0.1 MB
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12 text-size-14 text-bold ">
+              <div class="text-size-14 text-bold">{{ 'Mandate Upload' | apsTranslate }}</div>
+            </div>
+
+            <!-- <div class="p-col-12">
+              <div class="text-size-14 text-color-dark-shade-1">{{ 'No Mandate Upload Available' | apsTranslate }}</div> 
+            </div> -->
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="aps-card p-p-2">
+                <div class="label-with-icon-container" (click)="isMandateUpload = true">
+                  <div class="icon">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="label">
+                    <div class="text-size-12">
+                      MandateUpload.jpg
+                    </div>
+                    <div class="text-size-10 text-color-normal">
+                      0.03 MB
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Mandate Image' | apsTranslate }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.supportingDocuments.length == 0">
+              {{ 'No Mandate File Available' | apsTranslate }}
+            </div> -->
+
+            <!-- <div class="p-col-12">
+             <img class="pointer" (click)="isChequeImage = true" src="assets/images/mandate-registration.jpg"
+                  height="20px" width="40px" alt="" /> 
+              <div style="cursor: pointer;" class="text-size-14 text-color-light-shade-1"
+                (click)="isChequeImage = true"> View Mandate Image
+              </div>
+            </div> -->
+            <app-modal [(isShow)]="isChequeImage" size="md" headerText="{{ 'Mandate Image' | apsTranslate }}">
+              <ng-container body>
+                <img class="p-p-4" alt="Cheque Image" height="300" width="700"
+                  src="assets/images/mandate-registration.jpg" />
+              </ng-container>
+            </app-modal>
+
+            <div class="p-md-4 p-sm-12 p-col-12" *ngFor="let document of formData.supportingDocuments">
+              <div class="aps-card p-p-2">
+                <div class="label-with-icon-container">
+                  <div class="icon">
+                    <app-icon icon="fa-file"></app-icon>
+                  </div>
+                  <div class="label">
+                    <div class="text-size-12">
+                      {{ document.fileName }}
+                    </div>
+                    <div class="text-size-10 text-color-normal">
+                      {{ (document.fileSize / 1024 / 1024).toFixed(2) }} MB
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Payment Setup' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Mandate Start Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.mandateStartDate }}
+              </div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Mandate End Date' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateEndDate }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Amount Type ' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.accountType }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Currency Code ' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.currencyCode }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.accountType == 'Fixed'">
+              <div class="text-size-12 text-color-normal">{{ 'Fixed Amount' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.fixedAmount }}</div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.accountType == 'Variable'">
+              <div class="text-size-12 text-color-normal">{{ 'Variable Amount' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.fixedAmount }}</div>
+            </div>
+
+            <ng-container *ngIf="formData.accountType == 'Variable'">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Max Upto' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.maxUpto }}</div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'In Multiply' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.inMultiply }}</div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">{{ 'Not Above' | apsTranslate }}</div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.notAbove }}</div>
+              </div>
+            </ng-container>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Mandate Type' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateType }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateType == 'Standing Instruction'">
+              <div class="text-size-12 text-color-normal">{{ 'Frequency' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateFrequency }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateType == 'Standing Instruction'">
+              <div class="text-size-12 text-color-normal">{{ 'Days' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateDays }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateFrequency == 'Monthly' && formData.mandateType == 'Standing Instruction
+            '">
+              <div class="text-size-12 text-color-normal">{{ 'Date' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateDate }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12" *ngIf="formData.mandateType == 'Standing Instruction
+            '">
+              <div class="text-size-12 text-color-normal">{{ 'If Holiday' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateIfHoliday }}</div>
+            </div>
+
+
+
+            <ng-container *ngIf="formData.mandateType == 'Standing INstruction'">
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate Frequency' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.mandateFrequency }}
+                </div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate Days' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">{{ formData.mandateDays }}</div>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12">
+                <div class="text-size-12 text-color-normal">
+                  {{ 'Mandate If Holiday' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-color-dark-shade-1">
+                  {{ formData.mandateIfHoliday }}
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Enrichment Details' | apsTranslate }}</div>
+            </div>
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">{{ 'Reference 1' | apsTranslate }}</div>
+              <div class="text-size-14 text-color-dark-shade-1">{{ formData.loanNumber }}</div>
+            </div>
+
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-normal">
+                {{ 'Reference 2' | apsTranslate }}
+              </div>
+              <div class="text-size-14 text-color-dark-shade-1">
+                {{ formData.loanAccountNumber }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12" *ngIf="mode != 'VIEW' && !viewMode">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-bold">{{ 'Cancel Mandate Details' | apsTranslate }}</div>
+            </div>
+          </div>
+          <form name="cancelMandateForm" #cancelMandateForm="ngForm">
+
+            <div class="p-grid">
+              <div class="p-col-12 p-md-4 p-lg-4">
+
+                <upload-form-control [files]="signatureFiles" [hideDragDropContainerOnFIleUpload]="true"
+                  (onUploaded)="onSignatureFileSelected($event)"
+                  [disabled]="isReviewEdit && !userAccessFields?.signature?.cibAdmin"></upload-form-control>
+              </div>
+
+              <div class="p-md-3 p-sm-12 p-col-12 ">
+                <aps-form-input inputType="alphaNumeric" [label]="'Cancellation Remarks' | apsTranslate"
+                  name="cancellationRemarks" id="cancellationRemarks"
+                  [(ngModel)]="cancelMandateFormData.cancellationRemarks" required="true">
+                </aps-form-input>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+
+
+      <div class="p-col-12">
+        <aps-card class="aps-card aps-py-12 p-px-3">
+          <div class="left-right-container">
+            <div class="left-container">
+              <button class="btn btn-md btn-tertiary" (click)="close()" *ngIf="mode != 'VIEW'">
+                {{ 'CLOSE' | apsTranslate }}
+              </button>
+            </div>
+            <div class="right-container">
+              <button class="btn btn-md btn-primary" (click)="cancelMandate()" *ngIf="mode != 'VIEW' && !viewMode"
+                [disabled]="!cancelMandateFormData.cancellationRemarks">
+                {{ 'CANCEL MANDATE' | apsTranslate }}
+              </button>
+              <button class="btn btn-md btn-secondary" (click)="back()" *ngIf="mode == 'VIEW'">
+                {{ 'BACK' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </aps-card>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

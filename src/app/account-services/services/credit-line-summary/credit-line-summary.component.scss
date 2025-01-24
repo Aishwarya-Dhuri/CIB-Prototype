@@ -1,0 +1,35 @@
+::ng-deep .ag-chart-wrapper {
+  height: 100% !important;
+  direction: ltr !important;
+}
+
+.chart-container {
+  position: relative;
+}
+
+.ellipse {
+  margin-top: 2px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgb(203, 212, 212);
+}
+
+.ellipse-utilized {
+  background-color: var(--chart-0);
+}
+
+.ellipse-available {
+  background-color: var(--chart-2);
+}
+
+@media screen and (max-width: 767px) {
+  .no-left-right-container {
+    display: block !important;
+
+    .right-container,
+    .left-container {
+      display: block !important;
+    }
+  }
+}

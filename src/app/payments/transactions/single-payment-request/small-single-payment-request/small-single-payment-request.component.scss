@@ -1,0 +1,15 @@
+.primary-button-card {
+  background: url('../../../../../assets/images/mask/circle-pattern.png'), var(--primary-color);
+  background-repeat: no-repeat;
+}
+
+.secondary-button-card {
+  border: 2px solid var(--primary-color);
+}
+
+.review-file-name {
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  text-overflow: ellipsis;
+}

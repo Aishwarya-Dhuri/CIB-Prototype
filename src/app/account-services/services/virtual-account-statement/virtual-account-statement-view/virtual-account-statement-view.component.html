@@ -1,0 +1,104 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-searched-by-view
+      [filters]="filters"
+      (onClear)="onClear()"
+      (onModify)="onModify()"
+    ></app-searched-by-view>
+
+    <div class="aps-card p-mt-2">
+      <div class="p-grid p-px-2 height-70">
+        <div class="p-col-12 p-md-4">
+          <aps-custom-select
+            id="virtualAccountNo"
+            name="virtualAccountNo"
+            [label]="'Virtual Account No' | apsTranslate"
+            [(ngModel)]="accounts"
+            [value]="accounts"
+            [data]="virtualAccountsList"
+            (change)="onChangeVirtualAccount(accounts)"
+            [required]="true"
+          ></aps-custom-select>
+        </div>
+
+        <div class="p-col-12 p-md-2 p-py-3">
+          <div class="text-size-12 text-color-light-shade-1">{{ 'From Date' | apsTranslate }}</div>
+          <div class="text-size-14">{{ searchFilters[4].value.split(' - ')[0] }}</div>
+        </div>
+        <div class="p-col-12 p-md-2 p-py-3">
+          <div class="text-size-12 text-color-light-shade-1">{{ 'To Date' | apsTranslate }}</div>
+          <div class="text-size-14">{{ searchFilters[4].value.split(' - ')[1] }}</div>
+        </div>
+        <div class="p-col-12 p-md-2 p-py-3">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Available Limit' | apsTranslate }}
+          </div>
+          <div class="text-size-14">
+            <app-base-currency
+              [amount]="amountList.availableLimit"
+              [currency]="currencyName"
+              digitsInfo="1.0-0"
+            >
+            </app-base-currency>
+          </div>
+        </div>
+        <div class="p-col-12 p-md-2 p-py-3">
+          <div class="text-size-12 text-color-light-shade-1">
+            {{ 'Utilized Limit' | apsTranslate }}
+          </div>
+          <div class="text-size-14">
+            <app-base-currency
+              [amount]="amountList.utilizedLimit"
+              [currency]="currencyName"
+              digitsInfo="1.0-0"
+            >
+            </app-base-currency>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid">
+      <div class="p-col-12 p-p-0">
+        <div class="aps-card aps-h-400 overflow-hidden p-mb-3" *ngIf="colData.length > 0">
+          <div class="card-header overflow-visible">
+            <div class="p-px-3" [ngClass]="{ 'left-right-container': viewPort === 'web' }">
+              <div class="left-container">
+                <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+                  {{ 'Transactions' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container aps-py-12">
+                <app-grid-listing-tools
+                  (changeFloatingFilter)="accountStatement?.changeFloatFilter($event)"
+                  (filterRecords)="accountStatement?.onFilter($event)"
+                  (applyColDefs)="accountStatement?.onApplyConfig($event)"
+                  [colDefs]="accountStatement?.columnDefs"
+                  [columnConfig]="true"
+                  [showMail]="true"
+                  [showDownload]="true"
+                >
+                </app-grid-listing-tools>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <app-ag-grid-listing
+              id="accountStatement"
+              #accountStatement
+              [columnDefs]="colData"
+              [rowData]="[]"
+              [gridOptions]="gridOptions"
+              [supressAutoFit]="true"
+            >
+            </app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

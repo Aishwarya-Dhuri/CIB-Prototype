@@ -1,0 +1,543 @@
+<div class="container" *ngIf="!loading">
+    <div class="p-grid g-margin-x">
+        <ng-container *ngIf="currentScreen == 'FILTERS'">
+            <div class="p-md-7 p-sm-12 p-col-12">
+                <!-- [genericFilterList]="selectedFilters" -->
+                <app-dynamic-search #dynamicSearch [entityName]="entityName" (onSearch)="getRecords($event)"
+                    [isShowSearchByHeader]="true" [isShowPrefillCriteria]="true" [isDisplayPrefillCriteriaModal]="true"
+                    (onFiltersReady)="onDynamicFiltersReady()" (onSaveCriteria)="getCriteriaList()">
+                </app-dynamic-search>
+            </div>
+
+            <div class="p-md-5 p-sm-12 p-col-12">
+                <div class="aps-card aps-h-100p p-px-3 p-pb-3 p-pt-0">
+                    <app-nothing-here *ngIf="criteriaList.length == 0" colSize="5"
+                        message="Select Search by to view Saved Criteria"></app-nothing-here>
+                    <p-tabView *ngIf="criteriaList.length > 0">
+                        <p-tabPanel header="{{ 'Saved Criterion' | apsTranslate }}">
+                            <div class="p-px-0 p-pt-3 p-pb-1 border-bottom"
+                                *ngFor="let criteria of criteriaList; let i = index">
+                                <div class="left-right-container">
+                                    <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                                        <div class="text-size-12">{{ criteria.name }}</div>
+                                        <div class="text-size-10">
+                                            {{ getCriteriaFilterCount(criteria) }} {{ 'Parameters' | apsTranslate }}
+                                        </div>
+                                    </div>
+                                    <div class="right-container">
+                                        <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                                            {{ 'Apply' | apsTranslate }}
+                                        </button>
+                                        <span class="p-mx-1 inline-block p-py-2 text-color-dark-shade-1">
+                                            <app-icon icon="fa-trash-alt" class="text-size-14 pointer"
+                                                (click)="deleteCriteria(criteria)"></app-icon>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </p-tabPanel>
+                        <p-tabPanel header="{{ 'Recent' | apsTranslate }}">
+                            <ng-container *ngFor="let criteria of criteriaList; let i = index">
+                                <div class="p-px-0 p-pt-3 p-pb-1 border-bottom" *ngIf="i < 3">
+                                    <div class="left-right-container">
+                                        <div class="left-container text-color-dark-shade-1 text-semi-bold">
+                                            <div class="text-size-12">{{ criteria.modifiedSysOn }}</div>
+                                            <div class="text-size-10">
+                                                {{ getCriteriaFilterCount(criteria) }} {{ 'Parameters' | apsTranslate }}
+                                                {{ criteria.name }}
+                                            </div>
+                                        </div>
+                                        <div class="right-container">
+                                            <button class="btn btn-md btn-tertiary" (click)="applyCriteria(criteria)">
+                                                {{ 'REUSE' | apsTranslate }}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-container>
+                        </p-tabPanel>
+                    </p-tabView>
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="currentScreen == 'SEARCH_RESULTS'">
+            <div class="p-col-12">
+                <app-searched-by-view [filters]="selectedFilters"
+                    (onClear)="selectedFilters = []; currentScreen = 'FILTERS'"
+                    (onModify)="currentScreen = 'FILTERS'"></app-searched-by-view>
+            </div>
+
+            <div class="p-col-12">
+                <div class="aps-card aps-h-400">
+                    <div class="aps-card-header aps-py-12 p-px-3">
+                        <div class="left-right-container">
+                            <div class="left-container">
+                                <div class="text-size-14 text-bold">{{ 'Search Results' | apsTranslate }}</div>
+                            </div>
+                            <div class="right-container">
+                                <app-grid-listing-tools
+                                    (changeFloatingFilter)="searchResultGrid.changeFloatFilter($event)"
+                                    (filterRecords)="searchResultGrid.onFilter($event)"
+                                    (applyColDefs)="searchResultGrid.onApplyConfig($event)"
+                                    [colDefs]="searchResultGrid.columnDefs" [columnConfig]="true" [moreOptions]="true">
+                                </app-grid-listing-tools>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aps-card-body">
+                        <app-ag-grid-listing #searchResultGrid id="searchResultGrid" [colDefUrl]="colDefUrl"
+                            [rowData]="rowData" [context]="context" [frameworkComponents]="frameworkComponents"
+                            [gridOptions]="gridOptions"></app-ag-grid-listing>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+
+
+
+        <ng-container *ngIf="currentScreen == 'VIEW'">
+
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                <div class="aps-card p-p-3 aps-h-100p">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-14 text-color-dark-shade-1 text-bold">
+                                {{ 'Structure Details' | apsTranslate }} <span class="text-color-danger">*</span>
+                            </div>
+                        </div>
+                        <div class="right-container"></div>
+                    </div>
+
+                    <div class="p-grid g-margin-x">
+                        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Structure Type' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.structureType }}
+                            </div>
+                        </div>
+                        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Structure Name' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.structureName }}
+                            </div>
+                        </div>
+                        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Main Account' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.mainAccNo }}
+                            </div>
+                        </div>
+                        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">{{ 'Sweep Type' | apsTranslate }}</div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.sweepType }}
+                            </div>
+                        </div>
+                        <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Execution Sequence' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.executionSequence }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                <div class="aps-card p-p-3 aps-h-100p">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-14 text-color-dark-shade-1 text-bold">
+                                {{ 'Frequency Details' | apsTranslate }} <span class="text-color-danger">*</span>
+                            </div>
+                        </div>
+                        <div class="right-container"></div>
+                    </div>
+
+                    <div class="p-grid g-margin-x">
+                        <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Frequency of execution' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.frequencyOfExecution }}
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="formData.frequencyOfExecution === 'pre-defined'">
+                            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12" *ngFor="let d of formData.dates; let i = index">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Date' | apsTranslate }} {{ i + 1 }}
+                                </div>
+                                <div class="text-size-16 text-color-dark-shade-1">
+                                    {{ d | date }}
+                                </div>
+                            </div>
+                        </ng-container>
+
+                        <ng-container *ngIf="formData.frequencyOfExecution !== 'pre-defined'">
+                            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Recurrence Frequency' | apsTranslate }}
+                                </div>
+                                <div class="text-size-16 text-color-dark-shade-1">
+                                    {{ formData.recurrenceFrequency }}
+                                </div>
+                            </div>
+                            <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Number of Occurrence' | apsTranslate }}
+                                </div>
+                                <div class="text-size-16 text-color-dark-shade-1">
+                                    {{ formData.numberOfOccurrence }}
+                                </div>
+                            </div>
+
+                            <ng-container *ngIf="formData.frequencyOfExecution === 'intraday'">
+                                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'Start Date & Time' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.startDateTime | date }}
+                                    </div>
+                                </div>
+                                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'End Date & Time' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.endDateTime | date }}
+                                    </div>
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="formData.frequencyOfExecution === 'custom'">
+                                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'Start Date' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.startDate | date }}
+                                    </div>
+                                </div>
+                                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'End Date' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.endDate | date }}
+                                    </div>
+                                </div>
+                                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+                            </ng-container>
+
+                            <div class="p-col-12">
+                                <div class="text-size-12 text-color-light-shade-1">
+                                    {{ 'Recurrence Days' | apsTranslate }}
+                                </div>
+                                <div class="p-mt-0">
+                                    <p-checkbox class="p-mr-2" value="Sunday" label="{{ 'Sunday' | apsTranslate }}"
+                                        name="recurrenceDays" [(ngModel)]="formData.recurrenceDays"
+                                        [disabled]="true"></p-checkbox>
+                                    <p-checkbox class="p-mr-2" value="Monday" label="{{ 'Monday' | apsTranslate }}"
+                                        name="recurrenceDays" [(ngModel)]="formData.recurrenceDays"
+                                        [disabled]="true"></p-checkbox>
+                                    <p-checkbox class="p-mr-2" value="Tuesday" label="{{ 'Tuesday' | apsTranslate }}"
+                                        name="recurrenceDays" [(ngModel)]="formData.recurrenceDays"
+                                        [disabled]="true"></p-checkbox>
+                                    <p-checkbox class="p-mr-2" value="Wednesday"
+                                        label="{{ 'Wednesday' | apsTranslate }}" name="recurrenceDays"
+                                        [(ngModel)]="formData.recurrenceDays" [disabled]="true"></p-checkbox>
+                                    <p-checkbox class="p-mr-2" value="Thursday" label="{{ 'Thursday' | apsTranslate }}"
+                                        name="recurrenceDays" [(ngModel)]="formData.recurrenceDays"
+                                        [disabled]="true"></p-checkbox>
+                                    <p-checkbox class="p-mr-2" value="Friday" label="{{ 'Friday' | apsTranslate }}"
+                                        name="recurrenceDays" [disabled]="true"
+                                        [(ngModel)]="formData.recurrenceDays"></p-checkbox>
+                                    <p-checkbox class="p-mr-2" value="Saturday" label="{{ 'Saturday' | apsTranslate }}"
+                                        name="recurrenceDays" [disabled]="true"
+                                        [(ngModel)]="formData.recurrenceDays"></p-checkbox>
+                                </div>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                <div class="aps-card p-p-3 aps-h-100p">
+                    <div class="left-right-container">
+                        <div class="left-container">
+                            <div class="text-size-14 text-color-dark-shade-1 text-bold">
+                                {{ 'Interest Setup' | apsTranslate }} <span class="text-color-danger">*</span>
+                            </div>
+                        </div>
+                        <div class="right-container"></div>
+                    </div>
+
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Positive Rate' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.positiveRate }}
+                            </div>
+                        </div>
+                        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Overdraft Rate' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.overdraftRate }}
+                            </div>
+                        </div>
+                        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Lending Rate' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.lendingRate }}
+                            </div>
+                        </div>
+                        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Borrowing Rate' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.borrowingRate }}
+                            </div>
+                        </div>
+                        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Apply to Sub-Account' | apsTranslate }}
+                            </div>
+                            <div>
+                                <p-radioButton class="p-mr-4" name="apply-to-sub-account" value="Yes"
+                                    label="{{ 'Yes' | apsTranslate }}"
+                                    [(ngModel)]="formData.applyToSubAccount"></p-radioButton>
+
+                                <p-radioButton class="p-mr-4" name="apply-to-sub-account" value="No"
+                                    label="{{ 'No' | apsTranslate }}"
+                                    [(ngModel)]="formData.applyToSubAccount"></p-radioButton>
+                            </div>
+                        </div>
+                        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Selected By' | apsTranslate }}
+                            </div>
+                            <div>
+                                <p-radioButton class="p-mr-4" name="selected-by" value="System"
+                                    label="{{ 'System' | apsTranslate }}"
+                                    [(ngModel)]="formData.selectedBy"></p-radioButton>
+
+                                <p-radioButton class="p-mr-4" name="selected-by" value="Manual"
+                                    label="{{ 'Manual' | apsTranslate }}"
+                                    [(ngModel)]="formData.selectedBy"></p-radioButton>
+                            </div>
+                        </div>
+                        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Pin Generation Frequency' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.PNGenerationFrequency }}
+                            </div>
+                        </div>
+                        <div class="p-md-6 p-lg-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'Pin Generation Month' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.PNGenerationMonth }}
+                            </div>
+                        </div>
+                        <div class="p-md-6 p-col-12 p-sm-12">
+                            <div class="text-size-12 text-color-light-shade-1">
+                                {{ 'PN Generation Day' | apsTranslate }}
+                            </div>
+                            <div class="text-size-16 text-color-dark-shade-1">
+                                {{ formData.PNGenerationDay }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-lg-6 p-md-6 p-sm-12 p-col-12 p-py-0">
+                <div class="p-grid">
+                    <div class="p-col-12 p-px-0">
+                        <div class="aps-card p-p-3 aps-h-100p">
+                            <div class="left-right-container">
+                                <div class="left-container">
+                                    <div class="text-size-14 text-color-dark-shade-1 text-bold">
+                                        {{ 'Cluster Details' | apsTranslate }} <span class="text-color-danger">*</span>
+                                    </div>
+                                </div>
+                                <div class="right-container"></div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'Belongs to Cluster Code' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.belongsToClusterCode }}
+                                    </div>
+                                </div>
+                                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'Belongs to Cluster Name' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.belongsToClusterName }}
+                                    </div>
+                                </div>
+                                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'Lead for Cluster Code' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.leadForClusterCode }}
+                                    </div>
+                                </div>
+                                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'Lead for Cluster Name' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.leadForClusterName }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-col-12 p-px-0">
+                        <div class="aps-card p-p-3 aps-h-100p">
+                            <div class="left-right-container">
+                                <div class="left-container">
+                                    <div class="text-size-14 text-color-dark-shade-1 text-bold">
+                                        {{ 'Exception Handling' | apsTranslate }} <span
+                                            class="text-color-danger">*</span>
+                                    </div>
+                                </div>
+                                <div class="right-container"></div>
+                            </div>
+
+                            <div class="p-grid g-margin-x p-pb-6">
+                                <div class="p-lg-6 p-md-6 p-sm-12 p-col-12">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'Funding Account' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.fundingAccountName }}
+                                    </div>
+                                </div>
+                                <div class="p-col-3">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'On Holiday' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.onHoliday }}
+                                    </div>
+                                </div>
+                                <div class="p-col-3">
+                                    <div class="text-size-12 text-color-light-shade-1">
+                                        {{ 'Failure Rule' | apsTranslate }}
+                                    </div>
+                                    <div class="text-size-16 text-color-dark-shade-1">
+                                        {{ formData.failureRule }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="p-col-12">
+                <div class="aps-card aps-h-500">
+                    <div class="aps-card-header background-color-primary aps-py-12 p-px-3">
+                        <div class="left-right-container">
+                            <div class="left-container"></div>
+                            <div class="right-container">
+                                <div class="toggle-select-container">
+                                    <div class="action pointer text-color-dark-shade-1"
+                                        [ngClass]="{ active: treeType === 'grid' }" (click)="treeType = 'grid'">
+                                        <app-icon icon="fa-list" class="app-icon"></app-icon>
+                                    </div>
+                                    <div class="action pointer text-color-dark-shade-1"
+                                        [ngClass]="{ active: treeType === 'tree' }" (click)="treeType = 'tree'">
+                                        <app-icon icon="fa-sitemap" class="app-icon"></app-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="aps-card-body position-relative">
+                        <app-ag-grid-listing *ngIf="treeType === 'grid'" id="structure-hirarchy" #newStructureHierarchy
+                            [columnDefs]="colDefs" [rowData]="rowDataView" [gridOptions]="gridOptionsView"
+                            [context]="context"></app-ag-grid-listing>
+
+                        <div class="tree-account-details-container" *ngIf="treeType === 'tree' && treeNode">
+                            <div class="aps-card account-container">
+                                <div class="account-header background-color-dark-9 text-color-inverted p-py-2 p-px-3">
+                                    <div class="left-right-container">
+                                        <div class="left-container">{{ 'Account Details' | apsTranslate }}</div>
+                                        <div class="right-container pointer" (click)="treeNode = null">
+                                            <app-icon icon="fa-times"></app-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="account-body">
+                                    <div
+                                        class="account-details background-color-dark-5 text-color-dark-shade-1 p-py-2 p-px-3">
+                                        <div class="text-size-14">Internal - Current Account</div>
+                                        <div class="text-size-12 text-color-normal p-mt-1">ZBA | Priority-1</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <app-tree-structure-hierarchy [treeStructureHierarchy]="accountStructureHierarchyTreeData"
+                            *ngIf="treeType === 'tree'"
+                            (nodeSelected)="selectedTreeNode($event)"></app-tree-structure-hierarchy>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <div class="p-col-12">
+                <aps-card class="aps-card aps-py-12 p-px-3">
+                    <div class="left-right-container">
+                        <div class="left-container"></div>
+                        <div class="right-container">
+                            <button class="btn btn-md btn-tertiary" (click)="close()">
+                                {{ 'CANCEL' | apsTranslate }}
+                            </button>
+                        </div>
+                    </div>
+                </aps-card>
+            </div>
+
+        </ng-container>
+
+
+    </div>
+</div>

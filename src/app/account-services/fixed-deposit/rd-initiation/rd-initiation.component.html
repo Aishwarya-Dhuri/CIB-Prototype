@@ -1,0 +1,392 @@
+<div class="container">
+  <ng-container>
+    <form (ngSubmit)="onSubmit()" *ngIf="stepperDetails.currentStep == 1" name="rdInitiationForm"
+      #rdInitiationForm="ngForm">
+      <div class="aps-card p-mb-2">
+        <div class="aps-card-header">
+          <div class="text-size-16 text-bold p-px-3 p-py-3">
+            {{ 'RD Placement Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <app-aps-calender [label]="'RD Placement Date' | apsTranslate" name="placementDate" id="placementDate"
+                showIcon="true" #placementDate="ngModel" [(ngModel)]="formData.placementDate" required="true"
+                disabled="true">
+              </app-aps-calender>
+            </div>
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <app-aps-calender [label]="'Value Date' | apsTranslate" name="valueDate" id="valueDate" showIcon="true"
+                #valueDate="ngModel" [(ngModel)]="formData.valueDate" required="true">
+              </app-aps-calender>
+            </div>
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <div class="p-grid">
+                <div class="p-col-11 p-p-0">
+                  <aps-custom-select [label]="'RD Product Type' | apsTranslate" name="productTypeId" id="productTypeId"
+                    dataUrl="accountServices/fixedDeposit/rdInitiation/private/dropdown/productTypeId"
+                    #productTypeId="ngModel" [value]="formData.productTypeId" [(ngModel)]="formData.productTypeId"
+                    required="true" (change)="getMaturityInstructions(formData.productTypeId)"></aps-custom-select>
+                </div>
+                <div class="p-col-1 p-px-2 p-pt-4">
+                  <app-icon class="p-py-4" icon="fa-percent" (mouseenter)="optionalSelection.toggle($event)"
+                    (mouseleave)="optionalSelection.toggle($event)">
+                  </app-icon>
+                  <p-overlayPanel [dismissable]="false" #optionalSelection>
+                    <ng-template pTemplate>
+                      <div class="p-grid aps-w-350">
+                        <div class="p-col-4 p-p-1">
+                          <div class="text-semi-bold text-size-12">
+                            {{ 'Product' | apsTranslate }}
+                          </div>
+                        </div>
+                        <div class="p-col-4 p-p-1">
+                          <div class="text-semi-bold text-size-12">
+                            {{ 'Tenor' | apsTranslate }}
+                          </div>
+                        </div>
+                        <div class="p-col-4 p-p-1">
+                          <div class="text-semi-bold text-size-12">
+                            {{ 'Interest Rate' | apsTranslate }}
+                          </div>
+                        </div>
+                        <div class="p-col-4 p-p-1">
+                          <div class="text-color-dark-shade-1 text-size-12">
+                            {{ 'Product 1' | apsTranslate }}
+                          </div>
+                        </div>
+                        <div class="p-col-4 p-p-1">
+                          <div class="text-color-dark-shade-1 text-size-12">
+                            {{ '5 Years' | apsTranslate }}
+                          </div>
+                        </div>
+                        <div class="p-col-4 p-p-1">
+                          <div class="text-color-dark-shade-1 text-size-12">
+                            {{ '10.50' | apsTranslate }}
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </p-overlayPanel>
+                </div>
+              </div>
+            </div>
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-custom-select [label]="'Debit From Account' | apsTranslate" name="debitFromAccountId"
+                id="debitFromAccountId" [data]="accountList" #debitFromAccountId="ngModel"
+                [value]="formData.debitFromAccountId" [(ngModel)]="formData.debitFromAccountId" required="true"
+                (change)="getAccountNameById(formData.debitFromAccountId)">
+              </aps-custom-select>
+            </div>
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <div class="text-size-14 text-color-normal p-py-3">
+                {{ 'Account Balance' | apsTranslate }} :
+                <app-base-currency [amount]="getBalanceByAccount(formData.debitFromAccountId)" digitsInfo="1.0-0">
+                </app-base-currency>
+              </div>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+              <aps-custom-select [label]="'Currency' | apsTranslate" class="p-py-1" id="currencyId" name="currencyId"
+                [value]="formData.currencyId" [(ngModel)]="formData.currencyId" [data]="currencyList" disabled
+                (change)="getCurrencyById(formData.currencyId)">
+              </aps-custom-select>
+            </div>
+            <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+              <div class="p-grid">
+                <div class="p-col-11 p-p-0">
+                  <aps-form-input [label]="'RD Amount' | apsTranslate" id="amount" name="amount"
+                    inputType="currencyFormatNotZero" [(ngModel)]="formData.amount" required="true"
+                    (change)="amountValidate(formData.amount, formData.debitFromAccountId)">
+                  </aps-form-input>
+                </div>
+                <div class="p-col-1 p-px-1 p-pt-4">
+                  <app-icon icon="fa-info-circle" (mouseenter)="fdAmountHover.toggle($event)"
+                    (mouseleave)="fdAmountHover.toggle($event)"></app-icon>
+                  <p-overlayPanel [dismissable]="false" #fdAmountHover>
+                    <ng-template pTemplate>
+                      <div class="p-grid aps-w-230">
+                        <div class="p-col-6 p-p-1 border-bottom">
+                          <div class="text-size-12 text-semi-bold">
+                            {{ formData.currencyName }} - {{ 'Min Amount' | apsTranslate }}
+                          </div>
+                          <div class="text-color-dark-shade-1 text-size-12">10,000.00</div>
+                        </div>
+                        <div class="p-col-6 p-p-1 border-bottom">
+                          <div class="text-semi-bold text-size-12">
+                            {{ formData.currencyName }} - {{ 'Max Amount' | apsTranslate }}
+                          </div>
+                          <div class="text-color-dark-shade-1 text-size-12">10 Million</div>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </p-overlayPanel>
+                </div>
+              </div>
+            </div>
+            <!-- <div class="p-col-4 p-md-2 p-sm-4 p-pl-3">
+              <aps-custom-select [label]="'Years' | apsTranslate" id="Years" name="Years" [(ngModel)]="formData.years"
+                [data]="yearsDataList" (change)="setInterestRateByYears(formData.years)" required="true">
+              </aps-custom-select>
+            </div>
+            <div class="p-col-4 p-md-1 p-sm-4 p-px-1">
+              <aps-custom-select [label]="'Months' | apsTranslate" id="months" name="months"
+                [(ngModel)]="formData.months" [data]="monthsDataList">
+              </aps-custom-select>
+            </div>
+            <div class="p-col-4 p-md-1 p-sm-4 p-pr-3">
+              <aps-custom-select [label]="'Days' | apsTranslate" id="days" name="days" [(ngModel)]="formData.days"
+                [data]="daysDataList">
+              </aps-custom-select>
+            </div> -->
+
+            <div class="p-col-4 p-md-3 p-col-lg-1 p-pl-3">
+              <!-- <aps-custom-select [label]="'No.of Installments' | apsTranslate" class="p-py-1" id="noOfInstallments"
+                name="noOfInstallments" [value]="formData.currencyId" [(ngModel)]="formData.noOfInstallments"
+                [data]="installmentsList" (change)="getCurrencyById(formData.currencyId)">
+              </aps-custom-select> -->
+              <aps-custom-select name="forwardType" id="forwardType" label="No.of Installments"
+                (change)="setInterestRate()" [(ngModel)]="formData.noOfInstallments" [data]="installmentsList"
+                [required]="true"></aps-custom-select>
+            </div>
+
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-form-input inputType="currencyFormatNotZero" [label]="'Interest Rate' | apsTranslate" disabled
+                name="interestRate" id="interestRate" [(ngModel)]="formData.interestRate" required="true">
+              </aps-form-input>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-mb-2">
+        <div class="aps-card-header">
+          <div class="text-size-16 text-bold p-px-3 p-py-3">
+            {{ 'Maturity Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-custom-select [label]="'Maturity Instructions' | apsTranslate" name="maturityInstructionsId"
+                id="maturityInstructionsId"
+                dataUrl="accountServices/fixedDeposit/rdInitiation/private/dropdown/maturityInstructionsDataList"
+                #maturityInstructionsId="ngModel" [(ngModel)]="formData.maturityInstructionsId" required="true"
+                (change)="principalCreditModeDisable(formData.maturityInstructionsId)">
+              </aps-custom-select>
+            </div>
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-form-input [label]="'Remarks' | apsTranslate" id="remarks" name="remarks"
+                [(ngModel)]="formData.remarks">
+              </aps-form-input>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-custom-select [label]="'Principal Credit Mode' | apsTranslate" name="principalCreditMode"
+                id="principalCreditMode"
+                dataUrl="accountServices/fixedDeposit/rdInitiation/private/dropdown/creditModeDataList"
+                #principalCreditMode="ngModel" [value]="formData.principalCreditMode"
+                [(ngModel)]="formData.principalCreditMode" [required]="isPrincipalCreditRequired"
+                [disabled]="isPrincipalCreditDisable">
+              </aps-custom-select>
+            </div>
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-custom-select [label]="'Principal Credit Account' | apsTranslate" name="principalCreditAccount"
+                id="principalCreditAccount"
+                dataUrl="accountServices/fixedDeposit/rdInitiation/private/dropdown/accountList"
+                #principalCreditAccount="ngModel" [value]="formData.principalCreditAccount"
+                [(ngModel)]="formData.principalCreditAccount" [required]="isPrincipalCreditRequired"
+                [disabled]="isPrincipalCreditDisable">
+              </aps-custom-select>
+            </div>
+            <!-- <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-custom-select [label]="'Principal Preffered Currency' | apsTranslate" id="principalPrefferedCurrency"
+                name="principalPrefferedCurrency" [value]="formData.principalPrefferedCurrency"
+                [(ngModel)]="formData.principalPrefferedCurrency" [data]="currencyList"
+                [required]="isPrincipalCreditRequired" [disabled]="isPrincipalCreditDisable">
+              </aps-custom-select>
+            </div> -->
+          </div>
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-custom-select [label]="'Interest Credit Mode' | apsTranslate" name="interestCreditMode"
+                id="interestCreditMode"
+                dataUrl="accountServices/fixedDeposit/rdInitiation/private/dropdown/creditModeDataList"
+                #interestCreditMode="ngModel" [value]="formData.interestCreditMode"
+                [(ngModel)]="formData.interestCreditMode" [required]="isInterestCreditRequired"
+                [disabled]="isInterestCreditDisable">
+              </aps-custom-select>
+
+            </div>
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-custom-select [label]="'Interest Credit Account' | apsTranslate" name="interestCreditAccount"
+                id="interestCreditAccount"
+                dataUrl="accountServices/fixedDeposit/rdInitiation/private/dropdown/accountList"
+                #interestCreditAccount="ngModel" [value]="formData.interestCreditAccount"
+                [(ngModel)]="formData.interestCreditAccount" [required]="isInterestCreditRequired"
+                [disabled]="isInterestCreditDisable">
+              </aps-custom-select>
+            </div>
+            <!-- <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <aps-custom-select [label]="'Interest Preffered Currency' | apsTranslate" id="interestPrefferedCurrency"
+                name="interestPrefferedCurrency" [value]="formData.interestPrefferedCurrency"
+                [(ngModel)]="formData.interestPrefferedCurrency" [data]="currencyList"
+                [required]="isInterestCreditRequired" [disabled]="isInterestCreditDisable">
+              </aps-custom-select>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <div *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <div class="aps-card p-mb-2">
+        <div class="aps-card-header">
+          <div class="text-size-16 text-bold p-px-3 p-py-3">
+            {{ 'RD Placement Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-6 p-col-6 p-px-3">
+              <app-review-form-field label="RD Placement Date"
+                [value]="formData.placementDate ? formData.placementDate : '-'"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-6 p-col-6 p-px-3">
+              <app-review-form-field label="Value Date"
+                [value]="formData.valueDate ? formData.valueDate : '-'"></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-6 p-col-6 p-px-3">
+              <app-review-form-field label="RD Product Type" [value]="
+                  formData.productTypeId ? formData.productTypeId  : '-'
+                "></app-review-form-field>
+              <!-- getProductNameByType(formData.productTypeId) -->
+            </div>
+            <div class="p-md-4 p-sm-6 p-col-6 p-px-3">
+              <app-review-form-field label="Debit From Account" [value]="
+                  formData.debitFromAccountId
+                    ? getAccountNameById(formData.debitFromAccountId)
+                    : '-'
+                "></app-review-form-field>
+            </div>
+            <div class="p-col-4 p-md-1 p-col-lg-1 p-pl-3">
+              <app-review-form-field label="Currency"
+                [value]="formData.currencyId ? getCurrencyById(formData.currencyId) : '-'"></app-review-form-field>
+            </div>
+            <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+              <app-review-form-field label="RD Amount"
+                [value]="formData.amount ? formData.amount : '-'"></app-review-form-field>
+            </div>
+            <div class="p-col-8 p-md-3 p-col-lg-3 p-pr-2">
+              <app-review-form-field label="No.of Installments"
+                [value]="formData.noOfInstallments ? formData.noOfInstallments : '-'"></app-review-form-field>
+            </div>
+            <!-- <div class="p-col-4 p-md-1 p-sm-4 p-pl-3">
+              <app-review-form-field label="Years"
+                [value]="formData.years ? setYearDisplayNameById(formData.years) : '-'"></app-review-form-field>
+            </div>
+            <div class="p-col-4 p-md-1 p-sm-4 p-pl-3">
+              <app-review-form-field label="Months"
+                [value]="formData.months ? setMonthDisplayNameById(formData.months) : '-'"></app-review-form-field>
+            </div>
+            <div class="p-col-4 p-md-1 p-sm-4 p-pl-3">
+              <app-review-form-field label="Days"
+                [value]="formData.days ? setDayDisplayNameById(formData.days) : '-'"></app-review-form-field>
+            </div> -->
+            <div class="p-col-4 p-md-4 p-sm-4 p-pl-3">
+              <app-review-form-field label="Interest Rate"
+                [value]="formData.interestRate ? formData.interestRate : '-'"></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-mb-2">
+        <div class="aps-card-header">
+          <div class="text-size-16 text-bold p-px-3 p-py-3">
+            {{ 'Maturity Details' | apsTranslate }}
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <div class="p-grid">
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <app-review-form-field label="Maturity Instructions" [value]="
+                  formData.maturityInstructionsId
+                    ? getMaturityNameById(formData.maturityInstructionsId)
+                    : '-'
+                "></app-review-form-field>
+            </div>
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3">
+              <app-review-form-field label="Remarks"
+                [value]="formData.remarks ? formData.remarks : '-'"></app-review-form-field>
+            </div>
+          </div>
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.principalCreditMode">
+              <app-review-form-field label="Principal Credit Mode" [value]="
+                  formData.principalCreditMode
+                    ? getCreditModeById(formData.principalCreditMode)
+                    : '-'
+                "></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.principalCreditAccount">
+              <app-review-form-field label="Principal Credit Account" [value]="
+                  formData.principalCreditAccount
+                    ? getAccountNameById(formData.principalCreditAccount)
+                    : '-'
+                "></app-review-form-field>
+            </div>
+
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3" *ngIf="formData.principalPrefferedCurrency">
+              <app-review-form-field label="Principal Preffered Currency" [value]="
+                  formData.principalPrefferedCurrency
+                    ? getCurrencyById(formData.principalPrefferedCurrency)
+                    : '-'
+                "></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.interestCreditMode">
+              <app-review-form-field label="Interest Credit Mode" [value]="
+                  formData.interestCreditMode ? getCreditModeById(formData.interestCreditMode) : '-'
+                "></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-6 p-col-6 p-px-3" *ngIf="formData.interestCreditAccount">
+              <app-review-form-field label="Interest Credit Account" [value]="
+                  formData.interestCreditAccount
+                    ? getAccountNameById(formData.interestCreditAccount)
+                    : '-'
+                "></app-review-form-field>
+            </div>
+
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3" *ngIf="formData.interestPrefferedCurrency">
+              <app-review-form-field label="Interest Preffered Currency" [value]="
+                  formData.interestPrefferedCurrency
+                    ? getCurrencyById(formData.interestPrefferedCurrency)
+                    : '-'
+                "></app-review-form-field>
+            </div>
+
+            <div class="p-col-12 p-md-4 p-sm-12 p-px-3" *ngIf="mode !== 'VIEW'">
+              <p-checkbox class="p-pr-2 p-py-1 pointer" name="Terms and Condition" id="Terms and Condition"
+                [binary]="true" [(ngModel)]="formData.termsAndCondition" required="true">
+              </p-checkbox>
+              <span class="text-size-14 pointer" (click)="isTermsAndCondition = true">{{
+                'Terms and Condition' | apsTranslate
+                }}</span>
+            </div>
+          </div>
+          <div class="p-px-3 p-pb-3">
+            <span class="text-semi-bold text-size-12 text-color-danger">{{ 'Note' | apsTranslate }}:</span>
+            <span class="text-size-10 text-color-danger">For cross currency transactions (purchase and maturity),
+              exchange rate prevailing at
+              the time respective transaction will be applicable
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <app-stepper-footer [parentRef]="this" *ngIf="!isViewMode"></app-stepper-footer>
+  </ng-container>
+</div>

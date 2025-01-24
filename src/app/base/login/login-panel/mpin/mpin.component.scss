@@ -1,0 +1,49 @@
+.mpin-form {
+  display: block;
+
+  .form-data {
+    display: block;
+    margin: 13px 0 14px 0;
+
+    .main-text {
+      font-size: 1rem;
+      font-weight: bold;
+      padding-top: 2px;
+    }
+
+    .input-field {
+      display: block;
+      width: 100%;
+      font-size: 0.875rem;
+      color: var(--text-color);
+      border-radius: 6pt !important;
+    }
+
+    .links {
+      margin-top: -8px;
+
+      .keyboard {
+        display: inline-block;
+        color: var(--primary-color);
+        font-size: 0.875rem;
+        cursor: pointer;
+
+        .icon {
+          display: inline-block;
+          margin: 0 5px;
+          margin-top: 1px;
+
+          i,
+          .app-icon {
+            font-size: 1rem;
+          }
+        }
+
+        .label {
+          display: inline-block;
+          vertical-align: top;
+        }
+      }
+    }
+  }
+}

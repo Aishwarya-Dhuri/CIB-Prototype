@@ -1,0 +1,102 @@
+<div class="p-grid">
+  <div class="p-col-12">
+    <div class="card">
+      <h5>Industry - Initiate</h5>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <p-panel header="1.1. Industry : Details" styleClass="p-mt-2" [toggleable]="true">
+          <div class="p-grid p-fluid p-inputtext-sm">
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="industryCode"
+                  type="text"
+                  formControlName="industryCode"
+                  required
+                />
+                <label for="industryCode">Industry Code</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6">
+              <span class="p-float-label">
+                <input
+                  pInputText
+                  id="industryDescription"
+                  type="text"
+                  formControlName="industryDescription"
+                  required
+                />
+                <label for="industryDescription">Industry Description</label>
+              </span>
+            </div>
+          </div>
+        </p-panel>
+
+        <p-panel header="1.2. Effective Details" styleClass="p-mt-2" [toggleable]="true">
+          <div class="p-grid p-fluid p-inputtext-sm">
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6">
+              <span class="p-float-label">
+                <p-calendar
+                  [showIcon]="true"
+                  dateFormat="dd-M-yy"
+                  showOtherMonths="true"
+                  selectOtherMonths="true"
+                  monthNavigator="true"
+                  yearNavigator="true"
+                  dataType="string"
+                  inputId="effectiveFrom"
+                  formControlName="effectiveFrom"
+                  required
+                >
+                </p-calendar>
+                <label for="effectiveFrom">Effective From</label>
+              </span>
+            </div>
+
+            <div class="p-col-3 p-lg-3 p-md-4 p-sm-6">
+              <span class="p-float-label">
+                <p-calendar
+                  [showIcon]="true"
+                  dateFormat="dd-M-yy"
+                  showOtherMonths="true"
+                  selectOtherMonths="true"
+                  monthNavigator="true"
+                  yearNavigator="true"
+                  dataType="string"
+                  inputId="effectiveTill"
+                  formControlName="effectiveTill"
+                >
+                </p-calendar>
+                <label for="effectiveTill">Effective Till</label>
+              </span>
+            </div>
+          </div>
+        </p-panel>
+
+        <div class="p-grid p-fluid p-mt-4">
+          <div class="p-offset-5 p-col-4 p-md-1">
+            <button
+              pButton
+              pRipple
+              type="button"
+              label="Back"
+              class="p-button-outlined p-button-secondary"
+              (click)="goToListing()"
+            ></button>
+          </div>
+          <div class="p-col-4 p-md-1" [hidden]="mode == 'view'">
+            <button
+              pButton
+              pRipple
+              type="submit"
+              label="Submit"
+              class="p-button-raised"
+              [disabled]="!form.valid"
+            ></button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

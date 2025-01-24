@@ -1,0 +1,95 @@
+<div class="p-grid g-margin-x">
+  <div class="p-col-12">
+    <div class="inline-items text-color-dark-shade-1">
+      <div class="item">
+        <div class="text-size-20 text-bold">{{ 'Review' | apsTranslate }}</div>
+      </div>
+
+      <div class="item p-mx-3">
+        <div class="label-with-icon-container">
+          <div class="icon">
+            <app-icon icon="fa-university"></app-icon>
+          </div>
+          <div class="label">
+            {{ userAccountSelectedCount }} {{ gridHeader | apsTranslate }}
+            {{ 'Mapped' | apsTranslate }}
+          </div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="text-color-dark-shade-1" *ngIf="selectedUsersAccounts.length > 0">
+          <app-modal
+            [(isShow)]="showMoreUsersAccounts"
+            [customStyles]="customModalStyle"
+            [hideBackdrop]="true"
+            headerText="{{ usersAccountsHeader | apsTranslate }}"
+          >
+            <div class="" body>
+              <div
+                class="text-size-13 aps-pt-12"
+                *ngFor="let usersAccount of selectedUsersAccounts"
+              >
+                {{ usersAccount.uaid }}
+              </div>
+            </div>
+          </app-modal>
+
+          <div class="label-with-icon-container">
+            <div class="icon">
+              <app-icon icon="fa-users"></app-icon>
+            </div>
+            <div class="label">
+              <ng-container *ngFor="let usersAccount of selectedUsersAccounts; let i = index">
+                <span class="inline-block" *ngIf="i < 3"> {{ usersAccount.uaid }},&nbsp; </span>
+              </ng-container>
+              <span
+                class="inline-block"
+                *ngIf="selectedUsersAccounts.length > 3"
+                (click)="showMoreOptions($event)"
+              >
+                +{{ selectedUsersAccounts.length - 3 }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-400">
+      <div class="aps-card-header">
+        <app-header-with-search heading="{{ 'Products' | apsTranslate }}" [enableSearch]="false">
+        </app-header-with-search>
+      </div>
+      <div class="aps-card-body">
+        <app-tree
+          [treeNode]="products"
+          [selectedNode]="selectedProduct"
+          (leafNodeSelected)="productSelected($event)"
+          (nodeLabelClicked)="productSelected($event)"
+        ></app-tree>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-md-8 p-sm-12 p-col-12">
+    <div class="aps-card aps-h-400">
+      <div class="aps-card-header">
+        <app-header-with-search
+          [heading]="gridHeader"
+          [enableSearch]="false"
+        ></app-header-with-search>
+      </div>
+      <div class="aps-card-body">
+        <app-ag-grid-listing
+          #usersAccounts
+          [colDefUrl]="gridColumnDefUrl"
+          id="usersAccounts"
+          [gridOptions]="gridOptions"
+        ></app-ag-grid-listing>
+      </div>
+    </div>
+  </div>
+</div>

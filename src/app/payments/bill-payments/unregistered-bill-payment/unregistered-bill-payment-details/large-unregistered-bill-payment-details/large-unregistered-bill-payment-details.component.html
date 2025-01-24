@@ -1,0 +1,450 @@
+<div class="container">
+  <app-modal [(isShow)]="showSubmit" size="sm" headerText="Your payment is submitted">
+    <div body *ngIf="biller">
+      <div class="text-size-14 text-semi-bold p-pt-2">
+        {{ biller.billerName }} ({{ biller.product }}) {{ biller.consumer }} -
+        {{ biller.totalBills }} Bills ({{ biller.overdueBills }}
+        Overdue)
+      </div>
+
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-6 p-col-12">
+          <div class="text-size-12 text-color-normal p-mb-1">Reference Number</div>
+          <div class="text-size-12 text-color-dark-shade-1">{{ biller.refNo }}</div>
+        </div>
+        <div class="p-md-3 p-sm-6 p-col-12">
+          <div class="text-size-12 text-color-normal p-mb-1">Date</div>
+          <div class="text-size-12 text-color-dark-shade-1">{{ biller.dueDate }}</div>
+        </div>
+        <div class="p-md-3 p-sm-6 p-col-12">
+          <div class="text-size-12 text-color-normal p-mb-1">Time</div>
+          <div class="text-size-12 text-color-dark-shade-1">03:32 PM</div>
+        </div>
+        <div class="p-md-3 p-sm-6 p-col-12">
+          <div class="text-size-12 text-color-normal p-mb-1">Total Payable Amount</div>
+          <div class="text-size-12 text-color-dark-shade-1">
+            <app-base-currency [amount]="biller.totalPayableAmount"></app-base-currency>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div footer class="left-right-container">
+      <div class="left-container">
+        <div class="inline-items p-pt-1">
+          <div class="item p-mr-3">
+            <app-icon icon="fa-print"></app-icon>
+          </div>
+          <div class="item p-mr-3">
+            <app-icon icon="fa-arrow-to-bottom"></app-icon>
+          </div>
+          <div class="item p-mr-3">
+            <app-icon icon="fa-envelope"></app-icon>
+          </div>
+        </div>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-sm btn-primary" (click)="closeSubmit()">CLOSE</button>
+      </div>
+    </div>
+  </app-modal>
+
+  <app-modal [(isShow)]="showApplyToSelectedDialog">
+    <div body>
+      <div class="text-size-16 text-color-dark-shade-1">
+        Would you like to change the Payment date to
+        <strong>'{{ paymentDateToBeApplied }}'</strong> for all the selected bills?
+      </div>
+    </div>
+    <div footer class="left-right-container">
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-sm btn-tertiary p-mr-3" (click)="showApplyToSelectedDialog = false">
+          CANCEL
+        </button>
+        <button class="btn btn-sm btn-primary p-px-2" (click)="applyPaymentDateToSelectedBills()">
+          YES
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid g-margin-x p-pb-6">
+    <div class="p-col-12">
+      <div class="aps-card p-p-3">
+        <div class="p-grid">
+          <div class="p-col-12 p-p-0">
+            <div class="left-right-container p-pb-2">
+              <div class="left-container">
+                <div class="text-size-16px text-semi-bold">Searched By</div>
+              </div>
+              <div class="right-container">
+                <button class="btn btn-md btn-tertiary p-py-0" (click)="clearAll()">
+                  CLEAR SEARCH
+                </button>
+                <button class="btn btn-md btn-tertiary p-mr-1 p-py-0" (click)="cancel()">
+                  MODIFY
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-md-3 p-sm-6 p-col-6" *ngFor="let filter of filters">
+            <div class="text-size-14 text-color-light-shade-1">{{ filter.displayName }}</div>
+            <div class="text-size-16">{{ filter.value }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-lg-9 p-md-9 p-sm-12 p-col-12" *ngIf="!isReview">
+      <div class="aps-card aps-h-300">
+        <div class="aps-card-header p-px-3">
+          <div class="left-right-container">
+            <div class="left-container aps-py-12">
+              <span
+                class="text-size-16 aps-w-100p text-semi-bold text-color-dark-shade-1 white-space-nowrap text-overflow-ellipsis"
+                >Consumer Details</span
+              >
+            </div>
+            <div class="right-container">
+              <div class="inline-items hide-on-mobile">
+                <ng-container *ngIf="selectedBillsForTotal.length > 0">
+                  <div class="item p-py-3">
+                    <div class="text-size-14 text-semi-bold text-color-dark-shade-1 p-mr-2">
+                      Payment Date
+                    </div>
+                  </div>
+                  <div class="item" style="margin-top: 12px">
+                    <app-aps-calender
+                      name="paymentDateToBeApplied"
+                      id="paymentDateToBeApplied"
+                      [showIcon]="true"
+                      [isStyleChange]="false"
+                      [showLabel]="false"
+                      [style]="'style2'"
+                      label=""
+                      [(ngModel)]="paymentDateToBeApplied"
+                    ></app-aps-calender>
+                  </div>
+                  <div class="item aps-py-12">
+                    <button
+                      class="btn btn-sm btn-tertiary p-ml-2"
+                      (click)="showApplyToSelectedDialog = true"
+                      [disabled]="!paymentDateToBeApplied"
+                    >
+                      APPLY TO SELECTED
+                    </button>
+                  </div>
+                </ng-container>
+
+                <span class="item aps-py-12">
+                  <app-grid-listing-tools
+                    (changeFloatingFilter)="consumersGrid.changeFloatFilter($event)"
+                    (filterRecords)="consumersGrid.onFilter($event)"
+                    [showMail]="false"
+                    [showDownload]="false"
+                    [columnConfig]="false"
+                    [moreOptions]="false"
+                  >
+                  </app-grid-listing-tools>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body">
+          <app-ag-grid-listing
+            id="consumers"
+            #consumersGrid
+            [colDefUrl]="consumerDetailsColDefsUrl"
+            [rowData]="rowData"
+            [frameworkComponents]="frameworkComponents"
+            [gridOptions]="gridOptions"
+            [context]="{
+              componentParent: this
+            }"
+            (rowSelected)="onRowSelection($event)"
+            *ngIf="!loading"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+      &nbsp;
+      <div class="aps-card">
+        <div class="p-px-3 p-py-2">
+          <span class="text-size-16 text-semi-bold text-color-dark-shade-1"
+            >Additional Details</span
+          >
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-sm-12 p-md-4 p-md-3 p-px-3">
+            <aps-form-input
+              inputType="alphaNumeric"
+              label="Subscriber Name"
+              name="subscriberName"
+              id="subscriberName"
+              [required]="true"
+              [(ngModel)]="additionalDetails.subscriberName"
+            >
+            </aps-form-input>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12 p-p-2">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Register Biller</div>
+            <div class="p-mt-1">
+              <p-radioButton
+                class="p-mr-4"
+                id="yes"
+                name="yes"
+                [(ngModel)]="additionalDetails.registerBiller"
+                value="Yes"
+                label="Yes"
+              ></p-radioButton>
+              <p-radioButton
+                id="no"
+                name="no"
+                [(ngModel)]="additionalDetails.registerBiller"
+                value="No"
+                label="No"
+              >
+              </p-radioButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-lg-9 p-md-9 p-sm-12 p-col-12" *ngIf="isReview">
+      <div class="aps-card aps-h-300">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <span class="text-size-16 text-semi-bold text-color-dark-shade-1">Consumer Details</span>
+        </div>
+        <div class="aps-card-body">
+          <app-ag-grid-listing
+            id="consumers"
+            #consumersGrid
+            [columnDefs]="colDefs"
+            [rowData]="reviewRowData"
+            [frameworkComponents]="frameworkComponents"
+            [gridOptions]="gridOptions"
+            *ngIf="!loading"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+      &nbsp;
+      <div class="aps-card">
+        <div class="p-px-3 p-py-2">
+          <span class="text-size-16 text-semi-bold text-color-dark-shade-1"
+            >Additional Details</span
+          >
+        </div>
+        <div class="p-grid">
+          <div class="p-col-12 p-sm-12 p-md-4 p-md-3 p-px-3">
+            <div class="text-size-14 text-color-light-shade-1">Subscriber Name</div>
+            <div class="text-size-16">{{ additionalDetails.subscriberName }}</div>
+          </div>
+          <div class="p-md-4 p-sm-12 p-col-12 p-p-2">
+            <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Register Biller</div>
+            <div class="p-mt-1">
+              <p-radioButton
+                class="p-mr-4"
+                id="yes"
+                name="yes"
+                [(ngModel)]="additionalDetails.registerBiller"
+                value="Yes"
+                label="Yes"
+                [disabled]="true"
+              ></p-radioButton>
+              <p-radioButton
+                id="no"
+                name="no"
+                [(ngModel)]="additionalDetails.registerBiller"
+                value="No"
+                label="No"
+                [disabled]="true"
+              >
+              </p-radioButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+      <div class="aps-card aps-h-100p">
+        <div class="aps-card-header p-px-3 p-pt-3">
+          <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Payment Details</div>
+        </div>
+        <div class="aps-card-body p-p-3">
+          <div class="p-grid" *ngIf="!isReview">
+            <div class="p-col-12 p-p-0">
+              <aps-custom-select
+                name="paymentMethod"
+                id="paymentMethod"
+                label="Payment Method"
+                [required]="true"
+                [data]="[
+                  { id: 'Account', displayName: 'Account' },
+                  { id: 'IBAN', displayName: 'IBAN' },
+                  { id: 'Wallets', displayName: 'Wallets' },
+                  { id: 'Credit Card', displayName: 'Credit Card' },
+                  { id: 'Debit Card', displayName: 'Debit Card (Preferred)' }
+                ]"
+                [(ngModel)]="paymentDetailsForm.paymentMethod"
+              ></aps-custom-select>
+            </div>
+            <div class="p-col-12 p-p-0">
+              <aps-form-input
+                name="cardNumber"
+                id="cardNumber"
+                [label]="
+                  paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                  paymentDetailsForm.paymentMethod == 'Debit Card'
+                    ? 'Card Number'
+                    : paymentDetailsForm.paymentMethod == 'Wallets'
+                    ? 'Wallet ID'
+                    : paymentDetailsForm.paymentMethod + ' Number'
+                "
+                [inputType]="
+                  paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                  paymentDetailsForm.paymentMethod == 'Debit Card'
+                    ? 'cardNumber'
+                    : 'numeric'
+                "
+                [required]="true"
+                [(ngModel)]="paymentDetailsForm.cardNumber"
+              ></aps-form-input>
+            </div>
+            <div class="p-col-12 p-p-0">
+              <aps-form-input
+                name="nameOnTheCard"
+                id="nameOnTheCard"
+                label="Name on the Card"
+                [required]="true"
+                [(ngModel)]="paymentDetailsForm.nameOnCard"
+                *ngIf="
+                  paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                  paymentDetailsForm.paymentMethod == 'Debit Card'
+                "
+              ></aps-form-input>
+            </div>
+            <div class="p-col-12 p-p-0">
+              <app-aps-calender
+                name="expiryDate"
+                id="expiryDate"
+                label="Expiry Date"
+                [required]="true"
+                [showIcon]="true"
+                view="month"
+                dateFormat="mm/yy"
+                [(ngModel)]="paymentDetailsForm.expiryDate"
+                *ngIf="
+                  paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                  paymentDetailsForm.paymentMethod == 'Debit Card'
+                "
+              ></app-aps-calender>
+            </div>
+            <div class="p-col-12 p-p-0">
+              <aps-form-input
+                name="cvv"
+                id="cvv"
+                label="CVV"
+                type="password"
+                inputType="numeric"
+                maxLength="3"
+                [required]="true"
+                [(ngModel)]="paymentDetailsForm.cvv"
+                *ngIf="
+                  paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                  paymentDetailsForm.paymentMethod == 'Debit Card'
+                "
+              ></aps-form-input>
+            </div>
+          </div>
+
+          <div class="p-grid" *ngIf="isReview">
+            <div class="p-col-12">
+              <app-review-form-field
+                label="Payment Method"
+                [value]="paymentDetailsForm.paymentMethod"
+              ></app-review-form-field>
+            </div>
+            <div class="p-col-12">
+              <app-review-form-field
+                [label]="
+                  paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                  paymentDetailsForm.paymentMethod == 'Debit Card'
+                    ? 'Card Number'
+                    : paymentDetailsForm.paymentMethod == 'Wallets'
+                    ? 'Wallet ID'
+                    : paymentDetailsForm.paymentMethod + ' Number'
+                "
+                [value]="paymentDetailsForm.cardNumber"
+              ></app-review-form-field>
+            </div>
+            <div
+              class="p-col-12"
+              *ngIf="
+                paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                paymentDetailsForm.paymentMethod == 'Debit Card'
+              "
+            >
+              <app-review-form-field
+                label="Name on the Card"
+                [value]="paymentDetailsForm.nameOnCard"
+              ></app-review-form-field>
+            </div>
+            <div
+              class="p-col-12"
+              *ngIf="
+                paymentDetailsForm.paymentMethod == 'Credit Card' ||
+                paymentDetailsForm.paymentMethod == 'Debit Card'
+              "
+            >
+              <app-review-form-field
+                label="Expiry Date"
+                [value]="paymentDetailsForm.expiryDate"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fixed-bottom-footer-container">
+    <div class="aps-card p-px-3 p-py-2">
+      <div class="left-right-container">
+        <div class="left-container">
+          <button class="btn btn-md btn-tertiary" (click)="cancel()">CANCEL</button>
+        </div>
+        <div class="right-container">
+          <span
+            class="inline-block text-size-14 text-semi-bold hide-on-mobile text-color-normal p-py-2 p-mr-3"
+            *ngIf="selectedBillsForTotal.length > 0"
+          >
+            {{ selectedBillsForTotal.length }} BILLS SELECTED | TOTAL PAYABLE
+            <app-base-currency [amount]="totalPayableAmount"></app-base-currency>
+          </span>
+          <button class="btn btn-md btn-tertiary p-mr-2" (click)="previous()" *ngIf="isReview">
+            PREVIOUS
+          </button>
+          <button
+            class="btn btn-md btn-primary"
+            *ngIf="!isReview"
+            (click)="payNow()"
+            [disabled]="selectedBillsForTotal.length === 0"
+          >
+            REVIEW
+          </button>
+          <button
+            class="btn btn-md btn-primary"
+            *ngIf="isReview"
+            (click)="submit()"
+            [disabled]="selectedBillsForTotal.length === 0"
+          >
+            SUBMIT
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

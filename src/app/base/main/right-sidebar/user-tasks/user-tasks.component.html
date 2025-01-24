@@ -1,0 +1,54 @@
+<app-modal [(isShow)]="showReminderModal" size="md" headerText="Reminder" (onClose)="resetReminderForm()">
+  <div body class="p-grid g-margin-x">
+    <div class="p-col-12">
+      <aps-form-input name="task" id="task" label="Task" [required]="true"></aps-form-input>
+    </div>
+    <div class="p-md-6 p-sm-12 p-col-12">
+      <app-aps-calender name="date" id="date" label="Date" [required]="true"></app-aps-calender>
+    </div>
+    <div class="p-md-6 p-sm-12 p-col-12">
+      <app-aps-calender name="time" id="time" label="Time" [timeOnly]="true" [required]="true"></app-aps-calender>
+    </div>
+    <div class="p-col-12 text-right">
+      <button class="btn btn-md btn-secondary p-mr-3" (click)="resetReminderForm()">CANCEL</button>
+      <button class="btn btn-md btn-primary" (click)="addNewReminder()">
+        ADD
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<div class="user-tasks-container">
+  <div class="tasks-header">
+    <div class="header-text">
+      <app-icon icon="fa-align-center"></app-icon>
+      &nbsp; {{ 'My Tasks' | apsTranslate }}
+    </div>
+    <div class="header-actions">
+      <div class="action" (click)="showReminderModal = true">
+        <app-icon icon="fa-plus-circle"></app-icon>
+      </div>
+      <div class="action" (click)="closeSidebar()">
+        <app-icon icon="fa-times"></app-icon>
+      </div>
+    </div>
+  </div>
+  <div class="tasks">
+    <div class="task-wrapper">
+      <div class="task">You have to payable due to 19th may for 20,000 INR</div>
+      <div class="task-date">Due by 30 Days</div>
+    </div>
+    <div class="task-wrapper">
+      <div class="task">You have to payable due to 19th may for 20,000 INR</div>
+      <div class="task-date">Due by 30 Days</div>
+    </div>
+    <div class="task-wrapper">
+      <div class="task">You have to payable due to 19th may for 20,000 INR</div>
+      <div class="task-date">Due by 30 Days</div>
+    </div>
+    <div class="task-wrapper">
+      <div class="task">You have to payable due to 19th may for 20,000 INR</div>
+      <div class="task-date">Due by 30 Days</div>
+    </div>
+  </div>
+</div>

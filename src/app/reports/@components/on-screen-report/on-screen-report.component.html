@@ -1,0 +1,70 @@
+<div class="container">
+  <!-- Listing based on selected List -->
+  <div class="aps-card">
+    <div class="p-grid">
+      <!-- Listing Heading and header actions -->
+      <div class="p-col-12 p-px-0">
+        <div [ngClass]="{ 'left-right-container': viewport === 'web' }">
+          <div class="left-container">
+            <div class="heading text-size-16 text-bold p-px-3 p-pt-1">
+              {{ 'Online Report' | apsTranslate }}
+            </div>
+          </div>
+          <div
+            class="right-container p-pr-3"
+            *ngIf="viewport === 'web'"
+            [ngClass]="{ 'p-p-2': viewport !== 'web' }"
+          >
+            <!--<app-grid-listing-tools
+              (changeFloatingFilter)="
+                genericListingGrid ? genericListingGrid.changeFloatFilter($event) : null
+              "
+              (filterRecords)="genericListingGrid ? genericListingGrid.onFilter($event) : null"
+              (applyColDefs)="genericListingGrid ? genericListingGrid.onApplyConfig($event) : null"
+              [colDefs]="genericListingGrid ? genericListingGrid.columnDefs : []"
+              [columnConfig]="true"
+            ></app-grid-listing-tools>-->
+          </div>
+          <div class="p-px-3 p-pt-1" *ngIf="viewport !== 'web'">
+            <!--<div class="aps-search-container-1">
+              <input
+                type="text"
+                class="aps-search-input"
+                [(ngModel)]="parentSearchText"
+                (change)="onParentMenuSearch()"
+                placeholder="{{ 'lbl_enter_keyword_to_search' | translate }}"
+              />
+              <div class="search-icon">
+                <app-icon icon="fa-search" class="app-icon"></app-icon>
+              </div>
+            </div>-->
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-px-0">
+        <div class="inline-items">
+          <div class="item p-ml-3" *ngFor="let filter of filters">
+            <div
+              class="p-py-1 p-px-2 background-color-primary-light-shade-2 border-radius-4 text-size-12"
+            >
+              <span class="inline-block p-mr-2 text-semi-bold"> {{ filter.displayName }}</span>
+              <span class="inline-block">{{ filter.value }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- listing -->
+      <div class="p-col-12 p-p-0 generic-listing-container" *ngIf="isShowOnlineReport">
+        <app-ag-grid-listing
+          [columnDefs]="onlineGridColDef"
+          [rowData]="onlineGridData"
+          [supressAutoFit]="true"
+          [gridOptions]="{
+            rowModelType: 'clientSide',
+            pagination: true
+          }"
+        ></app-ag-grid-listing>
+      </div>
+    </div>
+  </div>
+</div>

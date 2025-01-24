@@ -1,0 +1,7 @@
+<span
+  class="text-size-13"
+  [ngClass]="level != 0 ? 'text-color-primary text-underline pointer' : 'text-color-dark-shade-1'"
+  (click)="level != 0 ? invokeParentMethod() : null"
+>
+  {{ cellValue }}
+</span>

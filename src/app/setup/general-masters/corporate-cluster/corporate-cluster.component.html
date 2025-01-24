@@ -1,0 +1,169 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else">
+    <div class="p-grid g-margin-x" *ngIf="stepperDetails.currentStep == 1">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Cluster' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <aps-form-input
+                name="clusterName"
+                id="clusterName"
+                label="Cluster Name"
+                [(ngModel)]="formData.clusterName"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+
+            <div class="p-md-5 p-sm-8 p-col-12 p-p-0">
+              <div class="p-grid">
+                <div class="p-col-10 p-py-0">
+                  <aps-custom-select
+                    name="copyClusterFromExisting"
+                    id="copyClusterFromExisting"
+                    label="Copy Cluster From Existing"
+                    [(ngModel)]="formData.copyClusterFromExisting"
+                    [value]="formData.copyClusterFromExisting"
+                    dataUrl="setup/generalMasters/corporateCluster/private/dropdown/copyClusterFromExisting"
+                    (change)="formData.copyClusterFromExistingName = $event.displayName"
+                    [required]="true"
+                  ></aps-custom-select>
+                </div>
+                <div class="p-col-2">
+                  <button
+                    class="btn btn-md btn-primary"
+                    [disabled]="!formData.copyClusterFromExisting"
+                    (click)="onCopyFromExistingCLuster()"
+                  >
+                    {{ 'Copy' | apsTranslate }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-col-12 p-p-0"></div>
+
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <app-aps-calender
+                name="effectiveFrom"
+                id="effectiveFrom"
+                label="Effective From"
+                [(ngModel)]="formData.effectiveFrom"
+                [required]="true"
+              ></app-aps-calender>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12 p-py-0">
+              <app-aps-calender
+                name="effectiveTill"
+                id="effectiveTill"
+                label="Effective Till"
+                [(ngModel)]="formData.effectiveTill"
+              ></app-aps-calender>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-300">
+          <div class="aps-card-header">
+            <div class="left-right-container">
+              <div class="left-container p-px-3 aps-py-12">
+                <div class="text-size-14 text-semi-bold">
+                  {{ 'Cluster Details' | apsTranslate }}
+                </div>
+              </div>
+              <div class="right-container p-px-3 p-py-2">
+                <button class="btn btn-md btn-primary" (click)="onAddNewPrintBranch()">
+                  {{ 'Add New Print Branch' | apsTranslate }}
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body" *ngIf="!loadingList; else loadingTemplate">
+            <app-ag-grid-listing
+              #clusterDetailsList
+              id="clusterDetailsGrid"
+              colDefUrl="setup/generalMasters/corporateCluster/private/clusterDetailsColDefs"
+              [rowData]="formData.clusterDetails"
+              [context]="context"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid g-margin-x" *ngIf="stepperDetails.currentStep == 2">
+      <div class="p-col-12">
+        <div class="aps-card p-p-2">
+          <div class="p-grid">
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'Cluster' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Cluster Name"
+                [value]="formData.clusterName"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Copy Cluster From Existing"
+                [value]="formData.copyClusterFromExistingName"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Effective From"
+                [value]="formData.effectiveFrom"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-3 p-sm-6 p-col-12">
+              <app-review-form-field
+                label="Effective Till"
+                [value]="formData.effectiveTill"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-12">
+        <div class="aps-card aps-h-300">
+          <div class="aps-card-header p-px-3 aps-py-12">
+            <div class="text-size-14 text-semi-bold">
+              {{ 'Cluster Details' | apsTranslate }}
+            </div>
+          </div>
+          <div class="aps-card-body" *ngIf="!loadingList; else loadingTemplate">
+            <app-ag-grid-listing
+              #clusterDetailsGrid
+              id="clusterDetailsGrid"
+              colDefUrl="setup/generalMasters/corporateCluster/private/reviewClusterDetailsColDefs"
+              [rowData]="formData.clusterDetails"
+              [context]="context"
+            ></app-ag-grid-listing>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12">
+        <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

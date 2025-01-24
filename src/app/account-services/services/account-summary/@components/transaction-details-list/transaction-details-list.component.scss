@@ -1,0 +1,30 @@
+.list-container {
+  height: 33.5rem;
+  background-color: var(--background-color);
+  border-radius: 6px;
+  box-shadow: 0 0 10px var(--background-color-dark-5);
+
+  .list-header {
+    height: 48px;
+    padding: 16px;
+
+    .labels-container {
+      display: inline-block;
+      vertical-align: top;
+      padding: 0 8px;
+
+      .label {
+        display: inline-block;
+        vertical-align: top;
+        background-color: #0099991a;
+        border-radius: 4px;
+        margin: 0 8px;
+        padding: 2px 8px;
+      }
+    }
+  }
+
+  .list-body {
+    height: calc(100% - 40px);
+  }
+}

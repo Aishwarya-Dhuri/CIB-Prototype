@@ -1,0 +1,217 @@
+<app-va-limit-enhancement-search (actionClick)="actionClick($event)" *ngIf="showSearch">
+</app-va-limit-enhancement-search>
+<div *ngIf="!showSearch" class="container">
+  <app-stepper-header [parentRef]="this"></app-stepper-header>
+  <ng-container *ngIf="stepperDetails.currentStep == 1">
+    <ng-container *ngTemplateOutlet="viewData"></ng-container>
+  </ng-container>
+
+  <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+    <ng-container *ngTemplateOutlet="viewData"></ng-container>
+  </ng-container>
+  <!-- Form Actions -->
+  <ng-container *ngIf="mode !== 'SEARCH_VIEW'">
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </ng-container>
+  <ng-container *ngIf="mode === 'SEARCH_VIEW'">
+    <div class="aps-card p-p-2 p-m-2">
+      <div class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button
+            (click)="showSearch = true"
+            class="p-mr-3 aps-button aps-button-sm aps-button-secondary text-size-14 text-semi-bold"
+          >
+            BACK
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #viewData>
+  <div class="p-my-3">
+    <div class="aps-card">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+          {{ 'Corporate Sub Entity Details' | apsTranslate }}
+        </div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Corporate Code' | apsTranslate }}</div>
+            <div class="text-size-14">{{ vaIssuanceData.corporateCode }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Corporate Name' | apsTranslate }}</div>
+            <div class="text-size-14">{{ vaIssuanceData.corporateName }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Account No' | apsTranslate }}</div>
+            <div class="text-size-14">{{ vaIssuanceData.corporateAccount }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Sub Entity' | apsTranslate }}</div>
+            <div class="text-size-14">{{ vaIssuanceData.subEntityName }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Limit Type' | apsTranslate }}</div>
+            <div class="text-size-14">{{ vaIssuanceData.subEntityLimitType }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">
+              {{ 'Limit Replenish Period' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ vaIssuanceData.subEntityLimitResetPeriod }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Allocated Limit' | apsTranslate }}</div>
+            <div class="text-size-14">{{ vaIssuanceData.subEntityAllocatedLimit }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Utilized Limit' | apsTranslate }}</div>
+            <div class="text-size-14">{{ vaIssuanceData.subEntityUtilizedLimit }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Available Limit' | apsTranslate }}</div>
+            <div class="text-size-14">{{ vaIssuanceData.subEntityAvailableLimit }}</div>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">{{ 'Adhoc Limit' | apsTranslate }}</div>
+            <p-inputSwitch [(ngModel)]="vaIssuanceData.subEntityAllowOverrideLimit" disabled="true">
+            </p-inputSwitch>
+          </div>
+
+          <div class="p-md-4 p-sm-12 p-col-12">
+            <div class="text-size-12 text-color-200">
+              {{ 'Adhoc Limit Allocated' | apsTranslate }}
+            </div>
+            <div class="text-size-14">{{ vaIssuanceData.subEntityAllocatedLimit }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aps-card p-my-3">
+      <div class="aps-card-header">
+        <div class="p-px-3 aps-py-12 tet-size-16 text-semi-bold">
+          {{ 'Virtual Account Details' | apsTranslate }}
+        </div>
+      </div>
+
+      <div class="aps-card-body p-p-3">
+        <form #limitForm="ngForm" name="limitForm">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-200">
+                {{ 'Virtual Account Alias Name' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaAccountData.vaAliasName }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-200">
+                {{ 'Virtual Account Number' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaAccountData.virtualAccountNo }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-200">{{ 'Expiry Date' | apsTranslate }}</div>
+              <div class="text-size-14">{{ vaAccountData.vaExpiryDate }}</div>
+            </div>
+
+            <div
+              *ngIf="stepperDetails.currentStep == stepperDetails.headings.length"
+              class="p-md-4 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-200">{{ 'Allocated Limit' | apsTranslate }}</div>
+              <div class="text-size-14">{{ formData.vaAllocatedLimit }}</div>
+            </div>
+            <div
+              *ngIf="
+                stepperDetails.currentStep == 1 && (searchAction == 'SEARCH_INIT' || mode == 'EDIT')
+              "
+              class="p-md-4 p-sm-12 p-col-12"
+            >
+              <div class="p-md-9 p-sm-12 p-col-12">
+                <aps-form-input
+                  [(ngModel)]="formData.vaAllocatedLimit"
+                  [label]="'Allocated Limit' | apsTranslate"
+                  id="vaAllocatedLimit"
+                  inputType="currencyFormatNotZero"
+                  name="vaAllocatedLimit"
+                ></aps-form-input>
+              </div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-200">{{ 'Utilized Limit' | apsTranslate }}</div>
+              <div class="text-size-14">{{ vaAccountData.vaUtilizedLimit }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-200">{{ 'Available Limit' | apsTranslate }}</div>
+              <div class="text-size-14">{{ vaAccountData.vaAvailableLimit }}</div>
+            </div>
+
+            <div
+              *ngIf="stepperDetails.currentStep == stepperDetails.headings.length"
+              class="p-md-4 p-sm-12 p-col-12"
+            >
+              <div class="text-size-12 text-color-200">
+                {{ 'Adhoc Allocated Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14">
+                {{ formData.vaAdhocLimit || vaAccountData.vaAdhocLimitInPercent }}
+              </div>
+            </div>
+            <div
+              *ngIf="
+                stepperDetails.currentStep == 1 && (searchAction == 'SEARCH_INIT' || mode == 'EDIT')
+              "
+              class="p-md-4 p-sm-12 p-col-12"
+            >
+              <div class="p-md-9 p-sm-12 p-col-12">
+                <aps-form-input
+                  #vaAdhocLimit="ngModel"
+                  [(ngModel)]="formData.vaAdhocLimit"
+                  [label]="'Adhoc Limit' | apsTranslate"
+                  [required]="vaAccountData.vaAllowOverrideInId === 'ADHOCLIMIT'"
+                  id="vaAdhocLimit"
+                  inputType="currencyFormatNotZero"
+                  name="vaAdhocLimit"
+                >
+                </aps-form-input>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-200">
+                {{ 'Adhoc Utilized Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaAccountData.vaUtilizedLimit }}</div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="text-size-12 text-color-200">
+                {{ 'Adhoc Available Limit' | apsTranslate }}
+              </div>
+              <div class="text-size-14">{{ vaAccountData.vaAvailableLimit }}</div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>

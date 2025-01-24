@@ -1,0 +1,299 @@
+<div class="credit-line-summary-container container p-py-2">
+  <ng-container *ngIf="!loading; else loadingData">
+    <div class="aps-card">
+      <div class="p-grid">
+        <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+          <div class="aps-card overflow-hidden aps-filled-card p-p-3">
+            <div class="left-right-container">
+              <div class="left-container">
+                <div class="corporate-logo">
+                  <img
+                    src="assets/images/{{ creditLineSummaryGroupData.groupImage }}"
+                    alt="corporate-logo"
+                  />
+                </div>
+                <div class="text-color-inverted text-size-16 text-bold">
+                  {{ creditLineSummaryGroupData.groupName }}
+                </div>
+              </div>
+              <div class="right-container">
+                <app-currency-select-dropdown
+                  [selectedCurrency]="currency"
+                  selectStyleClass="select-primary"
+                  (currencyChanged)="currencyChange($event)"
+                ></app-currency-select-dropdown>
+              </div>
+            </div>
+
+            <hr class="p-my-md-3 p-my-sm-2 p-my-2 background-color-dark-9" />
+
+            <div class="p-grid text-color-primary-light-shade-2">
+              <div class="p-md-5 p-sm-12 p-col-12 p-p-0 hide-on-mobile">
+                <div class="text-size-12 text-semi-bold">
+                  {{ 'Total Allocated Limit' | apsTranslate }}
+                </div>
+                <div class="text-size-14 text-bold p-mt-1">
+                  <app-base-currency
+                    [amount]="creditLineSummaryGroupData.totalAllocatedLimit"
+                    [currency]="currency"
+                  ></app-base-currency>
+                </div>
+              </div>
+              <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+                <div class="show-on-mobile">
+                  <div class="left-right-container p-mb-1">
+                    <div class="left-container">
+                      <div class="text-size-12 text-semi-bold">
+                        {{ 'Total Allocated Limit' | apsTranslate }}
+                      </div>
+                    </div>
+                    <div class="right-container">
+                      <div class="text-size-14 text-bold p-mb-md-2 p-mb-sm-0 p-mb-0 show-on-mobile">
+                        <app-base-currency
+                          [amount]="creditLineSummaryGroupData.totalAllocatedLimit"
+                          [currency]="currency"
+                        ></app-base-currency>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="inline-items">
+                      <div class="item p-mr-1">
+                        <div class="ellipse ellipse-utilized"></div>
+                      </div>
+                      <div class="item">
+                        <div class="text-size-10">{{ 'Utilized' | apsTranslate }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <div class="text-size-10 text-semi-bold">
+                      <app-base-currency
+                        [amount]="creditLineSummaryGroupData.utilizedLimit"
+                        [currency]="currency"
+                      ></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="left-right-container">
+                  <div class="left-container">
+                    <div class="inline-items">
+                      <div class="item p-mr-1">
+                        <div class="ellipse ellipse-available"></div>
+                      </div>
+                      <div class="item">
+                        <div class="text-size-10">{{ 'Available' | apsTranslate }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="right-container">
+                    <div class="text-size-10 text-semi-bold">
+                      <app-base-currency
+                        [amount]="creditLineSummaryGroupData.availableLimit"
+                        [currency]="currency"
+                      ></app-base-currency>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-mt-2">
+              <app-limit-bar
+                [utilized]="creditLineSummaryGroupData.utilizedLimit"
+                [available]="creditLineSummaryGroupData.availableLimit"
+                [currency]="currency"
+                [showLegend]="false"
+              ></app-limit-bar>
+            </div>
+          </div>
+        </div>
+        <div class="p-md-9 p-sm-12 p-col-12 p-p-3">
+          <div class="p-grid">
+            <div
+              class="p-md-7 p-sm-12 p-col-12 p-px-3 p-py-0 border-right border-left no-border-on-mobile aps-h-100p"
+            >
+              <div class="text-color-dark-shade-1 text-size-14 text-semi-bold">
+                {{ 'Fund Distribution' | apsTranslate }}
+              </div>
+
+              <app-pie-chart
+                [options]="creditLineSummaryGroupData.fundDistributionChartOptions"
+                webHeight="150"
+                mobileHeight="300"
+              ></app-pie-chart>
+            </div>
+
+            <div class="p-md-5 p-sm-12 p-col-12 p-pl-md-3 p-pl-sm-0 p-pl-0 p-pr-0 p-py-0">
+              <div class="aps-h-100p">
+                <app-insights
+                  insightsUrl="dummyServer/json/commons/private/insights/creditLineSummary"
+                ></app-insights>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-size-16 text-bold text-color-dark-shade-1 p-mt-3">
+      {{ 'Corporates' | apsTranslate }} ({{ creditLineSummaryGroupData.corporates.length }})
+    </div>
+
+    <div class="p-grid">
+      <div
+        class="p-col-12 p-p-0 p-my-2"
+        *ngFor="let corporate of creditLineSummaryGroupData.corporates"
+      >
+        <div class="aps-card" (click)="toggleSelectedCorporate(corporate)">
+          <div class="p-grid">
+            <div class="p-md-5 p-sm-12 p-col-12 p-p-md-3 p-p-sm-2 p-p-2">
+              <div class="left-right-container no-left-right-container text-color-dark-shade-1">
+                <div class="left-container">
+                  <div class="label-with-icon-container">
+                    <div class="icon">
+                      <div class="corporate-icon">
+                        <img
+                          src="assets/images/{{ corporate.corporateImage }}"
+                          alt="corporate-logo"
+                        />
+                      </div>
+                    </div>
+                    <div class="label">
+                      <div class="text-size-16 text-bold">{{ corporate.corporateName }}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="right-container p-pr-md-3 p-pr-sm-0 p-pr-0 border-right no-border-on-mobile"
+                >
+                  <div
+                    class="text-size-12 p-py-1 p-px-2 p-mt-md-0 p-mt-sm-2 p-mt-2 border-radius-4 background-color-primary-light-shade-2"
+                  >
+                    {{ 'Customer ID' | apsTranslate }} {{ corporate.corporateCode }}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="p-md-3 p-sm-12 p-col-12 p-p-md-3 p-p-sm-2 p-px-2 p-py-md 2 p-py-sm-0 p-py-0"
+            >
+              <div class="inline-items">
+                <span class="item text-size-12 text-semi-bold p-mr-2">{{
+                  'Total Allocated Limit' | apsTranslate
+                }}</span>
+
+                <span class="item text-size-14 text-bold">
+                  <app-base-currency
+                    [amount]="corporate.totalAllocatedLimit"
+                    [currency]="currency"
+                  ></app-base-currency>
+                </span>
+              </div>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-0">
+              <div class="left-right-container">
+                <div class="left-container p-p-md-3 p-p-sm-2 p-p-2">
+                  <span class="text-size-12 text-semi-bold">{{
+                    'Credit Lines' | apsTranslate
+                  }}</span>
+                  &nbsp;
+                  <span class="text-size-14 text-bold">{{ corporate.creditLines.length }}</span>
+                </div>
+                <div class="right-container">
+                  <div class="inline-items">
+                    <div class="item p-p-2">
+                      <button
+                        class="btn btn-md btn-tertiary"
+                        (click)="viewCorporateDetails(corporate)"
+                      >
+                        {{ 'View Details' | apsTranslate }}
+                      </button>
+                    </div>
+                    <div class="item p-px-3 p-py-md-3 p-py-sm-2 p-py-2">
+                      <app-icon
+                        [icon]="
+                          corporate &&
+                          selectedCorporate &&
+                          corporate.corporateCode == selectedCorporate.corporateCode
+                            ? 'fa-chevron-up'
+                            : 'fa-chevron-down'
+                        "
+                        styleClasses="text-size-12 pointer"
+                      ></app-icon>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="p-grid border-top"
+            *ngIf="selectedCorporate && selectedCorporate.corporateName === corporate.corporateName"
+          >
+            <div class="p-md-3 p-sm-12 p-col-12 p-p-0">
+              <div class="aps-h-200 p-pl-md-3 p-pl-sm-0 p-pl-0 p-pr-0 p-py-3">
+                <div class="background-color-dark-4 aps-h-100p border-radius-6 p-p-3">
+                  <div class="text-size-14 text-semi-bold">
+                    {{ 'Total Allocated Limit' | apsTranslate }}
+                  </div>
+                  <div class="text-size-20 text-bold p-mt-2">
+                    <app-base-currency
+                      [amount]="corporate.totalAllocatedLimit"
+                      [currency]="currency"
+                    ></app-base-currency>
+                  </div>
+                  <div class="p-mt-2">
+                    <app-limit-bar
+                      [utilized]="corporate.utilizedLimit"
+                      [available]="corporate.availableLimit"
+                      [currency]="currency"
+                    ></app-limit-bar>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="p-md-9 p-sm-12 p-col-12 p-p-3">
+              <div class="p-grid">
+                <div
+                  class="p-md-5 p-sm-12 p-col-12 p-px-3 p-py-0 border-right border-left no-border-on-mobile"
+                >
+                  <div class="text-color-dark-shade-1 text-size-14 text-semi-bold">
+                    {{ 'Currency Wise Distribution' | apsTranslate }}
+                  </div>
+
+                  <app-pie-chart
+                    [options]="corporate.currencyWiseDistributionChartOptions"
+                    webHeight="150"
+                    mobileHeight="300"
+                  ></app-pie-chart>
+
+                  <!-- <app-distribution-chart
+                  [distributionChartData]="corporate.currencyWiseDistributionChartOptions"
+                ></app-distribution-chart> -->
+                </div>
+
+                <div class="p-md-7 p-sm-12 p-col-12 p-pl-md-3 p-pl-sm-0 p-pl-0 p-pr-0 p-py-0">
+                  <div class="aps-h-100p">
+                    <app-insights
+                      insightsUrl="dummyServer/json/commons/private/insights/creditLineSummary"
+                    ></app-insights>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #loadingData>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

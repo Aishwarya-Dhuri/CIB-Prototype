@@ -1,0 +1,446 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal
+      (onClose)="goToListing()"
+      [(isShow)]="showSubmitSuccess"
+      headerText="Your credit card payment is submitted"
+      size="sm"
+    >
+      <ng-container body>
+        <div class="p-grid p-pt-2">
+          <div class="p-col-12 p-lg-6 p-md-3 p-sm-12 p-px-3 p-pb-0">
+            <app-review-form-field
+              label="Card No"
+              [value]="creditCardData?.cardNo"
+            ></app-review-form-field>
+          </div>
+        </div>
+        <div class="p-grid p-pb-2">
+          <div class="p-col-12 p-md-3 p-sm-12 p-px-3">
+            <app-review-form-field
+              label="Reference No"
+              [value]="submitResponse?.dataMap?.id"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 p-md-3 p-sm-12 p-px-3">
+            <app-review-form-field
+              label="Date"
+              [value]="submitResponse?.dataMap?.id | date: 'dd MMM yyyy'"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 p-md-2 p-sm-12 p-px-md-0 p-px-3">
+            <app-review-form-field
+              label="Time"
+              [value]="submitResponse?.dataMap?.id | date: 'shortTime'"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 text-color-light-shade-1 text-size-12 p-md-4 p-sm-12 p-px-3">
+            <app-review-form-field
+              label="Payment Amount"
+              [value]="formData?.payableAmount"
+              type="baseCurrency"
+            ></app-review-form-field>
+          </div>
+        </div>
+      </ng-container>
+      <div footer>
+        <div class="left-right-container">
+          <div class="left-container p-py-2">
+            <app-icon class="p-px-2" icon="fa-print"></app-icon>
+            <app-icon class="p-px-2" icon="fa-download"></app-icon>
+            <app-icon class="p-px-2" icon="fa-envelope"></app-icon>
+          </div>
+          <div class="right-container">
+            <button (click)="goToListing()" class="btn btn-md btn-primary" type="button">
+              {{ 'CLOSE' | apsTranslate }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </app-modal>
+
+    <!-- Step 1 Details -->
+    <ng-container *ngIf="stepperDetails.currentStep == 1">
+      <!--Left card start-->
+      <div class="text-color-dark-shade-1 p-py-2">
+        <div class="p-grid g-margin-x">
+          <div class="p-md-4 p-sm-12 p-col-12 p-pt-0 p-pb-3">
+            <div class="aps-card institution-details-container aps-h-100p">
+              <div class="aps-card-header p-p-3">
+                <div class="text-size-16 text-bold">{{ 'Card Selection' | apsTranslate }}</div>
+              </div>
+              <div class="aps-card-body p-p-3">
+                <form
+                  #creditCardForm="ngForm"
+                  (ngSubmit)="fetchCreditCardDetails(creditCardForm)"
+                  name="creditCardForm"
+                >
+                  <div class="p-grid">
+                    <div class="p-col-12 p-p-2 aps-card">
+                      <label>
+                        <span class="label text-size-14 text-color-light-shade-1"
+                          >{{ 'Credit Card' | apsTranslate
+                          }}<span class="text-color-danger">*</span></span
+                        >
+                      </label>
+
+                      <div class="p-pt-2">{{ creditCardData?.cardNo }}</div>
+                      <div *ngIf="!review" class="float-right">
+                        <button
+                          (click)="isShowCreditCardModal = true"
+                          class="btn btn-md btn-tertiary"
+                        >
+                          SELECT
+                        </button>
+                        <app-search-modal
+                          (onSelection)="onCreditCardSelection($event)"
+                          [(isShow)]="isShowCreditCardModal"
+                          [colDefUrl]="URLs.CREDICARD_COLDEF_URL"
+                          [rowDefUrl]="URLs.GET_CREDITCARDS"
+                          header="Select Credit Card"
+                        >
+                        </app-search-modal>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <!--Left card end-->
+
+          <!--Right card start-->
+
+          <div class="p-md-8 p-sm-12 p-col-12 p-pt-0 p-pb-3">
+            <div class="aps-card">
+              <div class="aps-card-header">
+                <div class="left-right-container">
+                  <div class="left-container p-p-3">
+                    <div class="text-size-16 text-bold">{{ 'Card Details' | apsTranslate }}</div>
+                  </div>
+                  <div class="right-container p-px-3 p-py-2"></div>
+                </div>
+              </div>
+              <div class="aps-card-body overflow-scroll p-p-2">
+                <ng-container *ngIf="creditCardData">
+                  <div class="p-grid">
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-review-form-field
+                        label="Credit Card"
+                        [value]="creditCardData.cardNo"
+                        [subValue]="creditCardData.embossedName"
+                      ></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-review-form-field
+                        label="Card Type"
+                        [value]="creditCardData.cardType"
+                      ></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-review-form-field
+                        label="Card Limit"
+                        [value]="creditCardData.cardLimit"
+                      ></app-review-form-field>
+                    </div>
+                  </div>
+
+                  <div class="p-grid">
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-review-form-field
+                        label="Statement Date"
+                        [value]="creditCardData.statementDate"
+                      ></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-review-form-field
+                        label="Payment Due Date"
+                        [value]="creditCardData.dueDate"
+                      ></app-review-form-field>
+                    </div>
+                    <div class="p-md-4 p-sm-12 p-col-12">
+                      <app-review-form-field
+                        label="Previous Outstanding Balance"
+                        [value]="creditCardData.previousOutstandingBalance"
+                      ></app-review-form-field>
+                    </div>
+                  </div>
+                </ng-container>
+                <app-nothing-here *ngIf="!creditCardData" colSize="3"></app-nothing-here>
+                <!--Right card end-->
+              </div>
+            </div>
+
+            <!--Right Down Card start-->
+            <div class="aps-card p-mt-3" *ngIf="creditCardData">
+              <div class="">
+                <div class="aps-card-header">
+                  <div class="left-right-container p-p-3">
+                    <div class="left-container p-px-0">
+                      <div class="text-size-16 text-bold">
+                        {{ 'Payment Details' | apsTranslate }}
+                      </div>
+                    </div>
+                    <div class="right-container p-px-3 p-py-2"></div>
+                  </div>
+                </div>
+                <ng-container>
+                  <form #paymentDetailsForm="ngForm" name="paymentDetailsForm">
+                    <div class="aps-card-body p-p-2">
+                      <div class="p-grid">
+                        <div class="p-md-12 p-sm-12 p-col-12">
+                          <div class="text-size-14 text-color-light-shade-1">
+                            {{ 'Payment Amount' | apsTranslate }}
+                          </div>
+                        </div>
+                        <ng-container *ngIf="!review">
+                          <div class="p-md-4 p-sm-12 p-col-12">
+                            <div class="inline-items">
+                              <div class="item">
+                                <p-radioButton
+                                  (click)="formData.payableAmount = creditCardData.minDueAmount"
+                                  [(ngModel)]="formData.paymentAmount"
+                                  class=""
+                                  id="minAmountDue"
+                                  [label]="'Minimum Amount Due' | apsTranslate"
+                                  name="paymentAmount"
+                                  value="Minimum Amount Due"
+                                ></p-radioButton>
+                              </div>
+                              <div class="item p-ml-2 p-my-1">
+                                <app-icon
+                                  icon="fa-info-circle"
+                                  pTooltip="This amount is as per last statement generated."
+                                ></app-icon>
+                              </div>
+                            </div>
+
+                            <div class="text-size-14 p-p-2" *ngIf="creditCardData.minDueAmount">
+                              <app-base-currency
+                                [amount]="creditCardData?.minDueAmount"
+                              ></app-base-currency>
+                            </div>
+                          </div>
+
+                          <div class="p-md-4 p-sm-12 p-col-12">
+                            <div class="inline-items">
+                              <div class="item">
+                                <p-radioButton
+                                  #paymentAmount="ngModel"
+                                  (click)="
+                                    formData.payableAmount = creditCardData.outStandingAmount
+                                  "
+                                  [(ngModel)]="formData.paymentAmount"
+                                  class=""
+                                  id="totalAmountDue"
+                                  [label]="'Total Amount Due' | apsTranslate"
+                                  name="paymentAmount"
+                                  value="Total Amount Due"
+                                ></p-radioButton>
+                              </div>
+                              <div class="item p-ml-2 p-my-1">
+                                <app-icon
+                                  icon="fa-info-circle"
+                                  pTooltip="This amount is as per last statement generated."
+                                ></app-icon>
+                              </div>
+                            </div>
+
+                            <div
+                              *ngIf="creditCardData?.outStandingAmount"
+                              class="text-size-14 p-p-2"
+                            >
+                              <app-base-currency
+                                [amount]="creditCardData?.outStandingAmount"
+                              ></app-base-currency>
+                            </div>
+                          </div>
+
+                          <div class="p-md-4 p-sm-12 p-col-12">
+                            <p-radioButton
+                              #paymentAmount="ngModel"
+                              (click)="resetAmount()"
+                              [(ngModel)]="formData.paymentAmount"
+                              id="otherAmount"
+                              label="Other Amount"
+                              name="paymentAmount"
+                              value="Other Amount"
+                            ></p-radioButton>
+
+                            <div *ngIf="formData.paymentAmount === 'Other Amount'" class="p-grid">
+                              <div class="p-col-3">
+                                <aps-custom-select
+                                  (change)="onPayableCurrency($event)"
+                                  [(ngModel)]="formData.payableCurrencyId"
+                                  [data]="currencyList"
+                                  [required]="formData.paymentAmount === 'Other Amount'"
+                                  [showLabel]="false"
+                                  [value]="formData.payableCurrencyId"
+                                  id="payableCurrencyId"
+                                  [label]="'Payable Currency' | apsTranslate"
+                                  name="payableCurrencyId"
+                                  [disabled]="true"
+                                >
+                                </aps-custom-select>
+                              </div>
+                              <div class="p-col-9 p-md-8 p-lg-8">
+                                <aps-form-input
+                                  #payableAmount="ngModel"
+                                  [(ngModel)]="formData.payableAmount"
+                                  [required]="formData.paymentAmount === 'Other Amount'"
+                                  [showLabel]="false"
+                                  [value]="formData.payableAmount"
+                                  id="payableAmount"
+                                  inputType="currencyFormatNotZero"
+                                  maxLength="16"
+                                  minLength="1"
+                                  name="payableAmount"
+                                >
+                                </aps-form-input>
+                              </div>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+
+                      <div *ngIf="!review" class="p-grid">
+                        <div class="p-md-4 p-sm-12 p-col-12">
+                          <app-aps-calender
+                            [(ngModel)]="formData.paymentDate"
+                            id="paymentDate"
+                            [label]="'Payment Date' | apsTranslate"
+                            name="paymentDate"
+                            required="true"
+                            showIcon="true"
+                          ></app-aps-calender>
+                        </div>
+                        <div
+                          class="p-md-4 p-sm-12 p-col-12"
+                          *ngIf="accounts && accounts.length > 0"
+                        >
+                          <aps-custom-select
+                            [(ngModel)]="formData.debitAccount"
+                            [data]="accounts"
+                            (change)="onChangeDebitAccount($event)"
+                            [value]="formData.debitAccount"
+                            id="debitAccount"
+                            [label]="'Debit Account' | apsTranslate"
+                            name="debitAccount"
+                            required="true"
+                          ></aps-custom-select>
+                        </div>
+                        <div class="p-md-4 p-sm-12 p-col-12" *ngIf="formData.accountBalance">
+                          <app-review-form-field
+                            label="Account Balance"
+                            [value]="formData.accountBalance"
+                            type="baseCurrency"
+                          ></app-review-form-field>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </ng-container>
+              </div>
+            </div>
+            <!--Right Down Card End-->
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <!--Step 2 Details-->
+    <ng-container *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <div class="aps-card" *ngIf="creditCardData">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-bold">
+            {{ 'Card Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Credit Card"
+                [value]="creditCardData.cardNo"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Card Type"
+                [value]="creditCardData.cardType"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Card Limit"
+                [value]="creditCardData?.cardLimit"
+                type="baseCurrency"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Statement Date"
+                [value]="creditCardData.statementDate"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Payment Due Date"
+                [value]="creditCardData.dueDate"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Previous Outstanding Balance"
+                [value]="creditCardData?.previousOutstandingBalance"
+                type="baseCurrency"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="aps-card p-my-3" *ngIf="formData">
+        <div class="aps-card-header">
+          <div class="p-px-3 aps-py-12 tet-size-16 text-bold">
+            {{ 'Payment Details' | apsTranslate }}
+          </div>
+        </div>
+
+        <div class="aps-card-body p-p-3">
+          <div class="p-grid g-margin-x">
+            <div class="p-md-12 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Payment Amount"
+                [value]="formData.payableAmount"
+                [currency]="formData.payableCurrency"
+                type="baseCurrency"
+              ></app-review-form-field>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Payment Date"
+                [value]="formData.paymentDate"
+              ></app-review-form-field>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <app-review-form-field
+                label="Debit Account"
+                [value]="formData.debitAccountNo"
+              ></app-review-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

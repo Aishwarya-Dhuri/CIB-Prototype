@@ -1,0 +1,140 @@
+<app-widgets-header
+  [heading]="title"
+  [showChangeChartOption]="showChangeChartOption"
+  (action)="this.actionEvent($event)"
+></app-widgets-header>
+<div class="widget-container gridster-item-content">
+  <form #statementForm="ngForm">
+    <div class="p-grid" *ngIf="step === 1">
+      <div class="p-col-12 p-py-2">
+        <div class="text-size-12 text-color-light-shade-1">Statement Type</div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-6 p-lg-6 p-p-0">
+            <p-radioButton
+              class="p-pt-2"
+              name="statementType"
+              value="MINI_STATEMENT"
+              label="Mini Statement"
+              [(ngModel)]="formData.statementType"
+            >
+            </p-radioButton>
+          </div>
+          <div class="p-col-12 p-md-6 p-lg-6 p-p-0">
+            <p-radioButton
+              class="p-pt-2"
+              name="statementType"
+              value="DETAIL"
+              label="Detail Statement"
+              [(ngModel)]="formData.statementType"
+            >
+            </p-radioButton>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-8 p-lg-8 p-py-1">
+        <aps-custom-select
+          label="Account Number"
+          name="accountNo"
+          id="accountNo"
+          [(ngModel)]="formData.accountNo"
+          [data]="accountNoList"
+          required="true"
+        ></aps-custom-select>
+      </div>
+      <div class="p-col-12 p-md-8 p-lg-8 p-py-0" *ngIf="formData.statementType == 'DETAIL'">
+        <aps-custom-select
+          label="Statement For"
+          name="statementFor"
+          id="statementFor"
+          [(ngModel)]="formData.statementFor"
+          [data]="statementForList"
+          required="true"
+        ></aps-custom-select>
+      </div>
+      <div class="p-col-12 p-md-8 p-lg-8 p-py-0" *ngIf="formData.statementFor == 'RANGE'">
+        <app-aps-calender
+          label="Date Range"
+          id="dateRange"
+          name="dateRange"
+          [(ngModel)]="formData.dateRange"
+          selectionMode="range"
+          numberOfMonths="2"
+          required="true"
+        >
+        </app-aps-calender>
+      </div>
+      <div class="p-col-12 p-py-1">
+        <div class="text-size-12 text-color-light-shade-1">Download Type</div>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-p-0">
+            <p-radioButton
+              class="p-pt-2"
+              name="downloadType"
+              value="ON_SCREEN"
+              label="On Screen"
+              [(ngModel)]="formData.downloadType"
+            >
+            </p-radioButton>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-p-0">
+            <p-radioButton
+              class="p-pt-2"
+              name="downloadType"
+              value=".xlsx"
+              label="Excel"
+              [(ngModel)]="formData.downloadType"
+            >
+            </p-radioButton>
+          </div>
+          <div class="p-col-12 p-md-4 p-lg-4 p-p-0">
+            <p-radioButton
+              class="p-pt-2"
+              name="downloadType"
+              value=".pdf"
+              label="Pdf"
+              [(ngModel)]="formData.downloadType"
+            >
+            </p-radioButton>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="left-right-container">
+          <div class="left-container"></div>
+          <div class="right-container">
+            <button class="btn btn-md btn-tertiary p-mr-3" (click)="resetFormData()">RESET</button>
+            <button
+              class="btn btn-md btn-primary"
+              (click)="onSubmit()"
+              [disabled]="!statementForm.valid"
+            >
+              {{ formData.downloadType == 'ON_SCREEN' ? 'View' : 'Download' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <div class="p-grid" *ngIf="step === 2">
+    <div class="p-col-12 p-pb-0 p-px-0 aps-h-260">
+      <div class="text-center p-py-4" *ngIf="loading">Loading...</div>
+      <app-ag-grid-listing
+        *ngIf="!loading"
+        id="onScreenStatements"
+        supressAutoFit="true"
+        [colDefUrl]="onScreenStatementColDef"
+        [rowData]="onScreenStatements"
+        [gridOptions]="{ rowModelType: 'clientSide' }"
+      ></app-ag-grid-listing>
+    </div>
+    <div class="p-col-12 p-p-0">
+      <div class="left-right-container">
+        <div class="left-container"></div>
+        <div class="right-container">
+          <button class="btn btn-md btn-secondary" (click)="step = 1">BACK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

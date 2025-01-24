@@ -1,0 +1,16 @@
+<div
+  class="label-with-icon-container"
+  [ngClass]="cellValue.gainLoss === 'gain' ? 'text-color-success' : 'text-color-danger'"
+>
+  <div class="icon">
+    <app-icon
+      [icon]="cellValue.gainLoss === 'gain' ? 'fa-caret-up' : 'fa-caret-down'"
+      styleClasses="text-size-16 {{
+        cellValue.gainLoss === 'gain' ? 'text-color-success' : 'text-color-danger'
+      }}"
+    ></app-icon>
+  </div>
+  <div class="label">
+    {{ cellValue.value | currency: currency:'code':'1.0-0' }}
+  </div>
+</div>

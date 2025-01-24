@@ -1,0 +1,37 @@
+<app-searched-by-view
+  [filters]="parentRef.searchFilters"
+  (onClear)="parentRef.searchFilters = []; parentRef.currentScreen = 'FILTERS'"
+  (onModify)="parentRef.currentScreen = 'FILTERS'"
+></app-searched-by-view>
+
+<div class="aps-card p-my-3">
+  <div class="card-header border-bottom">
+    <div class="p-px-3" [ngClass]="{ 'left-right-container': viewport === 'web' }">
+      <div class="left-container">
+        <div class="text-size-16 text-color-dark-shade-1 text-bold aps-py-12">
+          {{ 'Search List' | apsTranslate }}
+        </div>
+      </div>
+      <div class="right-container p-py-2">
+        <app-grid-listing-tools
+          (changeFloatingFilter)="bgAmendSearchListGrid.changeFloatFilter($event)"
+          (filterRecords)="bgAmendSearchListGrid.onFilter($event)"
+          (applyColDefs)="bgAmendSearchListGrid.onApplyConfig($event)"
+          [colDefs]="bgAmendSearchListGrid.columnDefs"
+          [columnConfig]="true"
+          [moreOptions]="true"
+        >
+        </app-grid-listing-tools>
+      </div>
+    </div>
+  </div>
+  <div class="card-body aps-h-500">
+    <app-ag-grid-listing
+      id="bgAmendSearchListGrid"
+      #bgAmendSearchListGrid
+      [colDefUrl]="colDefsUrl"
+      [rowDefUrl]="rowDefUrl"
+      [context]="{ componentParent: this }"
+    ></app-ag-grid-listing>
+  </div>
+</div>

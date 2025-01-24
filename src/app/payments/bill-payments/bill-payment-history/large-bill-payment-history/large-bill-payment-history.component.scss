@@ -1,0 +1,11 @@
+.transaction-enquiry-container {
+  .transaction-search-container {
+    position: relative;
+
+    .transaction-search-actions {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+  }
+}

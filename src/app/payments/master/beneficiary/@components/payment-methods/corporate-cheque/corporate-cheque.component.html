@@ -1,0 +1,101 @@
+<div class="p-grid g-margin-x">
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <aps-custom-select
+      name="instrumentDispatchTo"
+      id="instrumentDispatchTo"
+      label="Instrument Dispatch To"
+      inputType="alphaNumeric"
+      [data]="[
+        { id: 'Beneficiary', displayName: 'Beneficiary' },
+        { id: 'Corporate', displayName: 'Corporate' }
+      ]"
+      [value]="formData.instrumentDispatchTo"
+      [(ngModel)]="formData.instrumentDispatchTo"
+    ></aps-custom-select>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <aps-custom-select
+      name="instrumentDispatchMode"
+      id="instrumentDispatchMode"
+      label="Instrument Dispatch Mode"
+      inputType="alphaNumeric"
+      [data]="[
+        { id: 'Mail', displayName: 'Mail' },
+        { id: 'Courier', displayName: 'Courier' },
+        { id: 'Counter Collect', displayName: 'Counter Collect' }
+      ]"
+      [value]="formData.instrumentDispatchMode"
+      [(ngModel)]="formData.instrumentDispatchMode"
+    ></aps-custom-select>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0"></div>
+
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <app-aps-calender
+      name="effectiveFrom"
+      id="effectiveFrom"
+      label="Effective From"
+      [(ngModel)]="formData.effectiveFrom"
+    ></app-aps-calender>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+    <app-aps-calender
+      name="effectiveTill"
+      id="effectiveTill"
+      label="Effective Till"
+      [(ngModel)]="formData.effectiveTill"
+    ></app-aps-calender>
+  </div>
+  <div class="p-col-12 p-py-0">
+    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">
+      Beneficiary Advice Dispatch Mode
+    </div>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Electronic Mode</div>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <p-checkbox
+      class="p-mr-3"
+      label="Email"
+      value="Email"
+      [(ngModel)]="formData.beneficiaryAdviceDispatchMode"
+    ></p-checkbox>
+    <p-checkbox
+      label="SMS"
+      value="SMS"
+      [(ngModel)]="formData.beneficiaryAdviceDispatchMode"
+    ></p-checkbox>
+  </div>
+
+  <div class="p-md-4 p-sm-12 p-col-12 p-py-0"></div>
+
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <div class="text-size-14 text-semi-bold text-color-dark-shade-1">Print Mode</div>
+  </div>
+  <div class="p-md-4 p-sm-12 p-col-12">
+    <p-checkbox
+      class="p-mr-3"
+      label="Mail"
+      value="Mail"
+      [(ngModel)]="formData.beneficiaryAdviceDispatchMode"
+    ></p-checkbox>
+    <p-checkbox
+      label="Courier"
+      value="Courier"
+      [(ngModel)]="formData.beneficiaryAdviceDispatchMode"
+    ></p-checkbox>
+  </div>
+  <div class="p-col-12">
+    <div class="left-right-container p-mt-6">
+      <div class="left-container">
+        <button class="btn btn-md btn-tertiary" (click)="cancel.emit()">CANCEL</button>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="add()">
+          {{ account ? 'UPDATE' : 'ADD' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

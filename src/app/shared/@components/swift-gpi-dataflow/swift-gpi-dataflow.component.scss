@@ -1,0 +1,48 @@
+span {
+  display: inline-block;
+  width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tree-node {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 3rem;
+
+  .node-branch {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    vertical-align: top;
+
+    .line {
+      stroke: var(--primary-color);
+      stroke-width: 2px;
+    }
+
+    .circle {
+      stroke: var(--primary-color);
+      fill: var(--primary-color);
+      stroke-width: 2;
+    }
+  }
+
+  .node-data {
+    position: absolute;
+    left: calc(18% + 14px);
+    top: 4px;
+
+    .header {
+      display: inline-block;
+      padding: 0 4px;
+      font-size: 0.79rem;
+      background-color: var(--background-color);
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+  }
+}

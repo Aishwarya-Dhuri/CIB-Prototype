@@ -1,0 +1,14 @@
+<div class="download-options-wrapper aps-shadow">
+  <div class="label-with-icon-container pointer">
+    <div class="icon">
+      <app-icon icon="fa-file-pdf" class="app-icon"></app-icon>
+    </div>
+    <div class="label">{{ 'PDF' | apsTranslate }}</div>
+  </div>
+  <div class="label-with-icon-container pointer" (click)="gridRef.onExportToExcel()">
+    <div class="icon">
+      <app-icon icon="fa-file-excel" class="app-icon"></app-icon>
+    </div>
+    <div class="label">{{ 'Excel' | apsTranslate }}</div>
+  </div>
+</div>

@@ -1,0 +1,61 @@
+<app-listing #listing [parentComponentRef]="parentComponentRef" [topTemplate]="topTemplate">
+</app-listing>
+
+<ng-template #topTemplate>
+  <div class="p-grid g-margin-x" *ngIf="!isLoading">
+    <div class="p-col-12 p-md-8 p-lg-8">
+      <div class="aps-card">
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-lg-4 p-p-0">
+            <div class="aps-card aps-h-120 chart-container">
+              <ag-charts-angular [options]="options"></ag-charts-angular>
+              <div class="chart-center chart-center-value text-size-12 text-bold">
+                {{ totalPayments }}
+              </div>
+              <div class="chart-center chart-center-label text-size-8">
+                {{ 'Total Payments' | apsTranslate }}
+              </div>
+            </div>
+          </div>
+          <div class="p-col-12 p-md-8 p-lg-8 p-p-3 hide-on-mobile">
+            <div class="p-grid">
+              <div class="p-col-12 p-md-6 p-lg-6 p-p-2">
+                <div class="background-color-disabled">
+                  <div class="p-px-3 p-pt-2 p-pb-1 text-size-20 text-bold">
+                    <app-base-currency [amount]="cardData.paidInvoices"></app-base-currency>
+                  </div>
+                  <div class="p-px-3 p-pb-2 text-size-16">{{ 'Paid Invoice' | apsTranslate }}</div>
+                </div>
+              </div>
+              <div class="p-col-12 p-md-6 p-lg-6 p-p-2">
+                <div class="background-color-disabled">
+                  <div class="p-px-3 p-pt-2 p-pb-1 text-size-20 text-bold">
+                    <app-base-currency [amount]="cardData.pendingInvoices"></app-base-currency>
+                  </div>
+                  <div class="p-px-3 p-pb-2 text-size-16">
+                    {{ 'Pending Invoice' | apsTranslate }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12 p-md-4 p-lg-4 hide-on-mobile">
+      <div class="aps-card">
+        <div class="p-grid aps-h-120">
+          <div class="p-col-12 p-p-0">
+            <div class="p-mx-3 p-py-3 text-size-16 border-bottom">
+              {{ 'Due Today' | apsTranslate }}
+            </div>
+          </div>
+          <div class="p-col-4 p-p-0" *ngFor="let batchNo of cardData.top3BatchNoDueToday">
+            <div class="p-px-3 p-pt-2 text-size-14 text-bold">{{ batchNo }}</div>
+            <div class="p-px-3 text-size-12">{{ 'Batch Number' | apsTranslate }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

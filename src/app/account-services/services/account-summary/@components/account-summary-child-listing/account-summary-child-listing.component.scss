@@ -1,0 +1,19 @@
+.card-list {
+  height: calc(100% - 48px);
+  overflow: scroll;
+}
+
+@media screen and (max-width: 767px) {
+  .disable-left-right-container-on-mobile {
+    display: block !important;
+
+    .right-container,
+    .left-container {
+      display: block;
+    }
+  }
+
+  .disable-inline-items-on-mobile {
+    white-space: normal;
+  }
+}

@@ -1,0 +1,23 @@
+.self-onboarding-container {
+  display: block;
+  // width: 100vw;
+  // height: 100vh;
+
+  .self-onboarding-header {
+    box-shadow: 0 0 10px var(--background-color-dark-6);
+  }
+
+  .self-onboarding-wrapper {
+    position: relative;
+    display: block;
+  }
+}
+
+@media screen and (max-width: 375px) {
+  .btn-md {
+    padding: 7px 14px !important;
+    i {
+      font-size: 0.875rem !important;
+    }
+  }
+}

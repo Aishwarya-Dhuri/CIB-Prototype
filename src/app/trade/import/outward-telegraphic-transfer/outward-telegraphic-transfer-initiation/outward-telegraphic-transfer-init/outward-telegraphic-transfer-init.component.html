@@ -1,0 +1,742 @@
+<div class="container">
+    <ng-container *ngIf="!loading; else loadingTemplate">
+        <app-search-modal [(isShow)]="searchBeneficiary" header="{{ 'lbl_select_beneficiary' | translate }}"
+            colDefUrl="trade/importTransactions/letterOfCredit/private/beneficiaryColDefs"
+            rowDefUrl="trade/importTransactions/letterOfCredit/private/beneficiaryData"
+            (onSelection)="onBeneSelection($event)">
+        </app-search-modal>
+
+        <app-modal [(isShow)]="isTermsAndCondition" size="md">
+            <div header>
+                <div class="left-right-container">
+                    <div class="left-container">
+                        <div class="text-size-16 text-semi-bold">Terms And Conditions</div>
+                    </div>
+                </div>
+            </div>
+            <div body>
+                {{'I/We hereby undertake to submit to you within
+                180 days of the
+                date given below, a copy of
+                the commercial invoice and a copy of the Customs declaration both duly stamped by customs in
+                respect of the import of goods for which payment has been made in advance.' | apsTranslate
+                }}
+
+            </div>
+            <div footer>
+                <div class="left-right-container p-mt-3">
+                    <div class="left-container"></div>
+                    <div class="right-container">
+                        <button class="btn btn-md btn-primary p-px-3" (click)="isTermsAndCondition = false">
+                            CANCEL
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </app-modal>
+
+        <div class="p-grid g-margin-x">
+            <div class="p-col-12 p-py-1" style="margin-top: -8px !important">
+                <div class="left-right-container">
+                    <div class="left-container"></div>
+                    <div class="right-container">
+                        <div class="left-right-container">
+                            <div class="left-container">
+                                <div class="p-px-2 p-py-1 border-radius-4" [ngClass]="
+                    parentRef.stepperDetails.steps[3].stepStatus == 'repair' ||
+                    parentRef.stepperDetails.steps[4].stepStatus == 'repair'
+                      ? 'background-color-warning-light'
+                      : 'background-color-success '
+                  " *ngIf="repair">
+                                    <div class="inline-items">
+                                        <div class="item p-mr-2">
+                                            <app-icon [icon]="
+                          parentRef.stepperDetails.steps[3].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[4].stepStatus == 'repair'
+                            ? 'fa-exclamation-triangle'
+                            : 'fa-check-circle'
+                        " [ngClass]="
+                          parentRef.stepperDetails.steps[3].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[4].stepStatus == 'repair'
+                            ? 'text-color-warning'
+                            : 'text-color-inverted'
+                        " styleClasses="text-size-12"></app-icon>
+                                        </div>
+                                        <div class="item p-mr-4" style="padding-top: 2px">
+                                            <div class="text-size-14 text-semi-bold" [ngClass]="
+                          parentRef.stepperDetails.steps[3].stepStatus == 'repair' ||
+                          parentRef.stepperDetails.steps[4].stepStatus == 'repair'
+                            ? 'text-color-normal'
+                            : 'text-color-inverted'
+                        ">
+                                                {{ activeStepIndex == 3 ? '1' : activeStepIndex == 4 ? '2' : '0' }}
+                                                {{ 'of' | apsTranslate }} 2 {{ 'Corrections made' | apsTranslate }}
+                                            </div>
+                                        </div>
+                                        <div class="item p-mr-3">
+                                            <app-icon icon="fa-chevron-left" rtlIcon="fa-chevron-right"
+                                                styleClasses="text-size-14 text-color-dark-shade-1"
+                                                (click)="changeRepairStep('previous')">
+                                            </app-icon>
+                                        </div>
+                                        <div class="item p-mr-2">
+                                            <app-icon icon="fa-chevron-right" rtlIcon="fa-chevron-left"
+                                                styleClasses="text-size-14 text-color-dark-shade-1"
+                                                (click)="changeRepairStep('next')">
+                                            </app-icon>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="right-container p-py-1" *ngIf="viewport === 'web'">
+                                <div class="inline-items">
+                                    <div class="item p-px-2">
+                                        <app-icon icon="fa-refresh"></app-icon>
+                                    </div>
+                                    <div class="item p-px-2 border-right">
+                                        <app-icon icon="fa-print"></app-icon>
+                                    </div>
+                                    <div class="item p-px-2">
+                                        <app-icon icon="fa-user"></app-icon>
+                                    </div>
+                                    <div class="item p-px-2">
+                                        <app-icon icon="fa-link"></app-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12 p-py-1">
+                <div class="aps-card text-color-dark-shade-1">
+                    <div class="left-right-container border-bottom border-radius-4 p-p-3"
+                        [ngClass]="{ 'active background-color-warning-light': showBankRemarks }" *ngIf="repair"
+                        (click)="showBankRemarks = true">
+                        <div class="left-container">
+                            <div class="text-size-14 text-color-normal text-semi-bold">
+                                <div class="label-with-icon-container">
+                                    <div class="icon">
+                                        <app-icon iconStyle="fas" icon="fa-circle"
+                                            styleClasses="text-color-warning text-size-12">
+                                        </app-icon>
+                                    </div>
+                                    <div class="label">Bank Remarks (1)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right-container">
+                            <app-icon icon="fa-chevron-right" styleClasses="text-size-14"></app-icon>
+                        </div>
+                    </div>
+                </div>
+
+                <app-stepper-header [parentRef]="parentRef" stepperType="vertical" (stepsReady)="onStepsReady()">
+                </app-stepper-header>
+            </div>
+
+            <div class="p-lg-9 p-md-9 p-sm-12 p-col-12 p-py-1">
+                <div class="aps-card aps-h-600" *ngIf="parentRef.formData">
+                    <div class="aps-card-header">
+                        <div class="left-right-container p-px-3">
+                            <div class="left-container">
+                                <div class="text-size-16 text-bold text-color-dark-shade-1 aps-py-12">
+                                    {{ showBankRemarks ? 'Bank Remarks' : activeStep?.displayLabel }}
+                                </div>
+                            </div>
+                            <div class="right-container p-py-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="aps-card-body p-p-3" *ngIf="showBankRemarks && repair"
+                        (click)="showBankRemarks = false">
+                        <div class="left-right-container p-py-2 p-px-3 border-radius-4 background-color-warning-light">
+                            <div class="left-container">
+                                <div class="text-size-12 text-color-normal">
+                                    The mode of shipment shall be by Sea unless otherwise specified by AT & T on the
+                                    purchase order. In the absence of specific instructions, seller will select the
+                                    surface carrier for shipment.
+                                </div>
+                            </div>
+                            <div class="right-container">
+                                <app-icon icon="fa-info-circle" styleClasses="text-color-warning"></app-icon>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="aps-card-body p-p-2 overflow-scroll" *ngIf="!showBankRemarks">
+                        <form name="form1" #form1="ngForm" class="applicant-details"
+                            [apsHide]="activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[0]">
+                            <div class="p-grid">
+                                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                                    <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                                        <div class="text-color-normal">
+                                            {{ 'Name' | apsTranslate }}<span class="text-color-danger">*</span>
+                                        </div>
+                                        <div class="text-color-dark-shade-1">
+                                            {{ parentRef.formData.applicantDetails[0].applicantName }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-lg-8 p-md-8 p-sm-12 p-col-12 p-pb-0">
+                                    <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                                        <div class="text-color-normal">
+                                            {{ 'Email' | apsTranslate }}<span class="text-color-danger">*</span>
+                                        </div>
+                                        <div class="text-color-dark-shade-1">
+                                            {{ parentRef.formData.applicantDetails[0].applicantEmail }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                                    <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                                        <div class="text-color-normal">
+                                            {{ 'Mobile Number' | apsTranslate }}<span class="text-color-danger">*</span>
+                                        </div>
+                                        <div class="text-color-dark-shade-1">
+                                            {{ parentRef.formData.applicantDetails[0].applicantMobileNo }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="p-lg-8 p-md-8 p-sm-12 p-col-12 p-pb-0">
+                                    <div class="background-color-dark-3 text-size-14 p-px-2 p-py-1 border-radius-4">
+                                        <div class="text-color-normal">
+                                            {{ 'Address' | apsTranslate }}<span class="text-color-danger">*</span>
+                                        </div>
+                                        <div class="text-color-dark-shade-1">
+                                            {{ parentRef.formData.applicantDetails[0].applicantAddress }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form name="form2" #form2="ngForm" class="payment-details"
+                            [apsHide]="activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[1]">
+                            <div class="p-grid">
+                                <div class="p-col-1 p-py-0">
+                                    <aps-custom-select name="Currency" label="CCY" id="Currency"
+                                        dataUrl="setup/generalMasters/currency/private/currencyList"
+                                        [(ngModel)]="parentRef.formData.paymentDetails[0].selectedPayableCurrency"
+                                        [value]="selectedPayableCurrencyName">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="Payable Amount" name="payableAmount" id="payableAmount"
+                                        inputType="currencyFormatNotZero" [required]="true"
+                                        [(ngModel)]="parentRef.formData.paymentDetails[0].payableAmount">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+                                    <div class="text-size-14 text-semi-bold p-mt-2 text-color-normal">
+                                        Payment Option<span class="text-color-danger">*</span>
+                                    </div>
+                                    <p-radioButton class="p-mr-4" id="draftAt" name="draftAt"
+                                        value="Mixed Payment / Loans"
+                                        (click)="onChangePaymentOption(parentRef.formData.paymentDetails[0].draftAt)"
+                                        label="{{ 'Mixed Payment / Loans' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.paymentDetails[0].draftAt" [required]="true">
+                                    </p-radioButton>
+                                    <p-radioButton id="draftAt" name="draftAt" value="100% Debit"
+                                        label="{{ '100% Debit' | apsTranslate }}"
+                                        (click)="onChangePaymentOption(parentRef.formData.paymentDetails[0].draftAt)"
+                                        [(ngModel)]="parentRef.formData.paymentDetails[0].draftAt"
+                                        [disabled]="parentRef.formData.paymentDetails[0].creditAvailableBy === 'Payment'"
+                                        [required]="true"></p-radioButton>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="{{ 'Corporate Ref No' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.paymentDetails[0].corpRefNo" name="corpRefNo"
+                                        id="corpRefNo" [required]="true">
+                                    </aps-form-input>
+                                </div>
+
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-custom-select name="paymentTerms" label="Payment Terms" id="paymentTerms"
+                                        [data]="paymentTermsList"
+                                        [(ngModel)]="parentRef.formData.paymentDetails[0].paymentTerms"
+                                        [value]="parentRef.formData.paymentDetails[0].paymentTerms">
+                                    </aps-custom-select>
+                                </div>
+
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-custom-select name="debitAccountNo" label="Debit Account No"
+                                        id="selectedDebitAccountNo" [data]="debitAccountNoList"
+                                        [(ngModel)]="parentRef.formData.paymentDetails[0].selectedDebitAccountNo"
+                                        [value]="parentRef.formData.paymentDetails[0].selectedDebitAccountNo">
+                                    </aps-custom-select>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <app-aps-calender name="effectiveDate" id="effectiveDate"
+                                        [minDate]="getCurrentDate()" label="{{ 'Effective Date' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.paymentDetails[0].effectiveDate"
+                                        [required]="true"></app-aps-calender>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-col-1 p-py-0">
+                                    <aps-custom-select name="currency" label="CCY" id="currency" [data]="currencyList"
+                                        [(ngModel)]="parentRef.PaymentDetailsCurrencyAndAmountFormData.currency"
+                                        [value]="parentRef.PaymentDetailsCurrencyAndAmountFormData.currency">
+                                    </aps-custom-select>
+                                </div>
+                                <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="Debit Amount In Payable Currency" name="debitAmount"
+                                        [(ngModel)]="parentRef.PaymentDetailsCurrencyAndAmountFormData.debitAmount"
+                                        inputType="currencyFormatNotZero" id="debitAmount" [required]="true">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-md-3 p-sm-12 p-col-12">
+                                    <button class="btn btn-md btn-primary"
+                                        (click)="editIndex > -1 ? onUpdateCurrencyAndAmount() : onAddCurrencyAndAmount()">
+                                        {{ (editIndex > -1 ? 'UPDATE' : 'ADD') }}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-col-12 aps-h-250">
+                                    <app-ag-grid-listing #paymentDetailsGrid id="paymentDetailsGrid"
+                                        [gridOptions]="paymentDetailsGridOptions"
+                                        [rowData]="parentRef.formData.transaction"
+                                        (gridReady)="onPaymentDetailsGridReady($event)"
+                                        colDefUrl="trade/importTransactions/outwardTelegraphTransfer/private/debitAmtPaymentDetailsColDefs">
+                                    </app-ag-grid-listing>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form name="form3" #form3="ngForm" class="beneficiary-details"
+                            [apsHide]="activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[2]">
+                            <div class="p-grid">
+                                <div class="p-col-12">
+                                    <p-radioButton class="p-mr-6" id="frequencyOfExecution" name="frequencyOfExecution"
+                                        value="Search Using Beneficiary Code"
+                                        label="{{ 'Search Using Beneficiary Code' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution"
+                                        (click)="resetBeneficiaryDetails('Search Using Beneficiary Code')"
+                                        [required]="true">
+                                    </p-radioButton>
+
+                                    <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                                        value="Add New Beneficiary" label="{{ 'Add New Beneficiary' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution"
+                                        (click)="resetBeneficiaryDetails('Add New Beneficiary')"
+                                        [required]="true"></p-radioButton>
+                                </div>
+
+                                <div class="p-col-12"
+                                    *ngIf="!parentRef.formData.beneficiaryDetails[0].frequencyOfExecution">
+                                    <app-nothing-here colSize="3"
+                                        message="{{ 'Enter beneficiary details for preview' | apsTranslate }}">
+                                    </app-nothing-here>
+                                </div>
+
+                                <ng-container
+                                    *ngIf="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution === 'Search Using Beneficiary Code'">
+                                    <div class="p-md-4 p-sm-12 p-col-12">
+                                        <aps-form-input name="beneficiaryCode" id="beneficiaryCode"
+                                            label="{{ 'Beneficiary Code' | apsTranslate }}" [required]="true"
+                                            [rightIcon]="'fa-search'" [readonly]="true"
+                                            (onRightIcon)="searchBeneficiary = true"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryCode"></aps-form-input>
+                                    </div>
+                                </ng-container>
+
+                                <ng-container
+                                    *ngIf="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution === 'Add New Beneficiary' || parentRef.formData.beneficiaryDetails[0].beneficiaryCode">
+                                    <div class="p-col-12 p-py-0 p-mt-4"
+                                        *ngIf="parentRef.formData.beneficiaryDetails[0].frequencyOfExecution === 'Add New Beneficiary'">
+                                        <div class="text-size-14 text-color-dark-shade-1 text-semi-bold">
+                                            {{ 'Add New Beneficiary' | apsTranslate }}
+                                        </div>
+                                    </div>
+
+                                    <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                                        <aps-form-input name="beneficiaryName" id="beneficiaryName"
+                                            label="{{ 'Beneficiary Name' | apsTranslate }}" [required]="true"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryName"></aps-form-input>
+                                    </div>
+                                    <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                                        <aps-form-input name="email" id="email" label="{{ 'Email' | apsTranslate }}"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].email"
+                                            [required]="true"></aps-form-input>
+                                    </div>
+                                    <div class="p-lg-4 p-md-4 p-sm-12 p-col-12 p-pb-0">
+                                        <aps-form-input name="bankSwiftCode" id="bankSwiftCode"
+                                            label="{{ 'Bank Swift Code' | apsTranslate }}"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].bankSwiftCode"
+                                            [required]="true">
+                                        </aps-form-input>
+                                    </div>
+
+                                    <div class="p-col-9 p-py-0">
+                                        <div class="p-grid">
+                                            <div class="p-col-12 p-p-0">
+                                                <aps-form-input name="beneficiaryAddress1" id="beneficiaryAddress1"
+                                                    label="{{ 'Beneficiary Address' | apsTranslate }}"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress1[0].address"
+                                                    [required]="true"></aps-form-input>
+                                            </div>
+
+                                            <div class="p-col-12 p-p-0"
+                                                *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show">
+                                                <aps-form-input name="beneficiaryAddress2" id="beneficiaryAddress2"
+                                                    label="{{ 'Beneficiary Address' | apsTranslate }}"
+                                                    [rightIcon]="'fa-trash-alt'"
+                                                    (onRightIcon)="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show = false"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].address"></aps-form-input>
+                                            </div>
+                                            <div class="p-col-12 p-p-0"
+                                                *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show">
+                                                <aps-form-input name="beneficiaryAddress3" id="beneficiaryAddress3"
+                                                    label="{{ 'Beneficiary Address' | apsTranslate }}"
+                                                    [rightIcon]="'fa-trash-alt'"
+                                                    (onRightIcon)="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show = false"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].address"></aps-form-input>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="p-col-3">
+                                        <button class="btn text-center btn btn-tertiary"
+                                            (click)="addBeneficiaryAddress()"
+                                            [disabled]="parentRef.formData.beneficiaryDetails[0].beneficiaryAddress1[0].show && parentRef.formData.beneficiaryDetails[0].beneficiaryAddress2[0].show && parentRef.formData.beneficiaryDetails[0].beneficiaryAddress3[0].show">
+                                            <app-icon icon="fa-plus"> </app-icon>&nbsp;{{ 'ADDRESS LINE' |
+                                            apsTranslate}}
+                                        </button>
+                                    </div>
+                                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                        <aps-form-input name="country" id="country" label="Country" [required]="true"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].country">
+                                        </aps-form-input>
+                                    </div>
+                                    <div class="p-md-8 p-sm-12 p-col-12 p-p-0"></div>
+                                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                        <aps-form-input name="beneficiaryAccountNumber" id="beneficiaryAccountNumber"
+                                            label="{{ 'Beneficiary Account Number' | apsTranslate }}"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryAccountNumber"></aps-form-input>
+                                    </div>
+                                    <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+                                        <aps-form-input name="beneficiaryBankName" id="beneficiaryBankName"
+                                            label="{{ 'Beneficiary Bank Name' | apsTranslate }}"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryBankName">
+                                        </aps-form-input>
+                                    </div>
+                                    <div class="p-col-9 p-py-0">
+                                        <div class="p-grid">
+                                            <div class="p-col-12 p-p-0">
+                                                <aps-form-input name="beneficiaryBankAddress1"
+                                                    id="beneficiaryBankAddress1"
+                                                    label="{{ 'Beneficiary Bank Address' | apsTranslate }}"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress1[0].address"></aps-form-input>
+                                            </div>
+                                            <div class="p-col-12 p-p-0"
+                                                *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show">
+                                                <aps-form-input name="beneficiaryBankAddress2"
+                                                    id="beneficiaryBankAddress2"
+                                                    label="{{ 'Beneficiary Bank Address' | apsTranslate }}"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].address"
+                                                    [rightIcon]="'fa-trash-alt'"
+                                                    (onRightIcon)="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show = false"></aps-form-input>
+                                            </div>
+                                            <div class="p-col-12 p-p-0"
+                                                *ngIf="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show">
+                                                <aps-form-input name="beneficiaryBankAddress3"
+                                                    id="beneficiaryBankAddress3"
+                                                    label="{{ 'Beneficiary Bank Address' | apsTranslate }}"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].address"
+                                                    [rightIcon]="'fa-trash-alt'"
+                                                    (onRightIcon)="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show = false"></aps-form-input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-col-3">
+                                        <button class="btn text-center btn btn-tertiary"
+                                            (click)="addBeneficiaryBankAddress()"
+                                            [disabled]="parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress1[0].show && parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress2[0].show && parentRef.formData.beneficiaryDetails[0].beneficiaryBankAddress3[0].show">
+                                            <app-icon icon="fa-plus"> </app-icon>&nbsp;{{ 'ADDRESS LINE' | apsTranslate
+                                            }}
+                                        </button>
+                                    </div>
+
+
+
+
+                                    <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                        <aps-form-input name="intermediarySwiftCode" id="intermediarySwiftCode"
+                                            label="{{ 'Intermediary Swift Code' | apsTranslate }}"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].intermediarySwiftCode"></aps-form-input>
+                                    </div>
+                                    <div class="p-md-8 p-sm-12 p-col-12 p-py-0">
+                                        <aps-form-input name="intermediaryBankName" id="intermediaryBankName"
+                                            label="{{ 'Intermediary Bank Name' | apsTranslate }}"
+                                            [(ngModel)]="parentRef.formData.beneficiaryDetails[0].intermediaryBankName">
+                                        </aps-form-input>
+                                    </div>
+                                    <div class="p-col-9 p-py-0">
+                                        <div class="p-grid">
+                                            <div class="p-col-12 p-p-0">
+                                                <aps-form-input name="intermediaryBankAddress1"
+                                                    id="intermediaryBankAddress1"
+                                                    label="{{ 'Intermediary Bank Address' | apsTranslate }}"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress1[0].address"></aps-form-input>
+                                            </div>
+                                            <div class="p-col-12 p-p-0"
+                                                *ngIf="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress2[0].show">
+                                                <aps-form-input name="intermediaryBankAddress2"
+                                                    id="intermediaryBankAddress2"
+                                                    label="{{ 'Intermediary Bank Address' | apsTranslate }}"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress2[0].address"
+                                                    [rightIcon]="'fa-trash-alt'"
+                                                    (onRightIcon)="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress2[0].show = false"></aps-form-input>
+                                            </div>
+                                            <div class="p-col-12 p-p-0"
+                                                *ngIf="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress3[0].show">
+                                                <aps-form-input name="intermediaryBankAddress3"
+                                                    id="intermediaryBankAddress3"
+                                                    label="{{ 'Intermediary Bank Address' | apsTranslate }}"
+                                                    [(ngModel)]="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress3[0].address"
+                                                    [rightIcon]="'fa-trash-alt'"
+                                                    (onRightIcon)="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress3[0].show = false"></aps-form-input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-col-3">
+                                        <button class="btn text-center btn btn-tertiary"
+                                            (click)="addIntermediaryBankAddress()"
+                                            [disabled]="parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress1[0].show && parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress2[0].show && parentRef.formData.beneficiaryDetails[0].intermediaryBankAddress3[0].show">
+                                            <app-icon icon="fa-plus"> </app-icon>&nbsp;{{ 'ADDRESS LINE' | apsTranslate
+                                            }}
+                                        </button>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </form>
+
+                        <form name="form4" #form4="ngForm" class="finance-details"
+                            [apsHide]="activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[3]">
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-custom-select name="creditAccNo" label="Delivery Term" id="creditAccNo"
+                                        [required]="parentRef.formData.paymentDetails[0].draftAt == 'Mixed Payment / Loans'"
+                                        dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                                        [(ngModel)]="parentRef.formData.financeDetails[0].creditAccNo"
+                                        [value]="parentRef.formData.financeDetails[0].creditAccNo">
+                                    </aps-custom-select>
+                                </div>
+
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input name="interestRate" id="interestRate"
+                                        label="{{ 'Interest Rate' | apsTranslate }}"
+                                        [required]="parentRef.formData.paymentDetails[0].draftAt == 'Mixed Payment / Loans'"
+                                        [(ngModel)]="parentRef.formData.financeDetails[0].interestRate">
+                                    </aps-form-input>
+                                </div>
+
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="Tenor in Days" name="tenorInDays" id="tenorInDays"
+                                        [required]="parentRef.formData.paymentDetails[0].draftAt == 'Mixed Payment / Loans'"
+                                        [(ngModel)]="parentRef.formData.financeDetails[0].tenorInDays">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <p-checkbox name="tc" [binary]="true" id="restByLoan" label="Rest by Loan"
+                                        [(ngModel)]="parentRef.formData.financeDetails[0].restByLoan"
+                                        [required]="parentRef.formData.paymentDetails[0].draftAt == 'Mixed Payment / Loans'">
+                                    </p-checkbox>
+                                </div>
+
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="Remarks" name="remarks" id="remarks"
+                                        [required]="parentRef.formData.paymentDetails[0].draftAt == 'Mixed Payment / Loans'"
+                                        [(ngModel)]="parentRef.formData.financeDetails[0].remarks">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form name="form5" #form5="ngForm" class="bill-details"
+                            [apsHide]="activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[4]">
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input name="proformaInvoiceNo" id="proformaInvoiceNo"
+                                        label="{{ 'Proforma Invoice No' | apsTranslate }}" [required]="true"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].proformaInvoiceNo">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="HS Code" name="HSCode" id="HSCode" [required]="true"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].hsCode">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-custom-select name="deliveryTerm" label="Delivery Term" id="deliveryTerm"
+                                        [data]="deliveryTermList"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].deliveryTerm"
+                                        [value]="parentRef.formData.billDetails[0].deliveryTerm">
+                                    </aps-custom-select>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="Shipment From" name="shipmentFrom" id="shipmentFrom"
+                                        [required]="true" [(ngModel)]="parentRef.formData.billDetails[0].shipmentFrom">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="Shipment To" name="shipmentTo" id="shipmentTo"
+                                        [required]="true" [(ngModel)]="parentRef.formData.billDetails[0].shipmentTo">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <div class="text-size-14 text-semi-bold p-mt-2 text-color-normal">
+                                        Foreign Bank Charges<span class="text-color-danger">*</span>
+                                    </div>
+                                    <p-radioButton class="p-mr-4" id="foreignBankCharges" name="foreignBankCharges"
+                                        value="Applicant" label="{{ 'Applicant' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].foreignBankCharges"
+                                        [required]="true">
+                                    </p-radioButton>
+                                    <p-radioButton id="foreignBankCharges" name="foreignBankCharges"
+                                        value="Beneficiary " label="{{ 'Beneficiary ' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].foreignBankCharges"
+                                        [disabled]="parentRef.formData.billDetails[0].creditAvailableBy === 'Payment'"
+                                        [required]="true"></p-radioButton>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="Description of Goods" name="descriptionofGoods"
+                                        id="descriptionofGoods" [required]="true"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].descriptionofGoods">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input name="billOfLadingAwbNo" id="billOfLadingAwbNo"
+                                        label="{{ 'Bill of Lading / AWB Number' | apsTranslate }}" [required]="true"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].billOfLadingAwbNo">
+                                    </aps-form-input>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <app-aps-calender name="blAwbDate" id="blAwbDate" [minDate]="getCurrentDate()"
+                                        label="{{ 'BL / AWB Date' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].blAwbDate"
+                                        [required]="true"></app-aps-calender>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <app-aps-calender name="invoiceDate" id="invoiceDate"
+                                        label="{{ 'Invoice Date' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].invoiceDate"
+                                        [required]="true"></app-aps-calender>
+                                </div>
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <app-aps-calender name="invoiceDueDate" id="invoiceDueDate"
+                                        label="{{ 'Invoice Due Date' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.billDetails[0].invoiceDueDate"
+                                        [required]="true"></app-aps-calender>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form name="form6" #form6="ngForm" class="fx-rate"
+                            [apsHide]="activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[5]">
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input name="fxDealNumber1" id="fxDealNumber1"
+                                        label="{{ 'FX Deal Number 1' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.fxRate[0].fxDealNumber1">
+                                    </aps-form-input>
+                                </div>
+
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="FX Rate 1" name="fxRate1" id="fxRate1"
+                                        [(ngModel)]="parentRef.formData.fxRate[0].fxRate1">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input name="fxDealNumber2" id="fxDealNumber2"
+                                        label="{{ 'FX Deal Number 2' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.fxRate[0].fxDealNumber2">
+                                    </aps-form-input>
+                                </div>
+
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="FX Rate 2" name="fxRate2" id="fxRate2"
+                                        [(ngModel)]="parentRef.formData.fxRate[0].fxRate2">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input name="fxDealNumber3" id="fxDealNumber3"
+                                        label="{{ 'FX Deal Number 3' | apsTranslate }}"
+                                        [(ngModel)]="parentRef.formData.fxRate[0].fxDealNumber3">
+                                    </aps-form-input>
+                                </div>
+
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <aps-form-input label="FX Rate 3" name="fxRate3" id="fxRate3"
+                                        [(ngModel)]="parentRef.formData.fxRate[0].fxRate3">
+                                    </aps-form-input>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form name="form7" #form7="ngForm" class="supporting-documents"
+                            [apsHide]="activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[6]">
+                            <div class="p-grid">
+                                <div class="p-md-4 p-sm-12 p-col-12 p-py-0">
+                                    <upload-form-control [isMultiple]="true"
+                                        [files]="parentRef.formData.supportingDocuments[0].suppDocuments"></upload-form-control>
+                                </div>
+                            </div>
+                        </form>
+
+                        <form name="form8" #form8="ngForm" class="terms-and-condition"
+                            [apsHide]="activeStep && activeStep.displayLabel !== parentRef.stepperDetails.headings[7]">
+                            <div class=" p-grid">
+                                <div class="p-col-12">
+                                    <p-checkbox name="agreeToTermsAndCondition" id="agreeToTermsAndCondition"
+                                        label="I agree to terms and conditions" [binary]="true"
+                                        [(ngModel)]="parentRef.formData.termsAndCondition[0].agreeToTermsAndCondition"
+                                        [required]="true"></p-checkbox>
+                                    <a class="text-size-14 text-bold pointer p-p-1"
+                                        (click)="isTermsAndCondition = true">Click Here</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+    <app-loading-spinner></app-loading-spinner>
+</ng-template>

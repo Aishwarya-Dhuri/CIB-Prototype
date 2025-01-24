@@ -1,0 +1,128 @@
+<div class="container">
+  <div class="p-grid g-margin-x" *ngIf="!loading; else loadingTemplate">
+    <div class="p-md-3 p-sm-6 p-col-12">
+      <div
+        class="aps-card aps-card-primary aps-filled-card pointer p-p-4"
+        (click)="onInitiate('upload')"
+      >
+        <div class="text-size-18 text-bold text-center border-bottom p-pb-2">
+          {{ 'Bulk Payment Upload' | apsTranslate }}
+        </div>
+        <div class="text-size-12 p-pt-2">
+          {{ 'Click the card to initiate Bulk Payment through file Upload.' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="p-md-3 p-sm-6 p-col-12">
+      <div
+        class="aps-card aps-filled-card-white border-primary-2px pointer p-p-4"
+        (click)="onInitiate('manual')"
+      >
+        <div class="text-size-18 text-bold text-center text-color-primary border-bottom p-pb-2">
+          {{ 'Bulk Payment Manual' | apsTranslate }}
+        </div>
+        <div class="text-size-12 text-color-light-shade-1 p-pt-2">
+          {{ 'Click the card to initiate Bulk Payment through entry screen.' }}
+        </div>
+      </div>
+    </div>
+    <div class="p-md-3 p-sm-6 p-col-12">
+      <div class="aps-card aps-h-100p">
+        <div class="p-p-2">
+          <div class="p-grid">
+            <div class="p-col-7 p-pb-0">
+              <div class="text-size-14 text-semi-bold">
+                {{ 'File Upload Status' | apsTranslate }}
+              </div>
+            </div>
+            <div class="p-col-5 p-py-0">
+              <aps-custom-select
+                id="duration"
+                name="duration"
+                label=""
+                [(ngModel)]="duration"
+                [showLabel]="false"
+                [data]="[
+                  { id: 'today', displayName: 'Today' },
+                  { id: 'thisWeek', displayName: 'This Week' },
+                  { id: 'thisMonth', displayName: 'This Month' }
+                ]"
+              ></aps-custom-select>
+            </div>
+            <div class="p-col-12 p-pt-0">
+              <div class="text-size-13 text-bold">
+                {{ 'Pending' | apsTranslate }} : {{ fileUploadStatus.pending }}
+              </div>
+              <div class="text-size-13 text-bold">
+                {{ 'Rejected' | apsTranslate }} : {{ fileUploadStatus.rejected }}
+              </div>
+              <div class="text-size-13 text-bold">
+                {{ 'Authorized' | apsTranslate }} : {{ fileUploadStatus.authorized }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-md-3 p-sm-6 p-col-12">
+      <div class="aps-card aps-h-100p p-p-3">
+        <app-insights
+          insightsUrl="dummyServer/json/commons/private/insights/bulkPayment"
+          [height]="50"
+        ></app-insights>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <div class="inline-items text-size-14">
+        <div class="item p-mr-3" *ngFor="let tab of listingTabs">
+          <div
+            class="aps-card pointer p-py-2 p-px-4"
+            [ngClass]="{ 'aps-card-primary': selectedTab.header == tab.header }"
+            (click)="changeActiveTab(tab)"
+          >
+            {{ tab.header | apsTranslate }}&nbsp;({{ tab.count }})
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <div class="aps-card aps-h-400">
+        <div class="aps-card-header">
+          <div class="left-right-container aps-py-12 p-px-3">
+            <div class="left-container">{{ 'Recent Payments' }}</div>
+            <div class="right-container">
+              <app-grid-listing-tools
+                (changeFloatingFilter)="gridListing ? gridListing.changeFloatFilter($event) : null"
+                (filterRecords)="gridListing ? gridListing.onFilter($event) : null"
+                (applyColDefs)="gridListing ? gridListing.onApplyConfig($event) : null"
+                [colDefs]="gridListing && gridListing.columnDefs ? gridListing.columnDefs : []"
+                [gridRef]="gridListing"
+                [columnConfig]="true"
+                [moreOptions]="true"
+              ></app-grid-listing-tools>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card-body" *ngIf="!loadingList; else loadingTemplate">
+          <app-ag-grid-listing
+            #bulkPaymentGridListing
+            [colDefUrl]="selectedTab.colDefsUrl"
+            [rowDefUrl]="selectedTab.rowDefUrl"
+            [gridOptions]="gridOptions"
+            [context]="{ componentParent: this }"
+          ></app-ag-grid-listing>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+  <p class="p-py-6 text-center" *ngIf="!loading && loadingList">
+    {{ 'Loading' | apsTranslate }}...
+  </p>
+</ng-template>

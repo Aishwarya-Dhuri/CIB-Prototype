@@ -1,0 +1,55 @@
+<div [ngClass]="{
+    'select-control-rtl': direction === 'rtl',
+    'background-primary': backgroundStyle === 'primary'
+  }">
+  <div class="default-style" [ngClass]="{
+      'bordered-style': style === 'style3' || style === 'style4',
+      'disable-floating-label': style === 'style2' || style === 'style4',
+      'no-label': !showLabel
+    }">
+    <div class="form-group">
+      <div class="input-group" [ngClass]="{ 'input-group-error': error }">
+        <div class="main-input-control">
+          <input class="" type="text" [(ngModel)]="value" />
+        </div>
+
+        <input [id]="elementId" [name]="name" [class]="class" [ngClass]="{
+            'select-control-with-icon': icon
+          }" (blur)="touched()" [(ngModel)]="displayName" (click)="isDisabled ? null : onClickDropdown($event)"
+          (focus)="isDisabled ? null : toggleDropdown($event)" (focusout)="hideDropdown($event)" [disabled]="isDisabled"
+          [readOnly]="true" type="text"  />
+
+        <label class="input-label" [for]="id + label" (click)="isDisabled ? null : toggleDropdown($event)"
+          [ngClass]="{ 'input-label-floating': value, 'input-label-with-icon-container': icon }" *ngIf="showLabel">
+          <span class="label">
+            {{ label | apsTranslate }}<span class="required" *ngIf="required">*</span>
+          </span>
+        </label>
+
+        <div class="icon" *ngIf="icon" (click)="isDisabled ? null : toggleDropdown($event)">
+          <app-icon icon="{{ icon }}" class="app-icon"></app-icon>
+        </div>
+
+        <div class="actions-wrapper">
+          <div class="action" (click)="isDisabled ? null : toggleDropdown($event)">
+            <app-icon icon="fa-chevron-down" [class]="colorClass + ' app-icon'"></app-icon>
+          </div>
+          <div class="action" *ngIf="showDelete" (click)="onDelete()">
+            <app-icon icon="fa-trash-alt" class="app-icon"></app-icon>
+          </div>
+        </div>
+      </div>
+
+      <span *ngIf="helpText && !error" class="input-help-text">{{ helpText }}</span>
+      <span *ngIf="error" class="input-error">This field is required</span>
+    </div>
+  </div>
+</div>
+
+<div class="dropdown-container">
+  <div class="dropdown">
+    <p-dropdown #dropdown [(options)]="data" [(ngModel)]="val" appendTo="body" (onChange)="onOptionSelect($event.value)"
+      optionLabel="displayName" (onBlur)="hideDropdown($event)" [tabindex]="-1" optionValue="id" [disabled]="isDisabled"
+      [readonly]="readonly" [autoDisplayFirst]="false" panelStyleClass="text-size-14"></p-dropdown>
+  </div>
+</div>

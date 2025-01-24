@@ -1,0 +1,278 @@
+<div class="container">
+  <form name="form" #form="ngForm">
+    <div class="p-grid g-margin-x">
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Beneficiary Details
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="beneficiaryCode"
+                  id="beneficiaryCode"
+                  label="Beneficiary Code"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.beneficiaryCode"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="beneficiaryName"
+                  id="beneficiaryName"
+                  label="Beneficiary Name"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.beneficiaryName"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-custom-select
+                  name="beneficiaryType"
+                  id="beneficiaryType"
+                  label="Beneficiary Type"
+                  [data]="beneficiaryTypeDataList"
+                  [(ngModel)]="parentRef.formData.beneficiaryType"
+                  [required]="true"
+                ></aps-custom-select>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                  Beneficiary Location
+                </div>
+                <p-radioButton
+                  class="p-mr-5"
+                  name="local"
+                  id="local"
+                  value="Local"
+                  label="Local"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.beneficiaryLocation"
+                >
+                </p-radioButton>
+                <p-radioButton
+                  name="international"
+                  id="international"
+                  value="International"
+                  label="International"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.beneficiaryLocation"
+                >
+                </p-radioButton>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-0">
+                <aps-form-input
+                  name="beneficiaryAddress1"
+                  id="beneficiaryAddress1"
+                  label="Beneficiary Address"
+                  [(ngModel)]="parentRef.formData.beneficiaryAddress1[0].address"
+                  [required]="true"
+                >
+                </aps-form-input>
+              </div>
+              <div
+                class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-0"
+                *ngIf="parentRef.formData.beneficiaryAddress2[0].show"
+              >
+                <aps-form-input
+                  name="beneficiaryAddress2"
+                  id="beneficiaryAddress2"
+                  label="Beneficiary Address"
+                  [rightIcon]="'fa-trash-alt'"
+                  (onRightIcon)="parentRef.formData.beneficiaryAddress2[0].show = false"
+                  [(ngModel)]="parentRef.formData.beneficiaryAddress2[0].address"
+                ></aps-form-input>
+              </div>
+              <div
+                class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-0"
+                *ngIf="parentRef.formData.beneficiaryAddress3[0].show"
+              >
+                <aps-form-input
+                  name="beneficiaryAddress3"
+                  id="beneficiaryAddress3"
+                  label="Beneficiary Address"
+                  [rightIcon]="'fa-trash-alt'"
+                  (onRightIcon)="parentRef.formData.beneficiaryAddress3[0].show = false"
+                  [(ngModel)]="parentRef.formData.beneficiaryAddress3[0].address"
+                ></aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-4">
+                <button
+                  class="btn text-center btn btn-tertiary"
+                  (click)="addBeneficiaryAddress()"
+                  [disabled]="
+                    parentRef.formData.beneficiaryAddress1[0].show &&
+                    parentRef.formData.beneficiaryAddress2[0].show &&
+                    parentRef.formData.beneficiaryAddress3[0].show
+                  "
+                >
+                  <app-icon icon="fa-plus"> </app-icon>&nbsp;ADDRESS LINE
+                </button>
+              </div>
+            </div>
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="country"
+                  id="country"
+                  label="Country"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.country"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="pinCode"
+                  id="pinCode"
+                  label="Pin Code"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.pinCode"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="mobileNumber"
+                  id="mobileNumber"
+                  label="Mobile Number"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.mobileNumber"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <aps-form-input
+                  name="email"
+                  id="email"
+                  label="Email"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.email"
+                >
+                </aps-form-input>
+              </div>
+            </div>
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <app-aps-calender
+                  name="effectiveFrom"
+                  id="effectiveFrom"
+                  label="Effective From"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.effectiveFrom"
+                >
+                </app-aps-calender>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12">
+                <app-aps-calender
+                  name="effectiveTill"
+                  id="effectiveTill"
+                  label="Effective Till"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.effectiveTill"
+                >
+                </app-aps-calender>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12">
+        <div class="aps-card">
+          <div class="aps-card-header">
+            <div class="text-size-14 text-bold text-color-dark-shade-1 p-px-3 aps-py-12">
+              Beneficiary Bank Details
+            </div>
+          </div>
+          <div class="aps-card-body">
+            <div class="p-grid p-px-2">
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-form-input
+                  name="bankSwiftCode"
+                  id="bankSwiftCode"
+                  label="Bank Swift Code"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.bankSwiftCode"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-form-input
+                  name="beneficiaryAccountNumber"
+                  id="beneficiaryAccountNumber"
+                  label="Beneficiary Account Number"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.beneficiaryAccountNumber"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-4 p-lg-4 p-sm-12">
+                <aps-form-input
+                  name="beneficiaryBankName"
+                  id="beneficiaryBankName"
+                  label="Beneficiary Bank Name"
+                  [required]="true"
+                  [(ngModel)]="parentRef.formData.beneficiaryBankName"
+                >
+                </aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-0">
+                <aps-form-input
+                  name="beneficiaryBankAddress1"
+                  id="beneficiaryBankAddress1"
+                  label="Beneficiary Bank Address"
+                  [(ngModel)]="parentRef.formData.beneficiaryBankAddress1[0].address"
+                  [required]="true"
+                >
+                </aps-form-input>
+              </div>
+              <div
+                class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-0"
+                *ngIf="parentRef.formData.beneficiaryBankAddress2[0].show"
+              >
+                <aps-form-input
+                  name="beneficiaryBankAddress2"
+                  id="beneficiaryBankAddress2"
+                  label="Beneficiary Bank Address"
+                  [rightIcon]="'fa-trash-alt'"
+                  (onRightIcon)="parentRef.formData.beneficiaryBankAddress2[0].show = false"
+                  [(ngModel)]="parentRef.formData.beneficiaryBankAddress2[0].address"
+                ></aps-form-input>
+              </div>
+              <div
+                class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-0"
+                *ngIf="parentRef.formData.beneficiaryBankAddress3[0].show"
+              >
+                <aps-form-input
+                  name="beneficiaryBankAddress3"
+                  id="beneficiaryBankAddress3"
+                  label="Beneficiary Bank Address"
+                  [rightIcon]="'fa-trash-alt'"
+                  (onRightIcon)="parentRef.formData.beneficiaryBankAddress3[0].show = false"
+                  [(ngModel)]="parentRef.formData.beneficiaryBankAddress3[0].address"
+                ></aps-form-input>
+              </div>
+              <div class="p-col-12 p-md-3 p-lg-3 p-sm-12 p-py-4">
+                <button
+                  class="btn text-center btn btn-tertiary"
+                  (click)="addBeneficiaryBankAddress()"
+                  [disabled]="
+                    parentRef.formData.beneficiaryBankAddress1[0].show &&
+                    parentRef.formData.beneficiaryBankAddress2[0].show &&
+                    parentRef.formData.beneficiaryBankAddress3[0].show
+                  "
+                >
+                  <app-icon icon="fa-plus"> </app-icon>&nbsp;ADDRESS LINE
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

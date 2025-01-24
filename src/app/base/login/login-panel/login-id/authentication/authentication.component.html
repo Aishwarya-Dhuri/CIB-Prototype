@@ -1,0 +1,140 @@
+<div class="authentication-container">
+  <div class="data-wrapper">
+    <div class="left-right-container">
+      <div class="left-container heading">
+        {{ 'msg_authentication' | translate }}
+      </div>
+      <div class="right-container">
+        <span class="step active">
+          <app-icon icon="fa-check" class="app-icon"></app-icon>
+        </span>
+        <span class="step active">{{ 'dig_2' | translate }}</span>
+      </div>
+    </div>
+    <p class="p-m-0" *ngIf="!verificationMode">
+      {{ 'msg_select_verification_method' | translate }}
+    </p>
+  </div>
+
+  <div class="data-wrapper">
+    <div class="verification-mode-container text-size-20">
+      <div
+        class="verification-mode"
+        [ngClass]="{ 'verification-mode-active': verificationMode === 'sms' }"
+        (click)="verificationMode = 'sms'; generateOTP()"
+        *ngIf="userDetails.smsVerification && (!verificationMode || verificationMode === 'sms')"
+      >
+        <div class="verification-mode-icon">
+          <app-icon icon="fa-comment" class="app-icon"></app-icon>
+        </div>
+        <div class="verification-mode-label">{{ 'msg_sms' | translate }}</div>
+      </div>
+      <div
+        class="verification-mode"
+        [ngClass]="{ 'verification-mode-active': verificationMode === 'mobile' }"
+        (click)="verificationMode = 'mobile'"
+        *ngIf="
+          userDetails.mobileVerification && (!verificationMode || verificationMode === 'mobile')
+        "
+      >
+        <div class="verification-mode-icon">
+          <app-icon icon="fa-mobile" class="app-icon"></app-icon>
+        </div>
+        <div class="verification-mode-label">{{ 'msg_mobile' | translate }}</div>
+      </div>
+      <div
+        class="verification-mode"
+        [ngClass]="{ 'verification-mode-active': verificationMode === 'device' }"
+        (click)="verificationMode = 'device'"
+        *ngIf="
+          userDetails.deviceVerification && (!verificationMode || verificationMode === 'device')
+        "
+      >
+        <div class="verification-mode-icon">
+          <app-icon icon="fa-usb-drive" class="app-icon"></app-icon>
+        </div>
+        <div class="verification-mode-label">{{ 'msg_device' | translate }}</div>
+      </div>
+      <div
+        class="verification-mode"
+        [ngClass]="{ 'verification-mode-active': verificationMode === 'web' }"
+        (click)="verificationMode = 'web'"
+        *ngIf="userDetails.webVerification && (!verificationMode || verificationMode === 'web')"
+      >
+        <div class="verification-mode-icon">
+          <app-icon icon="fa-desktop" class="app-icon"></app-icon>
+        </div>
+        <div class="verification-mode-label">{{ 'msg_Web' | translate }}</div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="verificationMode">
+    <div class="data-wrapper">
+      <p class="data-label">
+        {{ 'msg_verification_code_send' | translate }} {{ getMaskedNumber() }}
+      </p>
+
+      <span class="input-field p-input-icon-left p-input-icon-right">
+        <i class="fal fa-lock"></i>
+        <input
+          [type]="viewVerificationCode ? 'text' : 'password'"
+          pInputText
+          #verificationCodeInput
+          [placeholder]="'msg_verification_code' | translate"
+          [(ngModel)]="verificationCode"
+          numericInput
+        />
+        <i
+          class="fa"
+          [ngClass]="viewVerificationCode ? ' fa-eye-slash' : ' fa-eye'"
+          (click)="viewVerificationCode = !viewVerificationCode"
+        ></i>
+      </span>
+      <span class="error-message" *ngIf="invalidOTP">{{
+        'err_verification_code' | translate
+      }}</span>
+    </div>
+
+    <div class="data-wrapper">
+      <div class="links left-right-container">
+        <div class="left-container">
+          <span class="resend-code">{{ 'err_resend_code' | translate }}</span>
+          &nbsp;
+          <span class="clock">
+            <app-icon icon="fa-clock" class="app-icon"></app-icon>
+            &nbsp;00:{{ getTime() }}
+          </span>
+        </div>
+        <div class="right-container">
+          <div class="keyboard">
+            <div class="icon">
+              <app-icon icon="fa-keyboard" class="app-icon"></app-icon>
+            </div>
+            <div class="label">{{ 'msg_virtual_keyboard' | translate }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-wrapper p-mt-5">
+      <button
+        type="button"
+        class="aps-w-100p btn btn-md btn-primary"
+        (click)="validateOTP()"
+        [disabled]="!verificationCode || !verificationCodeInput.validity.valid || submit"
+      >
+        {{ 'msg_proceed' | translate }}
+      </button>
+    </div>
+
+    <div class="data-wrapper">
+      <div
+        class="different-verification-mode pointer"
+        (click)="!submit ? (verificationMode = null) : ''"
+      >
+        {{ 'err_use_different_verification_code' | translate }}
+      </div>
+    </div>
+  </ng-container>
+</div>

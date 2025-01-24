@@ -1,0 +1,25 @@
+<app-backdrop [zIndex]="5" [background]="'rgba(0, 0, 0, 0)'" (close)="close.emit()"></app-backdrop>
+
+<div class="filter-container">
+  <div class="aps-card p-p-3">
+    <div class="p-py-1" *ngFor="let filter of filters">
+      <p-checkbox
+        [label]="filter.displayName"
+        [binary]="true"
+        [(ngModel)]="filter.show"
+      ></p-checkbox>
+    </div>
+    <div class="left-right-container p-pt-1">
+      <div class="left-container">
+        <button class="btn btn-md btn-tertiary p-mr-2">
+          {{ 'RESET' | apsTranslate }}
+        </button>
+      </div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="close.emit()">
+          {{ 'OK' | apsTranslate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

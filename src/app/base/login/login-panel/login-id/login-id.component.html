@@ -1,0 +1,150 @@
+<ng-container *ngIf="!authentication; else loginAuthentication">
+  <form class="login-form" [formGroup]="loginForm">
+    <div class="form-data">
+      <div class="left-right-container">
+        <div class="left-container">
+          <div class="main-heading">{{ 'msg_credentials' | translate }}</div>
+        </div>
+        <div class="right-container tour-login-step3">
+          <span class="step active">{{ 'dig_1' | translate }} </span>
+          <span class="step">{{ 'dig_2' | translate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-data tour-login-step4">
+      <div class="input-field p-input-icon-left">
+        <i class="fal fa-briefcase"></i>
+        <input
+          type="text"
+          pInputText
+          formControlName="corporateCode"
+          [placeholder]="'msg_corporate_code' | translate"
+          alphaNumericInput
+        />
+      </div>
+      <span
+        class="error-message"
+        *ngIf="loginForm.get('corporateCode').touched && loginForm.get('corporateCode').invalid"
+        >{{ 'err_corporate_code' | translate }}</span
+      >
+    </div>
+
+    <div class="form-data tour-login-step5">
+      <span class="input-field p-input-icon-left">
+        <i class="fal fa-user"></i>
+        <input
+          type="text"
+          autocomplete="username"
+          pInputText
+          formControlName="userName"
+          [placeholder]="'msg_user_name' | translate"
+          [ngClass]="{
+            'ng-dirty ng-invalid':
+              (loginForm.get('userName').touched && loginForm.get('userName').invalid) ||
+              invalidUser
+          }"
+          (input)="accessImageInvalidated()"
+          (focusin)="invalidUser = false"
+          (focusout)="getPhishingImage()"
+        />
+      </span>
+      <span
+        class="error-message"
+        *ngIf="
+          (loginForm.get('userName').touched && loginForm.get('userName').invalid) || invalidUser
+        "
+        >{{ 'err_user_name' | translate }}
+      </span>
+    </div>
+
+    <div class="form-data tour-login-step6" *ngIf="showImage">
+      <app-access-image
+        [image]="accessImage"
+        [message]="phishingMessage"
+        (check)="accessImageValidated()"
+      ></app-access-image>
+    </div>
+
+    <ng-container *ngIf="!showImage">
+      <div class="form-data tour-login-step7">
+        <span class="input-field p-input-icon-left p-input-icon-right Light-color-EBEBEB">
+          <i class="fal fa-lock"></i>
+          <input
+            class="Light-color-EBEBEB"
+            [type]="viewPassword ? 'text' : 'password'"
+            autocomplete="current-password"
+            pInputText
+            [placeholder]="'msg_password' | translate"
+            formControlName="password"
+            [ngClass]="{
+              'ng-dirty ng-invalid Light-color-EBEBEB':
+                loginForm.get('password').touched && loginForm.get('password').invalid
+            }"
+          />
+          <i
+            class="fal"
+            [ngClass]="viewPassword ? ' fa-eye-slash' : ' fa-eye'"
+            (click)="viewPassword = !viewPassword"
+          ></i>
+        </span>
+        <span
+          class="error-message"
+          *ngIf="loginForm.get('password').touched && loginForm.get('password').invalid"
+          >{{ 'err_password' | translate }}</span
+        >
+      </div>
+
+      <div class="form-data tour-login-step8">
+        <div class="links left-right-container">
+          <div class="left-container">
+            <a class="link forgot-password" routerLink="/login/forgotPassword">{{
+              'msg_forgot_password' | translate
+            }}</a>
+          </div>
+          <div class="right-container">
+            <div class="keyboard">
+              <div class="icon">
+                <app-icon icon="fa-keyboard"></app-icon>
+              </div>
+              <div class="label">{{ 'msg_virtual_keyboard' | translate }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-data" *ngIf="captcha">
+        <app-captcha></app-captcha>
+      </div>
+
+      <div class="form-data p-mb-5 tour-login-step9">
+        <div class="">
+          <p-checkbox
+            id="tnc"
+            name="tnc"
+            formControlName="acceptTermsConditions"
+            label="{{ 'msg_terms_conditions' | translate }}"
+            [binary]="true"
+          ></p-checkbox>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="form-data tour-login-step11">
+      <button
+        type="button"
+        class="aps-w-100p btn btn-md btn-primary"
+        (click)="basicAuthentication()"
+        [disabled]="isDisabled()"
+      >
+        {{ 'msg_proceed' | translate }}
+      </button>
+    </div>
+  </form>
+
+  <div class="reset aps-mb-20 tour-login-step10">{{ 'msg_reset' | translate | uppercase }}</div>
+</ng-container>
+
+<ng-template #loginAuthentication>
+  <app-authentication></app-authentication>
+</ng-template>

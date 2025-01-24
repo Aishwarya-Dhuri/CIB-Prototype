@@ -1,0 +1,17 @@
+<app-backdrop
+  [background]="'rgba(0, 0, 0, 0.75)'"
+  [zIndex]="5"
+  (close)="videoClose()"
+></app-backdrop>
+
+<div class="demo-video-container">
+  <video
+    #videoPlayer
+    class="video"
+    id="video"
+    name="video"
+    oncontextmenu="return false;"
+    controls
+    src="assets/Advertisment_video.mp4"
+  ></video>
+</div>

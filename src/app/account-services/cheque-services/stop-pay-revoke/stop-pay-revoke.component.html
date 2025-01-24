@@ -1,0 +1,588 @@
+<div class="container">
+  <ng-container *ngIf="!loading; else loadingTemplate">
+    <app-modal [(isShow)]="isChequeImage" size="md" headerText="Cheque Image">
+      <div body>
+        <img class="p-p-4" height="300" width="700" [src]="chequeImageUrl" alt="" />
+      </div>
+    </app-modal>
+
+    <app-modal
+      [(isShow)]="isShowUploadedDocuments"
+      headerText="{{ 'Uploaded Documents' | apsTranslate }}"
+    >
+      <div class="p-grid g-margin-x" body>
+        <div class="p-md-6 p-sm-12 p-col-12" *ngFor="let doc of formData.documents">
+          <app-review-form-field label="" [value]="doc" type="file"></app-review-form-field>
+        </div>
+      </div>
+      <div class="p-grid" footer>
+        <div class="p-col-12 p-p-0 p-mt-3">
+          <div class="left-right-container">
+            <div class="left-container"></div>
+            <div class="right-container">
+              <button class="btn btn-md btn-primary" (click)="isShowUploadedDocuments = false">
+                {{ 'CLOSE' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal
+      [(isShow)]="isShowDocumentUpload"
+      headerText="{{ 'Upload Documents' | apsTranslate }}"
+    >
+      <div class="p-grid" body>
+        <!-- <div class="p-col-12 p-p-0 p-my-3 text-size-16">
+      Upload the email with invoice or other invoice documents. Max.10Mb each
+    </div> -->
+        <div class="p-col-12 p-p-0">
+          <upload-form-control
+            isMultiple="true"
+            [files]="formData.documents"
+            (onUploaded)="onFileUploaded($event)"
+            [disabled]="stepperDetails.currentStep == 2"
+          ></upload-form-control>
+        </div>
+      </div>
+      <div class="p-grid" footer>
+        <div class="p-col-12 p-p-0 p-mt-3">
+          <div class="left-right-container">
+            <div class="left-container">
+              <button
+                class="btn btn-md btn-tertiary"
+                [disabled]="formData.documents.length == 0"
+                (click)="resetDocuments()"
+              >
+                {{ 'CLEAR' | apsTranslate }}
+              </button>
+            </div>
+            <div class="right-container">
+              <button
+                class="btn btn-md btn-primary"
+                [disabled]="formData.documents.length == 0"
+                (click)="isShowDocumentUpload = false"
+              >
+                {{ 'UPLOAD FILE' | apsTranslate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </app-modal>
+
+    <app-modal
+      [(isShow)]="isShowTransaction"
+      size="md"
+      headerText="Cheque Details"
+      *ngIf="selectedChequeData"
+    >
+      <ng-container body>
+        <div class="p-grid">
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <app-review-form-field
+              label="Account No"
+              [value]="selectedChequeData.accountNo"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <app-review-form-field
+              label="Cheque Number"
+              [value]="selectedChequeData.chequeNumber"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <app-review-form-field
+              label="Cheque Amount"
+              [value]="selectedChequeData.chequeAmount"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <app-review-form-field
+              label="Beneficiary"
+              [value]="selectedChequeData.beneficiary"
+            ></app-review-form-field>
+          </div>
+          <div class="p-col-12 p-md-4 p-sm-12">
+            <app-review-form-field
+              label="Status"
+              [value]="selectedChequeData.chequeStatus"
+            ></app-review-form-field>
+          </div>
+        </div>
+      </ng-container>
+      <div footer></div>
+    </app-modal>
+
+    <div class="p-grid" *ngIf="stepperDetails.currentStep == 1">
+      <div class="p-col-12 p-md-4 p-sm-12 p-pl-0 p-pr-1">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header p-p-3">
+            <div class="text-size-16 text-bold">{{ 'Stop Pay / Revoke' | apsTranslate }}</div>
+          </div>
+          <div class="aps-card-body p-px-3 p-py-2">
+            <form
+              name="stopPayRevokeForm"
+              #stopPayRevokeForm="ngForm"
+              (ngSubmit)="fetchChequeDetailsDetails(stopPayRevokeForm)"
+            >
+              <div class="p-grid">
+                <div class="p-col-12 p-p-0 p-my-3">
+                  <p-radioButton
+                    class="p-mr-3"
+                    name="stopPayment"
+                    id="stopPayment"
+                    [label]="'Stop Payment' | apsTranslate"
+                    value="Stop Payment"
+                    (onClick)="resetStopPayRevokeForm('Stop Payment')"
+                    [(ngModel)]="formData.chequeType"
+                  >
+                  </p-radioButton>
+
+                  <p-radioButton
+                    name="revoke"
+                    id="revoke"
+                    [label]="'Revoke' | apsTranslate"
+                    value="Revoke"
+                    (onClick)="resetStopPayRevokeForm('Revoke')"
+                    [(ngModel)]="formData.chequeType"
+                  ></p-radioButton>
+                </div>
+
+                <div class="p-col-12 p-p-0">
+                  <aps-custom-select
+                    [label]="'Account No' | apsTranslate"
+                    name="accountNoId"
+                    id="accountNoId"
+                    dataUrl="setup/corporateOnboarding/corporateMain/private/accountList"
+                    #accountNoId="ngModel"
+                    [(ngModel)]="formData.accountNoId"
+                    (change)="onAccountNoSelection($event)"
+                    [value]="formData.accountNoId"
+                  ></aps-custom-select>
+                </div>
+                <div class="p-col-12 p-p-0">
+                  <app-aps-calender
+                    [label]="'Cheque Date' | apsTranslate"
+                    name="chequeDate"
+                    id="chequeDate"
+                    showIcon="true"
+                    #chequeDate="ngModel"
+                    selectionMode="range"
+                    [numberOfMonths]="2"
+                    [(ngModel)]="formData.chequeDate"
+                  >
+                  </app-aps-calender>
+                </div>
+
+                <div class="p-col-12 p-p-0">
+                  <app-range-input-field
+                    label="Cheque Number"
+                    id="chequeNumber"
+                    name="chequeNumber"
+                    inputType="numeric"
+                    [(ngModel)]="formData.chequeNumber"
+                    [value]="formData.chequeNumber"
+                  ></app-range-input-field>
+                </div>
+
+                <div class="p-col-12 p-p-0">
+                  <app-range-input-field
+                    label="Cheque Amount"
+                    id="chequeAmount"
+                    name="chequeAmount"
+                    inputType="currencyFormatNotZero"
+                    [(ngModel)]="formData.chequeAmount"
+                    [value]="formData.chequeAmount"
+                  ></app-range-input-field>
+                </div>
+
+                <div class="p-col-12 p-p-0">
+                  <aps-custom-select
+                    *ngIf="formData.chequeType == 'Stop Payment'"
+                    [label]="'Status' | apsTranslate"
+                    name="statusId"
+                    id="statusId"
+                    dataUrl="accountServices/chequeServices/stopPayRevoke/private/dropdown/stopPayStatusList"
+                    #status="ngModel"
+                    [(ngModel)]="formData.chequeStatus"
+                    [value]="formData.chequeStatus"
+                  >
+                  </aps-custom-select>
+                  <aps-custom-select
+                    *ngIf="formData.chequeType == 'Revoke'"
+                    [label]="'Status' | apsTranslate"
+                    name="statusId"
+                    id="statusId"
+                    dataUrl="accountServices/chequeServices/stopPayRevoke/private/dropdown/revokeStatusList"
+                    #status="ngModel"
+                    [(ngModel)]="formData.chequeStatus"
+                    [value]="formData.chequeStatus"
+                  >
+                  </aps-custom-select>
+                </div>
+                <div class="p-col-12 p-p-1">
+                  <div class="text-size-12">
+                    <span class="text-bold"> Note:</span> To fetch the cheque details, please enter
+                    atleast one parameter from the above search parameters.
+                  </div>
+                </div>
+                <div class="p-col-12 p-p-1">
+                  <div class="text-right">
+                    <button
+                      type="button"
+                      class="btn btn-md btn-tertiary p-mr-3"
+                      (click)="resetStopPayRevokeForm()"
+                    >
+                      {{ 'RESET' | apsTranslate }}
+                    </button>
+
+                    <button
+                      type="button"
+                      class="btn btn-md btn-primary"
+                      (click)="fetchChequeDetailsDetails()"
+                      [disabled]="
+                        !(
+                          formData.accountNoId ||
+                          formData.chequeDate ||
+                          (formData.chequeNumberTo && formData.chequeNumberFrom) ||
+                          (formData.chequeAmountTo && formData.chequeAmountFrom) ||
+                          formData.chequeStatus
+                        )
+                      "
+                    >
+                      {{ 'FETCH' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-8 p-sm-12 p-pl-1 p-pr-0">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header">
+            <div class="left-right-container">
+              <div class="left-container p-p-3">
+                <div class="text-size-16 text-bold">{{ 'Cheque Details' | apsTranslate }}</div>
+              </div>
+              <div class="right-container p-px-3 p-py-2">
+                <div class="inline-items">
+                  <div class="item" (click)="isShowUploadedDocuments = true">
+                    <div
+                      class="text-size-10 background-color-primary-light-shade-2 border-radius-4 pointer p-p-1 p-mt-1 p-mr-2"
+                      (click)="viewDocuments = true"
+                      *ngIf="formData.documents.length > 0"
+                    >
+                      {{ this.formData.documents.length }} {{ 'Uploaded' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="item">
+                    <button
+                      type="button"
+                      class="btn btn-md btn-tertiary"
+                      (click)="isShowDocumentUpload = true"
+                    >
+                      <app-icon
+                        styleClasses="text-color-primary"
+                        class="text-color-primary"
+                        icon="fa-upload"
+                        class="p-mr-2"
+                      ></app-icon>
+                      {{ 'UPLOAD DOCUMENT' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body overflow-scroll p-p-2">
+            <app-nothing-here colSize="3" *ngIf="chequeDetailsList.length == 0"></app-nothing-here>
+
+            <div
+              class="border p-my-2"
+              *ngFor="let chequeDetail of chequeDetailsList; let i = index"
+            >
+              <div class="p-grid p-px-2">
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <div class="p-grid g-margin-x">
+                    <div class="p-col-2">
+                      <p-checkbox
+                        name="isSelected"
+                        id="isSelected"
+                        [binary]="true"
+                        [(ngModel)]="chequeDetail.isSelected"
+                      >
+                      </p-checkbox>
+                    </div>
+                    <div class="p-col-10">
+                      <app-review-form-field
+                        label="Account No"
+                        [value]="chequeDetail.accountNumber"
+                      ></app-review-form-field>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-md-7 p-sm-12 p-col-12">
+                  <div class="p-grid g-margin-x">
+                    <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+                      <div class="p-grid">
+                        <div class="p-col-6">
+                          <app-review-form-field
+                            label="Cheque Number"
+                            [value]="chequeDetail.chequeNumber"
+                          ></app-review-form-field>
+                        </div>
+                        <div class="p-col-6">
+                          <app-review-form-field
+                            label="Cheque Amount"
+                            [value]="chequeDetail.chequeAmount"
+                          ></app-review-form-field>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-md-5 p-sm-12 p-col-12 p-p-0">
+                      <div class="p-grid">
+                        <div class="p-col-6">
+                          <app-review-form-field
+                            label="Beneficiary"
+                            [value]="chequeDetail.beneficiary"
+                          ></app-review-form-field>
+                        </div>
+                        <div class="p-col-6">
+                          <app-review-form-field
+                            label="Status"
+                            [value]="chequeDetail.chequeStatus"
+                          ></app-review-form-field>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-md-2 p-sm-12 p-col-12">
+                  <div class="p-grid g-margin-x">
+                    <div class="p-col-4 text-center">
+                      <app-icon
+                        class="pointer"
+                        (click)="showTransaction(chequeDetail)"
+                        icon="fa-eye"
+                      ></app-icon>
+                    </div>
+                    <div class="p-col-8 text-center">
+                      <img
+                        class="pointer"
+                        (click)="isChequeImage = true"
+                        [src]="getChequeImageUrl(chequeDetail.chequeImageUrl)"
+                        height="20px"
+                        width="40px"
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card p-p-3 p-mt-2">
+          <div class="text-size-16 text-bold" required="true">{{ 'Reason' | apsTranslate }}</div>
+          <aps-form-input
+            [label]="'Reason' | apsTranslate"
+            name="reason"
+            id="reason"
+            #reason="ngModel"
+            [(ngModel)]="formData.reason"
+            [required]="true"
+          ></aps-form-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-grid" *ngIf="stepperDetails.currentStep == stepperDetails.headings.length">
+      <div class="p-md-4 p-sm-12 p-col-12 p-pl-0 p-pr-1">
+        <div class="aps-card aps-h-100p">
+          <div class="aps-card-header p-p-3">
+            <div class="text-size-16 text-bold">{{ 'Stop Pay / Revoke' | apsTranslate }}</div>
+          </div>
+          <div class="aps-card-body p-px-2 p-py-3">
+            <div class="p-grid">
+              <div class="p-col-12 p-p-0 p-my-3">
+                <p-radioButton
+                  class="p-mr-3"
+                  name="stopPayment"
+                  id="stopPayment"
+                  [label]="'Stop Payment' | apsTranslate"
+                  value="Stop Payment"
+                  [(ngModel)]="formData.chequeType"
+                  [disabled]="true"
+                >
+                </p-radioButton>
+
+                <p-radioButton
+                  name="revoke"
+                  id="revoke"
+                  [label]="'Revoke' | apsTranslate"
+                  value="Revoke"
+                  [(ngModel)]="formData.chequeType"
+                  [disabled]="true"
+                ></p-radioButton>
+              </div>
+              <div class="p-md-12 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Account No"
+                  [value]="formData.accountName"
+                ></app-review-form-field>
+              </div>
+
+              <div class="p-md-12 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Cheque Date"
+                  [value]="formData.chequeDate"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-12 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Cheque Number"
+                  [value]="formData.chequeNumber"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-12 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Cheque Amount"
+                  [value]="formData.chequeAmount"
+                ></app-review-form-field>
+              </div>
+              <div class="p-md-12 p-sm-12 p-col-12">
+                <app-review-form-field
+                  label="Status"
+                  [value]="formData.chequeStatus"
+                ></app-review-form-field>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="p-col-12 p-md-8 p-sm-12 p-pl-1 p-pr-0">
+        <div class="aps-card aps-h-400">
+          <div class="aps-card-header">
+            <div class="left-right-container">
+              <div class="left-container p-p-3">
+                <div class="text-size-16 text-bold">{{ 'Cheque Details' | apsTranslate }}</div>
+              </div>
+              <div class="right-container p-px-3 p-py-2">
+                <div class="inline-items">
+                  <div class="item" (click)="isShowUploadedDocuments = true">
+                    <div
+                      class="text-size-10 background-color-primary-light-shade-2 border-radius-4 pointer p-p-1 p-mt-1 p-mr-2"
+                      (click)="viewDocuments = true"
+                      *ngIf="formData.documents.length > 0"
+                    >
+                      {{ this.formData.documents.length }} {{ 'Uploaded' | apsTranslate }}
+                    </div>
+                  </div>
+                  <div class="item">
+                    <button
+                      type="button"
+                      class="btn btn-md btn-tertiary"
+                      (click)="showDocumentUploadModal()"
+                    >
+                      <app-icon styleClasses="text-color-primary" icon="fa-upload" class="p-mr-2">
+                      </app-icon>
+                      {{ 'UPLOAD DOCUMENT' | apsTranslate }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="aps-card-body overflow-scroll p-p-2">
+            <app-nothing-here colSize="3" *ngIf="chequeDetailsList.length == 0"></app-nothing-here>
+
+            <div class="border p-my-2" *ngFor="let chequeDetail of formData.chequeDetails">
+              <div class="p-grid p-px-2">
+                <div class="p-md-3 p-sm-12 p-col-12">
+                  <app-review-form-field
+                    label="Account No"
+                    [value]="chequeDetail.accountNumber"
+                  ></app-review-form-field>
+                </div>
+
+                <div class="p-md-7 p-sm-12 p-col-12">
+                  <div class="p-grid g-margin-x">
+                    <div class="p-md-7 p-sm-12 p-col-12 p-p-0">
+                      <div class="p-grid">
+                        <div class="p-col-6">
+                          <app-review-form-field
+                            label="Cheque Number"
+                            [value]="chequeDetail.chequeNumber"
+                          ></app-review-form-field>
+                        </div>
+                        <div class="p-col-6">
+                          <app-review-form-field
+                            label="Cheque Amount"
+                            [value]="chequeDetail.chequeAmount"
+                          ></app-review-form-field>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="p-md-5 p-sm-12 p-col-12 p-p-0">
+                      <div class="p-grid">
+                        <div class="p-col-6">
+                          <app-review-form-field
+                            label="Beneficiary"
+                            [value]="chequeDetail.beneficiary"
+                          ></app-review-form-field>
+                        </div>
+                        <div class="p-col-6">
+                          <app-review-form-field
+                            label="Status"
+                            [value]="chequeDetail.chequeStatus"
+                          ></app-review-form-field>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="p-md-2 p-sm-12 p-col-12">
+                  <div class="p-grid g-margin-x">
+                    <div class="p-col-4 text-center">
+                      <app-icon
+                        class="pointer"
+                        (click)="showTransaction(chequeDetail)"
+                        icon="fa-eye"
+                      ></app-icon>
+                    </div>
+                    <div class="p-col-8 text-center">
+                      <img
+                        class="pointer"
+                        (click)="isChequeImage = true"
+                        [src]="getChequeImageUrl(chequeDetail.chequeImageUrl)"
+                        height="20px"
+                        width="40px"
+                        alt=""
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aps-card p-p-3 p-mt-2">
+          <app-review-form-field label="Reason" [value]="formData.reason"></app-review-form-field>
+        </div>
+      </div>
+    </div>
+    <!-- Form Actions -->
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+  </ng-container>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

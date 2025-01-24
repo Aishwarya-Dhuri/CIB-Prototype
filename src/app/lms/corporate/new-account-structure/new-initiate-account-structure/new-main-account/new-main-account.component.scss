@@ -1,0 +1,19 @@
+.step {
+    display: block;
+    cursor: pointer;
+    width: 100%;
+  
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--background-color-dark-5);
+    }
+  
+    transition: all 0.125s;
+  }
+  
+  .step-active {
+    width: calc(100% + 16px);
+    background-color: var(--background-color);
+    border-left: 6px solid var(--primary-color);
+    border-radius: 6px 0 0 6px;
+  }
+  

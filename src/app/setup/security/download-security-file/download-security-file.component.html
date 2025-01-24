@@ -1,0 +1,34 @@
+<div class="container">
+  <app-modal
+    [(isShow)]="showOtpModal"
+    size="sm"
+    headerText="OTP Verification"
+    (onClose)="closeOtpModal()"
+  >
+    <div class="p-py-3" body>
+      <aps-form-input id="otp" name="otp" label="Enter OTP" [(ngModel)]="otp"></aps-form-input>
+    </div>
+    <div class="text-right" footer>
+      <button class="btn btn-md btn-primary" (click)="validateOTP()" [disabled]="!otp">
+        {{ 'Validate' | apsTranslate }}
+      </button>
+    </div>
+  </app-modal>
+
+  <div class="p-grid g-margin-x">
+    <div class="p-md-4 p-sm-8 p-col-12" *ngFor="let securityFile of securityFiles; let i = index">
+      <div class="aps-card">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-size-14 text-semi-bold">
+            {{ securityFile.heading }}
+          </div>
+        </div>
+        <div class="aps-card-body text-center p-px-3 p-py-4">
+          <button class="btn btn-md btn-primary" (click)="onDownloadFile(securityFile.filePath)">
+            {{ 'Download' | apsTranslate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

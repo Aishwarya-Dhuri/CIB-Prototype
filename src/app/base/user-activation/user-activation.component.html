@@ -1,0 +1,442 @@
+<div class="p-p-3" *ngIf="!loading; else loadingTemplate">
+  <app-modal
+    [(isShow)]="showSubmittedPopup"
+    *ngIf="showSubmittedPopup"
+    headerText="Successfully Registered"
+    (onClose)="onLoginRedirect()"
+  >
+    <div class="text-size-16 p-py-3" body>Registration process has been successfully completed</div>
+
+    <div class="left-right-container" footer>
+      <div class="left-container"></div>
+      <div class="right-container">
+        <button class="btn btn-md btn-primary" (click)="onLoginRedirect()">
+          CLICK HERE FOR LOGIN
+        </button>
+      </div>
+    </div>
+  </app-modal>
+
+  <div class="p-grid">
+    <div class="p-col-12">
+      <app-stepper-header [parentRef]="this"></app-stepper-header>
+    </div>
+
+    <div class="p-col-12" [apsHide]="stepperDetails.currentStep != 1">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-semi-bold">User Authentication</div>
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <ng-container *ngIf="invalidUser">
+              <div class="p-md-3 p-sm-12 p-col-12 p-p-0"></div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div
+                  class="background-color-danger-light text-color-danger text-size-14 p-p-3 border-radius-4"
+                >
+                  <app-icon icon="fa-times" styleClasses="text-color-danger"></app-icon
+                  >&nbsp;&nbsp;Invalid User ID
+                </div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12 p-p-0"></div>
+            </ng-container>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-form-input
+                name="userId"
+                id="userId"
+                label="User ID"
+                [(ngModel)]="formData.userId"
+                [required]="true"
+                (focusout)="validateUser()"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-form-input
+                name="temporaryPassword"
+                id="temporaryPassword"
+                label="Temporary Password"
+                type="password"
+                [(ngModel)]="formData.temporaryPassword"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12" [apsHide]="stepperDetails.currentStep != 2">
+      <div class="aps-card aps-h-350">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-semi-bold">Configure Security Question</div>
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-custom-select
+                name="securityQuestion1"
+                id="securityQuestion1"
+                label="Question 1"
+                [(ngModel)]="formData.securityQuestion1"
+                [value]="formData.securityQuestion1"
+                [data]="securityQuestions"
+                [required]="true"
+              ></aps-custom-select>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-form-input
+                name="securityAnswer1"
+                id="securityAnswer1"
+                label="Answer 1"
+                [(ngModel)]="formData.securityAnswer1"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-custom-select
+                name="securityQuestion2"
+                id="securityQuestion2"
+                label="Question 2"
+                [(ngModel)]="formData.securityQuestion2"
+                [value]="formData.securityQuestion2"
+                [data]="securityQuestions"
+                [required]="true"
+              ></aps-custom-select>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-form-input
+                name="securityAnswer2"
+                id="securityAnswer2"
+                label="Answer 2"
+                [(ngModel)]="formData.securityAnswer2"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-custom-select
+                name="securityQuestion3"
+                id="securityQuestion3"
+                label="Question 3"
+                [(ngModel)]="formData.securityQuestion3"
+                [value]="formData.securityQuestion3"
+                [data]="securityQuestions"
+                [required]="true"
+              ></aps-custom-select>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-form-input
+                name="securityAnswer3"
+                id="securityAnswer3"
+                label="Answer 3"
+                [(ngModel)]="formData.securityAnswer3"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="p-col-12" [apsHide]="stepperDetails.currentStep != 2">
+      <div class="aps-card aps-h-300">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-semi-bold">Phishing Image Setup</div>
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <div class="p-md-3 p-sm-12 p-col-12">
+              <div class="text-size-12 text-semi-bold">
+                Select Image<span class="text-color-danger">*</span>
+              </div>
+              <div class="text-size-10 text-color-light-shade-1">
+                (Click on image below to change)
+              </div>
+
+              <img
+                class="p-mt-2 aps-w-90p aps-h-150 border-radius-4 pointer"
+                (click)="tempPhishingImage = formData.phishingImage; isShowPhishingImages = true"
+                [src]="antiPhishingPath + formData.phishingImage"
+                alt=""
+              />
+
+              <!-- Phishing Image Selection Modal -->
+              <app-modal [(isShow)]="isShowPhishingImages" size="sm" headerText="Select Image">
+                <div body class="p-grid">
+                  <div class="p-col-12 p-mt-3 p-px-0 p-pt-3 p-pb-0 border-top">
+                    <img
+                      class="p-mt-2 aps-w-100p aps-h-150 border-radius-4"
+                      [src]="antiPhishingPath + tempPhishingImage"
+                      alt=""
+                    />
+                  </div>
+                  <div class="p-col-12 p-px-0 p-pt-1 pb-3 border-bottom">
+                    <div class="p-grid">
+                      <div
+                        class="p-col-4 p-md-2 p-lg-2"
+                        *ngFor="let img of [].constructor(18); let i = index"
+                      >
+                        <img
+                          class="p-mt-2 aps-w-100p aps-h-100p border-radius-4 pointer"
+                          (click)="tempPhishingImage = 'phishing' + i + '.jpg'"
+                          [src]="antiPhishingPath + 'phishing' + i + '.jpg'"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div footer class="left-right-container">
+                  <div class="left-container"></div>
+                  <div class="right-container">
+                    <button
+                      class="p-mx-3 btn btn-md btn-tertiary"
+                      (click)="isShowPhishingImages = false"
+                    >
+                      CANCEL
+                    </button>
+                    <button
+                      class="btn btn-md btn-primary"
+                      (click)="
+                        formData.phishingImage = tempPhishingImage; isShowPhishingImages = false
+                      "
+                    >
+                      SELECT
+                    </button>
+                  </div>
+                </div>
+              </app-modal>
+            </div>
+
+            <div class="p-md-6 p-sm-12 p-col-12">
+              <aps-form-input
+                id="message"
+                name="message"
+                label="Message"
+                [(ngModel)]="formData.message"
+                [required]="true"
+              ></aps-form-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12" [apsHide]="stepperDetails.currentStep != 3">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-semi-bold">OTP Verification</div>
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <ng-container *ngIf="otpValidated">
+              <div class="p-md-3 p-sm-12 p-col-12 p-p-0"></div>
+              <div class="p-md-6 p-sm-12 p-col-12">
+                <div
+                  class="background-color-success-light text-color-success text-size-14 p-p-3 border-radius-4"
+                >
+                  <app-icon icon="fa-check" styleClasses="text-color-success"></app-icon
+                  >&nbsp;&nbsp;OTP Verification Successful
+                </div>
+              </div>
+              <div class="p-md-3 p-sm-12 p-col-12 p-p-0"></div>
+            </ng-container>
+
+            <div class="p-col-12">
+              <div class="text-size-14 text-semi-bold">
+                OTP has been sent to the Registered Mobile Number
+              </div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <aps-form-input
+                name="otp"
+                id="otp"
+                label="OTP"
+                [(ngModel)]="formData.otp"
+                inputType="numeric"
+                minLength="4"
+                maxLength="4"
+                [required]="true"
+                [disabled]="otpValidated"
+              ></aps-form-input>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-pt-3">
+              <button
+                class="btn btn-md btn-primary"
+                (click)="validateOTP()"
+                [disabled]="formData.otp.length != 4 || otpValidated"
+              >
+                CONFIRM
+              </button>
+            </div>
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-0"></div>
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <button
+                class="btn btn-md btn-tertiary"
+                (click)="resendOTP()"
+                [disabled]="otpValidated"
+              >
+                <app-icon icon="fa-sync-alt"></app-icon>&nbsp;&nbsp;Resend OTP
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12" [apsHide]="stepperDetails.currentStep != stepperDetails.headings.length">
+      <div class="aps-card aps-h-500">
+        <div class="aps-card-header p-px-3 aps-py-12">
+          <div class="text-semi-bold">New Password Setup</div>
+        </div>
+        <div class="aps-card-body p-p-2">
+          <div class="p-grid">
+            <div class="p-md-4 p-sm-12 p-col-12 p-p-0">
+              <div class="p-grid">
+                <div class="p-col-12">
+                  <aps-form-input
+                    name="newPassword"
+                    id="newPassword"
+                    label="New password"
+                    [(ngModel)]="formData.newPassword"
+                    [type]="formData.showNewPassword ? 'text' : 'password'"
+                    [rightIcon]="formData.showNewPassword ? 'fa-eye-slash' : 'fa-eye'"
+                    (onRightIcon)="formData.showNewPassword = !formData.showNewPassword"
+                    [required]="true"
+                    (input)="onValidatePassword($event)"
+                  ></aps-form-input>
+                </div>
+
+                <div class="p-col-12">
+                  <aps-form-input
+                    name="confirmPassword"
+                    id="confirmPassword"
+                    label="Confirm password"
+                    [(ngModel)]="formData.confirmPassword"
+                    [type]="formData.showConfirmPassword ? 'text' : 'password'"
+                    [rightIcon]="formData.showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"
+                    (onRightIcon)="formData.showConfirmPassword = !formData.showConfirmPassword"
+                    [required]="true"
+                  ></aps-form-input>
+                </div>
+              </div>
+            </div>
+
+            <div class="p-md-4 p-sm-12 p-col-12">
+              <div class="background-color-dark-3 p-p-3 text-size-13">
+                <div class="text-bold">Minimum Requirements:</div>
+                <div class="p-pl-3">
+                  <app-icon
+                    [icon]="
+                      passwordValidations.minimumCharacter
+                        ? 'fa-check text-color-success'
+                        : 'fa-times text-color-danger'
+                    "
+                  ></app-icon
+                  >&nbsp;&nbsp;Minimum Character - 4
+                </div>
+                <div class="p-pl-3">
+                  <app-icon
+                    [icon]="
+                      passwordValidations.maximumCharacter
+                        ? 'fa-check text-color-success'
+                        : 'fa-times text-color-danger'
+                    "
+                  ></app-icon
+                  >&nbsp;&nbsp;Maximum Character - 8
+                </div>
+                <div class="p-pl-3">
+                  <app-icon
+                    [icon]="
+                      minimumDigits ? 'fa-check text-color-success' : 'fa-times text-color-danger'
+                    "
+                  ></app-icon
+                  >&nbsp;&nbsp;Minimum Digits - 2
+                </div>
+                <div class="p-pl-3">
+                  <app-icon
+                    [icon]="
+                      passwordValidations.maximumDigits
+                        ? 'fa-check text-color-success'
+                        : 'fa-times text-color-danger'
+                    "
+                  ></app-icon
+                  >&nbsp;&nbsp;Maximum Digits - 5
+                </div>
+                <div class="p-pl-3">
+                  <app-icon
+                    [icon]="
+                      passwordValidations.minimumSpecialCharacters
+                        ? 'fa-check text-color-success'
+                        : 'fa-times text-color-danger'
+                    "
+                  ></app-icon
+                  >&nbsp;&nbsp;Minimum Special Characters - 1
+                </div>
+                <div class="p-pl-3">
+                  <app-icon
+                    [icon]="
+                      passwordValidations.maximumSpecialCharacters
+                        ? 'fa-check text-color-success'
+                        : 'fa-times text-color-danger'
+                    "
+                  ></app-icon
+                  >&nbsp;&nbsp;Maximum Special Characters - 2
+                </div>
+                <div class="p-pl-3">
+                  <app-icon
+                    [icon]="
+                      passwordValidations.minimumLength
+                        ? 'fa-check text-color-success'
+                        : 'fa-times text-color-danger'
+                    "
+                  ></app-icon
+                  >&nbsp;&nbsp;Minimum Length - 8
+                </div>
+                <div class="p-pl-3">
+                  <app-icon
+                    [icon]="
+                      passwordValidations.maximumLength
+                        ? 'fa-check text-color-success'
+                        : 'fa-times text-color-danger'
+                    "
+                  ></app-icon
+                  >&nbsp;&nbsp;Maximum Length - 12
+                </div>
+                <div class="text-bold">Note:</div>
+                <div class="p-pl-3">Allowed Special Character (@,-,_,.,$,#)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-col-12">
+      <div class="aps-card p-px-3 aps-py-12">
+        <div class="left-right-container">
+          <div class="left-container"></div>
+          <div class="right-container">
+            <button
+              class="btn btn-md btn-primary"
+              (click)="onNextClick(stepperDetails.currentStep)"
+              [disabled]="!validateStep(stepperDetails.currentStep)"
+            >
+              {{ stepperDetails.currentStep != stepperDetails.headings.length ? 'NEXT' : 'SUBMIT' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTemplate>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>

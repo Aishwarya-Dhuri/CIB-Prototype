@@ -1,0 +1,298 @@
+<div class="container text-color-dark-shade-1">
+    <ng-container *ngIf="stepperDetails.currentStep === 1">
+        <app-search-modal [(isShow)]="searchBeneficiary" header="{{ 'lbl_select_beneficiary' | translate }}"
+            colDefUrl="trade/importTransactions/letterOfCredit/private/beneficiaryColDefs"
+            rowDefUrl="trade/importTransactions/letterOfCredit/private/beneficiaryData"
+            (onSelection)="onBeneSelection($event)">
+        </app-search-modal>
+        <form #apsform="ngForm" name="apsform">
+            <div class="aps-card">
+                <div class="aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Payment Details</div>
+                </div>
+                <div class="aps-card-body p-p-3 p-mb-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                            <app-aps-calender [label]="'Value Date' | apsTranslate" name="valueDate" id="valueDate"
+                                showIcon="true" #valueDate="ngModel" [(ngModel)]="formData.valueDate" required="true">
+                            </app-aps-calender>
+                        </div>
+                        <div class="p-md-9 p-sm-12 p-col-12"></div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                            <aps-custom-select name="debitVpaId" id="debitVpaId" label="Debit VPA ID"
+                                dataUrl="payments/upi/sendMoney/private/dropdown/debitVpaId"
+                                [value]="formData.accountNo" [(ngModel)]="formData.debitVpaId" [required]="true">
+                            </aps-custom-select>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0" *ngIf="formData.debitVpaId">
+                            <app-review-form-field label="Account Number"
+                                [value]="formData.accountNo"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0" *ngIf="formData.debitVpaId">
+                            <app-review-form-field label="Account Name"
+                                [value]="formData.accountName"></app-review-form-field>
+                        </div>
+                        <div class="p-md-3 p-sm-12 p-col-12 p-py-0" *ngIf="formData.debitVpaId">
+                            <app-review-form-field label="Account Balance"
+                                [value]="formData.accountBalance"></app-review-form-field>
+                        </div>
+
+                        <div class="p-md-12 p-sm-12 p-col-12">
+                            <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                                {{ 'Transfer Type' | apsTranslate }}
+                            </div>
+                            <p-radioButton class="p-mr-5" name="vpaIdTransfer" id="vpaIdTransfer" value="Allowed"
+                                label="{{ 'VPA  ID Transfer' | apsTranslate }}" [(ngModel)]="formData.transferType"
+                                [required]="true"></p-radioButton>
+                            <p-radioButton name="accountTransfer" id="accountTransfer" value="Not Allowed"
+                                label="{{ 'Account Transfer' | apsTranslate }}" [(ngModel)]="formData.transferType"
+                                [required]="true"></p-radioButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="aps-card" *ngIf="formData.transferType =='Allowed'">
+                <div class=" aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Beneficiary Details</div>
+                </div>
+                <div class="aps-card-body p-p-3 p-mb-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-col-12">
+                            <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                                value="Search Using Beneficiary Code"
+                                label="{{ 'Search Using Beneficiary Code' | apsTranslate }}"
+                                (click)="resetBeneficiaryDetails('Search Using Beneficiary Code')"
+                                [(ngModel)]="formData.beneficiaryDetails" [required]="true">
+                            </p-radioButton>
+
+                            <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                                (click)="resetBeneficiaryDetails('Add New Beneficiary')" value="Add New Beneficiary"
+                                label="{{ 'Add New Beneficiary' | apsTranslate }}"
+                                [(ngModel)]="formData.beneficiaryDetails" [required]="true"></p-radioButton>
+                        </div>
+                        <ng-container *ngIf="formData.beneficiaryDetails ==='Search Using Beneficiary Code'">
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <aps-form-input name="beneficiaryCode" id="beneficiaryCode"
+                                    label="{{ 'Beneficiary Code' | apsTranslate }}" [required]="true"
+                                    [rightIcon]="'fa-search'" [readonly]="true" (onRightIcon)="searchBeneficiary = true"
+                                    [(ngModel)]="formData.beneficiaryCode"></aps-form-input>
+                            </div>
+                        </ng-container>
+                        <ng-container
+                            *ngIf="formData.beneficiaryDetails ==='Add New Beneficiary' || formData.beneficiaryCode">
+                            <div class="p-col-12 p-py-0 p-mt-4"
+                                *ngIf="formData.beneficiaryDetails ==='Add New Beneficiary'">
+                                <div class="text-size-14 text-color-dark-shade-1 text-semi-bold">
+                                    {{ 'Add New Beneficiary' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                                <aps-form-input name="beneficiaryVpId" id="beneficiaryVpId"
+                                    label="{{ 'Beneficiary VPA ID' | apsTranslate }}" [required]="true"
+                                    [(ngModel)]="formData.beneficiaryVpId"></aps-form-input>
+                            </div>
+                            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                                <aps-form-input name="beneficiaryName" id="beneficiaryName"
+                                    label="{{ 'Beneficiary Name' | apsTranslate }}" [required]="true"
+                                    [(ngModel)]="formData.beneficiaryName"></aps-form-input>
+                            </div>
+
+                            <div class="p-md-3 p-sm-12 p-col-12"></div>
+                            <div class="p-md-3 p-sm-12 p-col-12"
+                                *ngIf="formData.beneficiaryDetails =='Add New Beneficiary'"></div>
+
+                            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                                <aps-form-input name="debitAmount" id="debitAmount"
+                                    label="{{ 'Debit Amount' | apsTranslate }}"
+                                    [(ngModel)]="formData.debitAmount"></aps-form-input>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                                <aps-form-input name="paymentRemarks" id="paymentRemarks"
+                                    label="{{ 'Payment Remarks' | apsTranslate }}"
+                                    [(ngModel)]="formData.paymentRemarks"></aps-form-input>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="aps-card" *ngIf="formData.transferType =='Not Allowed'">
+                <div class=" aps-card-header">
+                    <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Beneficiary Details</div>
+                </div>
+                <div class="aps-card-body p-p-3 p-mb-3">
+                    <div class="p-grid g-margin-x">
+                        <div class="p-col-12">
+                            <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                                value="Search Using Beneficiary Code"
+                                label="{{ 'Search Using Beneficiary Code' | apsTranslate }}"
+                                (click)="resetBeneficiaryDetails('Search Using Beneficiary Code')"
+                                [(ngModel)]="formData.beneficiaryDetails" [required]="true">
+                            </p-radioButton>
+
+                            <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                                (click)="resetBeneficiaryDetails('Add New Beneficiary')" value="Add New Beneficiary"
+                                label="{{ 'Add New Beneficiary' | apsTranslate }}"
+                                [(ngModel)]="formData.beneficiaryDetails" [required]="true"></p-radioButton>
+                        </div>
+                        <ng-container *ngIf="formData.beneficiaryDetails ==='Search Using Beneficiary Code'">
+                            <div class="p-md-3 p-sm-12 p-col-12">
+                                <aps-form-input name="beneficiaryCode" id="beneficiaryCode"
+                                    label="{{ 'Beneficiary Code' | apsTranslate }}" [required]="true"
+                                    [rightIcon]="'fa-search'" [readonly]="true" (onRightIcon)="searchBeneficiary = true"
+                                    [(ngModel)]="formData.beneficiaryCode"></aps-form-input>
+                            </div>
+                        </ng-container>
+                        <ng-container
+                            *ngIf="formData.beneficiaryDetails ==='Add New Beneficiary' || formData.beneficiaryCode">
+                            <div class="p-col-12 p-py-0 p-mt-4"
+                                *ngIf="formData.beneficiaryDetails ==='Add New Beneficiary'">
+                                <div class="text-size-14 text-color-dark-shade-1 text-semi-bold">
+                                    {{ 'Add New Beneficiary' | apsTranslate }}
+                                </div>
+                            </div>
+                            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                                <aps-form-input name="beneficiaryName" id="beneficiaryName"
+                                    label="{{ 'Beneficiary Name' | apsTranslate }}" [required]="true"
+                                    [(ngModel)]="formData.beneficiaryName"></aps-form-input>
+                            </div>
+
+                            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12">
+                                <aps-form-input name="beneficiaryAccountNumber" id="beneficiaryAccountNumber"
+                                    label="{{ 'Beneficiary Account Number' | apsTranslate }}" [required]="true"
+                                    [(ngModel)]="formData.beneficiaryAccountNumber"></aps-form-input>
+                            </div>
+
+                            <div class="p-lg-3 p-md-3 p-sm-12 p-col-12"
+                                *ngIf="formData.beneficiaryDetails=='Search Using Beneficiary Code'">
+                                <aps-form-input name="beneficiaryBankName" id="beneficiaryBankName"
+                                    label="{{ 'Beneficiary Bank' | apsTranslate }}" [required]="true"
+                                    [(ngModel)]="formData.beneficiaryBankName"></aps-form-input>
+                            </div>
+
+
+
+                            <div class="p-md-3 p-sm-12 p-col-12"
+                                *ngIf="formData.beneficiaryDetails =='Add New Beneficiary'">
+                                <aps-form-input name="reneterbeneficiaryAccountNumber"
+                                    id="reneterbeneficiaryAccountNumber"
+                                    label="{{ 'Re-enter Account Number' | apsTranslate }}" [required]="true"
+                                    [(ngModel)]="formData.reneterbeneficiaryAccountNumber"></aps-form-input>
+                            </div>
+
+                            <div class="p-md-3 p-sm-12 p-col-12"
+                                *ngIf="formData.beneficiaryDetails =='Add New Beneficiary'">
+                                <aps-form-input name="ifscCode" id="ifscCode" label="{{ 'IFSC Code' | apsTranslate }}"
+                                    [required]="true" [(ngModel)]="formData.ifscCode"></aps-form-input>
+                            </div>
+
+                            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                                <aps-form-input name="debitAmount" id="debitAmount"
+                                    label="{{ 'Debit Amount' | apsTranslate }}"
+                                    [(ngModel)]="formData.debitAmount"></aps-form-input>
+                            </div>
+                            <div class="p-md-3 p-sm-12 p-col-12 p-py-0">
+                                <aps-form-input name="paymentRemarks" id="paymentRemarks"
+                                    label="{{ 'Payment Remarks' | apsTranslate }}"
+                                    [(ngModel)]="formData.paymentRemarks"></aps-form-input>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ng-container>
+
+    <ng-container *ngIf="stepperDetails.currentStep === stepperDetails.headings.length">
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Payment Details</div>
+            </div>
+
+            <div class="aps-card-body p-p-3 p-mb-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Value Date" [value]="formData.valueDate"></app-review-form-field>
+                    </div>
+                    <div class="p-md-9 p-sm-9 p-col-9"></div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Debit VPA id"
+                            [value]="formData.debitVpaId"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Account Number"
+                            [value]="formData.accountNo"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Account Name"
+                            [value]="formData.accountName"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Account Balance"
+                            [value]="formData.accountBalance"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <div class="text-size-14 text-semi-bold p-mb-2 text-color-dark-shade-1">
+                            {{ 'Transfer Type' | apsTranslate }}
+                        </div>
+                        <p-radioButton class="p-mr-5" name="vpaIdTransfer" id="vpaIdTransfer" value="Allowed"
+                            label="{{ 'VPA  ID Transfer' | apsTranslate }}" [(ngModel)]="formData.transferType"
+                            [required]="true" disabled></p-radioButton>
+                        <p-radioButton name="accountTransfer" id="accountTransfer" value="Not Allowed"
+                            label="{{ 'Account Transfer' | apsTranslate }}" [(ngModel)]="formData.transferType"
+                            [required]="true" disabled></p-radioButton>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="aps-card">
+            <div class="aps-card-header">
+                <div class="p-px-3 aps-py-12 tet-size-16 text-bold">Beneficiary Details</div>
+            </div>
+            <div class="aps-card-body p-p-3 p-mb-3">
+                <div class="p-grid g-margin-x">
+                    <div class="p-col-12">
+                        <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                            value="Search Using Beneficiary Code"
+                            label="{{ 'Search Using Beneficiary Code' | apsTranslate }}"
+                            [(ngModel)]="formData.beneficiaryDetails" disabled>
+                        </p-radioButton>
+
+                        <p-radioButton class="p-mr-4" id="frequencyOfExecution" name="frequencyOfExecution"
+                            value="Add New Beneficiary" label="{{ 'Add New Beneficiary' | apsTranslate }}"
+                            [(ngModel)]="formData.beneficiaryDetails" disabled></p-radioButton>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6"
+                        *ngIf="formData.beneficiaryDetails == 'Search Using Beneficiary Code'">
+                        <app-review-form-field label="Beneficiary Code"
+                            [value]="formData.beneficiaryCode"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-6">
+                        <app-review-form-field label="Beneficiary Name"
+                            [value]="formData.beneficiaryName"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-12">
+                        <app-review-form-field label="Beneficiary Account Number"
+                            [value]="formData.beneficiaryAccountNumber"></app-review-form-field>
+                    </div>
+                    <div class="p-md-3 p-sm-6 p-col-12">
+                        <app-review-form-field label="Beneficiary Bank Name"
+                            [value]="formData.beneficiaryBankName"></app-review-form-field>
+                    </div>
+                    <div class="p-md-12 p-sm-12 p-col-12">
+                        <app-review-form-field label="Debit Amount"
+                            [value]="formData.debitAmount"></app-review-form-field>
+                    </div>
+                    <div class="p-md-12 p-sm-12 p-col-12">
+                        <app-review-form-field label="Payment Remarks"
+                            [value]="formData.paymentRemarks"></app-review-form-field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <app-stepper-footer [parentRef]="this"></app-stepper-footer>
+</div>

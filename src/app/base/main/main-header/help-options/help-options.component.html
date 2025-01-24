@@ -1,0 +1,18 @@
+<div class="help-options-wrapper p-shadow-2">
+  <div class="options">
+    <div class="option">
+      <div (click)="routeTo('/frequentlyAskQuestions')" class="text">{{ "FAQ's" | apsTranslate }}</div>
+    </div>
+    <div class="option">
+      <div class="text">{{ 'Demo Videos' | apsTranslate }}</div>
+    </div>
+  </div>
+
+  <div class="divider-h"></div>
+
+  <div class="options">
+    <div class="option" (click)="onShowFeedback.emit()">
+      <div class="text">{{ 'Send Feedback to us' | apsTranslate }}</div>
+    </div>
+  </div>
+</div>
